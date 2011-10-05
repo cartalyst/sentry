@@ -28,8 +28,8 @@ class Sentry_User
 	{
 		// load and set config
 		\Config::load('sentry', true);
-		$this->table = \Config::get('sentry.table.users');
-		$this->login_id = \Config::get('sentry.login_id');
+		$this->table = strtolower(\Config::get('sentry.table.users'));
+		$this->login_id = strtolower(\Config::get('sentry.login_id'));
 
 		if ($id)
 		{
@@ -126,7 +126,7 @@ class Sentry_User
 	protected function hash_password($password)
 	{
 		$salt = $this->generate_salt();
-		$password = hash('sha256', $password);
+		$password = hash('sha256', $salt.$password);
 		return $salt.$password;
 	}
 
