@@ -246,8 +246,8 @@ class Sentry_User
 				}
 				else
 				{
-					throw new \SentryUserException('\''.$key.'\' does not exist in \'user\' '.
-								'object.');
+					throw new \SentryUserException(
+								sprintf('"%s" does not exist in "user" object.', $key));
 				}
 			}
 
@@ -262,7 +262,8 @@ class Sentry_User
 				return $this->user[$field];
 			}
 
-			throw new \SentryUserException('\''.$field.'\' does not exist in \'user\' object.');
+			throw new \SentryUserException(
+						sprintf('"%s" does not exist in "user" object.', $field));
 		}
 	}
 
