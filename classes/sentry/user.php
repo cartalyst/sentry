@@ -16,8 +16,6 @@ class Sentry_User
 	protected $user = array();
 	protected $table = null;
 	protected $login_id = null;
-	protected $required_fields = array('login_id', 'password');
-	protected $optional_fields = array('password_reset_hash');
 
 	/**
 	 * Class Construtor
@@ -40,8 +38,11 @@ class Sentry_User
 			else
 			{
 				//query database for user
-				$user = \DB::select()->from($this->table)->where('id', $id)
-					->execute()->as_array();
+				$user = \DB::select()
+					->from($this->table)
+					->where('id', $id)
+					->execute()
+					->current();
 
 				if (count($user))
 				{
@@ -75,7 +76,7 @@ class Sentry_User
 		// make sure $user param is an array
 		if (!is_array($user))
 		{
-			throw new \SentryUserException('create() paramater must be an array.');
+			throw new \SentryUserException('Create/Register paramater must be an array.');
 		}
 
 		// check for required fields
@@ -104,7 +105,72 @@ class Sentry_User
 
 	}
 
-	public function update() {}
+	public function update($fields)
+	{
+		// make sure a user id is set
+		if (empty($this->user['id']))
+		{
+			throw new \SentryUserException('No user is selected to update.');
+		}
+
+		// make sure fields is an array
+		if (!is_array($fields))
+		{
+			throw new \SentryUserException('Update param must be an array');
+		}
+
+		// init update array
+		$update = array();
+
+		// if updating login_id, make sure it does not exist
+		if (array_key_exists('login_id', $fields))
+		{
+			if ($this->user_exists($fields['login_id'])
+				and $fields['login_id'] != $this->user[$this->login_id]) // gracious check...
+			{
+				throw new \SentryUserException(ucfirst($this->login_id).' already exists.');
+			}
+			if (empty($fields['login_id']))
+			{
+				throw new \SentryUserException(ucfirst($this->login_id).' must not be blank.');
+			}
+			$update[$this->login_id] = $fields['login_id'];
+			unset($fields['login_id']);
+		}
+
+		// update password
+		if (array_key_exists('password', $fields))
+		{
+			if (empty($fields['password']))
+			{
+				throw new \SentryUserException('Password must not be blank.');
+			}
+			$update['password'] = $this->hash_password($fields['password']);
+			unset($fields['password']);
+		}
+
+		// update password reset hash
+		if (array_key_exists('password_reset', $fields))
+		{
+			$update['password_reset_hash'] = $this->hash_password($fields['password_reset']);
+			unset($fields['password_reset']);
+		}
+
+		$update['updated_at'] = time();
+
+		$result = \DB::update($this->table)
+			->set($update)
+			->where('id', $this->user['id'])
+			->execute();
+
+		if ($result > 0)
+		{
+			// change user values in object
+			$this->user = array_merge($this->user, $update);
+		}
+
+		return $result > 0;
+	}
 
 	public function delete() {}
 
@@ -115,8 +181,11 @@ class Sentry_User
 	/** Update Helpers **/
 	protected function user_exists($login_id)
 	{
-		$result = \DB::select()->from($this->table)->where($this->login_id, $login_id)
-					->limit(1)->execute();
+		$result = \DB::select()
+			->from($this->table)
+			->where($this->login_id, $login_id)
+			->limit(1)
+			->execute();
 
 		return count($result);
 	}
