@@ -29,8 +29,10 @@ class Sentry_User
 		$this->table = strtolower(\Config::get('sentry.table.users'));
 		$this->login_id = strtolower(\Config::get('sentry.login_id'));
 
+		// if an ID was passed
 		if ($id)
 		{
+			// make sure ID is valid
 			if (!is_int($id) or $id <= 0)
 			{
 				throw new \SentryUserException('User ID must be a valid integer greater than 0.');
@@ -44,10 +46,12 @@ class Sentry_User
 					->execute()
 					->current();
 
+				// if there was a result - update user
 				if (count($user))
 				{
 					$this->user = $user;
 				}
+				// user ID doesn't exist
 				else
 				{
 					throw new \SentryUserException('User ID does not exist.');
@@ -94,7 +98,7 @@ class Sentry_User
 		// set new user values
 		$new_user = array(
 			$this->login_id => $user[$this->login_id],
-			'password' => $this->hash_password($user['password']),
+			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
 		);
 
@@ -150,14 +154,14 @@ class Sentry_User
 			{
 				throw new \SentryUserException('Password must not be blank.');
 			}
-			$update['password'] = $this->hash_password($fields['password']);
+			$update['password'] = $this->generate_password($fields['password']);
 			unset($fields['password']);
 		}
 
 		// update password reset hash
 		if (array_key_exists('password_reset', $fields))
 		{
-			$update['password_reset_hash'] = $this->hash_password($fields['password_reset']);
+			$update['password_reset_hash'] = $this->generate_password($fields['password_reset']);
 			unset($fields['password_reset']);
 		}
 
@@ -192,10 +196,12 @@ class Sentry_User
 			throw new \SentryUserException('No user is selected to delete.');
 		}
 
+		// delete user from database
 		$result = \DB::delete($this->table)
 			->where('id', $this->user['id'])
 			->execute();
 
+		// if user was deleted
 		if ($result)
 		{
 			// update user to null
@@ -220,15 +226,20 @@ class Sentry_User
 			throw new \SentryUserException('No user is selected to get.');
 		}
 
+		// if no fields were passed - return entire user
 		if ($field === null)
 		{
 			return $this->user;
 		}
-		if (is_array($field))
+		// if field is an array - return requested fields
+		else if (is_array($field))
 		{
 			$values = array();
+
+			// loop through requested fields
 			foreach ($field as $key)
 			{
+				// check to see if field exists in user
 				if (array_key_exists($key, $this->user))
 				{
 					$values[$key] = $this->user[$key];
@@ -242,8 +253,10 @@ class Sentry_User
 
 			return $values;
 		}
+		// if single field was passed - return its value
 		else
 		{
+			// check to see if field exists in user
 			if (array_key_exists($field, $this->user))
 			{
 				return $this->user[$field];
@@ -251,6 +264,22 @@ class Sentry_User
 
 			throw new \SentryUserException('\''.$field.'\' does not exist in \'user\' object.');
 		}
+	}
+
+	/**
+	 * Change Password
+	 *
+	 * @param string
+	 * @param string
+	 */
+	public function change_password($password, $old_password)
+	{
+		// make sure old password matches the current password
+		if (!$this->check_password($old_password))
+		{
+			throw new \SentryUserException('Old password is invalid');
+		}
+		return $this->update(array('password' => $password));
 	}
 
 	/** Acl methods if needed **/
@@ -266,6 +295,7 @@ class Sentry_User
 	 */
 	protected function user_exists($login_id)
 	{
+		// query db to check for login_id
 		$result = \DB::select()
 			->from($this->table)
 			->where($this->login_id, $login_id)
@@ -276,30 +306,35 @@ class Sentry_User
 	}
 
 	/**
-	 * Change Password
+	 * Check Password
 	 *
 	 * @param string
 	 * @param string
 	 */
-	protected function change_password($old, $new)
+	protected function check_password($password)
 	{
-		if ($old != $this->user['password'])
-		{
-			throw new \SentryUserException('Old password is invalid');
-		}
-		return $this->update(array('password' => $new));
+		// grabs the salt from the current password
+		$salt = substr($this->user['password'], 0, 16);
+
+		// hash the inputted password
+		$password = $salt.$this->hash_password($password, $salt);
+
+		// check to see if passwords match
+		return $password == $this->user['password'];
 	}
 
-	protected function hash_password($password)
+	protected function generate_password($password)
 	{
-		$salt = $this->generate_salt();
+		$salt = \Str::random('alnum', 16);
+
+		return $salt.$this->hash_password($password, $salt);
+	}
+
+	protected function hash_password($password, $salt)
+	{
 		$password = hash('sha256', $salt.$password);
-		return $salt.$password;
-	}
 
-	protected function generate_salt()
-	{
-		return \Str::random('alnum', 16);
+		return $password;
 	}
 
 }
