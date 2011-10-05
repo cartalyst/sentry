@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sentry Auth User class
+ * Sentry Auth User Class
  *
  * @author  Daniel Petrie
  */
@@ -80,20 +80,20 @@ class Sentry_User
 		}
 
 		// check for required fields
-		if (empty($user['login_id']) or empty($user['password']))
+		if (empty($user[$this->login_id]) or empty($user['password']))
 		{
 			throw new \SentryUserException('login_id and password can not be empty.');
 		}
 
 		// check to see if login_id is already taken
-		if ($this->user_exists($user['login_id']))
+		if ($this->user_exists($user[$this->login_id]))
 		{
 			throw new \SentryUserException(ucfirst($this->login_id).' already exists.');
 		}
 
 		// set new user values
 		$new_user = array(
-			$this->login_id => $user['login_id'],
+			$this->login_id => $user[$this->login_id],
 			'password' => $this->hash_password($user['password']),
 			'created_at' => time(),
 		);
@@ -105,6 +105,11 @@ class Sentry_User
 
 	}
 
+	/**
+	 * Update User
+	 *
+	 * @param array
+	 */
 	public function update($fields)
 	{
 		// make sure a user id is set
@@ -156,29 +161,109 @@ class Sentry_User
 			unset($fields['password_reset']);
 		}
 
+		// add update time
 		$update['updated_at'] = time();
 
+		// update database
 		$result = \DB::update($this->table)
 			->set($update)
 			->where('id', $this->user['id'])
 			->execute();
 
-		if ($result > 0)
+		if ($result)
 		{
 			// change user values in object
 			$this->user = array_merge($this->user, $update);
+
+			return true;
 		}
 
-		return $result > 0;
+		return false;
 	}
 
-	public function delete() {}
+	/**
+	 * Delete User
+	 */
+	public function delete()
+	{
+		// make sure a user id is set
+		if (empty($this->user['id']))
+		{
+			throw new \SentryUserException('No user is selected to delete.');
+		}
 
-	public function get() {}
+		$result = \DB::delete($this->table)
+			->where('id', $this->user['id'])
+			->execute();
 
-	/** Acl methods **/
+		if ($result)
+		{
+			// update user to null
+			$this->user = array();
 
-	/** Update Helpers **/
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get User Data
+	 *
+	 * @param string, array
+	 */
+	public function get($field = null)
+	{
+		// make sure a user id is set
+		if (empty($this->user['id']))
+		{
+			throw new \SentryUserException('No user is selected to get.');
+		}
+
+		if ($field === null)
+		{
+			return $this->user;
+		}
+		if (is_array($field))
+		{
+			$values = array();
+			foreach ($field as $key)
+			{
+				if (array_key_exists($key, $this->user))
+				{
+					$values[$key] = $this->user[$key];
+				}
+				else
+				{
+					throw new \SentryUserException('\''.$key.'\' does not exist in \'user\' '.
+								'object.');
+				}
+			}
+
+			return $values;
+		}
+		else
+		{
+			if (array_key_exists($field, $this->user))
+			{
+				return $this->user[$field];
+			}
+
+			throw new \SentryUserException('\''.$field.'\' does not exist in \'user\' object.');
+		}
+	}
+
+	/** Acl methods if needed **/
+
+
+
+	/** Helpers **/
+
+	/**
+	 * Check if user exists already
+	 *
+	 * @param string
+	 */
 	protected function user_exists($login_id)
 	{
 		$result = \DB::select()
@@ -190,7 +275,20 @@ class Sentry_User
 		return count($result);
 	}
 
-	protected function change_password($old, $new) {}
+	/**
+	 * Change Password
+	 *
+	 * @param string
+	 * @param string
+	 */
+	protected function change_password($old, $new)
+	{
+		if ($old != $this->user['password'])
+		{
+			throw new \SentryUserException('Old password is invalid');
+		}
+		return $this->update(array('password' => $new));
+	}
 
 	protected function hash_password($password)
 	{
