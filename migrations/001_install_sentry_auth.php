@@ -33,5 +33,6 @@ class Install_Sentry_Auth {
 	public function down()
 	{
 		\DBUtil::drop_table(\Config::get('table.users'));
+		\DBUtil::drop_table(\Config::get('table.suspended'));
 	}
 }
