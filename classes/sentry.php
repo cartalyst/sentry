@@ -12,7 +12,7 @@ class SentryAuthConfigException extends \Fuel_Exception {}
 
 class SentryAuthException extends \Fuel_Exception {}
 
-class SentryAuthSuspendedException extends \Fuel_Exception {}
+class SentryUserSuspendedException extends \Fuel_Exception {}
 
 class Sentry
 {
@@ -29,6 +29,9 @@ class Sentry
 	 */
 	final private function __construct() {}
 
+	/**
+	 * Run when class is loaded
+	 */
 	public static function _init()
 	{
 		// load config
@@ -71,12 +74,36 @@ class Sentry
 
 	}
 
+	/**
+	 * Returns Sentry_User Object
+	 *
+	 * @param int, string
+	 */
 	public static function user($id = null)
 	{
-		return new Sentry_User($id);
+		// if $id is passed - select that user
+		if ($id)
+		{
+			return new Sentry_User($id);
+		}
+		// if session exists - default to user session
+		else if(static::check())
+		{
+			$user = \Session::get('sentry_user');
+			return new Sentry_User($user['id']);
+		}
+		// else return empty user
+		return new Sentry_User();
 	}
 
 	/** User Authorization **/
+
+	/**
+	 * Log a User In
+	 *
+	 * @param string
+	 * @param string
+	 */
 	public static function login($login_id, $password)
 	{
 		// get login attempts
@@ -122,17 +149,29 @@ class Sentry
 		static::clear_attempts($login_id);
 
 		// set session vars
-		\Session::set('user', array(
-			'id' => $user->get('id'),
-			static::$login_id => $user->get(static::$login_id),
+		\Session::set('sentry_user', array(
+			'id' => (int) $user->get('id')
 		));
 
 		return true;
 	}
 
+	/**
+	 * Is Logged In Check
+	 */
 	public static function check()
 	{
+		// get session
+		$user = \Session::get('sentry_user');
 
+		// invalid session values - kill the user session
+		if ( ! isset($user['id']) or ! is_int($user['id']))
+		{
+			static::logout();
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -140,7 +179,7 @@ class Sentry
 	 */
 	public static function logout()
 	{
-		\Session::delete('user');
+		\Session::delete('sentry_user');
 	}
 
 	/**
@@ -148,7 +187,7 @@ class Sentry
 	 *
 	 * @param string
 	 */
-	public static function check_attempts($login_id)
+	protected static function check_attempts($login_id)
 	{
 		$result = \DB::select('attempts', 'last_attempt_at', 'unsuspend_at')
 			->from(static::$table_suspend)
@@ -159,7 +198,7 @@ class Sentry
 
 		// check if last attempt was more than 15 min ago - if so reset counter
 		if ($result['last_attempt_at']
-			and ($result['last_attempt_at'] + 60) <= time())
+			and ($result['last_attempt_at'] + static::$limit['time']*60) <= time())
 		{
 			static::clear_attempts($login_id);
 			return 0;
@@ -245,6 +284,7 @@ class Sentry
 	 */
 	protected static function suspend($login_id, $timeleft = null)
 	{
+		// only updates table if unsuspended at has no value
 		$result = \DB::update(static::$table_suspend)
 			->set(array(
 				'suspended_at' => time(),

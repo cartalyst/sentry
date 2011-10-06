@@ -13,7 +13,7 @@ Autoloader::add_classes(array(
 	'Sentry\\Sentry' => __DIR__.'/classes/sentry.php',
 	'Sentry\\SentryAuthException' => __DIR__.'/classes/sentry.php',
 	'Sentry\\SentryAuthConfigException' => __DIR__.'/classes/sentry.php',
-	'Sentry\\SentryAuthSuspendedException' => __DIR__.'/classes/sentry.php',
+	'Sentry\\SentryUserSuspendedException' => __DIR__.'/classes/sentry.php',
 
 	'Sentry\\Sentry_User' => __DIR__.'./classes/sentry/user.php',
 	'Sentry\\SentryUserException' => __DIR__.'/classes/sentry/user.php',
