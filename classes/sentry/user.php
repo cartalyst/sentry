@@ -10,6 +10,8 @@ namespace Sentry;
 
 class SentryUserException extends \Fuel_Exception {}
 
+class SentryUserNotFoundException extends \Fuel_Exception {}
+
 class Sentry_User
 {
 	// set class properties
@@ -33,29 +35,38 @@ class Sentry_User
 		if ($id)
 		{
 			// make sure ID is valid
-			if (!is_int($id) or $id <= 0)
+			if (is_int($id))
 			{
-				throw new \SentryUserException('User ID must be a valid integer greater than 0.');
+				if ($id <= 0)
+				{
+					throw new \SentryUserException(
+								'User ID must be a valid integer greater than 0.');
+				}
+				// set field to id for query
+				$field = 'id';
 			}
+			// if ID is not an integer
 			else
 			{
-				//query database for user
-				$user = \DB::select()
-					->from($this->table)
-					->where('id', $id)
-					->execute()
-					->current();
+				// set field to login_id
+				$field = $this->login_id;
+			}
 
-				// if there was a result - update user
-				if (count($user))
-				{
-					$this->user = $user;
-				}
-				// user ID doesn't exist
-				else
-				{
-					throw new \SentryUserException('User ID does not exist.');
-				}
+			//query database for user
+			$user = \DB::select()
+				->from($this->table)
+				->where($field, $id)
+				->execute();
+
+			// if there was a result - update user
+			if (count($user))
+			{
+				$this->user = $user->current();
+			}
+			// user doesn't exist
+			else
+			{
+				throw new \SentryUserNotFoundException('User does not exist.');
 			}
 		}
 	}
@@ -78,7 +89,7 @@ class Sentry_User
 	public function create($user)
 	{
 		// make sure $user param is an array
-		if (!is_array($user))
+		if ( ! is_array($user))
 		{
 			throw new \SentryUserException('Create/Register paramater must be an array.');
 		}
@@ -123,7 +134,7 @@ class Sentry_User
 		}
 
 		// make sure fields is an array
-		if (!is_array($fields))
+		if ( ! is_array($fields))
 		{
 			throw new \SentryUserException('Update param must be an array');
 		}
@@ -276,7 +287,7 @@ class Sentry_User
 	public function change_password($password, $old_password)
 	{
 		// make sure old password matches the current password
-		if (!$this->check_password($old_password))
+		if ( ! $this->check_password($old_password))
 		{
 			throw new \SentryUserException('Old password is invalid');
 		}
@@ -312,7 +323,7 @@ class Sentry_User
 	 * @param string
 	 * @param string
 	 */
-	protected function check_password($password)
+	public function check_password($password)
 	{
 		// grabs the salt from the current password
 		$salt = substr($this->user['password'], 0, 16);
