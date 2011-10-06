@@ -25,8 +25,9 @@ class Install_Sentry_Auth {
 			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
 			'login_id' => array('constraint' => 50, 'type' => 'varchar'),
 			'ip' => array('constraint' => 25), 'type' => 'varchar'),
+			'last_attempt_at' => array('constraint') => 11, 'type' => 'int'),
 			'suspended_at' => array('constraint' => 11, 'type' => 'int'),
-			'unsuspend_at' => array('constraint' => 12, 'type' => 'int'),
+			'unsuspend_at' => array('constraint' => 11, 'type' => 'int'),
 		), array('id'));
 	}
 

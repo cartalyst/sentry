@@ -150,12 +150,20 @@ class Sentry
 	 */
 	public static function check_attempts($login_id)
 	{
-		$result = \DB::select('attempts', 'unsuspend_at')
+		$result = \DB::select('attempts', 'last_attempt_at', 'unsuspend_at')
 			->from(static::$table_suspend)
 			->where('login_id', $login_id)
 			->where('ip', \Input::real_ip())
 			->execute()
 			->current();
+
+		// check if last attempt was more than 15 min ago - if so reset counter
+		if ($result['last_attempt_at']
+			and ($result['last_attempt_at'] + 60) <= time())
+		{
+			static::clear_attempts($login_id);
+			return 0;
+		}
 
 		// check unsuspended time and clear if time is > than it
 		if ($result['unsuspend_at'] and $result['unsuspend_at'] <= time())
@@ -178,7 +186,10 @@ class Sentry
 		if ($attempts)
 		{
 			$result = \DB::update(static::$table_suspend)
-				->value('attempts', $attempts + 1)
+				->set(array(
+					'attempts' => $attempts + 1,
+					'last_attempt_at' => time(),
+				))
 				->where('login_id', $login_id)
 				->where('ip', \Input::real_ip())
 				->execute();
@@ -190,6 +201,7 @@ class Sentry
 					'login_id' => $login_id,
 					'ip' => \Input::real_ip(),
 					'attempts' => 1,
+					'last_attempt_at' => time(),
 				))
 				->execute();
 		}
