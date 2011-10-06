@@ -8,7 +8,7 @@ class Install_Sentry_Auth {
 	{
 		\Config::load('sentry', true);
 
-		\DBUtil::create_table(\Config::get('table.users', array(
+		\DBUtil::create_table(\Config::get('table.users'), array(
 			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
 			'username' => array('constraint' => 50, 'type' => 'varchar'),
 			'email' => array('constraint' => 50, 'type' => 'varchar'),
@@ -27,11 +27,11 @@ class Install_Sentry_Auth {
 			'ip' => array('constraint' => 25), 'type' => 'varchar'),
 			'suspended_at' => array('constraint' => 11, 'type' => 'int'),
 			'unsuspend_at' => array('constraint' => 12, 'type' => 'int'),
-		), array('id'))
+		), array('id'));
 	}
 
 	public function down()
 	{
-		\DBUtil::drop_table(\Config::get('table.users');
+		\DBUtil::drop_table(\Config::get('table.users'));
 	}
 }
