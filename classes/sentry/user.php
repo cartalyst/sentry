@@ -294,6 +294,22 @@ class Sentry_User
 		return $this->update(array('password' => $password));
 	}
 
+	/**
+	 * Forgot Password
+	 */
+	protected function forgot_password($password)
+	{
+		// make sure a user id is set
+		if (empty($this->user['id']))
+		{
+			throw new \SentryUserException('No user is selected to reset password.');
+		}
+
+		// create a hash for forgot_password link
+		$hash = $this->hash_password(\Str::random('alnum', 16));
+	}
+
+
 	/** Acl methods if needed **/
 
 

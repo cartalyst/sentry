@@ -12,17 +12,11 @@ class SentryAuthConfigException extends \Fuel_Exception {}
 
 class SentryAuthException extends \Fuel_Exception {}
 
-class SentryUserSuspendedException extends \Fuel_Exception {}
-
 class Sentry
 {
 	protected static $login_id = null;
 
-	protected static $table_users = null;
-
-	protected static $table_suspend = null;
-
-	protected static $limit = array();
+	protected static $attempts = null;
 
 	/**
 	 * Prevent instantiation
@@ -39,13 +33,7 @@ class Sentry
 
 		// set static vars for later use
 		static::$login_id = \Config::get('sentry.login_id');
-		static::$table_users = \Config::get('sentry.table.users');
-		static::$table_suspend = \Config::get('sentry.table.users_suspended');
-		static::$limit = array(
-			'enabled' => \Config::get('sentry.limit.enabled'),
-			'attempts' => \Config::get('sentry.limit.attempts'),
-			'time' => \Config::get('sentry.limit.time')
-		);
+		static::$attempts = new Sentry_Attempts();
 
 		// validate config settings
 
@@ -54,22 +42,6 @@ class Sentry
 		{
 			throw new \SentryAuthConfigException(
 				'Sentry Config Item: "login_id" must be set to "username" or "email".');
-		}
-
-		// limit checks
-		if (static::$limit['enabled'] === true)
-		{
-			if ( ! is_int(static::$limit['attempts']) or static::$limit['attempts'] <= 0)
-			{
-				throw new \SentryAuthConfigException(
-					'Sentry Config Item: "limit.attempts" must be an integer greater than 0');
-			}
-
-			if ( ! is_int(static::$limit['time']) or static::$limit['time'] <= 0)
-			{
-				throw new \SentryAuthConfigException(
-					'Sentry Config Item: "limit.time" must be an integer greater than 0');
-			}
 		}
 
 	}
@@ -107,17 +79,13 @@ class Sentry
 	public static function login($login_id, $password)
 	{
 		// get login attempts
-		$attempts = static::check_attempts($login_id);
+		$attempts = static::$attempts->get($login_id);
 
 		// if attempts > limit - suspend the login/ip combo
-		if ($attempts >= static::$limit['attempts'])
+		if ($attempts >= static::$attempts->get_limit())
 		{
-			static::suspend($login_id);
+			static::$attempts->suspend($login_id);
 		}
-
-		// trim and reset vars
-		$login_id = trim($login_id);
-		$password = trim($password);
 
 		// make sure vars have values
 		if (empty($login_id) or empty($password))
@@ -134,19 +102,19 @@ class Sentry
 		}
 		catch (SentryUserNotFoundException $e)
 		{
-			static::add_attempt($login_id, $attempts);
+			static::$attempts->add($login_id, $attempts);
 			return false;
 		}
 
 		// make sure password matches
 		if ( ! $user->check_password($password))
 		{
-			static::add_attempt($login_id, $attempts);
+			static::$attempts->add($login_id, $attempts);
 			return false;
 		}
 
 		// clear attempts for login since they got in
-		static::clear_attempts($login_id);
+		static::$attempts->clear($login_id);
 
 		// set session vars
 		\Session::set('sentry_user', array(
@@ -182,122 +150,17 @@ class Sentry
 		\Session::delete('sentry_user');
 	}
 
-	/**
-	 * Check Number of Login Attempts
-	 *
-	 * @param string
-	 */
-	protected static function check_attempts($login_id)
-	{
-		$result = \DB::select('attempts', 'last_attempt_at', 'unsuspend_at')
-			->from(static::$table_suspend)
-			->where('login_id', $login_id)
-			->where('ip', \Input::real_ip())
-			->execute()
-			->current();
-
-		// check if last attempt was more than 15 min ago - if so reset counter
-		if ($result['last_attempt_at']
-			and ($result['last_attempt_at'] + static::$limit['time']*60) <= time())
-		{
-			static::clear_attempts($login_id);
-			return 0;
-		}
-
-		// check unsuspended time and clear if time is > than it
-		if ($result['unsuspend_at'] and $result['unsuspend_at'] <= time())
-		{
-			static::clear_attempts($login_id);
-			return 0;
-		}
-
-		return $result['attempts'];
-	}
 
 	/**
-	 * Add Login Attempt
+	 * Remember User Login
 	 *
-	 * @param string
 	 * @param int
 	 */
-	protected static function add_attempt($login_id, $attempts = null)
+	protected static function remember()
 	{
-		if ($attempts)
-		{
-			$result = \DB::update(static::$table_suspend)
-				->set(array(
-					'attempts' => $attempts + 1,
-					'last_attempt_at' => time(),
-				))
-				->where('login_id', $login_id)
-				->where('ip', \Input::real_ip())
-				->execute();
-		}
-		else
-		{
-			$result = \DB::insert(static::$table_suspend)
-				->set(array(
-					'login_id' => $login_id,
-					'ip' => \Input::real_ip(),
-					'attempts' => 1,
-					'last_attempt_at' => time(),
-				))
-				->execute();
-		}
+
 	}
 
-	/**
-	 * Clear Login Attempts
-	 *
-	 * @param string
-	 * @param string
-	 */
-	protected static function clear_attempts($login_id, $ip = null)
-	{
-		if ($ip === null)
-		{
-			$ip = \Input::real_ip();
-		}
 
-		$result = \DB::delete(static::$table_suspend)
-			->where('login_id', $login_id)
-			->where('ip', $ip)
-			->execute();
-	}
-
-	/**
-	 * Public Alias of Clear_Attempts
-	 *
-	 * @param string
-	 * @param string
-	 */
-	public static function unsuspend($login_id, $ip = null)
-	{
-		static::clear_attempts($login_id, $ip);
-	}
-
-	/**
-	 * Suspend
-	 *
-	 * @param string
-	 * @param int
-	 */
-	protected static function suspend($login_id, $timeleft = null)
-	{
-		// only updates table if unsuspended at has no value
-		$result = \DB::update(static::$table_suspend)
-			->set(array(
-				'suspended_at' => time(),
-				'unsuspend_at' => time()+(static::$limit['time']*60),
-			))
-			->where('login_id', $login_id)
-			->where('ip', \Input::real_ip())
-			->where('unsuspend_at', null)
-			->execute();
-
-		throw new \SentryAuthSuspendedException(sprintf(
-			'You have been suspended from trying to login into account "%s" for %s minutes.',
-			$login_id, static::$limit['time']));
-	}
 
 }
