@@ -35,4 +35,11 @@ return array(
 		'time' => 15,
 	),
 
+	'email' => array(
+		'address' => 'default@yourdomain.com',
+		'name' => 'Your Website Name',
+		'subject' => 'Password Reset',
+		'view' => 'path/to/view',
+	),
+
 );

@@ -61,7 +61,7 @@ class Sentry_Attempts
 
 		// check if last attempt was more than 15 min ago - if so reset counter
 		if ($result['last_attempt_at']
-			and ($result['last_attempt_at'] + static::$limit['time']*60) <= time())
+			and ($result['last_attempt_at'] + static::$limit['time'] * 60) <= time())
 		{
 			$this->clear($login_id);
 			return 0;
@@ -160,7 +160,7 @@ class Sentry_Attempts
 		$result = \DB::update(static::$table_suspend)
 			->set(array(
 				'suspended_at' => time(),
-				'unsuspend_at' => time()+(static::$limit['time']*60),
+				'unsuspend_at' => time()+(static::$limit['time'] * 60),
 			))
 			->where('login_id', $login_id)
 			->where('ip', \Input::real_ip())

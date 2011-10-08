@@ -116,6 +116,14 @@ class Sentry
 		// clear attempts for login since they got in
 		static::$attempts->clear($login_id);
 
+		// if there is a password reset hash and user logs in - remove the password reset
+		if ($user->get('password_reset_hash'))
+		{
+			$user->update(array(
+				'password_reset_hash' => '',
+				'temp_password' => '',
+			));
+		}
 		// set session vars
 		\Session::set('sentry_user', array(
 			'id' => (int) $user->get('id')
@@ -161,6 +169,49 @@ class Sentry
 
 	}
 
+	/**
+	 * Forgot Password
+	 */
+	public static function forgot_password($username, $password)
+	{
+		// make sure a user id is set
+		if (empty($username) or empty($password))
+		{
+			throw new \SentryAuthException(
+				'Username and Password must be set to use forgot password.');
+		}
 
+		// check if user exists
+		try
+		{
+			// get user from database
+			$user = new Sentry_User($username);
+		}
+		catch (SentryUserNotFoundException $e)
+		{
+			throw new \SentryAuthException('User does not exist.');
+		}
+
+		// create a hash for forgot_password link
+		$hash = \Str::random('alnum', 24);
+
+		// set update values
+		$update = array(
+			'password_reset_hash' => $hash,
+			'temp_password' => $password,
+		);
+
+		// if database was updated we can send the email
+		if ($user->update($update))
+		{
+			$update = array('login_id' => $username) + $update;
+
+			return $update;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }
