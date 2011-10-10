@@ -134,12 +134,10 @@ class Sentry_User
 	 * Update User
 	 *
 	 * @param array
+	 * @param bool
 	 */
-	public function update($fields)
+	public function update($fields, $hash_passwords = true)
 	{
-		echo '<pre>';
-		print_r($fields);
-
 		// make sure a user id is set
 		if (empty($this->user['id']))
 		{
@@ -195,21 +193,33 @@ class Sentry_User
 			{
 				throw new \SentryUserException('Password must not be blank.');
 			}
-			$update['password'] = $this->generate_password($fields['password']);
+			if ($hash_passwords)
+			{
+				$fields['password'] = $this->generate_password($fields['password']);
+			}
+			$update['password'] = $fields['password'];
 			//unset($fields['password']);
 		}
 
 		// update temp password
 		if (array_key_exists('temp_password', $fields))
 		{
-			$update['temp_password'] = $this->generate_password($fields['temp_password']);
+			if ($hash_passwords)
+			{
+				$fields['temp_password'] = $this->generate_password($fields['temp_password']);
+			}
+			$update['temp_password'] = $fields['temp_password'];
 			//unset($fields['temp_password']);
 		}
 
 		// update password reset hash
 		if (array_key_exists('password_reset_hash', $fields))
 		{
-			$update['password_reset_hash'] = $this->generate_password($fields['password_reset_hash']);
+			if ($hash_passwords)
+			{
+				$fields['password_reset_hash'] = $this->generate_password($fields['password_reset_hash']);
+			}
+			$update['password_reset_hash'] = $fields['password_reset_hash'];
 			//unset($fields['password_reset']);
 		}
 
@@ -367,16 +377,16 @@ class Sentry_User
 	 * @param string
 	 * @param string
 	 */
-	public function check_password($password)
+	public function check_password($password, $field = 'password')
 	{
 		// grabs the salt from the current password
-		$salt = substr($this->user['password'], 0, 16);
+		$salt = substr($this->user[$field], 0, 16);
 
 		// hash the inputted password
 		$password = $salt.$this->hash_password($password, $salt);
 
 		// check to see if passwords match
-		return $password == $this->user['password'];
+		return $password == $this->user[$field];
 	}
 
 	protected function generate_password($password)

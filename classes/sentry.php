@@ -78,6 +78,9 @@ class Sentry
 	 */
 	public static function login($login_id, $password)
 	{
+		// log the user out if they hit the login page
+		static::logout();
+
 		// get login attempts
 		$attempts = static::$attempts->get($login_id);
 
@@ -122,7 +125,7 @@ class Sentry
 			$user->update(array(
 				'password_reset_hash' => '',
 				'temp_password' => '',
-			));
+			), false);
 		}
 		// set session vars
 		\Session::set('sentry_user', array(
@@ -171,6 +174,9 @@ class Sentry
 
 	/**
 	 * Forgot Password
+	 *
+	 * @param string
+	 * @param string
 	 */
 	public static function forgot_password($username, $password)
 	{
@@ -204,7 +210,10 @@ class Sentry
 		// if database was updated we can send the email
 		if ($user->update($update))
 		{
-			$update = array('login_id' => $username) + $update;
+			$update = array(
+				'login_id' => $username,
+				'link' => base64_encode($username).'/'.$update['password_reset_hash']
+			) + $update;
 
 			return $update;
 		}
@@ -212,6 +221,60 @@ class Sentry
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Forgot Password Confirmation Check
+	 *
+	 * @param string
+	 */
+	public static function forgot_password_confirm($login_id, $code)
+	{
+		$login_id = base64_decode($login_id);
+
+		// get login attempts
+		$attempts = static::$attempts->get($login_id);
+
+		// if attempts > limit - suspend the login/ip combo
+		if ($attempts >= static::$attempts->get_limit())
+		{
+			static::$attempts->suspend($login_id);
+		}
+
+		// make sure vars have values
+		if (empty($login_id) or empty($code))
+		{
+			static::add_attempt($login_id, $attempts);
+			return false;
+		}
+
+		// check if user exists
+		try
+		{
+			// get user from database
+			$user = new Sentry_User($login_id);
+		}
+		catch (SentryUserNotFoundException $e)
+		{
+			static::$attempts->add($login_id, $attempts);
+			return false;
+		}
+
+		// make sure password matches
+		if ( ! $user->check_password($code, 'password_reset_hash'))
+		{
+			static::$attempts->add($login_id, $attempts);
+			return false;
+		}
+
+		// update pass to temp pass, reset temp pass and hash
+		$user->update(array(
+			'password' => $user->get('temp_password'),
+			'password_reset_hash' => '',
+			'temp_password' => '',
+		), false);
+
+		return true;
 	}
 
 }
