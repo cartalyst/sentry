@@ -1,12 +1,23 @@
 <?php
 
 /**
+ * Part of the Sentry package for Fuel.
+ *
+ * @package    Sentry
+ * @version    1.0
+ * @author     Cartalyst LLC
+ * @license    MIT License
+ * @copyright  2011 Cartalyst LLC
+ * @link       http://cartalyst.com
+ */
+
+namespace Sentry;
+
+/**
  * Sentry Auth Attempt Class
  *
  * @author Daniel Petrie
  */
-
-namespace Sentry;
 
 class SentryUserSuspendedException extends \Fuel_Exception {}
 

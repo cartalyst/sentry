@@ -1,11 +1,15 @@
 <?php
+
 /**
- * @package    Sentry Auth
+ * Part of the Sentry package for Fuel.
+ *
+ * @package    Sentry
  * @version    1.0
- * @author     Cartalyst Development Team
+ * @author     Cartalyst LLC
+ * @license    MIT License
+ * @copyright  2011 Cartalyst LLC
  * @link       http://cartalyst.com
  */
-
 
 Autoloader::add_core_namespace('Sentry');
 

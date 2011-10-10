@@ -1,16 +1,27 @@
 <?php
 
 /**
+ * Part of the Sentry package for Fuel.
+ *
+ * @package    Sentry
+ * @version    1.0
+ * @author     Cartalyst LLC
+ * @license    MIT License
+ * @copyright  2011 Cartalyst LLC
+ * @link       http://cartalyst.com
+ */
+
+namespace Sentry;
+
+/**
  * Sentry Auth class
  *
  * @author  Daniel Petrie
  */
 
-namespace Sentry;
-
-class SentryAuthConfigException extends \Fuel_Exception {}
-
 class SentryAuthException extends \Fuel_Exception {}
+
+class SentryAuthConfigException extends \SentryAuthException {}
 
 class Sentry
 {
