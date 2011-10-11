@@ -99,7 +99,7 @@ class Sentry_User
 	 */
 	public function create($user)
 	{
-		// make sure $user param is an array
+		// make sure user param is an array
 		if ( ! is_array($user))
 		{
 			throw new \SentryUserException('Create/Register paramater must be an array.');

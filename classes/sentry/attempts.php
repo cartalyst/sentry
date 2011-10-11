@@ -91,7 +91,6 @@ class Sentry_Attempts
 	/**
 	 * Gets attempt limit number
 	 */
-
 	 public function get_limit()
 	 {
 	 	return static::$limit['attempts'];

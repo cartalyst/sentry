@@ -104,7 +104,6 @@ class Sentry
 		// make sure vars have values
 		if (empty($login_id) or empty($password))
 		{
-			static::add_attempt($login_id, $attempts);
 			return false;
 		}
 
@@ -189,10 +188,10 @@ class Sentry
 	 * @param string
 	 * @param string
 	 */
-	public static function forgot_password($username, $password)
+	public static function forgot_password($login_id, $password)
 	{
 		// make sure a user id is set
-		if (empty($username) or empty($password))
+		if (empty($login_id) or empty($password))
 		{
 			throw new \SentryAuthException(
 				'Username and Password must be set to use forgot password.');
@@ -202,7 +201,7 @@ class Sentry
 		try
 		{
 			// get user from database
-			$user = new Sentry_User($username);
+			$user = new Sentry_User($login_id);
 		}
 		catch (SentryUserNotFoundException $e)
 		{
@@ -218,12 +217,12 @@ class Sentry
 			'temp_password' => $password,
 		);
 
-		// if database was updated we can send the email
+		// if database was updated return confirmation data
 		if ($user->update($update))
 		{
 			$update = array(
-				'login_id' => $username,
-				'link' => base64_encode($username).'/'.$update['password_reset_hash']
+				'login_id' => $login_id,
+				'link' => base64_encode($login_id).'/'.$update['password_reset_hash']
 			) + $update;
 
 			return $update;
@@ -255,7 +254,6 @@ class Sentry
 		// make sure vars have values
 		if (empty($login_id) or empty($code))
 		{
-			static::add_attempt($login_id, $attempts);
 			return false;
 		}
 
