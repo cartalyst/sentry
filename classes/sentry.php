@@ -98,7 +98,14 @@ class Sentry
 		// if attempts > limit - suspend the login/ip combo
 		if ($attempts >= static::$attempts->get_limit())
 		{
-			static::$attempts->suspend($login_id);
+			try
+			{
+				static::$attempts->suspend($login_id);
+			}
+			catch(SentryUserSuspendedException $e)
+			{
+				throw new \SentryAuthException($e->getMessage());
+			}
 		}
 
 		// make sure vars have values

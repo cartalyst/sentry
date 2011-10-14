@@ -22,7 +22,7 @@ return array(
 	),
 
 	/* Default Authorization Column - username or email */
-	'login_id' => 'username',
+	'login_id' => 'email',
 
 	/* Remember Me settings */
 	'remember_me' => array(
