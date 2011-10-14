@@ -28,6 +28,8 @@ class Sentry_Attempts
 
 	protected static $limit = array();
 
+	protected static $attempts = 0;
+
 	public function __construct()
 	{
 		\Config::load('sentry', true);
@@ -85,6 +87,8 @@ class Sentry_Attempts
 			return 0;
 		}
 
+		static::$attempts = $result['attempts'];
+
 		return $result['attempts'];
 	}
 
@@ -102,13 +106,15 @@ class Sentry_Attempts
 	 * @param string
 	 * @param int
 	 */
-	public function add($login_id, $attempts = null)
+	public function add($login_id)
 	{
-		if ($attempts)
+		if (static::$attempts)
 		{
+			static::$attempts++;
+
 			$result = \DB::update(static::$table_suspend)
 				->set(array(
-					'attempts' => $attempts + 1,
+					'attempts' => static::$attempts,
 					'last_attempt_at' => time(),
 				))
 				->where('login_id', $login_id)

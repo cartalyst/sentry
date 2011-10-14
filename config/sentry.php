@@ -24,6 +24,20 @@ return array(
 	/* Default Authorization Column - username or email */
 	'login_id' => 'username',
 
+	/* Remember Me settings */
+	'remember_me' => array(
+
+		/**
+		 * Cookie name credentials are stored in
+		 */
+		'cookie_name' => 'sentry_rm',
+
+		/**
+		 * How long the cookie should last. (seconds)
+		 */
+		'expire' => 1209600, // 2 weeks
+	),
+
 	/**
 	 * Limit Number of Failed Attempts
 	 * Suspends a login/ip combo after a # of failed attempts for a set amount of time
@@ -44,13 +58,6 @@ return array(
 		 * suspension length - minutes
 		 */
 		'time' => 15,
-	),
-
-	'email' => array(
-		'address' => 'default@yourdomain.com',
-		'name' => 'Your Website Name',
-		'subject' => 'Password Reset',
-		'view' => 'path/to/view',
 	),
 
 );

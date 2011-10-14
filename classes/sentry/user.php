@@ -108,12 +108,13 @@ class Sentry_User
 		// check for required fields
 		if (empty($user[$this->login_id]) or empty($user['password']))
 		{
-			// if login_id is set to username - email is still required, so check
-			if ($this->login_id == 'username' and empty($user['email']))
-			{
-				throw new \SentryUserException('login_id, email and password can not be empty');
-			}
 			throw new \SentryUserException('login_id and password can not be empty.');
+		}
+
+		// if login_id is set to username - email is still required, so check
+		if ($this->login_id == 'username' and empty($user['email']))
+		{
+			throw new \SentryUserException('login_id, email and password can not be empty');
 		}
 
 		// check to see if login_id is already taken
@@ -132,7 +133,13 @@ class Sentry_User
 			$this->login_id => $user[$this->login_id],
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
+			'status' => 1,
 		);
+
+		if ($this->login_id == 'username')
+		{
+			$new_user['email'] = $user['email'];
+		}
 
 		// insert new user
 		list($insert_id, $rows_affected) = \DB::insert($this->table)->set($new_user)->execute();
@@ -147,7 +154,7 @@ class Sentry_User
 	 * @param array
 	 * @param bool
 	 */
-	public function update($fields, $hash_passwords = true)
+	public function update($fields, $hash_password = true)
 	{
 		// make sure a user id is set
 		if (empty($this->user['id']))
@@ -204,34 +211,47 @@ class Sentry_User
 			{
 				throw new \SentryUserException('Password must not be blank.');
 			}
-			if ($hash_passwords)
+			if ($hash_password)
 			{
 				$fields['password'] = $this->generate_password($fields['password']);
 			}
 			$update['password'] = $fields['password'];
-			//unset($fields['password']);
 		}
 
 		// update temp password
 		if (array_key_exists('temp_password', $fields))
 		{
-			if ($hash_passwords)
+			if ( ! empty($fields['temp_password']))
 			{
 				$fields['temp_password'] = $this->generate_password($fields['temp_password']);
 			}
 			$update['temp_password'] = $fields['temp_password'];
-			//unset($fields['temp_password']);
 		}
 
 		// update password reset hash
 		if (array_key_exists('password_reset_hash', $fields))
 		{
-			if ($hash_passwords)
+			if ( ! empty($fields['password_reset_hash']))
 			{
 				$fields['password_reset_hash'] = $this->generate_password($fields['password_reset_hash']);
 			}
 			$update['password_reset_hash'] = $fields['password_reset_hash'];
-			//unset($fields['password_reset']);
+		}
+
+		// update remember me cookie hash
+		if (array_key_exists('remember_me', $fields))
+		{
+			if ( ! empty($fields['remember_me']))
+			{
+				$fields['remember_me'] = $this->generate_password($fields['remember_me']);
+			}
+			$update['remember_me'] = $fields['remember_me'];
+		}
+
+		if (array_key_exists('last_login', $fields)
+				and ! empty($fields['last_login']) and is_int($fields['last_login']))
+		{
+			$update['last_login'] = $fields['last_login'];
 		}
 
 		// add update time

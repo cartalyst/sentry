@@ -87,7 +87,7 @@ class Sentry
 	 * @param string
 	 * @param string
 	 */
-	public static function login($login_id, $password)
+	public static function login($login_id, $password, $remember = false)
 	{
 		// log the user out if they hit the login page
 		static::logout();
@@ -107,42 +107,45 @@ class Sentry
 			return false;
 		}
 
-		// check if user exists
-		try
+		// if user is validated
+		if ($user = static::validate_user($login_id, $password, 'password'))
 		{
-			// get user from database
-			$user = new Sentry_User($login_id);
-		}
-		catch (SentryUserNotFoundException $e)
-		{
-			static::$attempts->add($login_id, $attempts);
-			return false;
+			// clear attempts for login since they got in
+			static::$attempts->clear($login_id);
+
+			// set update array
+			$update = array();
+
+			// if they wish to be remembers, set the cookie and get the hash
+			if ($remember)
+			{
+				$update['remember_me'] = static::remember($login_id);
+			}
+
+			// if there is a password reset hash and user logs in - remove the password reset
+			if ($user->get('password_reset_hash'))
+			{
+				$update['password_reset_hash'] = '';
+				$update['temp_password'] = '';
+			}
+
+			$update['last_login'] = time();
+
+			// update user
+			if (count($update))
+			{
+				$user->update($update, false);
+			}
+
+			// set session vars
+			\Session::set('sentry_user', array(
+				'id' => (int) $user->get('id')
+			));
+
+			return true;
 		}
 
-		// make sure password matches
-		if ( ! $user->check_password($password))
-		{
-			static::$attempts->add($login_id, $attempts);
-			return false;
-		}
-
-		// clear attempts for login since they got in
-		static::$attempts->clear($login_id);
-
-		// if there is a password reset hash and user logs in - remove the password reset
-		if ($user->get('password_reset_hash'))
-		{
-			$user->update(array(
-				'password_reset_hash' => '',
-				'temp_password' => '',
-			), false);
-		}
-		// set session vars
-		\Session::set('sentry_user', array(
-			'id' => (int) $user->get('id')
-		));
-
-		return true;
+		return false;
 	}
 
 	/**
@@ -156,6 +159,13 @@ class Sentry
 		// invalid session values - kill the user session
 		if ( ! isset($user['id']) or ! is_int($user['id']))
 		{
+			// if they are not logged in - check for cookie and log them in
+			if (static::is_remembered())
+			{
+				return true;
+			}
+
+			//else log out
 			static::logout();
 			return false;
 		}
@@ -168,18 +178,8 @@ class Sentry
 	 */
 	public static function logout()
 	{
+		\Cookie::delete(\Config::get('sentry.remember_me.cookie_name'));
 		\Session::delete('sentry_user');
-	}
-
-
-	/**
-	 * Remember User Login
-	 *
-	 * @param int
-	 */
-	protected static function remember()
-	{
-
 	}
 
 	/**
@@ -215,6 +215,7 @@ class Sentry
 		$update = array(
 			'password_reset_hash' => $hash,
 			'temp_password' => $password,
+			'remember_me' => '',
 		);
 
 		// if database was updated return confirmation data
@@ -257,7 +258,86 @@ class Sentry
 			return false;
 		}
 
-		// check if user exists
+		// if user is validated
+		if ($user = static::validate_user($login_id, $code, 'password_reset_hash'))
+		{
+			// update pass to temp pass, reset temp pass and hash
+			$user->update(array(
+				'password' => $user->get('temp_password'),
+				'password_reset_hash' => '',
+				'temp_password' => '',
+				'remember_me' => '',
+			), false);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Remember User Login
+	 *
+	 * @param int
+	 */
+	protected static function remember($login_id)
+	{
+		// generate random string for cookie password
+		$cookie_pass = \Str::random('alnum', 24);
+
+		// create and encode string
+		$cookie_string = base64_encode($login_id.':'.$cookie_pass);
+
+		// set cookie
+		\Cookie::set(
+			\Config::get('sentry.remember_me.cookie_name'),
+			$cookie_string,
+			\Config::get('sentry.remember_me.expire')
+		);
+
+		return $cookie_pass;
+	}
+
+	/**
+	 * Check if remember me is set and valid
+	 */
+	protected static function is_remembered()
+	{
+		$encoded_val = \Cookie::get(\Config::get('sentry.remember_me.cookie_name'));
+
+		if ($encoded_val)
+		{
+			$val = base64_decode($encoded_val);
+			list($login_id, $hash) = explode(':', $val);
+
+			// if user is validated
+			if ($user = static::validate_user($login_id, $hash, 'remember_me'))
+			{
+				// update last login
+				$user->update(array(
+					'last_login' => time()
+				));
+
+				// set session vars
+				\Session::set('sentry_user', array(
+					'id' => (int) $user->get('id')
+				));
+
+				return true;
+			}
+			else
+			{
+				static::logout();
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	protected static function validate_user($login_id, $password, $field)
+	{
+		// get user
 		try
 		{
 			// get user from database
@@ -265,25 +345,20 @@ class Sentry
 		}
 		catch (SentryUserNotFoundException $e)
 		{
-			static::$attempts->add($login_id, $attempts);
+			// user not found
 			return false;
 		}
 
-		// make sure password matches
-		if ( ! $user->check_password($code, 'password_reset_hash'))
+		if ( ! $user->check_password($password, $field))
 		{
-			static::$attempts->add($login_id, $attempts);
+			if ($field == 'password' or $field == 'password_reset_hash')
+			{
+				static::$attempts->add($login_id);
+			}
 			return false;
 		}
 
-		// update pass to temp pass, reset temp pass and hash
-		$user->update(array(
-			'password' => $user->get('temp_password'),
-			'password_reset_hash' => '',
-			'temp_password' => '',
-		), false);
-
-		return true;
+		return $user;
 	}
 
 }
