@@ -200,19 +200,13 @@ class Sentry
 		// make sure a user id is set
 		if (empty($login_id) or empty($password))
 		{
-			throw new \SentryAuthException(
-				'Username and Password must be set to use forgot password.');
+			return false;
 		}
 
 		// check if user exists
-		try
+		if ( ! $user = static::user_exists($login_id))
 		{
-			// get user from database
-			$user = new Sentry_User($login_id);
-		}
-		catch (SentryUserNotFoundException $e)
-		{
-			throw new \SentryAuthException('User does not exist.');
+			return false;
 		}
 
 		// create a hash for forgot_password link
@@ -366,6 +360,21 @@ class Sentry
 		}
 
 		return $user;
+	}
+
+	protected static function user_exists($login_id)
+	{
+		// get user
+		try
+		{
+			// get user from database
+			return new Sentry_User($login_id);
+		}
+		catch (SentryUserNotFoundException $e)
+		{
+			// user not found
+			return false;
+		}
 	}
 
 }
