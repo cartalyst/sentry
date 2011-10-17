@@ -224,6 +224,7 @@ class Sentry
 		{
 			$update = array(
 				'login_id' => $login_id,
+				'email' => $user->get('email'),
 				'link' => base64_encode($login_id).'/'.$update['password_reset_hash']
 			) + $update;
 
