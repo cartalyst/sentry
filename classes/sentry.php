@@ -190,12 +190,12 @@ class Sentry
 	}
 
 	/**
-	 * Forgot Password
+	 * Reset Password
 	 *
 	 * @param string
 	 * @param string
 	 */
-	public static function forgot_password($login_id, $password)
+	public static function reset_password($login_id, $password)
 	{
 		// make sure a user id is set
 		if (empty($login_id) or empty($password))
@@ -209,7 +209,7 @@ class Sentry
 			return false;
 		}
 
-		// create a hash for forgot_password link
+		// create a hash for reset_password link
 		$hash = \Str::random('alnum', 24);
 
 		// set update values
@@ -237,11 +237,11 @@ class Sentry
 	}
 
 	/**
-	 * Forgot Password Confirmation Check
+	 * Reset Password Confirmation Check
 	 *
 	 * @param string
 	 */
-	public static function forgot_password_confirm($login_id, $code)
+	public static function reset_password_confirm($login_id, $code)
 	{
 		$login_id = base64_decode($login_id);
 
