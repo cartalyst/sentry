@@ -28,7 +28,8 @@ class Sentry_User
 	// set class properties
 	protected $user = array();
 	protected $table = null;
-	protected $login_id = null;
+	protected $login_column = null;
+	protected $login_column_str = '';
 
 	/**
 	 * Class Construtor
@@ -40,7 +41,8 @@ class Sentry_User
 		// load and set config
 		\Config::load('sentry', true);
 		$this->table = strtolower(\Config::get('sentry.table.users'));
-		$this->login_id = strtolower(\Config::get('sentry.login_id'));
+		$this->login_column = strtolower(\Config::get('sentry.login_column'));
+		$this->login_column_str = ucfirst($this->login_column);
 
 		// if an ID was passed
 		if ($id)
@@ -59,8 +61,8 @@ class Sentry_User
 			// if ID is not an integer
 			else
 			{
-				// set field to login_id
-				$field = $this->login_id;
+				// set field to login_column
+				$field = $this->login_column;
 			}
 
 			//query database for user
@@ -106,40 +108,35 @@ class Sentry_User
 		}
 
 		// check for required fields
-		if (empty($user[$this->login_id]) or empty($user['password']))
+		if (empty($user[$this->login_column]) or empty($user['password']))
 		{
-			throw new \SentryUserException('login_id and password can not be empty.');
+			throw new \SentryUserException(sprintf('%s and Password can not be empty.', $this->login_column_str));
 		}
 
-		// if login_id is set to username - email is still required, so check
-		if ($this->login_id == 'username' and empty($user['email']))
+		// if login_column is set to username - email is still required, so check
+		if ($this->login_column != 'email' and empty($user['email']))
 		{
-			throw new \SentryUserException('login_id, email and password can not be empty');
+			throw new \SentryUserException(sprintf('%s, Email and Password can not be empty.', $this->login_column_str));
 		}
 
-		// check to see if login_id is already taken
-		if ($this->user_exists($user[$this->login_id]))
+		// check to see if login_column is already taken
+		if ($this->user_exists($user[$this->login_column]))
 		{
-			// if login_id is set to username - also check to make sure email doesn't exist
-			if ($this->login_id == 'username' and empty($user['email']))
+			// if login_column is not set to email - also check to make sure email doesn't exist
+			if ($this->login_column != 'email' and $this->user_exists($user['email'], 'email'))
 			{
 				throw new \SentryUserException('Email already exists.');
 			}
-			throw new \SentryUserException(ucfirst($this->login_id).' already exists.');
+			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
 		}
 
 		// set new user values
 		$new_user = array(
-			$this->login_id => $user[$this->login_id],
+			$this->login_column => $user[$this->login_column],
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
 			'status' => 1,
-		);
-
-		if ($this->login_id == 'username')
-		{
-			$new_user['email'] = $user['email'];
-		}
+		) + $user;
 
 		// insert new user
 		list($insert_id, $rows_affected) = \DB::insert($this->table)->set($new_user)->execute();
@@ -157,7 +154,7 @@ class Sentry_User
 	public function update($fields, $hash_password = true)
 	{
 		// make sure a user id is set
-		if (empty($this->user['id']))
+		if (empty($this->user))
 		{
 			throw new \SentryUserException('No user is selected to update.');
 		}
@@ -171,37 +168,33 @@ class Sentry_User
 		// init update array
 		$update = array();
 
-		// if updating login_id, make sure it does not exist
-		if (array_key_exists('login_id', $fields))
+		if (array_key_exists($this->login_column, $fields) and
+		    $fields[$this->login_column] != $this->user[$this->login_column] and
+		    $this->user_exists($fields[$this->login_column]))
 		{
-			if ($this->user_exists($fields['login_id'])
-				and $fields['login_id'] != $this->user[$this->login_id]) // gracious check...
-			{
-				throw new \SentryUserException(ucfirst($this->login_id).' already exists.');
-			}
-			if (empty($fields['login_id']))
-			{
-				throw new \SentryUserException(ucfirst($this->login_id).' must not be blank.');
-			}
-			$update[$this->login_id] = $fields['login_id'];
-			//unset($fields['login_id']);
+			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
+		}
+		elseif ($fields[$this->login_column] == '')
+		{
+			throw new \SentryUserException(sprintf('%s must not be blank.', $this->login_column_str));
+		}
+		else
+		{
+			$update[$this->login_column] = $fields[$this->login_column];
+			unset($fields[$this->login_column]);
 		}
 
 		// if updating email
-		if (array_key_exists('email', $fields))
+		if (array_key_exists('email', $fields) and
+		    $fields['email'] != $this->user['email'])
 		{
-			// make sure email is not the login_id
-			if ($this->login_id == 'email')
-			{
-				throw new \SentryUserException('Email must be updated with \'login_id\'');
-			}
-
 			// make sure email does not already exist
 			if ($this->user_exists($fields['email'], 'email'))
 			{
 				throw new \SentryUserException('Email already exists.');
 			}
 			$update['email'] = $fields['email'];
+			unset($fields['email']);
 		}
 
 		// update password
@@ -216,6 +209,7 @@ class Sentry_User
 				$fields['password'] = $this->generate_password($fields['password']);
 			}
 			$update['password'] = $fields['password'];
+			unset($fields['password']);
 		}
 
 		// update temp password
@@ -226,6 +220,7 @@ class Sentry_User
 				$fields['temp_password'] = $this->generate_password($fields['temp_password']);
 			}
 			$update['temp_password'] = $fields['temp_password'];
+			unset($fields['temp_password']);
 		}
 
 		// update password reset hash
@@ -236,6 +231,7 @@ class Sentry_User
 				$fields['password_reset_hash'] = $this->generate_password($fields['password_reset_hash']);
 			}
 			$update['password_reset_hash'] = $fields['password_reset_hash'];
+			unset($fields['password_reset_hash']);
 		}
 
 		// update remember me cookie hash
@@ -246,12 +242,21 @@ class Sentry_User
 				$fields['remember_me'] = $this->generate_password($fields['remember_me']);
 			}
 			$update['remember_me'] = $fields['remember_me'];
+			unset($fields['remember_me']);
 		}
 
 		if (array_key_exists('last_login', $fields)
 				and ! empty($fields['last_login']) and is_int($fields['last_login']))
 		{
 			$update['last_login'] = $fields['last_login'];
+			unset($fields['last_login']);
+		}
+
+		$update += $fields;
+
+		if (empty($update))
+		{
+			return true;
 		}
 
 		// add update time
@@ -266,7 +271,7 @@ class Sentry_User
 		if ($result)
 		{
 			// change user values in object
-			$this->user = array_merge($this->user, $update);
+			$this->user = $update + $this->user;
 
 			return true;
 		}
@@ -280,7 +285,7 @@ class Sentry_User
 	public function delete()
 	{
 		// make sure a user id is set
-		if (empty($this->user['id']))
+		if (empty($this->user))
 		{
 			throw new \SentryUserException('No user is selected to delete.');
 		}
@@ -300,6 +305,26 @@ class Sentry_User
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get User Data
+	 *
+	 * @param string, array
+	 */
+	public function __isset($field)
+	{
+		return array_key_exists($field, $this->user);
+	}
+
+	/**
+	 * Get User Data
+	 *
+	 * @param string, array
+	 */
+	public function __get($field)
+	{
+		return $this->get($field);
 	}
 
 	/**
@@ -384,18 +409,18 @@ class Sentry_User
 	 *
 	 * @param string
 	 */
-	protected function user_exists($login_id, $field = null)
+	protected function user_exists($login, $field = null)
 	{
 		// set field value if null
 		if ($field === null)
 		{
-			$field = $this->login_id;
+			$field = $this->login_column;
 		}
 
-		// query db to check for login_id
+		// query db to check for login_column
 		$result = \DB::select()
 			->from($this->table)
-			->where($this->login_id, $login_id)
+			->where($field, $login)
 			->limit(1)
 			->execute();
 

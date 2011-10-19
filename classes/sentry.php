@@ -25,7 +25,7 @@ class SentryAuthConfigException extends \SentryAuthException {}
 
 class Sentry
 {
-	protected static $login_id = null;
+	protected static $login_column = null;
 
 	protected static $attempts = null;
 
@@ -43,16 +43,16 @@ class Sentry
 		\Config::load('sentry', true);
 
 		// set static vars for later use
-		static::$login_id = \Config::get('sentry.login_id');
+		static::$login_column = trim(\Config::get('sentry.login_column'));
 		static::$attempts = new Sentry_Attempts();
 
 		// validate config settings
 
-		// login_id check
-		if (static::$login_id != 'username' and static::$login_id != 'email')
+		// login_column check
+		if (empty(static::$login_column))
 		{
 			throw new \SentryAuthConfigException(
-				'Sentry Config Item: "login_id" must be set to "username" or "email".');
+				'Sentry Config Item: "login_column" must not be empty.');
 		}
 
 	}
@@ -87,20 +87,20 @@ class Sentry
 	 * @param string
 	 * @param string
 	 */
-	public static function login($login_id, $password, $remember = false)
+	public static function login($login_column, $password, $remember = false)
 	{
 		// log the user out if they hit the login page
 		static::logout();
 
 		// get login attempts
-		$attempts = static::$attempts->get($login_id);
+		$attempts = static::$attempts->get($login_column);
 
 		// if attempts > limit - suspend the login/ip combo
 		if ($attempts >= static::$attempts->get_limit())
 		{
 			try
 			{
-				static::$attempts->suspend($login_id);
+				static::$attempts->suspend($login_column);
 			}
 			catch(SentryUserSuspendedException $e)
 			{
@@ -109,16 +109,16 @@ class Sentry
 		}
 
 		// make sure vars have values
-		if (empty($login_id) or empty($password))
+		if (empty($login_column) or empty($password))
 		{
 			return false;
 		}
 
 		// if user is validated
-		if ($user = static::validate_user($login_id, $password, 'password'))
+		if ($user = static::validate_user($login_column, $password, 'password'))
 		{
 			// clear attempts for login since they got in
-			static::$attempts->clear($login_id);
+			static::$attempts->clear($login_column);
 
 			// set update array
 			$update = array();
@@ -126,7 +126,7 @@ class Sentry
 			// if they wish to be remembers, set the cookie and get the hash
 			if ($remember)
 			{
-				$update['remember_me'] = static::remember($login_id);
+				$update['remember_me'] = static::remember($login_column);
 			}
 
 			// if there is a password reset hash and user logs in - remove the password reset
@@ -195,16 +195,16 @@ class Sentry
 	 * @param string
 	 * @param string
 	 */
-	public static function reset_password($login_id, $password)
+	public static function reset_password($login_column, $password)
 	{
 		// make sure a user id is set
-		if (empty($login_id) or empty($password))
+		if (empty($login_column) or empty($password))
 		{
 			return false;
 		}
 
 		// check if user exists
-		if ( ! $user = static::user_exists($login_id))
+		if ( ! $user = static::user_exists($login_column))
 		{
 			return false;
 		}
@@ -223,9 +223,9 @@ class Sentry
 		if ($user->update($update))
 		{
 			$update = array(
-				'login_id' => $login_id,
+				'login_column' => $login_column,
 				'email' => $user->get('email'),
-				'link' => base64_encode($login_id).'/'.$update['password_reset_hash']
+				'link' => base64_encode($login_column).'/'.$update['password_reset_hash']
 			) + $update;
 
 			return $update;
@@ -241,27 +241,27 @@ class Sentry
 	 *
 	 * @param string
 	 */
-	public static function reset_password_confirm($login_id, $code)
+	public static function reset_password_confirm($login_column, $code)
 	{
-		$login_id = base64_decode($login_id);
+		$login_column = base64_decode($login_column);
 
 		// get login attempts
-		$attempts = static::$attempts->get($login_id);
+		$attempts = static::$attempts->get($login_column);
 
 		// if attempts > limit - suspend the login/ip combo
 		if ($attempts >= static::$attempts->get_limit())
 		{
-			static::$attempts->suspend($login_id);
+			static::$attempts->suspend($login_column);
 		}
 
 		// make sure vars have values
-		if (empty($login_id) or empty($code))
+		if (empty($login_column) or empty($code))
 		{
 			return false;
 		}
 
 		// if user is validated
-		if ($user = static::validate_user($login_id, $code, 'password_reset_hash'))
+		if ($user = static::validate_user($login_column, $code, 'password_reset_hash'))
 		{
 			// update pass to temp pass, reset temp pass and hash
 			$user->update(array(
@@ -282,13 +282,13 @@ class Sentry
 	 *
 	 * @param int
 	 */
-	protected static function remember($login_id)
+	protected static function remember($login_column)
 	{
 		// generate random string for cookie password
 		$cookie_pass = \Str::random('alnum', 24);
 
 		// create and encode string
-		$cookie_string = base64_encode($login_id.':'.$cookie_pass);
+		$cookie_string = base64_encode($login_column.':'.$cookie_pass);
 
 		// set cookie
 		\Cookie::set(
@@ -310,10 +310,10 @@ class Sentry
 		if ($encoded_val)
 		{
 			$val = base64_decode($encoded_val);
-			list($login_id, $hash) = explode(':', $val);
+			list($login_column, $hash) = explode(':', $val);
 
 			// if user is validated
-			if ($user = static::validate_user($login_id, $hash, 'remember_me'))
+			if ($user = static::validate_user($login_column, $hash, 'remember_me'))
 			{
 				// update last login
 				$user->update(array(
@@ -337,13 +337,13 @@ class Sentry
 		return false;
 	}
 
-	protected static function validate_user($login_id, $password, $field)
+	protected static function validate_user($login_column, $password, $field)
 	{
 		// get user
 		try
 		{
 			// get user from database
-			$user = new Sentry_User($login_id);
+			$user = new Sentry_User($login_column);
 		}
 		catch (SentryUserNotFoundException $e)
 		{
@@ -355,7 +355,7 @@ class Sentry
 		{
 			if ($field == 'password' or $field == 'password_reset_hash')
 			{
-				static::$attempts->add($login_id);
+				static::$attempts->add($login_column);
 			}
 			return false;
 		}
@@ -363,13 +363,13 @@ class Sentry
 		return $user;
 	}
 
-	protected static function user_exists($login_id)
+	protected static function user_exists($login_column)
 	{
 		// get user
 		try
 		{
 			// get user from database
-			return new Sentry_User($login_id);
+			return new Sentry_User($login_column);
 		}
 		catch (SentryUserNotFoundException $e)
 		{
