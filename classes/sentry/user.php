@@ -174,11 +174,12 @@ class Sentry_User
 		{
 			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
 		}
-		elseif ($fields[$this->login_column] == '')
+		elseif (array_key_exists($this->login_column, $fields) and
+		        $fields[$this->login_column] == '')
 		{
 			throw new \SentryUserException(sprintf('%s must not be blank.', $this->login_column_str));
 		}
-		else
+		elseif (array_key_exists($this->login_column, $fields))
 		{
 			$update[$this->login_column] = $fields[$this->login_column];
 			unset($fields[$this->login_column]);
