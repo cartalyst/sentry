@@ -13,16 +13,19 @@
 
 namespace Sentry;
 
+use Config;
+use DB;
+use FuelException;
+
+class SentryUserException extends \FuelException {}
+class SentryUserNotFoundException extends \SentryUserException {}
+
 /**
  * Sentry Auth User Class
  *
- * @author  Daniel Petrie
+ * @package  Sentry
+ * @author   Daniel Petrie
  */
-
-class SentryUserException extends \Fuel_Exception {}
-
-class SentryUserNotFoundException extends \SentryUserException {}
-
 class Sentry_User
 {
 	// set class properties
@@ -32,16 +35,18 @@ class Sentry_User
 	protected $login_column_str = '';
 
 	/**
-	 * Class Construtor
+	 * Loads in the user object
 	 *
-	 * @param int
+	 * @param   int|string  User id or Login Column value
+	 * @return  void
+	 * @throws  SentryUserNotFoundException
 	 */
 	public function __construct($id = null)
 	{
 		// load and set config
-		\Config::load('sentry', true);
-		$this->table = strtolower(\Config::get('sentry.table.users'));
-		$this->login_column = strtolower(\Config::get('sentry.login_column'));
+		Config::load('sentry', true);
+		$this->table = strtolower(Config::get('sentry.table.users'));
+		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 
 		// if an ID was passed
@@ -66,7 +71,7 @@ class Sentry_User
 			}
 
 			//query database for user
-			$user = \DB::select()
+			$user = DB::select()
 				->from($this->table)
 				->where($field, $id)
 				->execute();
@@ -87,7 +92,9 @@ class Sentry_User
 	/**
 	 * Register a user - Alias of create()
 	 *
-	 * @param array
+	 * @param   array  User array for creation
+	 * @return  int
+	 * @throws  SentryUserException
 	 */
 	public function register($user)
 	{
@@ -95,9 +102,11 @@ class Sentry_User
 	}
 
 	/**
-	 * Create User
+	 * Create's a new user.  Returns user 'id'.
 	 *
-	 * @param array
+	 * @param   array  User array for creation
+	 * @return  int
+	 * @throws  SentryUserException
 	 */
 	public function create($user)
 	{
@@ -125,7 +134,7 @@ class Sentry_User
 			// if login_column is not set to email - also check to make sure email doesn't exist
 			if ($this->login_column != 'email' and $this->user_exists($user['email'], 'email'))
 			{
-				throw new \SentryUserException('Email already exists.');
+				throw new \SentryUserException('Email already in use.');
 			}
 			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
 		}
@@ -139,17 +148,18 @@ class Sentry_User
 		) + $user;
 
 		// insert new user
-		list($insert_id, $rows_affected) = \DB::insert($this->table)->set($new_user)->execute();
+		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
 		return ($rows_affected > 0) ? $insert_id : false;
-
 	}
 
 	/**
-	 * Update User
+	 * Update the current user
 	 *
-	 * @param array
-	 * @param bool
+	 * @param   array  Fields to update
+	 * @param   bool   Whether to hash the password
+	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function update($fields, $hash_password = true)
 	{
@@ -246,8 +256,8 @@ class Sentry_User
 			unset($fields['remember_me']);
 		}
 
-		if (array_key_exists('last_login', $fields)
-				and ! empty($fields['last_login']) and is_int($fields['last_login']))
+		if (array_key_exists('last_login', $fields) and
+		    ! empty($fields['last_login']) and is_int($fields['last_login']))
 		{
 			$update['last_login'] = $fields['last_login'];
 			unset($fields['last_login']);
@@ -264,10 +274,10 @@ class Sentry_User
 		$update['updated_at'] = time();
 
 		// update database
-		$result = \DB::update($this->table)
-			->set($update)
-			->where('id', $this->user['id'])
-			->execute();
+		$result = DB::update($this->table)
+		            ->set($update)
+		            ->where('id', $this->user['id'])
+		            ->execute();
 
 		if ($result)
 		{
@@ -281,7 +291,10 @@ class Sentry_User
 	}
 
 	/**
-	 * Delete User
+	 * Delete's the current user.
+	 *
+	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function delete()
 	{
@@ -292,7 +305,7 @@ class Sentry_User
 		}
 
 		// delete user from database
-		$result = \DB::delete($this->table)
+		$result = DB::delete($this->table)
 			->where('id', $this->user['id'])
 			->execute();
 
@@ -309,9 +322,10 @@ class Sentry_User
 	}
 
 	/**
-	 * Get User Data
+	 * Checks if the Field is set or not.
 	 *
-	 * @param string, array
+	 * @param   string  Field name
+	 * @return  bool
 	 */
 	public function __isset($field)
 	{
@@ -319,9 +333,11 @@ class Sentry_User
 	}
 
 	/**
-	 * Get User Data
+	 * Gets a field value of the user
 	 *
-	 * @param string, array
+	 * @param   string  Field name
+	 * @return  mixed
+	 * @throws  SentryUserException
 	 */
 	public function __get($field)
 	{
@@ -329,9 +345,11 @@ class Sentry_User
 	}
 
 	/**
-	 * Get User Data
+	 * Gets a given field (or array of fields).
 	 *
-	 * @param string, array
+	 * @param   string|array  Field(s) to get
+	 * @return  mixed
+	 * @throws  SentryUserException
 	 */
 	public function get($field = null)
 	{
@@ -361,8 +379,7 @@ class Sentry_User
 				}
 				else
 				{
-					throw new \SentryUserException(
-								sprintf('"%s" does not exist in "user" object.', $key));
+					throw new \SentryUserException(sprintf('"%s" does not exist in "user" object.', $key));
 				}
 			}
 
@@ -377,16 +394,17 @@ class Sentry_User
 				return $this->user[$field];
 			}
 
-			throw new \SentryUserException(
-						sprintf('"%s" does not exist in "user" object.', $field));
+			throw new \SentryUserException(sprintf('"%s" does not exist in "user" object.', $field));
 		}
 	}
 
 	/**
-	 * Change Password
+	 * Changes a user's password
 	 *
-	 * @param string
-	 * @param string
+	 * @param   string  The new password
+	 * @param   string  Users old password
+	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function change_password($password, $old_password)
 	{
@@ -395,6 +413,7 @@ class Sentry_User
 		{
 			throw new \SentryUserException('Old password is invalid');
 		}
+
 		return $this->update(array('password' => $password));
 	}
 
@@ -403,12 +422,12 @@ class Sentry_User
 
 
 
-	/** Helpers **/
-
 	/**
 	 * Check if user exists already
 	 *
-	 * @param string
+	 * @param   string  The Login Column value
+	 * @param   string  Column to use for check
+	 * @return  bool
 	 */
 	protected function user_exists($login, $field = null)
 	{
@@ -419,20 +438,21 @@ class Sentry_User
 		}
 
 		// query db to check for login_column
-		$result = \DB::select()
+		$result = DB::select()
 			->from($this->table)
 			->where($field, $login)
 			->limit(1)
 			->execute();
 
-		return count($result);
+		return (bool) count($result);
 	}
 
 	/**
-	 * Check Password
+	 * Checks the given password to see if it matches the one in the database.
 	 *
-	 * @param string
-	 * @param string
+	 * @param   string  Password to check
+	 * @param   string  Password type
+	 * @return  bool
 	 */
 	public function check_password($password, $field = 'password')
 	{
@@ -446,6 +466,13 @@ class Sentry_User
 		return $password == $this->user[$field];
 	}
 
+	/**
+	 * Generates a random salt and hashes the given password with the salt.
+	 * String returned is prepended with a 16 character alpha-numeric salt.
+	 *
+	 * @param   string  Password to generate hash/salt for
+	 * @return  string
+	 */
 	protected function generate_password($password)
 	{
 		$salt = \Str::random('alnum', 16);
@@ -453,6 +480,13 @@ class Sentry_User
 		return $salt.$this->hash_password($password, $salt);
 	}
 
+	/**
+	 * Hash a given password with the given salt.
+	 *
+	 * @param   string  Password to hash
+	 * @param   string  Password Salt
+	 * @return  string
+	 */
 	protected function hash_password($password, $salt)
 	{
 		$password = hash('sha256', $salt.$password);
