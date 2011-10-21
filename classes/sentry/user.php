@@ -15,6 +15,7 @@ namespace Sentry;
 use Config;
 use DB;
 use FuelException;
+use Lang;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
@@ -58,8 +59,7 @@ class Sentry_User
 			{
 				if ($id <= 0)
 				{
-					throw new \SentryUserException(
-								'User ID must be a valid integer greater than 0.');
+					throw new \SentryUserException(__('sitrep.invalid_user_id'));
 				}
 				// set field to id for query
 				$field = 'id';
@@ -85,7 +85,7 @@ class Sentry_User
 			// user doesn't exist
 			else
 			{
-				throw new \SentryUserNotFoundException('User does not exist.');
+				throw new \SentryUserNotFoundException(__('sitrep.user_not_found'));
 			}
 
 			$groups_table = Config::get('sentry.table.groups');
@@ -118,24 +118,22 @@ class Sentry_User
 	 * @return  int
 	 * @throws  SentryUserException
 	 */
-	public function create($user)
+	public function create(array $user)
 	{
-		// make sure user param is an array
-		if ( ! is_array($user))
-		{
-			throw new \SentryUserException('Create/Register paramater must be an array.');
-		}
-
 		// check for required fields
 		if (empty($user[$this->login_column]) or empty($user['password']))
 		{
-			throw new \SentryUserException(sprintf('%s and Password can not be empty.', $this->login_column_str));
+			throw new \SentryUserException(
+				__('sitrep.column_and_password_empty', array('column' => $this->login_column_str))
+			);
 		}
 
 		// if login_column is set to username - email is still required, so check
 		if ($this->login_column != 'email' and empty($user['email']))
 		{
-			throw new \SentryUserException(sprintf('%s, Email and Password can not be empty.', $this->login_column_str));
+			throw new \SentryUserException(
+				__('sitrep.column_email_and_password_empty', array('column' => $this->login_column_str))
+			);
 		}
 
 		// check to see if login_column is already taken
@@ -144,9 +142,11 @@ class Sentry_User
 			// if login_column is not set to email - also check to make sure email doesn't exist
 			if ($this->login_column != 'email' and $this->user_exists($user['email'], 'email'))
 			{
-				throw new \SentryUserException('Email already in use.');
+				throw new \SentryUserException(__('sitrep.email_already_in_use'));
 			}
-			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
+			throw new \SentryUserException(
+				__('sitrep.column_already_exists', array('column' => $this->login_column_str))
+			);
 		}
 
 		// set new user values
@@ -447,7 +447,7 @@ class Sentry_User
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(sprintf('User already in group "%s".', $id));
+			throw new \SentryGroupException(__('sitrep.login_column_empty', array('group' => $id)));
 		}
 
 		$field = 'name';

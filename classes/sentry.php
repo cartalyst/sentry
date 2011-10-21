@@ -17,6 +17,7 @@ use Config;
 use Cookie;
 use FuelException;
 use Session;
+use Lang;
 
 class SentryAuthException extends \FuelException {}
 class SentryAuthConfigException extends \SentryAuthException {}
@@ -53,6 +54,7 @@ class Sentry
 	{
 		// load config
 		Config::load('sentry', true);
+		Lang::load('sitrep', 'sitrep');
 
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry.login_column'));
@@ -63,7 +65,7 @@ class Sentry
 		// login_column check
 		if (empty(static::$login_column))
 		{
-			throw new \SentryAuthConfigException('Sentry Config Item: "login_column" must not be empty.');
+			throw new \SentryAuthConfigException(__('sitrep.login_column_empty'));
 		}
 
 	}
