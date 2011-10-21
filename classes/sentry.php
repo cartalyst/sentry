@@ -94,6 +94,24 @@ class Sentry
 	}
 
 	/**
+	 * Get's either the currently logged in user's group object or the
+	 * specified group by id or name.
+	 *
+	 * @param   int|string  Group id or or name
+	 * @return  Sentry_User
+	 */
+	public static function group($id = null)
+	{
+		if ($id)
+		{
+			return new \Sentry_Group($id);
+		}
+
+		return new Sentry_Group();
+	}
+
+
+	/**
 	 * Attempt to log a user in.
 	 *
 	 * @param   string  Login column value

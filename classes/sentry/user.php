@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Part of the Sentry package for Fuel.
  *
@@ -30,7 +29,9 @@ class Sentry_User
 {
 	// set class properties
 	protected $user = array();
+	protected $groups = array();
 	protected $table = null;
+	protected $join_table = null;
 	protected $login_column = null;
 	protected $login_column_str = '';
 
@@ -44,8 +45,8 @@ class Sentry_User
 	public function __construct($id = null)
 	{
 		// load and set config
-		Config::load('sentry', true);
 		$this->table = strtolower(Config::get('sentry.table.users'));
+		$this->join_table = strtolower(Config::get('sentry.table.users_groups'));
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 
@@ -86,6 +87,15 @@ class Sentry_User
 			{
 				throw new \SentryUserNotFoundException('User does not exist.');
 			}
+
+			$groups_table = Config::get('sentry.table.groups');
+
+			$this->groups = DB::select($groups_table.'.*')
+				->from($groups_table)
+				->where($this->join_table.'.user_id', '=', $this->user['id'])
+				->join($this->join_table)
+				->on($this->join_table.'.group_id', '=', $groups_table.'.id')
+				->execute()->as_array();
 		}
 	}
 
@@ -417,10 +427,150 @@ class Sentry_User
 		return $this->update(array('password' => $password));
 	}
 
+	/**
+	 * Returns an array of groups the user is part of.
+	 *
+	 * @return  array
+	 */
+	public function groups()
+	{
+		return $this->groups;
+	}
 
-	/** Acl methods if needed **/
+	/**
+	 * Adds this user to the group.
+	 *
+	 * @param   string|int  Group ID or group name
+	 * @return  bool
+	 */
+	public function add_to_group($id)
+	{
+		if ($this->in_group($id))
+		{
+			throw new \SentryGroupException(sprintf('User already in group "%s".', $id));
+		}
 
+		$field = 'name';
+		if (is_numeric($id))
+		{
+			$field = 'id';
+		}
 
+		$group = new \Sentry_Group($id);
+
+		list($insert_id, $rows_affected) = DB::insert($this->join_table)->set(array(
+			'user_id' => $this->user['id'],
+			'group_id' => $group->get('id'),
+		))->execute();
+
+		return true;
+	}
+
+	/**
+	 * Removes this user from the group.
+	 *
+	 * @param   string|int  Group ID or group name
+	 * @return  bool
+	 */
+	public function remove_from_group($id)
+	{
+		if ( ! $this->in_group($id))
+		{
+			throw new \SentryGroupException(sprintf('User isn\'t in group "%s".', $id));
+		}
+
+		$field = 'name';
+		if (is_numeric($id))
+		{
+			$field = 'id';
+		}
+
+		$group = new \Sentry_Group($id);
+
+		return (bool) DB::delete($this->join_table)
+				->where('user_id', $this->user['id'])
+				->where('group_id', $group->get('id'))->execute();
+	}
+
+	/**
+	 * Checks if the current user is part of the given group.
+	 *
+	 * @param   string  Group name
+	 * @return  bool
+	 */
+	public function in_group($name)
+	{
+		$field = 'name';
+		if (is_numeric($name))
+		{
+			$field = 'id';
+		}
+		foreach ($this->groups as $group)
+		{
+			if ($group[$field] == $name)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the user is an admin
+	 *
+	 * @return  bool
+	 */
+	public function is_admin()
+	{
+		foreach ($this->groups as $group)
+		{
+			if ($group['is_admin'] == 1)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the user has the given level
+	 *
+	 * @param   int  Level to check
+	 * @return  bool
+	 */
+	public function has_level($level)
+	{
+		foreach ($this->groups as $group)
+		{
+			if ($group['level'] == $level)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the user has at least given level
+	 *
+	 * @param   int  Level to check
+	 * @return  bool
+	 */
+	public function atleast_level($level)
+	{
+		foreach ($this->groups as $group)
+		{
+			if ($group['level'] >= $level)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/**
 	 * Check if user exists already

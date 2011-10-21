@@ -23,5 +23,8 @@ Autoloader::add_classes(array(
 
 	'Sentry\\Sentry_User' => __DIR__.'/classes/sentry/user.php',
 	'Sentry\\SentryUserException' => __DIR__.'/classes/sentry/user.php',
-	'Sentry\\SentryUserNotFoundException' => __DIR__.'/classes/sentry/user.php'
+	'Sentry\\SentryUserNotFoundException' => __DIR__.'/classes/sentry/user.php',
+
+	'Sentry\\Sentry_Group' => __DIR__.'/classes/sentry/group.php',
+	'Sentry\\SentryGroupException' => __DIR__.'/classes/sentry/group.php',
 ));

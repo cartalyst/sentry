@@ -17,7 +17,7 @@ return array(
 	'table' => array(
 		'users' => 'users',
 		'groups' => 'groups',
-		'user_groups' => 'user_groups',
+		'users_groups' => 'users_groups',
 		'users_suspended' => 'users_suspended',
 	),
 

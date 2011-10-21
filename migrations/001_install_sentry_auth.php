@@ -43,6 +43,19 @@ class Install_Sentry_Auth {
 			'suspended_at' => array('constraint' => 11, 'type' => 'int'),
 			'unsuspend_at' => array('constraint' => 11, 'type' => 'int'),
 		), array('id'));
+
+		\DBUtil::create_table(\Config::get('sentry.table.groups'), array(
+			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
+			'name' => array('constraint' => 200, 'type' => 'varchar'),
+			'level' => array('constraint' => 11, 'type' => 'int'),
+			'is_admin' => array('constraint' => 1, 'type' => 'tinyint'),
+		), array('id'));
+
+		\DBUtil::create_table(\Config::get('sentry.table.users_groups'), array(
+			'user_id' => array('constraint' => 11, 'type' => 'int'),
+			'group_id' => array('constraint' => 11, 'type' => 'int'),
+		));
+
 	}
 
 	public function down()
