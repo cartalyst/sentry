@@ -171,18 +171,12 @@ class Sentry_User
 	 * @return  bool
 	 * @throws  SentryUserException
 	 */
-	public function update($fields, $hash_password = true)
+	public function update(array $fields, $hash_password = true)
 	{
 		// make sure a user id is set
 		if (empty($this->user))
 		{
-			throw new \SentryUserException('No user is selected to update.');
-		}
-
-		// make sure fields is an array
-		if ( ! is_array($fields))
-		{
-			throw new \SentryUserException('Update param must be an array');
+			throw new \SentryUserException(__('sitrep.no_user_selected'));
 		}
 
 		// init update array
@@ -192,7 +186,7 @@ class Sentry_User
 		    $fields[$this->login_column] != $this->user[$this->login_column] and
 		    $this->user_exists($fields[$this->login_column]))
 		{
-			throw new \SentryUserException(sprintf('%s already exists.', $this->login_column_str));
+			throw new \SentryUserException(__('sitrep.column_already_exists', array('column' => $this->login_column_str)));
 		}
 		elseif (array_key_exists($this->login_column, $fields) and
 		        $fields[$this->login_column] == '')

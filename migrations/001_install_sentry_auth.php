@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Part of the Sentry package for Fuel.
  *
