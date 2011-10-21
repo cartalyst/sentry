@@ -27,4 +27,5 @@ Autoloader::add_classes(array(
 
 	'Sentry\\Sentry_Group' => __DIR__.'/classes/sentry/group.php',
 	'Sentry\\SentryGroupException' => __DIR__.'/classes/sentry/group.php',
+	'Sentry\\SentryGroupNotFoundException' => __DIR__.'/classes/sentry/group.php',
 ));

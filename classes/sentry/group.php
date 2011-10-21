@@ -17,6 +17,7 @@ use DB;
 use FuelException;
 
 class SentryGroupException extends \FuelException {}
+class SentryGroupNotFoundException extends SentryGroupException {}
 
 /**
  * Handles all of the Sentry group logic.
