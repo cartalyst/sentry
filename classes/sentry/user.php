@@ -16,6 +16,7 @@ use Config;
 use DB;
 use FuelException;
 use Lang;
+use Session;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
@@ -108,7 +109,7 @@ class Sentry_User
 	 */
 	public function register($user)
 	{
-		$this->create($user);
+		$this->create($user, true);
 	}
 
 	/**
@@ -118,7 +119,7 @@ class Sentry_User
 	 * @return  int
 	 * @throws  SentryUserException
 	 */
-	public function create(array $user)
+	public function create(array $user, $auto_login = false)
 	{
 		// check for required fields
 		if (empty($user[$this->login_column]) or empty($user['password']))
@@ -159,6 +160,12 @@ class Sentry_User
 
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
+
+		// auto log user in
+		if ($auto_login and $rows_affected > 0)
+		{
+			Session::set('sentry_user', (int) $insert_id);
+		}
 
 		return ($rows_affected > 0) ? $insert_id : false;
 	}
