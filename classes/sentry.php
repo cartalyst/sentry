@@ -227,6 +227,38 @@ class Sentry
 	}
 
 	/**
+	 * Activate a user account
+	 *
+	 * @param   string  Login Column value
+	 * @param   string  User's activation code
+	 * @return  bool
+	 */
+	public static function activate_user($login_column_value, $code)
+	{
+		$login_column_value = base64_decode($login_column_value);
+
+		// make sure vars have values
+		if (empty($login_column_value) or empty($code))
+		{
+			return false;
+		}
+
+		// if user is validated
+		if ($user = static::validate_user($login_column_value, $code, 'activation_hash'))
+		{
+			// update pass to temp pass, reset temp pass and hash
+			$user->update(array(
+				'activation_hash' => '',
+				'activated' => 'true'
+			), false);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Starts the reset password process.  Generates the necessary password
 	 * reset hash and returns the new user array.  Password reset confirm
 	 * still needs called.
@@ -285,7 +317,7 @@ class Sentry
 	 */
 	public static function reset_password_confirm($login_column_value, $code)
 	{
-		$login_column = base64_decode($login_column_value);
+		$login_column_value = base64_decode($login_column_value);
 
 		// get login attempts
 		$attempts = static::$attempts->get($login_column_value);

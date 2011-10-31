@@ -26,9 +26,11 @@ class Install_Sentry_Auth {
 			'password_reset_hash' => array('constraint' => 81, 'type' => 'varchar'),
 			'temp_password' => array('constraint' => 81, 'type' => 'varchar'),
 			'remember_me' => array('constraint' => 81, 'type' => 'varchar'),
+			'activation_hash' => array('constraint' => 81, 'type' => 'varchar'),
 			'last_login' => array('constraint' => 11, 'type' => 'int'),
 			'updated_at' => array('constraint' => 11, 'type' => 'int'),
 			'created_at' => array('constraint' => 11, 'type' => 'int'),
+			'activated' => array('contsraint' => 5, 'type' => 'varchar'),
 			'status' => array('constraint' => 25, 'type' => 'varchar'),
 			'suspended_timestamp' => array('constraint' => 11, 'type' => 'int'),
 		), array('id'));

@@ -16,7 +16,7 @@ use Config;
 use DB;
 use FuelException;
 use Lang;
-use Session;
+use Str;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
@@ -109,7 +109,7 @@ class Sentry_User
 	 */
 	public function register($user)
 	{
-		$this->create($user, true);
+		return $this->create($user, true);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Sentry_User
 	 * @return  int
 	 * @throws  SentryUserException
 	 */
-	public function create(array $user, $auto_login = false)
+	public function create(array $user, $activation = false)
 	{
 		// check for required fields
 		if (empty($user[$this->login_column]) or empty($user['password']))
@@ -138,8 +138,28 @@ class Sentry_User
 		}
 
 		// check to see if login_column is already taken
-		if ($this->user_exists($user[$this->login_column]))
+		$user_exists = $this->user_exists($user[$this->login_column]);
+		if (count($user_exists))
 		{
+			// check if account is not activated
+			if ($activation and $user_exists['activated'] != 'true')
+			{
+				// update and resend activation code
+				$this->user = $user_exists;
+				$hash = \Str::random('alnum', 24);
+				\TrainTogether::messages()->success('Hash: '.$hash);
+				$update = array(
+					'activation_hash' => $hash
+				);
+
+				if ($this->update($update))
+				{
+					return (int) $this->user['id'];
+				}
+
+				return false;
+			}
+
 			// if login_column is not set to email - also check to make sure email doesn't exist
 			if ($this->login_column != 'email' and $this->user_exists($user['email'], 'email'))
 			{
@@ -155,17 +175,23 @@ class Sentry_User
 			$this->login_column => $user[$this->login_column],
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
+			'activated' => ($activation) ? 'false' : 'true',
 			'status' => 1,
 		) + $user;
+
+		if ($activation)
+		{
+			$hash = Str::random('alnum', 24);
+			$new_user['activation_hash'] = $this->generate_password($hash);
+
+			// send email
+		}
 
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
-		// auto log user in
-		if ($auto_login and $rows_affected > 0)
-		{
-			Session::set(Config::get('sentry.session_var'), (int) $insert_id);
-		}
+		echo $hash;
+		exit();
 
 		return ($rows_affected > 0) ? $insert_id : false;
 	}
@@ -265,6 +291,16 @@ class Sentry_User
 			}
 			$update['remember_me'] = $fields['remember_me'];
 			unset($fields['remember_me']);
+		}
+
+		if (array_key_exists('activation_hash', $fields))
+		{
+			if ( ! empty($fields['activation_hash']))
+			{
+				$fields['activation_hash'] = $this->generate_password($fields['activation_hash']);
+			}
+			$update['activation_hash'] = $fields['activation_hash'];
+			unset($fields['activation_hash']);
 		}
 
 		if (array_key_exists('last_login', $fields) and
@@ -593,9 +629,9 @@ class Sentry_User
 			->from($this->table)
 			->where($field, $login)
 			->limit(1)
-			->execute();
+			->execute()->current();
 
-		return (bool) count($result);
+		return $result;
 	}
 
 	/**
