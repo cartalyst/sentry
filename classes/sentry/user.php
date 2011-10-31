@@ -164,7 +164,7 @@ class Sentry_User
 		// auto log user in
 		if ($auto_login and $rows_affected > 0)
 		{
-			Session::set('sentry_user', (int) $insert_id);
+			Session::set(Config::get('sentry.session_var'), (int) $insert_id);
 		}
 
 		return ($rows_affected > 0) ? $insert_id : false;

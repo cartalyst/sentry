@@ -21,6 +21,8 @@ return array(
 		'users_suspended' => 'users_suspended',
 	),
 
+	'session_var' => 'sentry_user',
+
 	/* Default Authorization Column - username or email */
 	'login_column' => 'email',
 

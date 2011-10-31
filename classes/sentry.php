@@ -87,7 +87,7 @@ class Sentry
 		// if session exists - default to user session
 		else if(static::check())
 		{
-			$user_id = Session::get('sentry_user');
+			$user_id = Session::get(Config::get('sentry.session_var'));
 			return new \Sentry_User($user_id);
 		}
 
@@ -180,7 +180,7 @@ class Sentry
 			}
 
 			// set session vars
-			Session::set('sentry_user', (int) $user->get('id'));
+			Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
 
 			return true;
 		}
@@ -196,7 +196,7 @@ class Sentry
 	public static function check()
 	{
 		// get session
-		$user_id = Session::get('sentry_user');
+		$user_id = Session::get(Config::get('sentry.session_var'));
 
 		// invalid session values - kill the user session
 		if ($user_id === null or ! is_numeric($user_id))
@@ -223,7 +223,7 @@ class Sentry
 	public static function logout()
 	{
 		Cookie::delete(Config::get('sentry.remember_me.cookie_name'));
-		Session::delete('sentry_user');
+		Session::delete(Config::get('sentry.session_var'));
 	}
 
 	/**
@@ -363,7 +363,7 @@ class Sentry
 				));
 
 				// set session vars
-				Session::set('sentry_user', (int) $user->get('id'));
+				Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
 
 				return true;
 			}
