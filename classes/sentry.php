@@ -21,6 +21,7 @@ use Lang;
 
 class SentryAuthException extends \FuelException {}
 class SentryAuthConfigException extends \SentryAuthException {}
+class SentryAuthUserNotActivatedException extends \SentryAuthException {}
 
 /**
  * Sentry Auth class
@@ -427,6 +428,13 @@ class Sentry
 			return false;
 		}
 
+		// check activation status
+		if (($user->activated != 'true'))
+		{
+			throw new \SentryAuthUserNotActivatedException('User has not activated their account.');
+		}
+
+		// check password
 		if ( ! $user->check_password($password, $field))
 		{
 			if ($field == 'password' or $field == 'password_reset_hash')

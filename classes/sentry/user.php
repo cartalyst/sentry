@@ -139,7 +139,7 @@ class Sentry_User
 
 		// check to see if login_column is already taken
 		$user_exists = $this->user_exists($user[$this->login_column]);
-		if (count($user_exists))
+		if ($user_exists)
 		{
 			// check if account is not activated
 			if ($activation and $user_exists['activated'] != 'true')
@@ -154,7 +154,7 @@ class Sentry_User
 
 				if ($this->update($update))
 				{
-					return $hash;
+					return base64_encode($user[$this->login_column]).'/'.$hash;
 				}
 
 				return false;
@@ -182,7 +182,7 @@ class Sentry_User
 		if ($activation)
 		{
 			$hash = Str::random('alnum', 24);
-			$new_user['activation_hash'] = $hash;
+			$new_user['activation_hash'] = $this->generate_password($hash);
 
 			// send email
 		}
@@ -190,7 +190,11 @@ class Sentry_User
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
-		return ($rows_affected > 0) ? $hash : false;
+		if ($activation)
+		{
+			return ($rows_affected > 0) ? base64_encode($user[$this->login_column]).'/'.$hash : false;
+		}
+		return ($rows_affected > 0) ? $insert_id : false;
 	}
 
 	/**
