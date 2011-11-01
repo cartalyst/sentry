@@ -154,7 +154,7 @@ class Sentry_User
 
 				if ($this->update($update))
 				{
-					return (int) $this->user['id'];
+					return $hash;
 				}
 
 				return false;
@@ -182,7 +182,7 @@ class Sentry_User
 		if ($activation)
 		{
 			$hash = Str::random('alnum', 24);
-			$new_user['activation_hash'] = $this->generate_password($hash);
+			$new_user['activation_hash'] = $hash;
 
 			// send email
 		}
@@ -190,10 +190,7 @@ class Sentry_User
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
-		echo $hash;
-		exit();
-
-		return ($rows_affected > 0) ? $insert_id : false;
+		return ($rows_affected > 0) ? $hash : false;
 	}
 
 	/**
