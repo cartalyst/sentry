@@ -147,7 +147,7 @@ class Sentry_User
 				// update and resend activation code
 				$this->user = $user_exists;
 				$hash = \Str::random('alnum', 24);
-				\TrainTogether::messages()->success('Hash: '.$hash);
+
 				$update = array(
 					'activation_hash' => $hash
 				);
