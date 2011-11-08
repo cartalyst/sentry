@@ -224,6 +224,16 @@ class Sentry_Group
 	}
 
 	/**
+	 * Retruns all groups
+	 *
+	 * @return  array
+	 */
+	public function all()
+	{
+		return DB::select()->from(static::$table)->execute()->as_array();
+	}
+
+	/**
 	 * Checks if the group exists
 	 *
 	 * @param   string  Group name
@@ -235,4 +245,5 @@ class Sentry_Group
 
 		return (bool) count($group);
 	}
+
 }

@@ -429,9 +429,15 @@ class Sentry
 		}
 
 		// check activation status
-		if (($user->activated != 'true'))
+		if ($user->activated != 'true')
 		{
 			throw new \SentryAuthUserNotActivatedException('User has not activated their account.');
+		}
+
+		// check user status
+		if ($user->status != 'enabled')
+		{
+			throw new \SentryAuthException('This account has been disabled.');
 		}
 
 		// check password
@@ -448,7 +454,7 @@ class Sentry
 	}
 
 	/**
-	 * Checks if a user exists bu Login Column value
+	 * Checks if a user exists by Login Column value
 	 *
 	 * @param   string  Login column value
 	 * @return  bool|Sentry_User

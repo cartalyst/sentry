@@ -181,6 +181,7 @@ class Sentry_Attempts
 			->where('login_id', $login_id)
 			->where('ip', \Input::real_ip())
 			->where('unsuspend_at', null)
+			->or_where('unsuspend_at', 0)
 			->execute();
 
 		throw new \SentryUserSuspendedException(sprintf(

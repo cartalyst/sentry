@@ -176,20 +176,20 @@ class Sentry_User
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
 			'activated' => ($activation) ? 'false' : 'true',
-			'status' => 1,
+			'status' => 'enabled',
 		) + $user;
 
+		// set activation hash if activation = true
 		if ($activation)
 		{
 			$hash = Str::random('alnum', 24);
 			$new_user['activation_hash'] = $this->generate_password($hash);
-
-			// send email
 		}
 
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
+		// return activation hash for emailing if activation = true
 		if ($activation)
 		{
 			return ($rows_affected > 0) ? base64_encode($user[$this->login_column]).'/'.$hash : false;
