@@ -352,19 +352,30 @@ class Sentry_User
 			throw new \SentryUserException('No user is selected to delete.');
 		}
 
+		DB::transactional();
+		DB::start_transaction();
+
+		$delete_user_groups = DB::delete($this->join_table)
+			->where('user_id', $this->user['id'])
+			->execute();
+
 		// delete user from database
-		$result = DB::delete($this->table)
+		$delete_user = DB::delete($this->table)
 			->where('id', $this->user['id'])
 			->execute();
 
 		// if user was deleted
-		if ($result)
+		if ($delete_user_groups and $delete_user)
 		{
+			DB::commit_transaction();
+
 			// update user to null
 			$this->user = array();
 
 			return true;
 		}
+
+		DB::rollback_transaction();
 
 		return false;
 	}
