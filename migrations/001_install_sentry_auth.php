@@ -30,8 +30,8 @@ class Install_Sentry_Auth {
 			'last_login' => array('constraint' => 11, 'type' => 'int'),
 			'updated_at' => array('constraint' => 11, 'type' => 'int'),
 			'created_at' => array('constraint' => 11, 'type' => 'int'),
-			'status' => array('constraint' => 25, 'type' => 'varchar'),
-			'activated' => array('contsraint' => 5, 'type' => 'varchar'),
+			'status' => array('constraint' => 1, 'type' => 'tinyint'),
+			'activated' => array('contsraint' => 1, 'type' => 'tinyint'),
 		), array('id'));
 
 		\DBUtil::create_table(\Config::get('sentry.table.groups'), array(
