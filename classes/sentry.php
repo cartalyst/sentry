@@ -250,7 +250,7 @@ class Sentry
 			// update pass to temp pass, reset temp pass and hash
 			$user->update(array(
 				'activation_hash' => '',
-				'activated' => 'true'
+				'activated' => 1
 			), false);
 
 			return true;
@@ -429,13 +429,13 @@ class Sentry
 		}
 
 		// check activation status
-		if ($user->activated != 'true')
+		if ($user->activated != 1)
 		{
 			throw new \SentryAuthUserNotActivatedException('User has not activated their account.');
 		}
 
 		// check user status
-		if ($user->status != 'enabled')
+		if ($user->status != 1)
 		{
 			throw new \SentryAuthException('This account has been disabled.');
 		}

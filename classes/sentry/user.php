@@ -142,7 +142,7 @@ class Sentry_User
 		if ($user_exists)
 		{
 			// check if account is not activated
-			if ($activation and $user_exists['activated'] != 'true')
+			if ($activation and $user_exists['activated'] != 1)
 			{
 				// update and resend activation code
 				$this->user = $user_exists;
@@ -175,8 +175,8 @@ class Sentry_User
 			$this->login_column => $user[$this->login_column],
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
-			'activated' => ($activation) ? 'false' : 'true',
-			'status' => 'enabled',
+			'activated' => ($activation) ? 0 : 1,
+			'status' => 1,
 		) + $user;
 
 		// set activation hash if activation = true
