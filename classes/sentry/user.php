@@ -60,7 +60,7 @@ class Sentry_User
 			{
 				if ($id <= 0)
 				{
-					throw new \SentryUserException(__('sitrep.invalid_user_id'));
+					throw new \SentryUserException(__('sentry.invalid_user_id'));
 				}
 				// set field to id for query
 				$field = 'id';
@@ -86,7 +86,7 @@ class Sentry_User
 			// user doesn't exist
 			else
 			{
-				throw new \SentryUserNotFoundException(__('sitrep.user_not_found'));
+				throw new \SentryUserNotFoundException(__('sentry.user_not_found'));
 			}
 
 			$groups_table = Config::get('sentry.table.groups');
@@ -125,7 +125,7 @@ class Sentry_User
 		if (empty($user[$this->login_column]) or empty($user['password']))
 		{
 			throw new \SentryUserException(
-				__('sitrep.column_and_password_empty', array('column' => $this->login_column_str))
+				__('sentry.column_and_password_empty', array('column' => $this->login_column_str))
 			);
 		}
 
@@ -133,7 +133,7 @@ class Sentry_User
 		if ($this->login_column != 'email' and empty($user['email']))
 		{
 			throw new \SentryUserException(
-				__('sitrep.column_email_and_password_empty', array('column' => $this->login_column_str))
+				__('sentry.column_email_and_password_empty', array('column' => $this->login_column_str))
 			);
 		}
 
@@ -163,10 +163,10 @@ class Sentry_User
 			// if login_column is not set to email - also check to make sure email doesn't exist
 			if ($this->login_column != 'email' and $this->user_exists($user['email'], 'email'))
 			{
-				throw new \SentryUserException(__('sitrep.email_already_in_use'));
+				throw new \SentryUserException(__('sentry.email_already_in_use'));
 			}
 			throw new \SentryUserException(
-				__('sitrep.column_already_exists', array('column' => $this->login_column_str))
+				__('sentry.column_already_exists', array('column' => $this->login_column_str))
 			);
 		}
 
@@ -210,7 +210,7 @@ class Sentry_User
 		// make sure a user id is set
 		if (empty($this->user))
 		{
-			throw new \SentryUserException(__('sitrep.no_user_selected'));
+			throw new \SentryUserException(__('sentry.no_user_selected'));
 		}
 
 		// init update array
@@ -220,7 +220,7 @@ class Sentry_User
 		    $fields[$this->login_column] != $this->user[$this->login_column] and
 		    $this->user_exists($fields[$this->login_column]))
 		{
-			throw new \SentryUserException(__('sitrep.column_already_exists', array('column' => $this->login_column_str)));
+			throw new \SentryUserException(__('sentry.column_already_exists', array('column' => $this->login_column_str)));
 		}
 		elseif (array_key_exists($this->login_column, $fields) and
 		        $fields[$this->login_column] == '')
@@ -496,7 +496,7 @@ class Sentry_User
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sitrep.login_column_empty', array('group' => $id)));
+			throw new \SentryGroupException(__('sentry.login_column_empty', array('group' => $id)));
 		}
 
 		$field = 'name';

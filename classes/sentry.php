@@ -55,7 +55,7 @@ class Sentry
 	{
 		// load config
 		Config::load('sentry', true);
-		Lang::load('sitrep', 'sitrep');
+		Lang::load('sentry', 'sentry');
 
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry.login_column'));
@@ -66,7 +66,7 @@ class Sentry
 		// login_column check
 		if (empty(static::$login_column))
 		{
-			throw new \SentryAuthConfigException(__('sitrep.login_column_empty'));
+			throw new \SentryAuthConfigException(__('sentry.login_column_empty'));
 		}
 
 	}
