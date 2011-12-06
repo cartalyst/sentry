@@ -353,6 +353,24 @@ class Sentry
 	}
 
 	/**
+	 * Checks if a user exists by Login Column value
+	 *
+	 * @param   string  Login column value
+	 * @return  bool|Sentry_User
+	 */
+	public static function user_exists($login_column_value)
+	{
+		try
+		{
+			return new Sentry_User($login_column_value);
+		}
+		catch (SentryUserNotFoundException $e)
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Remember User Login
 	 *
 	 * @param int
@@ -451,24 +469,6 @@ class Sentry
 		}
 
 		return $user;
-	}
-
-	/**
-	 * Checks if a user exists by Login Column value
-	 *
-	 * @param   string  Login column value
-	 * @return  bool|Sentry_User
-	 */
-	protected static function user_exists($login_column_value)
-	{
-		try
-		{
-			return new Sentry_User($login_column_value);
-		}
-		catch (SentryUserNotFoundException $e)
-		{
-			return false;
-		}
 	}
 
 }
