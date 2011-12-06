@@ -80,10 +80,16 @@ class Sentry
 	 */
 	public static function user($id = null)
 	{
-		// if $id is passed - select that user
 		if ($id)
 		{
-			return static::user_exists($id);
+			try
+			{
+				return new Sentry_User($id);
+			}
+			catch (SentryUserNotFoundException $e)
+			{
+				throw new \SentryAuthException($e->getMessage());
+			}
 		}
 		// if session exists - default to user session
 		else if(static::check())
@@ -277,10 +283,7 @@ class Sentry
 		}
 
 		// check if user exists
-		if ( ! $user = static::user_exists($login_column_value))
-		{
-			return false;
-		}
+		$user = static::user($login_column_value);
 
 		// create a hash for reset_password link
 		$hash = \Str::random('alnum', 24);
@@ -350,6 +353,34 @@ class Sentry
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if a user exists by Login Column value
+	 *
+	 * @param   string  Login column value
+	 * @return  bool|Sentry_User
+	 */
+	public static function user_exists($login_column_value)
+	{
+		try
+		{
+			$user = new Sentry_User($login_column_value);
+
+			if ($user)
+			{
+				return true;
+			}
+			else
+			{
+				// this should never happen;
+				return false;
+			}
+		}
+		catch (SentryUserNotFoundException $e)
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -423,10 +454,7 @@ class Sentry
 	protected static function validate_user($login_column_value, $password, $field)
 	{
 		// get user
-		if ( ! $user = static::user_exists($login_column_value))
-		{
-			return false;
-		}
+		$user = static::user($login_column_value);
 
 		// check activation status
 		if ($user->activated != 1)
@@ -451,24 +479,6 @@ class Sentry
 		}
 
 		return $user;
-	}
-
-	/**
-	 * Checks if a user exists by Login Column value
-	 *
-	 * @param   string  Login column value
-	 * @return  bool|Sentry_User
-	 */
-	protected static function user_exists($login_column_value)
-	{
-		try
-		{
-			return new Sentry_User($login_column_value);
-		}
-		catch (SentryUserNotFoundException $e)
-		{
-			return false;
-		}
 	}
 
 }
