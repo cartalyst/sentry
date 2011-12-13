@@ -15,9 +15,10 @@ return array(
 
 	/* Table Names */
 	'table' => array(
-		'users' => 'users',
-		'groups' => 'groups',
-		'users_groups' => 'users_groups',
+		'users'           => 'users',
+		'groups'          => 'groups',
+		'users_groups'    => 'users_groups',
+		'users_metadata'  => 'users_metadata',
 		'users_suspended' => 'users_suspended',
 	),
 

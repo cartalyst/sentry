@@ -33,7 +33,8 @@ class Sentry_User
 	protected $user = array();
 	protected $groups = array();
 	protected $table = null;
-	protected $join_table = null;
+	protected $table_metadata = null;
+	protected $table_usergroups = null;
 	protected $login_column = null;
 	protected $login_column_str = '';
 
@@ -48,7 +49,8 @@ class Sentry_User
 	{
 		// load and set config
 		$this->table = strtolower(Config::get('sentry.table.users'));
-		$this->join_table = strtolower(Config::get('sentry.table.users_groups'));
+		$this->table_usergroups = strtolower(Config::get('sentry.table.users_groups'));
+		$this->table_metadata = strtolower(Config::get('sentry.table.users_metadata'));
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 
@@ -81,7 +83,17 @@ class Sentry_User
 			// if there was a result - update user
 			if (count($user))
 			{
-				$this->user = $user->current();
+				$temp = $user->current();
+
+				// query for metadata
+				$metadata = DB::select()
+					->from($this->table_metadata)
+					->where('user_id', $temp['id'])
+					->execute();
+
+				$temp['metadata'] = (count($metadata)) ? $metadata->current() : array();
+
+				$this->user = $temp;
 			}
 			// user doesn't exist
 			else
@@ -93,9 +105,9 @@ class Sentry_User
 
 			$this->groups = DB::select($groups_table.'.*')
 				->from($groups_table)
-				->where($this->join_table.'.user_id', '=', $this->user['id'])
-				->join($this->join_table)
-				->on($this->join_table.'.group_id', '=', $groups_table.'.id')
+				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+				->join($this->table_usergroups)
+				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
 				->execute()->as_array();
 		}
 	}
@@ -217,13 +229,13 @@ class Sentry_User
 		$update = array();
 
 		if (array_key_exists($this->login_column, $fields) and
-		    $fields[$this->login_column] != $this->user[$this->login_column] and
-		    $this->user_exists($fields[$this->login_column]))
+			$fields[$this->login_column] != $this->user[$this->login_column] and
+			$this->user_exists($fields[$this->login_column]))
 		{
 			throw new \SentryUserException(__('sentry.column_already_exists', array('column' => $this->login_column_str)));
 		}
 		elseif (array_key_exists($this->login_column, $fields) and
-		        $fields[$this->login_column] == '')
+				$fields[$this->login_column] == '')
 		{
 			throw new \SentryUserException(sprintf('%s must not be blank.', $this->login_column_str));
 		}
@@ -235,7 +247,7 @@ class Sentry_User
 
 		// if updating email
 		if (array_key_exists('email', $fields) and
-		    $fields['email'] != $this->user['email'])
+			$fields['email'] != $this->user['email'])
 		{
 			// make sure email does not already exist
 			if ($this->user_exists($fields['email'], 'email'))
@@ -305,15 +317,13 @@ class Sentry_User
 		}
 
 		if (array_key_exists('last_login', $fields) and
-		    ! empty($fields['last_login']) and is_int($fields['last_login']))
+			! empty($fields['last_login']) and is_int($fields['last_login']))
 		{
 			$update['last_login'] = $fields['last_login'];
 			unset($fields['last_login']);
 		}
 
-		$update += $fields;
-
-		if (empty($update))
+		if (empty($update) and empty($fields['metadata']))
 		{
 			return true;
 		}
@@ -321,14 +331,32 @@ class Sentry_User
 		// add update time
 		$update['updated_at'] = time();
 
-		// update database
-		$result = DB::update($this->table)
-		            ->set($update)
-		            ->where('id', $this->user['id'])
-		            ->execute();
-
-		if ($result)
+		// update user table
+		if ($update)
 		{
+			$update_user = DB::update($this->table)
+				->set($update)
+				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', 'users.id')
+				->where('id', $this->user['id'])
+				->execute();
+		}
+
+		// update metadata table
+		if ( ! empty($fields['metadata']))
+		{
+			$update_metadata = DB::update($this->table_metadata)
+				->set($fields['metadata'])
+				->where('user_id', $this->user['id'])
+				->execute();
+		}
+		else
+		{
+			$fields['metadata'] = array();
+		}
+
+		if ($update_user or $update_metadata)
+		{
+			$update['metadata'] = $fields['metadata'] + $this->user['metadata'];
 			// change user values in object
 			$this->user = $update + $this->user;
 
@@ -355,7 +383,7 @@ class Sentry_User
 		DB::transactional();
 		DB::start_transaction();
 
-		$delete_user_groups = DB::delete($this->join_table)
+		$delete_user_groups = DB::delete($this->table_usergroups)
 			->where('user_id', $this->user['id'])
 			->execute();
 
@@ -507,7 +535,7 @@ class Sentry_User
 
 		$group = new \Sentry_Group($id);
 
-		list($insert_id, $rows_affected) = DB::insert($this->join_table)->set(array(
+		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
 			'group_id' => $group->get('id'),
 		))->execute();
@@ -536,7 +564,7 @@ class Sentry_User
 
 		$group = new \Sentry_Group($id);
 
-		return (bool) DB::delete($this->join_table)
+		return (bool) DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
 				->where('group_id', $group->get('id'))->execute();
 	}
