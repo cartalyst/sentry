@@ -44,7 +44,12 @@ class Sentry
 	/**
 	 * @var  object  Caches the current logged in user object
 	 */
-	protected static $user = null;
+	protected static $current_user = null;
+
+	/**
+	 * @var  array  Caches all users accessed
+	 */
+	protected static $user_cache = array();
 
 	/**
 	 * Prevent instantiation
@@ -85,11 +90,21 @@ class Sentry
 	 */
 	public static function user($id = null, $recache = false)
 	{
+		if ($id === null and $recache === false and static::$current_user !== null)
+		{
+			return static::$current_user;
+		}
+		elseif ($id !== null and $recache === false and isset(static::$user_cache[$id]))
+		{
+			return static::$user_cache[$id];
+		}
+
 		if ($id)
 		{
 			try
 			{
-				return new Sentry_User($id);
+				static::$user_cache[$id] = new Sentry_User($id);
+				return static::$user_cache[$id];
 			}
 			catch (SentryUserNotFoundException $e)
 			{
@@ -99,14 +114,9 @@ class Sentry
 		// if session exists - default to user session
 		else if(static::check())
 		{
-			if (static::$user and $recache == false)
-			{
-				return static::$user;
-			}
-
 			$user_id = Session::get(Config::get('sentry.session_var'));
-			static::$user = new \Sentry_User($user_id);
-			return static::$user;
+			static::$current_user = new \Sentry_User($user_id);
+			return static::$current_user;
 		}
 
 		// else return empty user
