@@ -27,7 +27,7 @@ class SentryAuthUserNotActivatedException extends \SentryAuthException {}
  * Sentry Auth class
  *
  * @package  Sentry
- * @author  Daniel Petrie
+ * @author   Daniel Petrie
  */
 class Sentry
 {
@@ -40,6 +40,11 @@ class Sentry
 	 * @var  Sentry_Attempts  Holds the Sentry_Attempts object
 	 */
 	protected static $attempts = null;
+
+	/**
+	 * @var  object  Caches the current logged in user object
+	 */
+	protected static $user = null;
 
 	/**
 	 * Prevent instantiation
@@ -78,7 +83,7 @@ class Sentry
 	 * @param   int|string  User id or Login Column value to find.
 	 * @return  Sentry_User
 	 */
-	public static function user($id = null)
+	public static function user($id = null, $recache = false)
 	{
 		if ($id)
 		{
@@ -94,8 +99,14 @@ class Sentry
 		// if session exists - default to user session
 		else if(static::check())
 		{
+			if (static::$user and $recache == false)
+			{
+				return static::$user;
+			}
+
 			$user_id = Session::get(Config::get('sentry.session_var'));
-			return new \Sentry_User($user_id);
+			static::$user = new \Sentry_User($user_id);
+			return static::$user;
 		}
 
 		// else return empty user
