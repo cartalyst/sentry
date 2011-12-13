@@ -37,6 +37,11 @@ class Sentry
 	protected static $login_column = null;
 
 	/**
+	 * @var  bool  Whether suspension feature should be used or not
+	 */
+	protected static $suspend = null;
+
+	/**
 	 * @var  Sentry_Attempts  Holds the Sentry_Attempts object
 	 */
 	protected static $attempts = null;
@@ -44,7 +49,12 @@ class Sentry
 	/**
 	 * @var  object  Caches the current logged in user object
 	 */
-	protected static $user = null;
+	protected static $current_user = null;
+
+	/**
+	 * @var  array  Caches all users accessed
+	 */
+	protected static $user_cache = array();
 
 	/**
 	 * Prevent instantiation
@@ -64,6 +74,7 @@ class Sentry
 
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry.login_column'));
+		static::$suspend = trim(Config::get('sentry.limit.enabled'));
 		static::$attempts = new \Sentry_Attempts();
 
 		// validate config settings
@@ -85,11 +96,21 @@ class Sentry
 	 */
 	public static function user($id = null, $recache = false)
 	{
+		if ($id === null and $recache === false and static::$current_user !== null)
+		{
+			return static::$current_user;
+		}
+		elseif ($id !== null and $recache === false and isset(static::$user_cache[$id]))
+		{
+			return static::$user_cache[$id];
+		}
+
 		if ($id)
 		{
 			try
 			{
-				return new Sentry_User($id);
+				static::$user_cache[$id] = new Sentry_User($id);
+				return static::$user_cache[$id];
 			}
 			catch (SentryUserNotFoundException $e)
 			{
@@ -99,14 +120,9 @@ class Sentry
 		// if session exists - default to user session
 		else if(static::check())
 		{
-			if (static::$user and $recache == false)
-			{
-				return static::$user;
-			}
-
 			$user_id = Session::get(Config::get('sentry.session_var'));
-			static::$user = new \Sentry_User($user_id);
-			return static::$user;
+			static::$current_user = new \Sentry_User($user_id);
+			return static::$current_user;
 		}
 
 		// else return empty user
@@ -146,18 +162,21 @@ class Sentry
 		static::logout();
 
 		// get login attempts
-		$attempts = static::$attempts->get($login_column_value);
-
-		// if attempts > limit - suspend the login/ip combo
-		if ($attempts >= static::$attempts->get_limit())
+		if (static::$suspend)
 		{
-			try
+			$attempts = static::$attempts->get($login_column_value);
+
+			// if attempts > limit - suspend the login/ip combo
+			if ($attempts >= static::$attempts->get_limit())
 			{
-				static::$attempts->suspend($login_column_value);
-			}
-			catch(SentryUserSuspendedException $e)
-			{
-				throw new \SentryAuthException($e->getMessage());
+				try
+				{
+					static::$attempts->suspend($login_column_value);
+				}
+				catch(SentryUserSuspendedException $e)
+				{
+					throw new \SentryAuthException($e->getMessage());
+				}
 			}
 		}
 
@@ -170,8 +189,11 @@ class Sentry
 		// if user is validated
 		if ($user = static::validate_user($login_column_value, $password, 'password'))
 		{
-			// clear attempts for login since they got in
-			static::$attempts->clear($login_column_value);
+			if (static::$suspend)
+			{
+				// clear attempts for login since they got in
+				static::$attempts->clear($login_column_value);
+			}
 
 			// set update array
 			$update = array();
@@ -334,13 +356,16 @@ class Sentry
 	{
 		$login_column_value = base64_decode($login_column_value);
 
-		// get login attempts
-		$attempts = static::$attempts->get($login_column_value);
-
-		// if attempts > limit - suspend the login/ip combo
-		if ($attempts >= static::$attempts->get_limit())
+		if (static::$suspend)
 		{
-			static::$attempts->suspend($login_column_value);
+			// get login attempts
+			$attempts = static::$attempts->get($login_column_value);
+
+			// if attempts > limit - suspend the login/ip combo
+			if ($attempts >= static::$attempts->get_limit())
+			{
+				static::$attempts->suspend($login_column_value);
+			}
 		}
 
 		// make sure vars have values
@@ -482,7 +507,7 @@ class Sentry
 		// check password
 		if ( ! $user->check_password($password, $field))
 		{
-			if ($field == 'password' or $field == 'password_reset_hash')
+			if (static::$suspend and ($field == 'password' or $field == 'password_reset_hash'))
 			{
 				static::$attempts->add($login_column_value);
 			}
