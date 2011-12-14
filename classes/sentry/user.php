@@ -459,10 +459,10 @@ class Sentry_User
 			// loop through requested fields
 			foreach ($field as $key)
 			{
-				// check to see if field exists in user
-				if (array_key_exists($key, $this->user))
+				$val = \Arr::get($this->user, $key, '__MISSING_KEY__');
+				if ($val !== '__MISSING_KEY__')
 				{
-					$values[$key] = $this->user[$key];
+					$values[$key] = $val;
 				}
 				else
 				{
@@ -475,10 +475,10 @@ class Sentry_User
 		// if single field was passed - return its value
 		else
 		{
-			// check to see if field exists in user
-			if (array_key_exists($field, $this->user))
+			$val = \Arr::get($this->user, $field, '__MISSING_KEY__');
+			if ($val !== '__MISSING_KEY__')
 			{
-				return $this->user[$field];
+				return $val;
 			}
 
 			throw new \SentryUserException(sprintf('"%s" does not exist in "user" object.', $field));
