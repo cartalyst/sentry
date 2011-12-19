@@ -493,7 +493,7 @@ class Sentry
 		$user = static::user($login_column_value);
 
 		// check activation status
-		if ($user->activated != 1)
+		if ($user->activated != 1 and $field != 'activation_hash')
 		{
 			throw new \SentryAuthUserNotActivatedException('User has not activated their account.');
 		}
