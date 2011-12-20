@@ -533,14 +533,14 @@ class Sentry_User
 			$field = 'id';
 		}
 
-                try
-                {
-                    $group = new \Sentry_Group($id);
-                }
-                catch (SentryGroupNotFoundException $e)
-                {
-                        throw new \SentryGroupException($e->getMessage());
-                }
+		try
+		{
+			$group = new \Sentry_Group($id);
+		}
+		catch (SentryGroupNotFoundException $e)
+		{
+			throw new \SentryGroupException($e->getMessage());
+		}
 
 		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
@@ -569,7 +569,14 @@ class Sentry_User
 			$field = 'id';
 		}
 
-		$group = new \Sentry_Group($id);
+		try
+		{
+			$group = new \Sentry_Group($id);
+		}
+		catch (SentryGroupNotFoundException $e)
+		{
+			throw new \SentryGroupException($e->getMessage());
+		}
 
 		return (bool) DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])

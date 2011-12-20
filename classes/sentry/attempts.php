@@ -182,9 +182,9 @@ class Sentry_Attempts
 			->or_where('unsuspend_at', 0)
 			->execute();
 
-		throw new \SentryUserSuspendedException(__('sentry.user_suspended', array(
-                                    'account'   => $login_id, 
-                                    'time'      => static::$limit['time'])
-                            ));
+			throw new \SentryUserSuspendedException(__('sentry.user_suspended', array(
+							'account'   => $login_id, 
+							'time'      => static::$limit['time'])
+						));
 	}
 }

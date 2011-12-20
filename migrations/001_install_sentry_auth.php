@@ -69,7 +69,7 @@ class Install_Sentry_Auth {
 		\Config::load('sentry', true);
 
 		\DBUtil::drop_table(\Config::get('sentry.table.users'));
-                \DBUtil::drop_table(\Config::get('sentry.table.groups'));
+		\DBUtil::drop_table(\Config::get('sentry.table.groups'));
 		\DBUtil::drop_table(\Config::get('sentry.table.users_metadata'));
 		\DBUtil::drop_table(\Config::get('sentry.table.users_groups'));
 		\DBUtil::drop_table(\Config::get('sentry.table.users_suspended'));
