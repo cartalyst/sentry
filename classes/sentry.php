@@ -21,7 +21,6 @@ use Lang;
 
 class SentryAuthException extends \FuelException {}
 class SentryAuthConfigException extends \SentryAuthException {}
-class SentryAuthUserNotActivatedException extends \SentryAuthException {}
 
 /**
  * Sentry Auth class
@@ -92,6 +91,7 @@ class Sentry
 	 * Column value.
 	 *
 	 * @param   int|string  User id or Login Column value to find.
+	 * @throws  SentryAuthException
 	 * @return  Sentry_User
 	 */
 	public static function user($id = null, $recache = false)
@@ -269,13 +269,16 @@ class Sentry
 	/**
 	 * Activate a user account
 	 *
-	 * @param   string  Login Column value
+	 * @param   string  Encoded Login Column value
 	 * @param   string  User's activation code
 	 * @return  bool
 	 */
-	public static function activate_user($login_column_value, $code)
+	public static function activate_user($login_column_value, $code, $decode = true)
 	{
-		$login_column_value = base64_decode($login_column_value);
+		if ($decode)
+		{
+			$login_column_value = base64_decode($login_column_value);
+		}
 
 		// make sure vars have values
 		if (empty($login_column_value) or empty($code))
@@ -332,10 +335,10 @@ class Sentry
 		if ($user->update($update))
 		{
 			$update = array(
-				'login_column' => $login_column_value,
 				'email' => $user->get('email'),
+				'password_reset_hash' => $hash,
 				'link' => base64_encode($login_column_value).'/'.$update['password_reset_hash']
-			) + $update;
+			);
 
 			return $update;
 		}
@@ -350,11 +353,15 @@ class Sentry
 	 *
 	 * @param   string  Login Column value
 	 * @param   string  Reset password code
+	 * @throws  SentryAuthException
 	 * @return  bool
 	 */
-	public static function reset_password_confirm($login_column_value, $code)
+	public static function reset_password_confirm($login_column_value, $code, $decode = true)
 	{
-		$login_column_value = base64_decode($login_column_value);
+		if ($decode)
+		{
+			$login_column_value = base64_decode($login_column_value);
+		}
 
 		if (static::$suspend)
 		{
@@ -495,7 +502,7 @@ class Sentry
 		// check activation status
 		if ($user->activated != 1 and $field != 'activation_hash')
 		{
-			throw new \SentryAuthUserNotActivatedException('User has not activated their account.');
+			throw new \SentryAuthException('User has not activated their account.');
 		}
 
 		// check user status
