@@ -46,14 +46,12 @@ class Sentry_Attempts
 		{
 			if ( ! is_int(static::$limit['attempts']) or static::$limit['attempts'] <= 0)
 			{
-				throw new \SentryAuthConfigException(
-					'Sentry Config Item: "limit.attempts" must be an integer greater than 0');
+				throw new \SentryAuthConfigException(__('sentry.invalid_limit_attempts'));
 			}
 
 			if ( ! is_int(static::$limit['time']) or static::$limit['time'] <= 0)
 			{
-				throw new \SentryAuthConfigException(
-					'Sentry Config Item: "limit.time" must be an integer greater than 0');
+				throw new \SentryAuthConfigException(__('sentry.invalid_limit_time'));
 			}
 		}
 	}
@@ -184,8 +182,9 @@ class Sentry_Attempts
 			->or_where('unsuspend_at', 0)
 			->execute();
 
-		throw new \SentryUserSuspendedException(sprintf(
-			'You have been suspended from trying to login into account "%s" for %s minutes.',
-			$login_id, static::$limit['time']));
+		throw new \SentryUserSuspendedException(__('sentry.user_suspended', array(
+                                    'account'   => $login_id, 
+                                    'time'      => static::$limit['time'])
+                            ));
 	}
 }

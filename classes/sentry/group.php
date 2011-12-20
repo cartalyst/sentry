@@ -58,7 +58,7 @@ class Sentry_Group
 		{
 			if ($id <= 0)
 			{
-				throw new \SentryGroupException('Group ID must be a valid integer greater than 0.');
+				throw new \SentryGroupException(__('sentry.invalid_group_id'));
 			}
 			$field = 'id';
 		}
@@ -80,7 +80,7 @@ class Sentry_Group
 		// user doesn't exist
 		else
 		{
-			throw new \SentryGroupNotFoundException('Group does not exist.');
+			throw new \SentryGroupNotFoundException(__('sentry.group_not_found', array('group' => $id)));
 		}
 	}
 
@@ -94,12 +94,12 @@ class Sentry_Group
 	{
 		if ( ! array_key_exists('name', $group))
 		{
-			throw new \SentryGroupException('You must specify a name of the group.');
+			throw new \SentryGroupException(__('sentry.group_name_empty'));
 		}
 
 		if ( ! array_key_exists('level', $group))
 		{
-			throw new \SentryGroupException('You must specify a level of the group.');
+			throw new \SentryGroupException(__('sentry.group_level_empty'));
 		}
 
 		if ( ! array_key_exists('is_admin', $group))
@@ -147,7 +147,7 @@ class Sentry_Group
 		// make sure a user id is set
 		if (empty($this->group['id']))
 		{
-			throw new \SentryGroupException('No group is selected to get from.');
+			throw new \SentryGroupException(__('sentry.no_level_selected'));
 		}
 
 		// if no fields were passed - return entire user
@@ -163,14 +163,14 @@ class Sentry_Group
 			// loop through requested fields
 			foreach ($field as $key)
 			{
-				// check to see if field exists in user
+				// check to see if field exists in group
 				if (array_key_exists($key, $this->group))
 				{
 					$values[$key] = $this->group[$key];
 				}
 				else
 				{
-					throw new \SentryGroupException(sprintf('"%s" does not exist in "Group" object.', $key));
+					throw new \SentryGroupException(__('sentry.not_found_in_group_object', array('field' => $key)));
 				}
 			}
 
@@ -179,13 +179,13 @@ class Sentry_Group
 		// if single field was passed - return its value
 		else
 		{
-			// check to see if field exists in user
+			// check to see if field exists in group
 			if (array_key_exists($field, $this->group))
 			{
 				return $this->group[$field];
 			}
 
-			throw new \SentryUserException(sprintf('"%s" does not exist in "group" object.', $field));
+			throw new \SentryGroupException(__('sentry.not_found_in_group_object', array('field' => $field)));
 		}
 	}
 

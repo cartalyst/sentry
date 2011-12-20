@@ -295,7 +295,7 @@ class Sentry
 				'activated' => 1
 			), false);
 
-			return true;
+			return $user;
 		}
 
 		return false;
@@ -502,13 +502,13 @@ class Sentry
 		// check activation status
 		if ($user->activated != 1 and $field != 'activation_hash')
 		{
-			throw new \SentryAuthException('User has not activated their account.');
+			throw new \SentryAuthException(__('sentry.account_not_activated'));
 		}
 
 		// check user status
 		if ($user->status != 1)
 		{
-			throw new \SentryAuthException('This account has been disabled.');
+			throw new \SentryAuthException(__('sentry.account_is_disabled'));
 		}
 
 		// check password
