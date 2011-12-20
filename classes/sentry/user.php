@@ -144,7 +144,9 @@ class Sentry_User
 		// if login_column is set to username - email is still required, so check
 		if ($this->login_column != 'email' and empty($user['email']))
 		{
-			throw new \SentryUserException(__('sentry.column_email_and_password_empty', array('column' => $this->login_column_str)));
+			throw new \SentryUserException(
+				__('sentry.column_email_and_password_empty', array('column' => $this->login_column_str))
+			);
 		}
 
 		// check to see if login_column is already taken
@@ -230,12 +232,16 @@ class Sentry_User
 			$fields[$this->login_column] != $this->user[$this->login_column] and
 			$this->user_exists($fields[$this->login_column]))
 		{
-			throw new \SentryUserException(__('sentry.column_already_exists', array('column' => $this->login_column_str)));
+			throw new \SentryUserException(
+				__('sentry.column_already_exists', array('column' => $this->login_column_str))
+			);
 		}
 		elseif (array_key_exists($this->login_column, $fields) and
 				$fields[$this->login_column] == '')
 		{
-			throw new \SentryUserException(__('sentry.column_is_empty', array('column' => $this->login_column_str)));
+			throw new \SentryUserException(
+				__('sentry.column_is_empty', array('column' => $this->login_column_str))
+			);
 		}
 		elseif (array_key_exists($this->login_column, $fields))
 		{
@@ -465,7 +471,9 @@ class Sentry_User
 				}
 				else
 				{
-					throw new \SentryUserException(__('sentry.not_found_in_user_object', array('field' => $key)));
+					throw new \SentryUserException(
+						__('sentry.not_found_in_user_object', array('field' => $key))
+					);
 				}
 			}
 

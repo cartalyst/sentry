@@ -170,7 +170,9 @@ class Sentry_Group
 				}
 				else
 				{
-					throw new \SentryGroupException(__('sentry.not_found_in_group_object', array('field' => $key)));
+					throw new \SentryGroupException(
+						__('sentry.not_found_in_group_object', array('field' => $key))
+					);
 				}
 			}
 
@@ -185,7 +187,9 @@ class Sentry_Group
 				return $this->group[$field];
 			}
 
-			throw new \SentryGroupException(__('sentry.not_found_in_group_object', array('field' => $field)));
+			throw new \SentryGroupException(
+				__('sentry.not_found_in_group_object', array('field' => $field))
+			);
 		}
 	}
 
