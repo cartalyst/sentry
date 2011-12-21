@@ -15,7 +15,6 @@ namespace Sentry;
 use Config;
 use DB;
 use FuelException;
-use Sentry;
 
 class SentryGroupException extends \FuelException {}
 class SentryGroupNotFoundException extends SentryGroupException {}
