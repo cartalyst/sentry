@@ -15,6 +15,7 @@ namespace Sentry;
 use Config;
 use DB;
 use FuelException;
+use Sentry;
 
 class SentryGroupException extends \FuelException {}
 class SentryGroupNotFoundException extends SentryGroupException {}
@@ -77,7 +78,7 @@ class Sentry_Group
 		{
 			$this->group = $group->current();
 		}
-		// user doesn't exist
+		// group doesn't exist
 		else
 		{
 			throw new \SentryGroupNotFoundException('Group does not exist.');
@@ -95,6 +96,11 @@ class Sentry_Group
 		if ( ! array_key_exists('name', $group))
 		{
 			throw new \SentryGroupException('You must specify a name of the group.');
+		}
+
+		if (Sentry::group_exists($group['name']))
+		{
+			throw new \SentryGroupException(sprintf('The group name "%s" already exists.', $group['name']));
 		}
 
 		if ( ! array_key_exists('level', $group))
@@ -185,7 +191,7 @@ class Sentry_Group
 				return $this->group[$field];
 			}
 
-			throw new \SentryUserException(sprintf('"%s" does not exist in "group" object.', $field));
+			throw new \SentryGroupException(sprintf('"%s" does not exist in "group" object.', $field));
 		}
 	}
 
@@ -231,19 +237,6 @@ class Sentry_Group
 	public function all()
 	{
 		return DB::select()->from(static::$table)->execute()->as_array();
-	}
-
-	/**
-	 * Checks if the group exists
-	 *
-	 * @param   string  Group name
-	 * @return  bool
-	 */
-	protected function group_exists($name)
-	{
-		$group = DB::select('id')->from(static::$table)->where('name', $name)->limit(1)->execute();
-
-		return (bool) count($group);
 	}
 
 }

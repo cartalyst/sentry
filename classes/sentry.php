@@ -427,6 +427,19 @@ class Sentry
 	}
 
 	/**
+	 * Checks if the group exists
+	 *
+	 * @param   string  Group name
+	 * @return  bool
+	 */
+	public function group_exists($name)
+	{
+		$group = DB::select('id')->from(static::$table)->where('name', $name)->limit(1)->execute();
+
+		return (bool) count($group);
+	}
+
+	/**
 	 * Remember User Login
 	 *
 	 * @param int
