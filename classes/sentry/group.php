@@ -100,7 +100,7 @@ class Sentry_Group
 
 		if (Sentry::group_exists($group['name']))
 		{
-			throw new \SentryGroupException(sprintf('The group name "%s" already exists.', $group['name']));
+			throw new \SentryGroupException(__('sentry.group_already_exists', array('group' => 'name')));
 		}
 
 		if ( ! array_key_exists('level', $group))
