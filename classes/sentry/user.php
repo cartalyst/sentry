@@ -206,7 +206,7 @@ class Sentry_User
 		{
 			return ($rows_affected > 0) ? base64_encode($user[$this->login_column]).'/'.$hash : false;
 		}
-		return ($rows_affected > 0) ? $insert_id : false;
+		return ($rows_affected > 0) ? (int) $insert_id : false;
 	}
 
 	/**
@@ -232,12 +232,16 @@ class Sentry_User
 			$fields[$this->login_column] != $this->user[$this->login_column] and
 			$this->user_exists($fields[$this->login_column]))
 		{
-			throw new \SentryUserException(__('sentry.column_already_exists', array('column' => $this->login_column_str)));
+			throw new \SentryUserException(
+				__('sentry.column_already_exists', array('column' => $this->login_column_str))
+			);
 		}
 		elseif (array_key_exists($this->login_column, $fields) and
 				$fields[$this->login_column] == '')
 		{
-			throw new \SentryUserException(sprintf('%s must not be blank.', $this->login_column_str));
+			throw new \SentryUserException(
+				__('sentry.column_is_empty', array('column' => $this->login_column_str))
+			);
 		}
 		elseif (array_key_exists($this->login_column, $fields))
 		{
@@ -252,7 +256,7 @@ class Sentry_User
 			// make sure email does not already exist
 			if ($this->user_exists($fields['email'], 'email'))
 			{
-				throw new \SentryUserException('Email already exists.');
+				throw new \SentryUserException(__('sentry.email_already_in_use'));
 			}
 			$update['email'] = $fields['email'];
 			unset($fields['email']);
@@ -263,7 +267,7 @@ class Sentry_User
 		{
 			if (empty($fields['password']))
 			{
-				throw new \SentryUserException('Password must not be blank.');
+				throw new \SentryUserException(__('sentry.password_empty'));
 			}
 			if ($hash_password)
 			{
@@ -377,7 +381,7 @@ class Sentry_User
 		// make sure a user id is set
 		if (empty($this->user))
 		{
-			throw new \SentryUserException('No user is selected to delete.');
+			throw new \SentryUserException(__('sentry.no_user_selected_to_delete'));
 		}
 
 		DB::transactional();
@@ -443,7 +447,7 @@ class Sentry_User
 		// make sure a user id is set
 		if (empty($this->user['id']))
 		{
-			throw new \SentryUserException('No user is selected to get.');
+			throw new \SentryUserException(__('sentry.no_user_selected_to_get'));
 		}
 
 		// if no fields were passed - return entire user
@@ -459,6 +463,7 @@ class Sentry_User
 			// loop through requested fields
 			foreach ($field as $key)
 			{
+                                // check to see if field exists in user
 				$val = \Arr::get($this->user, $key, '__MISSING_KEY__');
 				if ($val !== '__MISSING_KEY__')
 				{
@@ -466,7 +471,9 @@ class Sentry_User
 				}
 				else
 				{
-					throw new \SentryUserException(sprintf('"%s" does not exist in "user" object.', $key));
+					throw new \SentryUserException(
+						__('sentry.not_found_in_user_object', array('field' => $key))
+					);
 				}
 			}
 
@@ -475,13 +482,14 @@ class Sentry_User
 		// if single field was passed - return its value
 		else
 		{
+                        // check to see if field exists in user
 			$val = \Arr::get($this->user, $field, '__MISSING_KEY__');
 			if ($val !== '__MISSING_KEY__')
 			{
 				return $val;
 			}
 
-			throw new \SentryUserException(sprintf('"%s" does not exist in "user" object.', $field));
+			throw new \SentryUserException(__('sentry.not_found_in_user_object', array('field' => $field)));
 		}
 	}
 
@@ -498,7 +506,7 @@ class Sentry_User
 		// make sure old password matches the current password
 		if ( ! $this->check_password($old_password))
 		{
-			throw new \SentryUserException('Old password is invalid');
+			throw new \SentryUserException(__('sentry.invalid_old_password'));
 		}
 
 		return $this->update(array('password' => $password));
@@ -524,7 +532,7 @@ class Sentry_User
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.login_column_empty', array('group' => $id)));
+			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -533,7 +541,14 @@ class Sentry_User
 			$field = 'id';
 		}
 
-		$group = new \Sentry_Group($id);
+		try
+		{
+			$group = new \Sentry_Group($id);
+		}
+		catch (SentryGroupNotFoundException $e)
+		{
+			throw new \SentryGroupException($e->getMessage());
+		}
 
 		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
@@ -553,7 +568,7 @@ class Sentry_User
 	{
 		if ( ! $this->in_group($id))
 		{
-			throw new \SentryGroupException(sprintf('User isn\'t in group "%s".', $id));
+			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -562,7 +577,14 @@ class Sentry_User
 			$field = 'id';
 		}
 
-		$group = new \Sentry_Group($id);
+		try
+		{
+			$group = new \Sentry_Group($id);
+		}
+		catch (SentryGroupNotFoundException $e)
+		{
+			throw new \SentryGroupException($e->getMessage());
+		}
 
 		return (bool) DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
