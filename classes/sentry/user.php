@@ -227,6 +227,9 @@ class Sentry_User
 
 		// init update array
 		$update = array();
+		
+		// init user metatdata
+		$update_metadata = null;
 
 		if (array_key_exists($this->login_column, $fields) and
 			$fields[$this->login_column] != $this->user[$this->login_column] and
