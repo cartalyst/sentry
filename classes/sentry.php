@@ -74,7 +74,6 @@ class Sentry
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry.login_column'));
 		static::$suspend = trim(Config::get('sentry.limit.enabled'));
-		static::$attempts = new \Sentry_Attempts();
 
 		// validate config settings
 
@@ -146,6 +145,15 @@ class Sentry
 		return new Sentry_Group();
 	}
 
+	/**
+	 * Gets the Sentry_Attempts object
+	 *
+	 * @return  Sentry_Attempts;
+	 */
+	 public static function attempts($login_id = null, $ip_address = null)
+	 {
+	 	return new Sentry_Attempts($login_id, $ip_address);
+	 }
 
 	/**
 	 * Attempt to log a user in.
@@ -164,14 +172,14 @@ class Sentry
 		// get login attempts
 		if (static::$suspend)
 		{
-			$attempts = static::$attempts->get($login_column_value);
+			$attempts = static::attempts($login_column_value, \Input::real_ip());
 
 			// if attempts > limit - suspend the login/ip combo
-			if ($attempts >= static::$attempts->get_limit())
+			if ($attempts->get() >= $attempts->get_limit())
 			{
 				try
 				{
-					static::$attempts->suspend($login_column_value);
+					$attempts->suspend();
 				}
 				catch(SentryUserSuspendedException $e)
 				{
@@ -192,7 +200,7 @@ class Sentry
 			if (static::$suspend)
 			{
 				// clear attempts for login since they got in
-				static::$attempts->clear($login_column_value);
+				$attempts->clear();
 			}
 
 			// set update array
@@ -363,22 +371,22 @@ class Sentry
 			$login_column_value = base64_decode($login_column_value);
 		}
 
-		if (static::$suspend)
-		{
-			// get login attempts
-			$attempts = static::$attempts->get($login_column_value);
-
-			// if attempts > limit - suspend the login/ip combo
-			if ($attempts >= static::$attempts->get_limit())
-			{
-				static::$attempts->suspend($login_column_value);
-			}
-		}
-
 		// make sure vars have values
 		if (empty($login_column_value) or empty($code))
 		{
 			return false;
+		}
+
+		if (static::$suspend)
+		{
+			// get login attempts
+			$attempts = static::attempts($login_column_value, \Input::real_ip());
+
+			// if attempts > limit - suspend the login/ip combo
+			if ($attempts->get() >= $attempts->get_limit())
+			{
+				$attempts->suspend();
+			}
 		}
 
 		// if user is validated
@@ -529,7 +537,7 @@ class Sentry
 		{
 			if (static::$suspend and ($field == 'password' or $field == 'password_reset_hash'))
 			{
-				static::$attempts->add($login_column_value);
+				static::attempts($login_column_value, \Input::real_ip())->add();
 			}
 			return false;
 		}

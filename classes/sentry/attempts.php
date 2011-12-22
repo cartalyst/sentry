@@ -19,7 +19,8 @@ namespace Sentry;
  * @author Daniel Petrie
  */
 
-class SentryUserSuspendedException extends \Fuel_Exception {}
+class SentryAttemptsException extends \Fuel_Exception {}
+class SentryUserSuspendedException extends \SentryAttemptsException {}
 
 class Sentry_Attempts
 {
@@ -28,9 +29,13 @@ class Sentry_Attempts
 
 	protected static $limit = array();
 
-	protected static $attempts = 0;
+	protected $login_id = null;
 
-	public function __construct()
+	protected $ip_address = null;
+
+	protected $attempts = null;
+
+	public function __construct($login_id = null, $ip_address = null)
 	{
 		\Config::load('sentry', true);
 
@@ -40,6 +45,8 @@ class Sentry_Attempts
 			'attempts' => \Config::get('sentry.limit.attempts'),
 			'time' => \Config::get('sentry.limit.time')
 		);
+		$this->login_id = $login_id;
+		$this->ip_address = $ip_address;
 
 		// limit checks
 		if (static::$limit['enabled'] === true)
@@ -54,6 +61,52 @@ class Sentry_Attempts
 				throw new \SentryAuthConfigException(__('sentry.invalid_limit_time'));
 			}
 		}
+
+		$query = \DB::select()
+			->from(static::$table_suspend);
+
+		if ($this->login_id)
+		{
+			$query = $query->where('login_id', $this->login_id);
+		}
+
+		if ($this->ip_address)
+		{
+			$query = $query->where('ip', $this->ip_address);
+		}
+
+		$result = $query->execute()->as_array();
+
+		foreach ($result as $row)
+		{
+			// check if last attempt was more than 15 min ago - if so reset counter
+			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= time())
+			{
+				$this->clear($row['login_id'], $row['ip']);
+				$row['attempts'] = 0;
+			}
+
+			// check unsuspended time and clear if time is > than it
+			if ($row['unsuspend_at'] and $row['unsuspend_at'] <= time())
+			{
+				$this->clear($row['login_id'], $row['ip']);
+				$row['attempts'] = 0;
+			}
+		}
+
+		if (count($result) > 1)
+		{
+			$this->attempts = $result;
+		}
+		elseif ($result)
+		{
+			$this->attempts = $result[0]['attempts'];
+		}
+		else
+		{
+			$this->attempts = 0;
+		}
+
 	}
 
 	/**
@@ -61,33 +114,9 @@ class Sentry_Attempts
 	 *
 	 * @param string
 	 */
-	public function get($login_id)
+	public function get()
 	{
-		$result = \DB::select('attempts', 'last_attempt_at', 'unsuspend_at')
-			->from(static::$table_suspend)
-			->where('login_id', $login_id)
-			->where('ip', \Input::real_ip())
-			->execute()
-			->current();
-
-		// check if last attempt was more than 15 min ago - if so reset counter
-		if ($result['last_attempt_at']
-			and ($result['last_attempt_at'] + static::$limit['time'] * 60) <= time())
-		{
-			$this->clear($login_id);
-			return 0;
-		}
-
-		// check unsuspended time and clear if time is > than it
-		if ($result['unsuspend_at'] and $result['unsuspend_at'] <= time())
-		{
-			$this->clear($login_id);
-			return 0;
-		}
-
-		static::$attempts = $result['attempts'];
-
-		return $result['attempts'];
+		return $this->attempts;
 	}
 
 	/**
@@ -104,28 +133,38 @@ class Sentry_Attempts
 	 * @param string
 	 * @param int
 	 */
-	public function add($login_id)
+	public function add()
 	{
-		if (static::$attempts)
+		// make sure a login id and ip address are set
+		if (empty($this->login_id) or empty($this->ip_address))
 		{
-			static::$attempts++;
+			throw new SentryAttemptsException(__('sentry.login_ip_required'));
+		}
 
+		// this shouldn't happen, but put it just to make sure
+		if (is_array($this->attempts))
+		{
+			throw new SentryAttemptsException(__('sentry.single_user_required'));
+		}
+
+		if ($this->attempts)
+		{
 			$result = \DB::update(static::$table_suspend)
 				->set(array(
-					'attempts' => static::$attempts,
+					'attempts' => ++$this->attempts,
 					'last_attempt_at' => time(),
 				))
-				->where('login_id', $login_id)
-				->where('ip', \Input::real_ip())
+				->where('login_id', $this->login_id)
+				->where('ip', $this->ip_address)
 				->execute();
 		}
 		else
 		{
 			$result = \DB::insert(static::$table_suspend)
 				->set(array(
-					'login_id' => $login_id,
-					'ip' => \Input::real_ip(),
-					'attempts' => 1,
+					'login_id' => $this->login_id,
+					'ip' => $this->ip_address,
+					'attempts' => ++$this->attempts,
 					'last_attempt_at' => time(),
 				))
 				->execute();
@@ -138,28 +177,22 @@ class Sentry_Attempts
 	 * @param string
 	 * @param string
 	 */
-	public function clear($login_id, $ip = null)
+	public function clear()
 	{
-		if ($ip === null)
+		$query = \DB::delete(static::$table_suspend);
+
+		if ($this->login_id)
 		{
-			$ip = \Input::real_ip();
+			$query = $query->where('login_id', $this->login_id);
 		}
 
-		$result = \DB::delete(static::$table_suspend)
-			->where('login_id', $login_id)
-			->where('ip', $ip)
-			->execute();
-	}
+		if ($this->ip_address)
+		{
+			$query = $query->where('ip', $this->ip_address);
+		}
 
-	/**
-	 * Alias of Clear_Attempts
-	 *
-	 * @param string
-	 * @param string
-	 */
-	public function unsuspend($login_id, $ip = null)
-	{
-		$this->clear($login_id, $ip);
+		$result = $query->execute();
+		$this->attempts = 0;
 	}
 
 	/**
@@ -168,22 +201,27 @@ class Sentry_Attempts
 	 * @param string
 	 * @param int
 	 */
-	public function suspend($login_id, $timeleft = null)
+	public function suspend()
 	{
+		if (empty($this->login_id) or empty($this->ip_address))
+		{
+			throw new \SentryUserSuspendedException(__('sentry.login_ip_required'));
+		}
+
 		// only updates table if unsuspended at has no value
 		$result = \DB::update(static::$table_suspend)
 			->set(array(
 				'suspended_at' => time(),
 				'unsuspend_at' => time()+(static::$limit['time'] * 60),
 			))
-			->where('login_id', $login_id)
-			->where('ip', \Input::real_ip())
+			->where('login_id', $this->login_id)
+			->where('ip', $this->ip_address) //\Input::real_ip()
 			->where('unsuspend_at', null)
 			->or_where('unsuspend_at', 0)
 			->execute();
 
 		throw new \SentryUserSuspendedException(
-			__('sentry.user_suspended', array('account' => $login_id, 'time' => static::$limit['time']))
+			__('sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))
 		);
 	}
 }
