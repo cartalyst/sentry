@@ -158,6 +158,7 @@ class Sentry_User
 			{
 				// update and resend activation code
 				$this->user = $user_exists;
+
 				$hash = \Str::random('alnum', 24);
 
 				$update = array(
@@ -168,7 +169,6 @@ class Sentry_User
 				{
 					return base64_encode($user[$this->login_column]).'/'.$hash;
 				}
-
 				return false;
 			}
 
@@ -201,6 +201,9 @@ class Sentry_User
 		// insert new user
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
+		// insert into metadata
+		DB::insert($this->table_metadata)->set(array('user_id' => $insert_id))->execute();
+
 		// return activation hash for emailing if activation = true
 		if ($activation)
 		{
@@ -227,7 +230,7 @@ class Sentry_User
 
 		// init update array
 		$update = array();
-		
+
 		// init user metatdata
 		$update_metadata = null;
 
@@ -323,11 +326,16 @@ class Sentry_User
 			unset($fields['activation_hash']);
 		}
 
-		if (array_key_exists('last_login', $fields) and
-			! empty($fields['last_login']) and is_int($fields['last_login']))
+		if (array_key_exists('last_login', $fields) and ! empty($fields['last_login']) and is_int($fields['last_login']))
 		{
 			$update['last_login'] = $fields['last_login'];
 			unset($fields['last_login']);
+		}
+
+		if (array_key_exists('activated', $fields))
+		{
+			$update['activated'] = $fields['activated'];
+			unset($fields['activated']);
 		}
 
 		if (empty($update) and empty($fields['metadata']))
@@ -696,7 +704,19 @@ class Sentry_User
 			->limit(1)
 			->execute()->current();
 
-		return $result;
+		if ($result)
+		{
+			$metadata = DB::select()
+					->from($this->table_metadata)
+					->where('user_id', $result['id'])
+					->execute()->current();
+
+			$result['metadata'] = $metadata;
+
+			return $result;
+		}
+
+		return false;
 	}
 
 	/**
