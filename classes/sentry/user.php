@@ -81,7 +81,7 @@ class Sentry_User
 				->execute();
 
 			// if there was a result - update user
-			if (count($user))
+			if ( ! empty($user))
 			{
 				$temp = $user->current();
 
@@ -91,7 +91,7 @@ class Sentry_User
 					->where('user_id', $temp['id'])
 					->execute();
 
-				$temp['metadata'] = (count($metadata)) ? $metadata->current() : array();
+				$temp['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
 
 				$this->user = $temp;
 			}
@@ -191,6 +191,17 @@ class Sentry_User
 			'status' => 1,
 		) + $user;
 
+		// check for metadata
+		if (array_key_exists('metadata', $new_user))
+		{
+			$metadata = $new_user['metadata'];
+			unset($new_user['metadata']);
+		}
+		else
+		{
+			$metadata = array();
+		}
+
 		// set activation hash if activation = true
 		if ($activation)
 		{
@@ -202,7 +213,11 @@ class Sentry_User
 		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
 
 		// insert into metadata
-		DB::insert($this->table_metadata)->set(array('user_id' => $insert_id))->execute();
+		$metadata = array(
+			'user_id' => $insert_id
+		) + $metadata;
+
+		DB::insert($this->table_metadata)->set($metadata)->execute();
 
 		// return activation hash for emailing if activation = true
 		if ($activation)
@@ -717,7 +732,7 @@ class Sentry_User
 					->where('user_id', $result['id'])
 					->execute();
 
-			$result['metadata'] = (count($metadata)) ? $metadata->current() : array();
+			$result['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
 
 			return $result;
 		}
