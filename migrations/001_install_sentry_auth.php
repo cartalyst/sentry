@@ -28,6 +28,7 @@ class Install_Sentry_Auth {
 			'remember_me'         => array('constraint' => 81, 'type' => 'varchar'),
 			'activation_hash'     => array('constraint' => 81, 'type' => 'varchar'),
 			'last_login'          => array('constraint' => 11, 'type' => 'int'),
+			'ip_address'          => array('constraint' => 50, 'type' => 'varchar'),
 			'updated_at'          => array('constraint' => 11, 'type' => 'int'),
 			'created_at'          => array('constraint' => 11, 'type' => 'int'),
 			'status'              => array('constraint' => 1, 'type' => 'tinyint'),

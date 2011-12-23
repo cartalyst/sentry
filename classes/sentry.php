@@ -220,6 +220,7 @@ class Sentry
 			}
 
 			$update['last_login'] = time();
+			$update['ip_address'] = \Input::real_ip();
 
 			// update user
 			if (count($update))

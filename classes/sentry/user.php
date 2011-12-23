@@ -332,6 +332,12 @@ class Sentry_User
 			unset($fields['last_login']);
 		}
 
+		if (array_key_exists('ip_address', $fields))
+		{
+			$update['ip_address'] = $fields['ip_address'];
+			unset($fields['ip_address']);
+		}
+
 		if (array_key_exists('activated', $fields))
 		{
 			$update['activated'] = $fields['activated'];
