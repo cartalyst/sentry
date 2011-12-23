@@ -709,9 +709,9 @@ class Sentry_User
 			$metadata = DB::select()
 					->from($this->table_metadata)
 					->where('user_id', $result['id'])
-					->execute()->current();
+					->execute();
 
-			$result['metadata'] = $metadata;
+			$result['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
 			return $result;
 		}
