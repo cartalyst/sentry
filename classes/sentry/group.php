@@ -112,6 +112,11 @@ class Sentry_Group
 			$group['is_admin'] = 0;
 		}
 
+		if ( ! array_key_exists('parent', $group))
+		{
+			$group['parent'] = 0;
+		}
+
 		list($insert_id, $rows_affected) = DB::insert(static::$table)->set($group)->execute();
 
 		return ($rows_affected > 0) ? $insert_id : false;
