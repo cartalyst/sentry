@@ -564,7 +564,7 @@ class Sentry_User
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
+			throw new \SentryGroupException(__('sentry.user_already_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
