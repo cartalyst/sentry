@@ -45,7 +45,7 @@ class Sentry_User
 	 * @return  void
 	 * @throws  SentryUserNotFoundException
 	 */
-	public function __construct($id = null)
+	public function __construct($id = null, $check_exists = false)
 	{
 		// load and set config
 		$this->table = strtolower(Config::get('sentry.table.users'));
@@ -83,6 +83,12 @@ class Sentry_User
 			// if there was a result - update user
 			if (count($user))
 			{
+				// if just a user exists check - return true, no need for additional queries
+				if ($check_exists)
+				{
+					return true;
+				}
+
 				$temp = $user->current();
 
 				// query for metadata
@@ -462,8 +468,15 @@ class Sentry_User
 		DB::transactional();
 		DB::start_transaction();
 
-		try {
+		try
+		{
+			// delete users groups
 			$delete_user_groups = DB::delete($this->table_usergroups)
+				->where('user_id', $this->user['id'])
+				->execute();
+
+			// delete users metadata
+			$delete_user_metadata = DB::delete($this->table_metadata)
 				->where('user_id', $this->user['id'])
 				->execute();
 
@@ -471,8 +484,8 @@ class Sentry_User
 			$delete_user = DB::delete($this->table)
 				->where('id', $this->user['id'])
 				->execute();
-
-		} catch(\Database_Exception $e) {
+		}
+		catch(\Database_Exception $e) {
 			DB::rollback_transaction();
 			return false;
 		}

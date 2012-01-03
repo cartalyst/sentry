@@ -106,15 +106,8 @@ class Sentry
 
 		if ($id)
 		{
-			try
-			{
-				static::$user_cache[$id] = new Sentry_User($id);
-				return static::$user_cache[$id];
-			}
-			catch (SentryUserNotFoundException $e)
-			{
-				throw new \SentryAuthException($e->getMessage());
-			}
+			static::$user_cache[$id] = new Sentry_User($id);
+			return static::$user_cache[$id];
 		}
 		// if session exists - default to user session
 		else if(static::check())
@@ -417,7 +410,7 @@ class Sentry
 	{
 		try
 		{
-			$user = new Sentry_User($login_column_value);
+			$user = new Sentry_User($login_column_value, true);
 
 			if ($user)
 			{
