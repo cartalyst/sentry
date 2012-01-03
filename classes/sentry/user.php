@@ -256,7 +256,16 @@ class Sentry_User
 		// return activation hash for emailing if activation = true
 		if ($activation)
 		{
-			return ($rows_affected > 0) ? base64_encode($user[$this->login_column]).'/'.$hash : false;
+			// return array of id and hash
+			if ($rows_affected > 0)
+			{
+				return array(
+					'id' => (int) $insert_id,
+					'hash'    => base64_encode($user[$this->login_column]).'/'.$hash
+				);
+			}
+
+			return false;
 		}
 		return ($rows_affected > 0) ? (int) $insert_id : false;
 	}
