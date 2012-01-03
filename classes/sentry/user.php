@@ -791,7 +791,7 @@ class Sentry_User
 		// check to see if passwords match
 		return $password == $this->user[$field];
 	}
-	
+
 	/**
 	 * Return all users
 	 *
@@ -799,7 +799,7 @@ class Sentry_User
 	 */
 	public function all()
 	{
-		return DB::select()->from($this->table)->as_object(get_called_class())->execute()->as_array();
+		return DB::select()->from($this->table)->execute()->as_array();
 	}
 
 	/**
