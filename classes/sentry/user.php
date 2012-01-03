@@ -791,6 +791,16 @@ class Sentry_User
 		// check to see if passwords match
 		return $password == $this->user[$field];
 	}
+	
+	/**
+	 * Return all users
+	 *
+	 * @return  array
+	 */
+	public function all()
+	{
+		return DB::select()->from($this->table)->as_object(get_called_class())->execute()->as_array();
+	}
 
 	/**
 	 * Generates a random salt and hashes the given password with the salt.
