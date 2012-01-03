@@ -441,9 +441,9 @@ class Sentry
 	 * @param   string  Group name
 	 * @return  bool
 	 */
-	public function group_exists($name)
+	public static function group_exists($name)
 	{
-		$group = DB::select('id')->from(static::$table)->where('name', $name)->limit(1)->execute();
+		$group = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $name)->limit(1)->execute();
 
 		return (bool) count($group);
 	}

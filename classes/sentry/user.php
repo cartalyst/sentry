@@ -81,7 +81,7 @@ class Sentry_User
 				->execute();
 
 			// if there was a result - update user
-			if ( ! empty($user))
+			if (count($user))
 			{
 				$temp = $user->current();
 
