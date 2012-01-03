@@ -27,6 +27,9 @@ return array(
 	/* Default Authorization Column - username or email */
 	'login_column' => 'email',
 
+	/* Support nested groups? */
+	'nested_groups' => false,
+
 	/* Remember Me settings */
 	'remember_me' => array(
 

@@ -103,12 +103,46 @@ class Sentry_User
 
 			$groups_table = Config::get('sentry.table.groups');
 
-			$this->groups = DB::select($groups_table.'.*')
-				->from($groups_table)
-				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-				->join($this->table_usergroups)
-				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-				->execute()->as_array();
+			if (Config::get('sentry.nested_groups'))
+			{
+				$children = function($parent, $group) use ($groups, &$children)
+				{
+					$result = array($group);
+					foreach ($groups as $group)
+					{
+						if ($group['parent'] === $parent)
+						{
+							$result = array_merge($result, $children($group['id'], $group));
+						}
+					}
+					return $result;
+				};
+
+				$groups = DB::select('*')
+					->from($groups_table)
+					->execute()->as_array('id');
+
+				$usergroups = DB::select('group_id')
+					->from($this->table_usergroups)
+					->where($this->table_usergroups.'.user_id', '=', 1)
+					->execute()->as_array('group_id');
+
+				$this->groups = array();
+
+				foreach ($usergroups as $usergroup)
+				{
+					$this->groups = array_merge($this->groups, $children($usergroup['group_id'], $groups[$usergroup['group_id']]));
+				}
+			}
+			else
+			{
+				$this->groups = DB::select($groups_table.'.*')
+					->from($groups_table)
+					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+					->join($this->table_usergroups)
+					->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
+					->execute()->as_array();
+			}
 		}
 	}
 
@@ -513,7 +547,7 @@ class Sentry_User
 		// if single field was passed - return its value
 		else
 		{
-                        // check to see if field exists in user
+			// check to see if field exists in user
 			$val = \Arr::get($this->user, $field, '__MISSING_KEY__');
 			if ($val !== '__MISSING_KEY__')
 			{
