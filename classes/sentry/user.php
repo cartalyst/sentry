@@ -419,29 +419,28 @@ class Sentry_User
 		DB::transactional();
 		DB::start_transaction();
 
-		$delete_user_groups = DB::delete($this->table_usergroups)
-			->where('user_id', $this->user['id'])
-			->execute();
+		try {
+			$delete_user_groups = DB::delete($this->table_usergroups)
+				->where('user_id', $this->user['id'])
+				->execute();
 
-		// delete user from database
-		$delete_user = DB::delete($this->table)
-			->where('id', $this->user['id'])
-			->execute();
+			// delete user from database
+			$delete_user = DB::delete($this->table)
+				->where('id', $this->user['id'])
+				->execute();
 
-		// if user was deleted
-		if ($delete_user_groups and $delete_user)
-		{
-			DB::commit_transaction();
-
-			// update user to null
-			$this->user = array();
-
-			return true;
+		} catch(\Database_Exception $e) {
+			DB::rollback_transaction();
+			return false;
 		}
 
-		DB::rollback_transaction();
+		DB::commit_transaction();
 
-		return false;
+		// update user to null
+		$this->user = array();
+
+		return true;
+
 	}
 
 	/**
