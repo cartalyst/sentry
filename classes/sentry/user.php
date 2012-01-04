@@ -619,7 +619,7 @@ class Sentry_User
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.user_already_in_group', array('group' => $id)));
+			throw new \SentryUserException(__('sentry.user_already_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -634,13 +634,20 @@ class Sentry_User
 		}
 		catch (SentryGroupNotFoundException $e)
 		{
-			throw new \SentryGroupException($e->getMessage());
+			throw new \SentryUserException($e->getMessage());
 		}
 
 		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
 			'group_id' => $group->get('id'),
 		))->execute();
+
+		$this->groups[] = array(
+			'id'       => $group->get('id'),
+			'name'     => $group->get('name'),
+			'level'    => $group->get('level'),
+			'is_admin' => $group->get('is_admin')
+		);
 
 		return true;
 	}
@@ -655,7 +662,7 @@ class Sentry_User
 	{
 		if ( ! $this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
+			throw new \SentryUserException(__('sentry.user_not_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -670,12 +677,29 @@ class Sentry_User
 		}
 		catch (SentryGroupNotFoundException $e)
 		{
-			throw new \SentryGroupException($e->getMessage());
+			throw new \SentryUserException($e->getMessage());
 		}
 
-		return (bool) DB::delete($this->table_usergroups)
+		$delete = DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
 				->where('group_id', $group->get('id'))->execute();
+
+		// remove from array
+		$field = 'name';
+		if (is_numeric($id))
+		{
+			$field = 'id';
+		}
+		foreach ($this->groups as $key => $group)
+		{
+			if ($group[$field] == $id)
+			{
+				unset($group);
+			}
+			unset($this->groups[$key]);
+		}
+
+		return (bool) $delete;
 	}
 
 	/**
@@ -691,6 +715,7 @@ class Sentry_User
 		{
 			$field = 'id';
 		}
+
 		foreach ($this->groups as $group)
 		{
 			if ($group[$field] == $name)

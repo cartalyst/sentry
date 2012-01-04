@@ -11,7 +11,7 @@ return array(
 	/** Group Exception Messages **/
 	'user_already_in_group'     => 'The User is already in group ":group".',
 	'group_already_exists'      => 'The group name ":group" already exists.',
-	'user_not_in_group'         => 'The User isn\'t in group ":group".',
+	'user_not_in_group'         => 'The User is not in group ":group".',
 	'invalid_group_id'          => 'Group ID must be a valid integer greater than 0.',
 	'group_not_found'           => 'Group ":group" does not exist.',
 	'group_level_empty'         => 'You must specify a level of the group.',
