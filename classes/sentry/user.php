@@ -408,6 +408,12 @@ class Sentry_User
 			unset($fields['activated']);
 		}
 
+		if (array_key_exists('status', $fields))
+		{
+			$update['status'] = $fields['status'];
+			unset($fields['status']);
+		}
+
 		if (empty($update) and empty($fields['metadata']))
 		{
 			return true;
@@ -497,6 +503,34 @@ class Sentry_User
 
 		return true;
 
+	}
+
+	/**
+	 * Enable a User
+	 *
+	 * @return  bool
+	 */
+	public function enable()
+	{
+		if ($this->user['status'] == 1)
+		{
+			throw new \SentryUserException(__('sentry.user_already_enabled'));
+		}
+		return $this->update(array('status' => 1));
+	}
+
+	/**
+	 * Disable a User
+	 *
+	 * @return  bool
+	 */
+	public function disable()
+	{
+		if ($this->user['status'] == 0)
+		{
+			throw new \SentryUserException(__('sentry.user_already_disabled'));
+		}
+		return $this->update(array('status' => 0));
 	}
 
 	/**
