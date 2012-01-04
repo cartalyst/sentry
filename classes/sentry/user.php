@@ -509,6 +509,7 @@ class Sentry_User
 	 * Enable a User
 	 *
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function enable()
 	{
@@ -523,6 +524,7 @@ class Sentry_User
 	 * Disable a User
 	 *
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function disable()
 	{
