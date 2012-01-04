@@ -372,7 +372,7 @@ class Sentry_User
 		{
 			$update_user = DB::update($this->table)
 				->set($update)
-				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', 'users.id')
+				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', $this->table.'.id')
 				->where('id', $this->user['id'])
 				->execute();
 		}
