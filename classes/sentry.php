@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -118,7 +118,7 @@ class Sentry
 		}
 
 		// else return empty user
-		return new Sentry_User();
+		return new \Sentry_User();
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Sentry
 			return new \Sentry_Group($id);
 		}
 
-		return new Sentry_Group();
+		return new \Sentry_Group();
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Sentry
 	 */
 	 public static function attempts($login_id = null, $ip_address = null)
 	 {
-	 	return new Sentry_Attempts($login_id, $ip_address);
+	 	return new \Sentry_Attempts($login_id, $ip_address);
 	 }
 
 	/**
@@ -410,7 +410,7 @@ class Sentry
 	{
 		try
 		{
-			$user = new Sentry_User($login_column_value, true);
+			$user = new \Sentry_User($login_column_value, true);
 
 			if ($user)
 			{
