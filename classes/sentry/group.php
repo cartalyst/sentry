@@ -12,9 +12,11 @@
 
 namespace Sentry;
 
+use ArrayAccess;
 use Config;
 use DB;
 use FuelException;
+use Iterator;
 
 class SentryGroupException extends \FuelException {}
 class SentryGroupNotFoundException extends \SentryGroupException {}
@@ -24,7 +26,7 @@ class SentryGroupNotFoundException extends \SentryGroupException {}
  *
  * @author Dan Horrigan
  */
-class Sentry_Group
+class Sentry_Group implements Iterator, ArrayAccess
 {
 
 	protected static $table = '';
