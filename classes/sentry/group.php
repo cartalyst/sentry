@@ -247,4 +247,86 @@ class Sentry_Group
 		return DB::select()->from(static::$table)->execute()->as_array();
 	}
 
+
+	/**
+	 * Implementation of the Iterator interface
+	 */
+
+	protected $_iterable = array();
+
+	public function rewind()
+	{
+		$this->_iterable = $this->group;
+		reset($this->_iterable);
+	}
+
+	public function current()
+	{
+		return current($this->_iterable);
+	}
+
+	public function key()
+	{
+		return key($this->_iterable);
+	}
+
+	public function next()
+	{
+		return next($this->_iterable);
+	}
+
+	public function valid()
+	{
+		return key($this->_iterable) !== null;
+	}
+
+	/**
+	 * Sets the value of the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @param   string  $value   value
+	 * @return  void
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->{$offset} = $value;
+	}
+
+	/**
+	 * Checks if the given offset (class property) exists.
+	 *
+	 * @param   string  $offset  class property
+	 * @return  bool
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->{$offset});
+	}
+
+	/**
+	 * Unsets the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @return  void
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->{$offset});
+	}
+
+	/**
+	 * Gets the value of the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @return  mixed
+	 */
+	public function offsetGet($offset)
+	{
+		if (isset($this->{$offset}))
+		{
+			return $this->{$offset};
+		}
+
+		throw new \OutOfBoundsException('Property "'.$offset.'" not found for '.get_called_class().'.');
+	}
 }
