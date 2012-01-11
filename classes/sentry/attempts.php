@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -138,13 +138,13 @@ class Sentry_Attempts
 		// make sure a login id and ip address are set
 		if (empty($this->login_id) or empty($this->ip_address))
 		{
-			throw new SentryAttemptsException(__('sentry.login_ip_required'));
+			throw new \SentryAttemptsException(__('sentry.login_ip_required'));
 		}
 
 		// this shouldn't happen, but put it just to make sure
 		if (is_array($this->attempts))
 		{
-			throw new SentryAttemptsException(__('sentry.single_user_required'));
+			throw new \SentryAttemptsException(__('sentry.single_user_required'));
 		}
 
 		if ($this->attempts)

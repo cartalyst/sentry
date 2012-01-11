@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
