@@ -219,7 +219,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 			->from($users_table)
 			->where(static::$join_table.'.group_id', '=', $this->group['id'])
 			->join(static::$join_table)
-			->on(static::$join_table.'.group_id', '=', $users_table.'.id')
+			->on(static::$join_table.'.user_id', '=', $users_table.'.id')
 			->execute()->as_array();
 
 		if (count($users) == 0)
