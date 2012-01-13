@@ -113,6 +113,10 @@ class Sentry_User implements Iterator, ArrayAccess
 
 			if (Config::get('sentry.nested_groups'))
 			{
+				$groups = DB::select('*')
+					->from($groups_table)
+					->execute()->as_array('id');
+					
 				$children = function($parent, $group) use ($groups, &$children)
 				{
 					$result = array($group);
@@ -126,9 +130,6 @@ class Sentry_User implements Iterator, ArrayAccess
 					return $result;
 				};
 
-				$groups = DB::select('*')
-					->from($groups_table)
-					->execute()->as_array('id');
 
 				$usergroups = DB::select('group_id')
 					->from($this->table_usergroups)
