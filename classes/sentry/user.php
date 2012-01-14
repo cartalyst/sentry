@@ -99,7 +99,7 @@ class Sentry_User implements Iterator, ArrayAccess
 					->where('user_id', $temp['id'])
 					->execute();
 
-				$temp['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
+				$temp['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
 				$this->user = $temp;
 			}
@@ -850,7 +850,7 @@ class Sentry_User implements Iterator, ArrayAccess
 					->where('user_id', $result['id'])
 					->execute();
 
-			$result['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
+			$result['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
 			return $result;
 		}
