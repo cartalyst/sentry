@@ -12,6 +12,8 @@
 
 namespace Fuel\Migrations;
 
+\Package::load('sentry');
+
 class Install_Sentry_Auth {
 
 	public function up()
