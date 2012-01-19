@@ -181,6 +181,49 @@ class Sentry_Group implements Iterator, ArrayAccess
 	}
 
 	/**
+	 * Delete's the current group.
+	 *
+	 * @return  bool
+	 * @throws  SentryGroupException
+	 */
+	public function delete()
+	{
+		// make sure a user id is set
+		if (empty($this->group['id']))
+		{
+			throw new \SentryGroupException(__('sentry.no_group_selected'));
+		}
+
+		DB::transactional();
+		DB::start_transaction();
+
+		try
+		{
+			// delete users groups
+			$delete_user_groups = DB::delete(static::$join_table)
+				->where('group_id', $this->group['id'])
+				->execute();
+
+			// delete GROUP
+			$delete_user = DB::delete(static::$table)
+				->where('id', $this->group['id'])
+				->execute();
+		}
+		catch(\Database_Exception $e) {
+			DB::rollback_transaction();
+			return false;
+		}
+
+		DB::commit_transaction();
+
+		// update user to null
+		$this->group = array();
+
+		return true;
+
+	}
+
+	/**
 	 * Checks if the Field is set or not.
 	 *
 	 * @param   string  Field name
