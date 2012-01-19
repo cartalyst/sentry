@@ -125,6 +125,62 @@ class Sentry_Group implements Iterator, ArrayAccess
 	}
 
 	/**
+	 * Update the given group
+	 *
+	 * @param   array  fields to be updated
+	 * @return  bool
+	 * @throws  SentryGroupException
+	 */
+	public function update(array $fields)
+	{
+		// make sure a group id is set
+		if (empty($this->group['id']))
+		{
+			throw new \SentryGroupException(__('sentry.no_group_selected'));
+		}
+
+		// init the update array
+		$update = array();
+
+		// update name
+		if (array_key_exists('name', $fields) and $fields['name'] != $this->group['name'])
+		{
+			// make sure name does not already exist
+			if (Sentry::group_exists($fields['name']))
+			{
+				throw new \SentryGroupException(__('sentry.group_already_exists', array('group' => $fields['name'])));
+			}
+			$update['name'] = $fields['name'];
+			unset($fields['name']);
+		}
+
+		// update level
+		if (array_key_exists('level', $fields))
+		{
+			$update['level'] = $fields['level'];
+		}
+
+		// update is_admin
+		if (array_key_exists('is_admin', $fields))
+		{
+			$update['is_admin'] = $fields['is_admin'];
+		}
+
+		if (empty($update))
+		{
+			return true;
+		}
+
+		$update_group = DB::update(static::$table)
+			->set($update)
+			->where('id', $this->group['id'])
+			->execute();
+
+		return ($update_group) ? true : false;
+
+	}
+
+	/**
 	 * Checks if the Field is set or not.
 	 *
 	 * @param   string  Field name
@@ -156,10 +212,10 @@ class Sentry_Group implements Iterator, ArrayAccess
 	 */
 	public function get($field = null)
 	{
-		// make sure a user id is set
+		// make sure a group id is set
 		if (empty($this->group['id']))
 		{
-			throw new \SentryGroupException(__('sentry.no_level_selected'));
+			throw new \SentryGroupException(__('sentry.no_group_selected'));
 		}
 
 		// if no fields were passed - return entire user
