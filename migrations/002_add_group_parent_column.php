@@ -12,6 +12,8 @@
 
 namespace Fuel\Migrations;
 
+\Package::load('sentry');
+
 class Add_Group_Parent_Column {
 
 	public function up()

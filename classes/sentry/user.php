@@ -728,13 +728,13 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			$field = 'id';
 		}
+
 		foreach ($this->groups as $key => $group)
 		{
 			if ($group[$field] == $id)
 			{
 				unset($group);
 			}
-			unset($this->groups[$key]);
 		}
 
 		return (bool) $delete;
