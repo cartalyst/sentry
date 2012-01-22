@@ -19,7 +19,7 @@ class Add_Group_Parent_Column {
 		\Config::load('sentry', true);
 
 		\DBUtil::add_fields(\Config::get('sentry.table.groups'), array(
-		    'parent'     => array('constraint' => 200, 'type' => 'varchar'),
+		    'parent' => array('constraint' => 11, 'type' => 'int'),
 		));
 	}
 
