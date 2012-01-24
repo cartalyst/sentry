@@ -29,7 +29,7 @@ return array(
 	'login_column' => 'email',
 
 	/* Support nested groups? */
-	'nested_groups' => false,
+	'nested_groups' => true,
 
 	/* Remember Me settings */
 	'remember_me' => array(

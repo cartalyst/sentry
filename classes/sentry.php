@@ -241,7 +241,7 @@ class Sentry
 		// check to make sure user exists
 		if ( ! static::user_exists($id))
 		{
-			throw new \SentryAuthException(__('sentry.force_login_failed', array('id' => $id)));
+			throw new \SentryAuthException(__('sentry.user_not_found'));
 		}
 
 		Session::set(Config::get('sentry.session_var'), $id);

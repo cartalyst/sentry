@@ -111,12 +111,21 @@ class Sentry_User implements Iterator, ArrayAccess
 
 			$groups_table = Config::get('sentry.table.groups');
 
+			// if nested groups is true
 			if (Config::get('sentry.nested_groups'))
 			{
+				// get groups
 				$groups = DB::select('*')
 					->from($groups_table)
 					->execute()->as_array('id');
-					
+
+				// get users groups
+				$usergroups = DB::select('group_id')
+					->from($this->table_usergroups)
+					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+					->execute()->as_array('group_id');
+
+				// set closure function to get nested groups
 				$children = function($parent, $group) use ($groups, &$children)
 				{
 					$result = array($group);
@@ -129,12 +138,6 @@ class Sentry_User implements Iterator, ArrayAccess
 					}
 					return $result;
 				};
-
-
-				$usergroups = DB::select('group_id')
-					->from($this->table_usergroups)
-					->where($this->table_usergroups.'.user_id', '=', 1)
-					->execute()->as_array('group_id');
 
 				$this->groups = array();
 
