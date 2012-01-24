@@ -4,6 +4,7 @@ return array(
 	/** General Exception Messages **/
 	'account_not_activated'  => 'User has not activated their account.',
 	'account_is_disabled'    => 'This account has been disabled.',
+	'force_login_failed'     => 'Invalid Id: :id. Can not login to a user that does not exist.',
 	'invalid_limit_attempts' => 'Sentry Config Item: "limit.attempts" must be an integer greater than 0',
 	'invalid_limit_time'     => 'Sentry Config Item: "limit.time" must be an integer greater than 0',
 	'login_column_empty'     => 'You must set "login_column" in the Sentry config.',

@@ -223,11 +223,30 @@ class Sentry
 
 			// set session vars
 			Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
+			Session::set(Config::get('sentry.session_provider'), 'Sentry');
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Force Login
+	 *
+	 * @param  int|string  user id or login value
+	 */
+	public static function force_login($id, $provider = 'Sentry-Forced')
+	{
+		// check to make sure user exists
+		if ( ! static::user_exists($id))
+		{
+			throw new \SentryAuthException(__('sentry.force_login_failed', array('id' => $id)));
+		}
+
+		Session::set(Config::get('sentry.session_var'), $id);
+		Session::set(Config::get('sentry.session_provider'), $provider);
+		return true;
 	}
 
 	/**
@@ -266,6 +285,7 @@ class Sentry
 	{
 		Cookie::delete(Config::get('sentry.remember_me.cookie_name'));
 		Session::delete(Config::get('sentry.session_var'));
+		Session::delete(Config::get('sentry.session_provider'));
 	}
 
 	/**
@@ -403,8 +423,8 @@ class Sentry
 	/**
 	 * Checks if a user exists by Login Column value
 	 *
-	 * @param   string  Login column value
-	 * @return  bool|Sentry_User
+	 * @param   string|id  Login column value or Id
+	 * @return  bool
 	 */
 	public static function user_exists($login_column_value)
 	{
@@ -486,6 +506,7 @@ class Sentry
 
 				// set session vars
 				Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
+				Session::set(Config::get('sentry.session_provider'), 'Sentry');
 
 				return true;
 			}
