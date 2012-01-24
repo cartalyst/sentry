@@ -451,14 +451,21 @@ class Sentry
 	/**
 	 * Checks if the group exists
 	 *
-	 * @param   string  Group name
+	 * @param   string|int  Group name|Group id
 	 * @return  bool
 	 */
-	public static function group_exists($name)
+	public static function group_exists($group)
 	{
-		$group = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $name)->limit(1)->execute();
+		if( is_int( $group ) )
+		{
+			$group_exists = \DB::select('id')->from( Config::get('sentry.table.groups') )->where('id', $group)->limit(1)->execute();
+		}
+		else
+		{
+			$group_exists = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $group)->limit(1)->execute();
+		}
 
-		return (bool) count($group);
+		return (bool) count($group_exists);
 	}
 
 	/**
