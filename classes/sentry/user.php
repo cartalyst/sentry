@@ -272,8 +272,8 @@ class Sentry_User implements Iterator, ArrayAccess
 			if ($rows_affected > 0)
 			{
 				return array(
-					'id' => (int) $insert_id,
-					'hash'    => base64_encode($user[$this->login_column]).'/'.$hash
+					'id'   => (int) $insert_id,
+					'hash' => base64_encode($user[$this->login_column]).'/'.$hash
 				);
 			}
 

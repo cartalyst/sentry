@@ -77,7 +77,7 @@ class Sentry_Attempts
 
 		$result = $query->execute()->as_array();
 
-		foreach ($result as $row)
+		foreach ($result as &$row)
 		{
 			// check if last attempt was more than 15 min ago - if so reset counter
 			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= time())
