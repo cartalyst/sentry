@@ -22,8 +22,11 @@ return array(
 		'users_suspended' => 'users_suspended',
 	),
 
-	'session_var'      => 'sentry_user',
-	'session_provider' => 'sentry_provider',
+	/* Session keys */
+	'session' => array(
+		'user'     => 'sentry_user',
+		'provider' => 'sentry_provider',
+	),
 
 	/* Default Authorization Column - username or email */
 	'login_column' => 'email',

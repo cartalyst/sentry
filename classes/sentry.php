@@ -112,7 +112,7 @@ class Sentry
 		// if session exists - default to user session
 		else if(static::check())
 		{
-			$user_id = Session::get(Config::get('sentry.session_var'));
+			$user_id = Session::get(Config::get('sentry.session.user'));
 			static::$current_user = new \Sentry_User($user_id);
 			return static::$current_user;
 		}
@@ -141,7 +141,7 @@ class Sentry
 	/**
 	 * Gets the Sentry_Attempts object
 	 *
-	 * @return  Sentry_Attempts;
+	 * @return  Sentry_Attempts
 	 */
 	 public static function attempts($login_id = null, $ip_address = null)
 	 {
@@ -155,7 +155,7 @@ class Sentry
 	 * @param   string  Password entered
 	 * @param   bool    Whether to remember the user or not
 	 * @return  bool
-	 * @throws  SentryAuthException;
+	 * @throws  SentryAuthException
 	 */
 	public static function login($login_column_value, $password, $remember = false)
 	{
@@ -222,8 +222,8 @@ class Sentry
 			}
 
 			// set session vars
-			Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
-			Session::set(Config::get('sentry.session_provider'), 'Sentry');
+			Session::set(Config::get('sentry.session.user'), (int) $user->get('id'));
+			Session::set(Config::get('sentry.session.provider'), 'Sentry');
 
 			return true;
 		}
@@ -234,7 +234,10 @@ class Sentry
 	/**
 	 * Force Login
 	 *
-	 * @param  int|string  user id or login value
+	 * @param   int|string  user id or login value
+	 * @param   provider    what system was used to force the login
+	 * @return  bool
+	 * @throws  SentryAuthException
 	 */
 	public static function force_login($id, $provider = 'Sentry-Forced')
 	{
@@ -244,8 +247,8 @@ class Sentry
 			throw new \SentryAuthException(__('sentry.user_not_found'));
 		}
 
-		Session::set(Config::get('sentry.session_var'), $id);
-		Session::set(Config::get('sentry.session_provider'), $provider);
+		Session::set(Config::get('sentry.session.user'), $id);
+		Session::set(Config::get('sentry.session.provider'), $provider);
 		return true;
 	}
 
@@ -257,7 +260,7 @@ class Sentry
 	public static function check()
 	{
 		// get session
-		$user_id = Session::get(Config::get('sentry.session_var'));
+		$user_id = Session::get(Config::get('sentry.session.user'));
 
 		// invalid session values - kill the user session
 		if ($user_id === null or ! is_numeric($user_id))
@@ -284,8 +287,8 @@ class Sentry
 	public static function logout()
 	{
 		Cookie::delete(Config::get('sentry.remember_me.cookie_name'));
-		Session::delete(Config::get('sentry.session_var'));
-		Session::delete(Config::get('sentry.session_provider'));
+		Session::delete(Config::get('sentry.session.user'));
+		Session::delete(Config::get('sentry.session.provider'));
 	}
 
 	/**
@@ -294,9 +297,11 @@ class Sentry
 	 * @param   string  Encoded Login Column value
 	 * @param   string  User's activation code
 	 * @return  bool
+	 * @throws  SentryAuthException
 	 */
 	public static function activate_user($login_column_value, $code, $decode = true)
 	{
+		// decode login column
 		if ($decode)
 		{
 			$login_column_value = base64_decode($login_column_value);
@@ -331,6 +336,7 @@ class Sentry
 	 * @param   string  Login Column value
 	 * @param   string  User's new password
 	 * @return  bool|array
+	 * @throws  SentryAuthException
 	 */
 	public static function reset_password($login_column_value, $password)
 	{
@@ -375,11 +381,12 @@ class Sentry
 	 *
 	 * @param   string  Login Column value
 	 * @param   string  Reset password code
-	 * @throws  SentryAuthException
 	 * @return  bool
+	 * @throws  SentryAuthException
 	 */
 	public static function reset_password_confirm($login_column_value, $code, $decode = true)
 	{
+		// decode login column
 		if ($decode)
 		{
 			$login_column_value = base64_decode($login_column_value);
@@ -512,8 +519,8 @@ class Sentry
 				));
 
 				// set session vars
-				Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
-				Session::set(Config::get('sentry.session_provider'), 'Sentry');
+				Session::set(Config::get('sentry.session.user'), (int) $user->get('id'));
+				Session::set(Config::get('sentry.session.provider'), 'Sentry');
 
 				return true;
 			}

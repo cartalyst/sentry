@@ -35,6 +35,14 @@ class Sentry_Attempts
 
 	protected $attempts = null;
 
+	/**
+	 * Attempts Constructor
+	 *
+	 * @param   string  user login
+	 * @param   string  ip address
+	 * @return  Sentry_Attempts
+	 * @throws  SentryAttemptsException
+	 */
 	public function __construct($login_id = null, $ip_address = null)
 	{
 		\Config::load('sentry', true);
@@ -112,7 +120,7 @@ class Sentry_Attempts
 	/**
 	 * Check Number of Login Attempts
 	 *
-	 * @param string
+	 * @return  int
 	 */
 	public function get()
 	{
@@ -121,6 +129,8 @@ class Sentry_Attempts
 
 	/**
 	 * Gets attempt limit number
+	 *
+	 * @return  int
 	 */
 	 public function get_limit()
 	 {

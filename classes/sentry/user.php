@@ -477,7 +477,6 @@ class Sentry_User implements Iterator, ArrayAccess
 			throw new \SentryUserException(__('sentry.no_user_selected_to_delete'));
 		}
 
-		DB::transactional();
 		DB::start_transaction();
 
 		try
@@ -656,6 +655,7 @@ class Sentry_User implements Iterator, ArrayAccess
 	 *
 	 * @param   string|int  Group ID or group name
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function add_to_group($id)
 	{
@@ -699,6 +699,7 @@ class Sentry_User implements Iterator, ArrayAccess
 	 *
 	 * @param   string|int  Group ID or group name
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function remove_from_group($id)
 	{

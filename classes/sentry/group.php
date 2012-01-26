@@ -194,7 +194,6 @@ class Sentry_Group implements Iterator, ArrayAccess
 			throw new \SentryGroupException(__('sentry.no_group_selected'));
 		}
 
-		DB::transactional();
 		DB::start_transaction();
 
 		try
