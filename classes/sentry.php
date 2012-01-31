@@ -104,17 +104,24 @@ class Sentry
 			return static::$user_cache[$id];
 		}
 
-		if ($id)
+		try
 		{
-			static::$user_cache[$id] = new Sentry_User($id);
-			return static::$user_cache[$id];
+			if ($id)
+			{
+				static::$user_cache[$id] = new Sentry_User($id);
+				return static::$user_cache[$id];
+			}
+			// if session exists - default to user session
+			else if(static::check())
+			{
+				$user_id = Session::get(Config::get('sentry.session.user'));
+				static::$current_user = new \Sentry_User($user_id);
+				return static::$current_user;
+			}
 		}
-		// if session exists - default to user session
-		else if(static::check())
+		catch (SentryUserNotFoundException $e)
 		{
-			$user_id = Session::get(Config::get('sentry.session.user'));
-			static::$current_user = new \Sentry_User($user_id);
-			return static::$current_user;
+			throw new SentryAuthException($e->getMessage());
 		}
 
 		// else return empty user
