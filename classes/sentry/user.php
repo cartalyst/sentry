@@ -131,7 +131,7 @@ class Sentry_User implements Iterator, ArrayAccess
 					$result = array($group);
 					foreach ($groups as $group)
 					{
-						if ($group['parent'] === $parent)
+						if (intval($group['id']) === $parent)
 						{
 							$result = array_merge($result, $children($group['id'], $group));
 						}
