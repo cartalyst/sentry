@@ -15,10 +15,10 @@ return array(
 
 	/**
 	 * Database instance to use
-	 * Default (null) - Use the default fuel 'active' instance in APPPATH/config/db.php
-	 * String - Any database instance that is defined in APPPATH/config/db.php
+	 * Leave this null to use the default 'active' db instance
+	 * To use any other instance, set this to any instance that's defined in APPPATH/config/db.php
 	 */
-	'db_instance' => 'auth',
+	'db_instance' => null,
 
 	/* Table Names */
 	'table' => array(
