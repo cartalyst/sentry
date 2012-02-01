@@ -24,6 +24,7 @@ class SentryUserSuspendedException extends \SentryAttemptsException {}
 
 class Sentry_Attempts
 {
+	protected static $db_instance = null;
 
 	protected static $table_suspend = null;
 
@@ -46,6 +47,14 @@ class Sentry_Attempts
 	public function __construct($login_id = null, $ip_address = null)
 	{
 		\Config::load('sentry', true);
+
+		$_db_instance = trim(\Config::get('sentry.db_instance'));
+
+		// db_instance check
+		if ( ! empty($_db_instance) )
+		{
+			static::$db_instance = $_db_instance;
+		}
 
 		static::$table_suspend = \Config::get('sentry.table.users_suspended');
 		static::$limit = array(
@@ -83,7 +92,7 @@ class Sentry_Attempts
 			$query = $query->where('ip', $this->ip_address);
 		}
 
-		$result = $query->execute()->as_array();
+		$result = $query->execute(static::$db_instance)->as_array();
 
 		foreach ($result as &$row)
 		{
@@ -166,7 +175,7 @@ class Sentry_Attempts
 				))
 				->where('login_id', $this->login_id)
 				->where('ip', $this->ip_address)
-				->execute();
+				->execute(static::$db_instance);
 		}
 		else
 		{
@@ -177,7 +186,7 @@ class Sentry_Attempts
 					'attempts' => ++$this->attempts,
 					'last_attempt_at' => time(),
 				))
-				->execute();
+				->execute(static::$db_instance);
 		}
 	}
 
@@ -201,7 +210,7 @@ class Sentry_Attempts
 			$query = $query->where('ip', $this->ip_address);
 		}
 
-		$result = $query->execute();
+		$result = $query->execute(static::$db_instance);
 		$this->attempts = 0;
 	}
 
@@ -228,7 +237,7 @@ class Sentry_Attempts
 			->where('ip', $this->ip_address) //\Input::real_ip()
 			->where('unsuspend_at', null)
 			->or_where('unsuspend_at', 0)
-			->execute();
+			->execute(static::$db_instance);
 
 		throw new \SentryUserSuspendedException(
 			__('sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))

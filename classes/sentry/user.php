@@ -32,6 +32,7 @@ class SentryUserNotFoundException extends \SentryUserException {}
 class Sentry_User implements Iterator, ArrayAccess
 {
 	// set class properties
+	protected $db_instance = null;
 	protected $user = array();
 	protected $groups = array();
 	protected $table = null;
@@ -50,11 +51,19 @@ class Sentry_User implements Iterator, ArrayAccess
 	public function __construct($id = null, $check_exists = false)
 	{
 		// load and set config
+
 		$this->table = strtolower(Config::get('sentry.table.users'));
 		$this->table_usergroups = strtolower(Config::get('sentry.table.users_groups'));
 		$this->table_metadata = strtolower(Config::get('sentry.table.users_metadata'));
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
+		$_db_instance = trim(Config::get('sentry.db_instance'));
+
+		// db_instance check
+		if ( ! empty($_db_instance) )
+		{
+			$this->db_instance = $_db_instance;
+		}
 
 		// if an ID was passed
 		if ($id)
@@ -80,7 +89,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			$user = DB::select()
 				->from($this->table)
 				->where($field, $id)
-				->execute();
+				->execute($this->db_instance);
 
 			// if there was a result - update user
 			if (count($user))
@@ -97,7 +106,7 @@ class Sentry_User implements Iterator, ArrayAccess
 				$metadata = DB::select()
 					->from($this->table_metadata)
 					->where('user_id', $temp['id'])
-					->execute();
+					->execute($this->db_instance);
 
 				$temp['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
@@ -117,13 +126,13 @@ class Sentry_User implements Iterator, ArrayAccess
 				// get groups
 				$groups = DB::select('*')
 					->from($groups_table)
-					->execute()->as_array('id');
+					->execute($this->db_instance)->as_array('id');
 
 				// get users groups
 				$usergroups = DB::select('group_id')
 					->from($this->table_usergroups)
 					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-					->execute()->as_array('group_id');
+					->execute($this->db_instance)->as_array('group_id');
 
 				// set closure function to get nested groups
 				$children = function($parent, $group) use ($groups, &$children)
@@ -153,7 +162,7 @@ class Sentry_User implements Iterator, ArrayAccess
 					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
 					->join($this->table_usergroups)
 					->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-					->execute()->as_array();
+					->execute($this->db_instance)->as_array();
 			}
 		}
 	}
@@ -256,14 +265,14 @@ class Sentry_User implements Iterator, ArrayAccess
 		}
 
 		// insert new user
-		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute();
+		list($insert_id, $rows_affected) = DB::insert($this->table)->set($new_user)->execute($this->db_instance);
 
 		// insert into metadata
 		$metadata = array(
 			'user_id' => $insert_id
 		) + $metadata;
 
-		DB::insert($this->table_metadata)->set($metadata)->execute();
+		DB::insert($this->table_metadata)->set($metadata)->execute($this->db_instance);
 
 		// return activation hash for emailing if activation = true
 		if ($activation)
@@ -435,7 +444,7 @@ class Sentry_User implements Iterator, ArrayAccess
 				->set($update)
 				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', 'users.id')
 				->where('id', $this->user['id'])
-				->execute();
+				->execute($this->db_instance);
 		}
 
 		// update metadata table
@@ -444,7 +453,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			$update_metadata = DB::update($this->table_metadata)
 				->set($fields['metadata'])
 				->where('user_id', $this->user['id'])
-				->execute();
+				->execute($this->db_instance);
 		}
 		else
 		{
@@ -484,17 +493,17 @@ class Sentry_User implements Iterator, ArrayAccess
 			// delete users groups
 			$delete_user_groups = DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
-				->execute();
+				->execute($this->db_instance);
 
 			// delete users metadata
 			$delete_user_metadata = DB::delete($this->table_metadata)
 				->where('user_id', $this->user['id'])
-				->execute();
+				->execute($this->db_instance);
 
 			// delete user from database
 			$delete_user = DB::delete($this->table)
 				->where('id', $this->user['id'])
-				->execute();
+				->execute($this->db_instance);
 		}
 		catch(\Database_Exception $e) {
 			DB::rollback_transaction();
@@ -682,7 +691,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
 			'group_id' => $group->get('id'),
-		))->execute();
+		))->execute($this->db_instance);
 
 		$this->groups[] = array(
 			'id'       => $group->get('id'),
@@ -725,7 +734,7 @@ class Sentry_User implements Iterator, ArrayAccess
 
 		$delete = DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
-				->where('group_id', $group->get('id'))->execute();
+				->where('group_id', $group->get('id'))->execute($this->db_instance);
 
 		// remove from array
 		$field = 'name';
@@ -846,14 +855,14 @@ class Sentry_User implements Iterator, ArrayAccess
 			->from($this->table)
 			->where($field, $login)
 			->limit(1)
-			->execute()->current();
+			->execute($this->db_instance)->current();
 
 		if ($result)
 		{
 			$metadata = DB::select()
 					->from($this->table_metadata)
 					->where('user_id', $result['id'])
-					->execute();
+					->execute($this->db_instance);
 
 			$result['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
@@ -889,7 +898,7 @@ class Sentry_User implements Iterator, ArrayAccess
 	 */
 	public function all()
 	{
-		return DB::select()->from($this->table)->execute()->as_array();
+		return DB::select()->from($this->table)->execute($this->db_instance)->as_array();
 	}
 
 	/**

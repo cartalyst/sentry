@@ -13,6 +13,13 @@
 
 return array(
 
+	/**
+	 * Database instance to use
+	 * Default (null) - Use the default fuel 'active' instance in APPPATH/config/db.php
+	 * String - Any database instance that is defined in APPPATH/config/db.php
+	 */
+	'db_instance' => 'auth',
+
 	/* Table Names */
 	'table' => array(
 		'users'           => 'users',
