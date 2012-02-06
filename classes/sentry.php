@@ -30,6 +30,12 @@ class SentryAuthConfigException extends \SentryAuthException {}
  */
 class Sentry
 {
+
+	/**
+	 * @var  string Database instance to use
+	 */
+	 protected static $db_instance = null;
+
 	/**
 	 * @var  string  Holds the column to use for login
 	 */
@@ -74,8 +80,15 @@ class Sentry
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry.login_column'));
 		static::$suspend = trim(Config::get('sentry.limit.enabled'));
+		$_db_instance = trim(Config::get('sentry.db_instance'));
 
 		// validate config settings
+
+		// db_instance check
+		if ( ! empty($_db_instance) )
+		{
+			static::$db_instance = $_db_instance;
+		}
 
 		// login_column check
 		if (empty(static::$login_column))
@@ -472,11 +485,11 @@ class Sentry
 	{
 		if( is_int( $group ) )
 		{
-			$group_exists = \DB::select('id')->from( Config::get('sentry.table.groups') )->where('id', $group)->limit(1)->execute();
+			$group_exists = \DB::select('id')->from( Config::get('sentry.table.groups') )->where('id', $group)->limit(1)->execute(static::$db_instance);
 		}
 		else
 		{
-			$group_exists = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $group)->limit(1)->execute();
+			$group_exists = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $group)->limit(1)->execute(static::$db_instance);
 		}
 
 		return (bool) count($group_exists);

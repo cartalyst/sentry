@@ -29,6 +29,7 @@ class SentryGroupNotFoundException extends \SentryGroupException {}
 class Sentry_Group implements Iterator, ArrayAccess
 {
 
+	protected static $db_instance = null;
 	protected static $table = '';
 	protected static $join_table = '';
 
@@ -39,6 +40,13 @@ class Sentry_Group implements Iterator, ArrayAccess
 	{
 		static::$table = strtolower(Config::get('sentry.table.groups'));
 		static::$join_table = strtolower(Config::get('sentry.table.users_groups'));
+		$_db_instance = trim(Config::get('sentry.db_instance'));
+
+		// db_instance check
+		if ( ! empty($_db_instance) )
+		{
+			static::$db_instance = $_db_instance;
+		}
 	}
 
 	protected $group = array();
@@ -72,7 +80,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 		$group = DB::select()
 		          ->from(static::$table)
 		          ->where($field, $id)
-		          ->execute();
+		          ->execute(static::$db_instance);
 
 		// if there was a result - update user
 		if (count($group))
@@ -119,7 +127,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 			$group['parent'] = 0;
 		}
 
-		list($insert_id, $rows_affected) = DB::insert(static::$table)->set($group)->execute();
+		list($insert_id, $rows_affected) = DB::insert(static::$table)->set($group)->execute(static::$db_instance);
 
 		return ($rows_affected > 0) ? $insert_id : false;
 	}
@@ -174,7 +182,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 		$update_group = DB::update(static::$table)
 			->set($update)
 			->where('id', $this->group['id'])
-			->execute();
+			->execute(static::$db_instance);
 
 		return ($update_group) ? true : false;
 
@@ -201,12 +209,12 @@ class Sentry_Group implements Iterator, ArrayAccess
 			// delete users groups
 			$delete_user_groups = DB::delete(static::$join_table)
 				->where('group_id', $this->group['id'])
-				->execute();
+				->execute(static::$db_instance);
 
 			// delete GROUP
 			$delete_user = DB::delete(static::$table)
 				->where('id', $this->group['id'])
-				->execute();
+				->execute(static::$db_instance);
 		}
 		catch(\Database_Exception $e) {
 			DB::rollback_transaction();
@@ -318,7 +326,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 			->where(static::$join_table.'.group_id', '=', $this->group['id'])
 			->join(static::$join_table)
 			->on(static::$join_table.'.user_id', '=', $users_table.'.id')
-			->execute()->as_array();
+			->execute(static::$db_instance)->as_array();
 
 		if (count($users) == 0)
 		{
@@ -344,7 +352,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 	 */
 	public function all()
 	{
-		return DB::select()->from(static::$table)->execute()->as_array();
+		return DB::select()->from(static::$table)->execute(static::$db_instance)->as_array();
 	}
 
 

@@ -13,6 +13,13 @@
 
 return array(
 
+	/**
+	 * Database instance to use
+	 * Leave this null to use the default 'active' db instance
+	 * To use any other instance, set this to any instance that's defined in APPPATH/config/db.php
+	 */
+	'db_instance' => null,
+
 	/* Table Names */
 	'table' => array(
 		'users'           => 'users',
