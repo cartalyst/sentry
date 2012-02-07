@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -35,6 +35,14 @@ class Sentry_Attempts
 
 	protected $attempts = null;
 
+	/**
+	 * Attempts Constructor
+	 *
+	 * @param   string  user login
+	 * @param   string  ip address
+	 * @return  Sentry_Attempts
+	 * @throws  SentryAttemptsException
+	 */
 	public function __construct($login_id = null, $ip_address = null)
 	{
 		\Config::load('sentry', true);
@@ -77,7 +85,7 @@ class Sentry_Attempts
 
 		$result = $query->execute()->as_array();
 
-		foreach ($result as $row)
+		foreach ($result as &$row)
 		{
 			// check if last attempt was more than 15 min ago - if so reset counter
 			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= time())
@@ -112,7 +120,7 @@ class Sentry_Attempts
 	/**
 	 * Check Number of Login Attempts
 	 *
-	 * @param string
+	 * @return  int
 	 */
 	public function get()
 	{
@@ -121,6 +129,8 @@ class Sentry_Attempts
 
 	/**
 	 * Gets attempt limit number
+	 *
+	 * @return  int
 	 */
 	 public function get_limit()
 	 {
@@ -138,13 +148,13 @@ class Sentry_Attempts
 		// make sure a login id and ip address are set
 		if (empty($this->login_id) or empty($this->ip_address))
 		{
-			throw new SentryAttemptsException(__('sentry.login_ip_required'));
+			throw new \SentryAttemptsException(__('sentry.login_ip_required'));
 		}
 
 		// this shouldn't happen, but put it just to make sure
 		if (is_array($this->attempts))
 		{
-			throw new SentryAttemptsException(__('sentry.single_user_required'));
+			throw new \SentryAttemptsException(__('sentry.single_user_required'));
 		}
 
 		if ($this->attempts)

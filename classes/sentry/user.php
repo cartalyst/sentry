@@ -1,6 +1,6 @@
 <?php
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -12,9 +12,11 @@
 
 namespace Sentry;
 
+use ArrayAccess;
 use Config;
 use DB;
 use FuelException;
+use Iterator;
 use Lang;
 use Str;
 
@@ -27,7 +29,7 @@ class SentryUserNotFoundException extends \SentryUserException {}
  * @package  Sentry
  * @author   Daniel Petrie
  */
-class Sentry_User
+class Sentry_User implements Iterator, ArrayAccess
 {
 	// set class properties
 	protected $user = array();
@@ -45,7 +47,7 @@ class Sentry_User
 	 * @return  void
 	 * @throws  SentryUserNotFoundException
 	 */
-	public function __construct($id = null)
+	public function __construct($id = null, $check_exists = false)
 	{
 		// load and set config
 		$this->table = strtolower(Config::get('sentry.table.users'));
@@ -81,8 +83,14 @@ class Sentry_User
 				->execute();
 
 			// if there was a result - update user
-			if ( ! empty($user))
+			if (count($user))
 			{
+				// if just a user exists check - return true, no need for additional queries
+				if ($check_exists)
+				{
+					return true;
+				}
+
 				$temp = $user->current();
 
 				// query for metadata
@@ -91,7 +99,7 @@ class Sentry_User
 					->where('user_id', $temp['id'])
 					->execute();
 
-				$temp['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
+				$temp['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
 				$this->user = $temp;
 			}
@@ -103,12 +111,50 @@ class Sentry_User
 
 			$groups_table = Config::get('sentry.table.groups');
 
-			$this->groups = DB::select($groups_table.'.*')
-				->from($groups_table)
-				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-				->join($this->table_usergroups)
-				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-				->execute()->as_array();
+			// if nested groups is true
+			if (Config::get('sentry.nested_groups'))
+			{
+				// get groups
+				$groups = DB::select('*')
+					->from($groups_table)
+					->execute()->as_array('id');
+
+				// get users groups
+				$usergroups = DB::select('group_id')
+					->from($this->table_usergroups)
+					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+					->execute()->as_array('group_id');
+
+				// set closure function to get nested groups
+				$children = function($parent, $group) use ($groups, &$children)
+				{
+					$result = array($group);
+					foreach ($groups as $group)
+					{
+						if ($group['parent'] === $parent)
+						{
+							$result = array_merge($result, $children($group['id'], $group));
+						}
+					}
+					return $result;
+				};
+
+				$this->groups = array();
+
+				foreach ($usergroups as $usergroup)
+				{
+					$this->groups = array_merge($this->groups, $children($usergroup['group_id'], $groups[$usergroup['group_id']]));
+				}
+			}
+			else
+			{
+				$this->groups = DB::select($groups_table.'.*')
+					->from($groups_table)
+					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+					->join($this->table_usergroups)
+					->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
+					->execute()->as_array();
+			}
 		}
 	}
 
@@ -167,7 +213,10 @@ class Sentry_User
 
 				if ($this->update($update))
 				{
-					return base64_encode($user[$this->login_column]).'/'.$hash;
+					return array(
+						'id'   => $this->user['id'],
+						'hash' => base64_encode($user[$this->login_column]).'/'.$hash
+					);
 				}
 				return false;
 			}
@@ -222,7 +271,16 @@ class Sentry_User
 		// return activation hash for emailing if activation = true
 		if ($activation)
 		{
-			return ($rows_affected > 0) ? base64_encode($user[$this->login_column]).'/'.$hash : false;
+			// return array of id and hash
+			if ($rows_affected > 0)
+			{
+				return array(
+					'id'   => (int) $insert_id,
+					'hash' => base64_encode($user[$this->login_column]).'/'.$hash
+				);
+			}
+
+			return false;
 		}
 		return ($rows_affected > 0) ? (int) $insert_id : false;
 	}
@@ -359,6 +417,12 @@ class Sentry_User
 			unset($fields['activated']);
 		}
 
+		if (array_key_exists('status', $fields))
+		{
+			$update['status'] = $fields['status'];
+			unset($fields['status']);
+		}
+
 		if (empty($update) and empty($fields['metadata']))
 		{
 			return true;
@@ -372,7 +436,7 @@ class Sentry_User
 		{
 			$update_user = DB::update($this->table)
 				->set($update)
-				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', 'users.id')
+				->join($this->table_metadata)->on($this->table_metadata.'.user_id', '=', $this->table.'.id')
 				->where('id', $this->user['id'])
 				->execute();
 		}
@@ -416,32 +480,67 @@ class Sentry_User
 			throw new \SentryUserException(__('sentry.no_user_selected_to_delete'));
 		}
 
-		DB::transactional();
 		DB::start_transaction();
 
-		$delete_user_groups = DB::delete($this->table_usergroups)
-			->where('user_id', $this->user['id'])
-			->execute();
-
-		// delete user from database
-		$delete_user = DB::delete($this->table)
-			->where('id', $this->user['id'])
-			->execute();
-
-		// if user was deleted
-		if ($delete_user_groups and $delete_user)
+		try
 		{
-			DB::commit_transaction();
+			// delete users groups
+			$delete_user_groups = DB::delete($this->table_usergroups)
+				->where('user_id', $this->user['id'])
+				->execute();
 
-			// update user to null
-			$this->user = array();
+			// delete users metadata
+			$delete_user_metadata = DB::delete($this->table_metadata)
+				->where('user_id', $this->user['id'])
+				->execute();
 
-			return true;
+			// delete user from database
+			$delete_user = DB::delete($this->table)
+				->where('id', $this->user['id'])
+				->execute();
+		}
+		catch(\Database_Exception $e) {
+			DB::rollback_transaction();
+			return false;
 		}
 
-		DB::rollback_transaction();
+		DB::commit_transaction();
 
-		return false;
+		// update user to null
+		$this->user = array();
+
+		return true;
+
+	}
+
+	/**
+	 * Enable a User
+	 *
+	 * @return  bool
+	 * @throws  SentryUserException
+	 */
+	public function enable()
+	{
+		if ($this->user['status'] == 1)
+		{
+			throw new \SentryUserException(__('sentry.user_already_enabled'));
+		}
+		return $this->update(array('status' => 1));
+	}
+
+	/**
+	 * Disable a User
+	 *
+	 * @return  bool
+	 * @throws  SentryUserException
+	 */
+	public function disable()
+	{
+		if ($this->user['status'] == 0)
+		{
+			throw new \SentryUserException(__('sentry.user_already_disabled'));
+		}
+		return $this->update(array('status' => 0));
 	}
 
 	/**
@@ -514,7 +613,7 @@ class Sentry_User
 		// if single field was passed - return its value
 		else
 		{
-                        // check to see if field exists in user
+			// check to see if field exists in user
 			$val = \Arr::get($this->user, $field, '__MISSING_KEY__');
 			if ($val !== '__MISSING_KEY__')
 			{
@@ -559,12 +658,13 @@ class Sentry_User
 	 *
 	 * @param   string|int  Group ID or group name
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function add_to_group($id)
 	{
 		if ($this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
+			throw new \SentryUserException(__('sentry.user_already_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -579,13 +679,20 @@ class Sentry_User
 		}
 		catch (SentryGroupNotFoundException $e)
 		{
-			throw new \SentryGroupException($e->getMessage());
+			throw new \SentryUserException($e->getMessage());
 		}
 
 		list($insert_id, $rows_affected) = DB::insert($this->table_usergroups)->set(array(
 			'user_id' => $this->user['id'],
 			'group_id' => $group->get('id'),
 		))->execute();
+
+		$this->groups[] = array(
+			'id'       => $group->get('id'),
+			'name'     => $group->get('name'),
+			'level'    => $group->get('level'),
+			'is_admin' => $group->get('is_admin')
+		);
 
 		return true;
 	}
@@ -595,12 +702,13 @@ class Sentry_User
 	 *
 	 * @param   string|int  Group ID or group name
 	 * @return  bool
+	 * @throws  SentryUserException
 	 */
 	public function remove_from_group($id)
 	{
 		if ( ! $this->in_group($id))
 		{
-			throw new \SentryGroupException(__('sentry.user_not_in_group', array('group' => $id)));
+			throw new \SentryUserException(__('sentry.user_not_in_group', array('group' => $id)));
 		}
 
 		$field = 'name';
@@ -615,12 +723,29 @@ class Sentry_User
 		}
 		catch (SentryGroupNotFoundException $e)
 		{
-			throw new \SentryGroupException($e->getMessage());
+			throw new \SentryUserException($e->getMessage());
 		}
 
-		return (bool) DB::delete($this->table_usergroups)
+		$delete = DB::delete($this->table_usergroups)
 				->where('user_id', $this->user['id'])
 				->where('group_id', $group->get('id'))->execute();
+
+		// remove from array
+		$field = 'name';
+		if (is_numeric($id))
+		{
+			$field = 'id';
+		}
+
+		foreach ($this->groups as $key => $group)
+		{
+			if ($group[$field] == $id)
+			{
+				unset($group);
+			}
+		}
+
+		return (bool) $delete;
 	}
 
 	/**
@@ -636,6 +761,7 @@ class Sentry_User
 		{
 			$field = 'id';
 		}
+
 		foreach ($this->groups as $group)
 		{
 			if ($group[$field] == $name)
@@ -732,7 +858,7 @@ class Sentry_User
 					->where('user_id', $result['id'])
 					->execute();
 
-			$result['metadata'] = ( ! empty($metadata)) ? $metadata->current() : array();
+			$result['metadata'] = (count($metadata)) ? $metadata->current() : array();
 
 			return $result;
 		}
@@ -757,6 +883,16 @@ class Sentry_User
 
 		// check to see if passwords match
 		return $password == $this->user[$field];
+	}
+
+	/**
+	 * Return all users
+	 *
+	 * @return  array
+	 */
+	public function all()
+	{
+		return DB::select()->from($this->table)->execute()->as_array();
 	}
 
 	/**
@@ -787,4 +923,86 @@ class Sentry_User
 		return $password;
 	}
 
+
+	/**
+	 * Implementation of the Iterator interface
+	 */
+
+	protected $_iterable = array();
+
+	public function rewind()
+	{
+		$this->_iterable = $this->user;
+		reset($this->_iterable);
+	}
+
+	public function current()
+	{
+		return current($this->_iterable);
+	}
+
+	public function key()
+	{
+		return key($this->_iterable);
+	}
+
+	public function next()
+	{
+		return next($this->_iterable);
+	}
+
+	public function valid()
+	{
+		return key($this->_iterable) !== null;
+	}
+
+	/**
+	 * Sets the value of the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @param   string  $value   value
+	 * @return  void
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->{$offset} = $value;
+	}
+
+	/**
+	 * Checks if the given offset (class property) exists.
+	 *
+	 * @param   string  $offset  class property
+	 * @return  bool
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->{$offset});
+	}
+
+	/**
+	 * Unsets the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @return  void
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->{$offset});
+	}
+
+	/**
+	 * Gets the value of the given offset (class property).
+	 *
+	 * @param   string  $offset  class property
+	 * @return  mixed
+	 */
+	public function offsetGet($offset)
+	{
+		if (isset($this->{$offset}))
+		{
+			return $this->{$offset};
+		}
+
+		throw new \OutOfBoundsException('Property "'.$offset.'" not found for '.get_called_class().'.');
+	}
 }

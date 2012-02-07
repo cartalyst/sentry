@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -22,10 +22,17 @@ return array(
 		'users_suspended' => 'users_suspended',
 	),
 
-	'session_var' => 'sentry_user',
+	/* Session keys */
+	'session' => array(
+		'user'     => 'sentry_user',
+		'provider' => 'sentry_provider',
+	),
 
 	/* Default Authorization Column - username or email */
 	'login_column' => 'email',
+
+	/* Support nested groups? */
+	'nested_groups' => true,
 
 	/* Remember Me settings */
 	'remember_me' => array(

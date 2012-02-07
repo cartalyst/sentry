@@ -1,6 +1,6 @@
 <?php
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -11,6 +11,8 @@
  */
 
 namespace Fuel\Migrations;
+
+\Package::load('sentry');
 
 class Install_Sentry_Auth {
 

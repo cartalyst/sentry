@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Part of the Sentry package for Fuel.
+ * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
  * @version    1.0
@@ -104,28 +104,28 @@ class Sentry
 			return static::$user_cache[$id];
 		}
 
-		if ($id)
+		try
 		{
-			try
+			if ($id)
 			{
 				static::$user_cache[$id] = new Sentry_User($id);
 				return static::$user_cache[$id];
 			}
-			catch (SentryUserNotFoundException $e)
+			// if session exists - default to user session
+			else if(static::check())
 			{
-				throw new \SentryAuthException($e->getMessage());
+				$user_id = Session::get(Config::get('sentry.session.user'));
+				static::$current_user = new \Sentry_User($user_id);
+				return static::$current_user;
 			}
 		}
-		// if session exists - default to user session
-		else if(static::check())
+		catch (SentryUserNotFoundException $e)
 		{
-			$user_id = Session::get(Config::get('sentry.session_var'));
-			static::$current_user = new \Sentry_User($user_id);
-			return static::$current_user;
+			throw new SentryAuthException($e->getMessage());
 		}
 
 		// else return empty user
-		return new Sentry_User();
+		return new \Sentry_User();
 	}
 
 	/**
@@ -142,17 +142,17 @@ class Sentry
 			return new \Sentry_Group($id);
 		}
 
-		return new Sentry_Group();
+		return new \Sentry_Group();
 	}
 
 	/**
 	 * Gets the Sentry_Attempts object
 	 *
-	 * @return  Sentry_Attempts;
+	 * @return  Sentry_Attempts
 	 */
 	 public static function attempts($login_id = null, $ip_address = null)
 	 {
-	 	return new Sentry_Attempts($login_id, $ip_address);
+	 	return new \Sentry_Attempts($login_id, $ip_address);
 	 }
 
 	/**
@@ -162,7 +162,7 @@ class Sentry
 	 * @param   string  Password entered
 	 * @param   bool    Whether to remember the user or not
 	 * @return  bool
-	 * @throws  SentryAuthException;
+	 * @throws  SentryAuthException
 	 */
 	public static function login($login_column_value, $password, $remember = false)
 	{
@@ -229,12 +229,34 @@ class Sentry
 			}
 
 			// set session vars
-			Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
+			Session::set(Config::get('sentry.session.user'), (int) $user->get('id'));
+			Session::set(Config::get('sentry.session.provider'), 'Sentry');
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Force Login
+	 *
+	 * @param   int|string  user id or login value
+	 * @param   provider    what system was used to force the login
+	 * @return  bool
+	 * @throws  SentryAuthException
+	 */
+	public static function force_login($id, $provider = 'Sentry-Forced')
+	{
+		// check to make sure user exists
+		if ( ! static::user_exists($id))
+		{
+			throw new \SentryAuthException(__('sentry.user_not_found'));
+		}
+
+		Session::set(Config::get('sentry.session.user'), $id);
+		Session::set(Config::get('sentry.session.provider'), $provider);
+		return true;
 	}
 
 	/**
@@ -245,7 +267,7 @@ class Sentry
 	public static function check()
 	{
 		// get session
-		$user_id = Session::get(Config::get('sentry.session_var'));
+		$user_id = Session::get(Config::get('sentry.session.user'));
 
 		// invalid session values - kill the user session
 		if ($user_id === null or ! is_numeric($user_id))
@@ -272,7 +294,8 @@ class Sentry
 	public static function logout()
 	{
 		Cookie::delete(Config::get('sentry.remember_me.cookie_name'));
-		Session::delete(Config::get('sentry.session_var'));
+		Session::delete(Config::get('sentry.session.user'));
+		Session::delete(Config::get('sentry.session.provider'));
 	}
 
 	/**
@@ -281,9 +304,11 @@ class Sentry
 	 * @param   string  Encoded Login Column value
 	 * @param   string  User's activation code
 	 * @return  bool
+	 * @throws  SentryAuthException
 	 */
 	public static function activate_user($login_column_value, $code, $decode = true)
 	{
+		// decode login column
 		if ($decode)
 		{
 			$login_column_value = base64_decode($login_column_value);
@@ -318,6 +343,7 @@ class Sentry
 	 * @param   string  Login Column value
 	 * @param   string  User's new password
 	 * @return  bool|array
+	 * @throws  SentryAuthException
 	 */
 	public static function reset_password($login_column_value, $password)
 	{
@@ -362,11 +388,12 @@ class Sentry
 	 *
 	 * @param   string  Login Column value
 	 * @param   string  Reset password code
-	 * @throws  SentryAuthException
 	 * @return  bool
+	 * @throws  SentryAuthException
 	 */
 	public static function reset_password_confirm($login_column_value, $code, $decode = true)
 	{
+		// decode login column
 		if ($decode)
 		{
 			$login_column_value = base64_decode($login_column_value);
@@ -410,14 +437,14 @@ class Sentry
 	/**
 	 * Checks if a user exists by Login Column value
 	 *
-	 * @param   string  Login column value
-	 * @return  bool|Sentry_User
+	 * @param   string|id  Login column value or Id
+	 * @return  bool
 	 */
 	public static function user_exists($login_column_value)
 	{
 		try
 		{
-			$user = new Sentry_User($login_column_value);
+			$user = new \Sentry_User($login_column_value, true);
 
 			if ($user)
 			{
@@ -438,14 +465,21 @@ class Sentry
 	/**
 	 * Checks if the group exists
 	 *
-	 * @param   string  Group name
+	 * @param   string|int  Group name|Group id
 	 * @return  bool
 	 */
-	public function group_exists($name)
+	public static function group_exists($group)
 	{
-		$group = DB::select('id')->from(static::$table)->where('name', $name)->limit(1)->execute();
+		if( is_int( $group ) )
+		{
+			$group_exists = \DB::select('id')->from( Config::get('sentry.table.groups') )->where('id', $group)->limit(1)->execute();
+		}
+		else
+		{
+			$group_exists = \DB::select('id')->from(Config::get('sentry.table.groups'))->where('name', $group)->limit(1)->execute();
+		}
 
-		return (bool) count($group);
+		return (bool) count($group_exists);
 	}
 
 	/**
@@ -492,7 +526,8 @@ class Sentry
 				));
 
 				// set session vars
-				Session::set(Config::get('sentry.session_var'), (int) $user->get('id'));
+				Session::set(Config::get('sentry.session.user'), (int) $user->get('id'));
+				Session::set(Config::get('sentry.session.provider'), 'Sentry');
 
 				return true;
 			}
