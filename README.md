@@ -16,4 +16,4 @@ It also provides additional features such as user groups and additional security
 
 ###Docs
 
-[http://cartalyst.github.com/sentry/](http://cartalyst.github.com/sentry/)
+[http://sentry.cartalyst.com/manual/v1.1.html](http://sentry.cartalyst.com/manual/v1.1.html)
