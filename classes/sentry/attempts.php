@@ -24,16 +24,34 @@ class SentryUserSuspendedException extends \SentryAttemptsException {}
 
 class Sentry_Attempts
 {
+	/**
+	 * @var  string  Database instance
+	 */
 	protected static $db_instance = null;
 
+	/**
+	 * @var  string  Suspension table name
+	 */
 	protected static $table_suspend = null;
 
+	/**
+	 * @var  array  Stores suspension/limit config data
+	 */
 	protected static $limit = array();
 
+	/**
+	 * @var  string  Login id
+	 */
 	protected $login_id = null;
 
+	/**
+	 * @var  string  IP address
+	 */
 	protected $ip_address = null;
 
+	/**
+	 * @var  int  Number of login attempts
+	 */
 	protected $attempts = null;
 
 	/**

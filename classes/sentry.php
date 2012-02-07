@@ -30,9 +30,8 @@ class SentryAuthConfigException extends \SentryAuthException {}
  */
 class Sentry
 {
-
 	/**
-	 * @var  string Database instance to use
+	 * @var  string  Database instance
 	 */
 	 protected static $db_instance = null;
 

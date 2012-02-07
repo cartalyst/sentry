@@ -28,10 +28,25 @@ class SentryGroupNotFoundException extends \SentryGroupException {}
  */
 class Sentry_Group implements Iterator, ArrayAccess
 {
-
+	/**
+	 * @var  string  Database instance
+	 */
 	protected static $db_instance = null;
+
+	/**
+	 * @var  string  Group table
+	 */
 	protected static $table = '';
+
+	/**
+	 * @var  string  User/group join table
+	 */
 	protected static $join_table = '';
+
+	/**
+	 * @var  array  Group array
+	 */
+	protected $group = array();
 
 	/**
 	 * Gets the table names
@@ -48,8 +63,6 @@ class Sentry_Group implements Iterator, ArrayAccess
 			static::$db_instance = $_db_instance;
 		}
 	}
-
-	protected $group = array();
 
 	/**
 	 * Gets all the group info.

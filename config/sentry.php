@@ -20,7 +20,9 @@ return array(
 	 */
 	'db_instance' => null,
 
-	/* Table Names */
+	/*
+	 * Table Names
+	 */
 	'table' => array(
 		'users'           => 'users',
 		'groups'          => 'groups',
@@ -29,19 +31,27 @@ return array(
 		'users_suspended' => 'users_suspended',
 	),
 
-	/* Session keys */
+	/*
+	 * Session keys
+	 */
 	'session' => array(
 		'user'     => 'sentry_user',
 		'provider' => 'sentry_provider',
 	),
 
-	/* Default Authorization Column - username or email */
+	/*
+	 * Default Authorization Column - username or email
+	 */
 	'login_column' => 'email',
 
-	/* Support nested groups? */
+	/*
+	 * Support nested groups?
+	 */
 	'nested_groups' => true,
 
-	/* Remember Me settings */
+	/*
+	 * Remember Me settings
+	 */
 	'remember_me' => array(
 
 		/**

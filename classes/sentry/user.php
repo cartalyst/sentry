@@ -31,14 +31,44 @@ class SentryUserNotFoundException extends \SentryUserException {}
  */
 class Sentry_User implements Iterator, ArrayAccess
 {
-	// set class properties
+	/**
+	 * @var  string  Database instance
+	 */
 	protected $db_instance = null;
+
+	/**
+	 * @var  array  User
+	 */
 	protected $user = array();
+
+	/**
+	 * @var  array  Groups
+	 */
 	protected $groups = array();
+
+	/**
+	 * @var  string  Table name
+	 */
 	protected $table = null;
+
+	/**
+	 * @var  string  User metadata table
+	 */
 	protected $table_metadata = null;
+
+	/**
+	 * @var  string  User groups table
+	 */
 	protected $table_usergroups = null;
+
+	/**
+	 * @var  string  Login column
+	 */
 	protected $login_column = null;
+
+	/**
+	 * @var  string  Login column string (formatted)
+	 */
 	protected $login_column_str = '';
 
 	/**
