@@ -35,20 +35,20 @@ class Install_Sentry_Auth {
 			'created_at'          => array('constraint' => 11, 'type' => 'int'),
 			'status'              => array('constraint' => 1, 'type' => 'tinyint'),
 			'activated'           => array('contsraint' => 1, 'type' => 'tinyint'),
-		), array('id'));
+		), array('id'), true, 'InnoDB');
 
 		\DBUtil::create_table(\Config::get('sentry.table.users_metadata'), array(
 			'user_id'    => array('constraint' => 11, 'type' => 'int'),
 			'first_name' => array('constraint' => 50, 'type' => 'varchar'),
 			'last_name'  => array('constraint' => 50, 'type' => 'varchar'),
-		), array('user_id'));
+		), array('user_id'), true, 'InnoDB');
 
 		\DBUtil::create_table(\Config::get('sentry.table.groups'), array(
 			'id'       => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
 			'name'     => array('constraint' => 200, 'type' => 'varchar'),
 			'level'    => array('constraint' => 11, 'type' => 'int'),
 			'is_admin' => array('constraint' => 1, 'type' => 'tinyint'),
-		), array('id'));
+		), array('id'), true, 'InnoDB');
 
 		\DBUtil::create_table(\Config::get('sentry.table.users_suspended'), array(
 			'id'              => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
@@ -58,12 +58,12 @@ class Install_Sentry_Auth {
 			'last_attempt_at' => array('constraint' => 11, 'type' => 'int'),
 			'suspended_at'    => array('constraint' => 11, 'type' => 'int'),
 			'unsuspend_at'    => array('constraint' => 11, 'type' => 'int'),
-		), array('id'));
+		), array('id'), true, 'InnoDB');
 
 		\DBUtil::create_table(\Config::get('sentry.table.users_groups'), array(
 			'user_id'  => array('constraint' => 11, 'type' => 'int'),
 			'group_id' => array('constraint' => 11, 'type' => 'int'),
-		));
+		), array(), true, 'InnoDB');
 
 	}
 
