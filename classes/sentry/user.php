@@ -780,7 +780,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ($group[$field] == $id)
 			{
-				unset($group);
+				unset($this->groups[$key]);
 			}
 		}
 
