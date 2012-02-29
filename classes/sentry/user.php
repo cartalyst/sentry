@@ -384,7 +384,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		if (array_key_exists('username', $fields) and
 			$fields['username'] != $this->user['username'])
 		{
-			// make sure email does not already exist
+			// make sure username does not already exist
 			if ($this->user_exists($fields['username'], 'username'))
 			{
 				throw new \SentryUserException(__('sentry.username_already_in_use'));
