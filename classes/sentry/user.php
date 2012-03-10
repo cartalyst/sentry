@@ -148,52 +148,16 @@ class Sentry_User implements Iterator, ArrayAccess
 				throw new \SentryUserNotFoundException(__('sentry.user_not_found'));
 			}
 
+			/**
+			 * fetch the user's groups and assign as array usable via $this->groups
+			 */
 			$groups_table = Config::get('sentry.table.groups');
-
-			// if nested groups is true
-			if (Config::get('sentry.nested_groups'))
-			{
-				// get groups
-				$groups = DB::select('*')
-					->from($groups_table)
-					->execute($this->db_instance)->as_array('id');
-
-				// get users groups
-				$usergroups = DB::select('group_id')
-					->from($this->table_usergroups)
-					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-					->execute($this->db_instance)->as_array('group_id');
-
-				// set closure function to get nested groups
-				$children = function($parent, $group) use ($groups, &$children)
-				{
-					$result = array($group);
-					foreach ($groups as $group)
-					{
-						if (intval($group['id']) === $parent)
-						{
-							$result = array_merge($result, $children($group['id'], $group));
-						}
-					}
-					return $result;
-				};
-
-				$this->groups = array();
-
-				foreach ($usergroups as $usergroup)
-				{
-					$this->groups = array_merge($this->groups, $children($usergroup['group_id'], $groups[$usergroup['group_id']]));
-				}
-			}
-			else
-			{
-				$this->groups = DB::select($groups_table.'.*')
-					->from($groups_table)
-					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-					->join($this->table_usergroups)
-					->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-					->execute($this->db_instance)->as_array();
-			}
+			$this->groups = DB::select($groups_table.'.*')
+				->from($groups_table)
+				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+				->join($this->table_usergroups)
+				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
+				->execute($this->db_instance)->as_array();
 		}
 	}
 
@@ -742,8 +706,6 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->groups[] = array(
 			'id'       => $group->get('id'),
 			'name'     => $group->get('name'),
-			'level'    => $group->get('level'),
-			'is_admin' => $group->get('is_admin')
 		);
 
 		return true;
@@ -817,62 +779,6 @@ class Sentry_User implements Iterator, ArrayAccess
 		foreach ($this->groups as $group)
 		{
 			if ($group[$field] == $name)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user is an admin
-	 *
-	 * @return  bool
-	 */
-	public function is_admin()
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['is_admin'] == 1)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user has the given level
-	 *
-	 * @param   int  Level to check
-	 * @return  bool
-	 */
-	public function has_level($level)
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['level'] == $level)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user has at least given level
-	 *
-	 * @param   int  Level to check
-	 * @return  bool
-	 */
-	public function atleast_level($level)
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['level'] >= $level)
 			{
 				return true;
 			}
