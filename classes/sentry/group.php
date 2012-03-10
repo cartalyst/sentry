@@ -125,21 +125,6 @@ class Sentry_Group implements Iterator, ArrayAccess
 			throw new \SentryGroupException(__('sentry.group_already_exists', array('group' => $group['name'])));
 		}
 
-		if ( ! array_key_exists('level', $group))
-		{
-			throw new \SentryGroupException(__('sentry.group_level_empty'));
-		}
-
-		if ( ! array_key_exists('is_admin', $group))
-		{
-			$group['is_admin'] = 0;
-		}
-
-		if ( ! array_key_exists('parent', $group))
-		{
-			$group['parent'] = 0;
-		}
-
 		list($insert_id, $rows_affected) = DB::insert(static::$table)->set($group)->execute(static::$db_instance);
 
 		return ($rows_affected > 0) ? $insert_id : false;
@@ -173,18 +158,6 @@ class Sentry_Group implements Iterator, ArrayAccess
 			}
 			$update['name'] = $fields['name'];
 			unset($fields['name']);
-		}
-
-		// update level
-		if (array_key_exists('level', $fields))
-		{
-			$update['level'] = $fields['level'];
-		}
-
-		// update is_admin
-		if (array_key_exists('is_admin', $fields))
-		{
-			$update['is_admin'] = $fields['is_admin'];
 		}
 
 		if (empty($update))
