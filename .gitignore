@@ -1,0 +1,16 @@
+*~
+*.bak
+Thumbs.db
+desktop.ini
+.DS_Store
+.buildpath
+.project
+.settings
+.tmpoj
+fuel/app/logs/*/*/*
+fuel/app/cache/*/*
+build
+nbproject/
+.idea
+
+/fuel/app/config/crypt.php
