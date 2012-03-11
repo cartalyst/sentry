@@ -45,11 +45,6 @@ return array(
 	'login_column' => 'email',
 
 	/*
-	 * Support nested groups?
-	 */
-	'nested_groups' => true,
-
-	/*
 	 * Remember Me settings
 	 */
 	'remember_me' => array(
@@ -86,5 +81,4 @@ return array(
 		 */
 		'time' => 15,
 	),
-
 );
