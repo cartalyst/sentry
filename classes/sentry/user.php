@@ -439,6 +439,12 @@ class Sentry_User implements Iterator, ArrayAccess
 			unset($fields['status']);
 		}
 
+		if (array_key_exists('permissions', $fields))
+		{
+			$update['permissions'] = $fields['permissions'];
+			unset($fields['permissions']);
+		}
+
 		if (empty($update) and empty($fields['metadata']))
 		{
 			return true;
