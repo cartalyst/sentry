@@ -394,15 +394,15 @@ class Sentry_Group implements Iterator, ArrayAccess
 			 */
 			if (in_array($key, static::$rules))
 			{
-				if (Arr::is_assoc($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
+				if (is_array($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
 				{
 					$current_permissions = Arr::merge($current_permissions, array($key=>$val));
 				}
-				elseif (!Arr::is_assoc($current_permissions) and $val === 1)
+				elseif (!is_array($current_permissions) and $val === 1)
 				{
 					$current_permissions = array($key=>$val);
 				}
-				elseif(Arr::is_assoc($current_permissions) and $val === 0 and Arr::key_exists($current_permissions, $key))
+				elseif(is_array($current_permissions) and $val === 0 and Arr::key_exists($current_permissions, $key))
 				{
 					$current_permissions = Arr::delete($current_permissions, $key);
 				}
