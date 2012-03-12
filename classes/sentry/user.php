@@ -25,13 +25,19 @@ use Format;
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
 class SentryPermissionsException extends \SentryUserException {}
-class SentryRuleNotFoundException extends SentryPermissionsException {}
 
 /**
  * Sentry Auth User Class
  *
  * @package  Sentry
  * @author   Daniel Petrie
+ */
+
+/**
+ * Sentry v2.0 Updates
+ *
+ * @package  Sentry
+ * @auth     Daniel Berry
  */
 class Sentry_User implements Iterator, ArrayAccess
 {
@@ -84,10 +90,6 @@ class Sentry_User implements Iterator, ArrayAccess
 	 * @var  array  Contains the rules from the sentry config
 	 */
 	protected $rules = array();
-
-	/**
-	 * @var  array  Contains the rules defined in the Sentry Config
-	 */
 
 	/**
 	 * Loads in the user object
@@ -965,7 +967,8 @@ class Sentry_User implements Iterator, ArrayAccess
 	/**
 	 * return user's merge permissions array
 	 *
-	 * @return array
+	 * @return  array
+	 * @author  Daniel Berry
 	 */
 	public function permissions()
 	{
@@ -987,6 +990,7 @@ class Sentry_User implements Iterator, ArrayAccess
 	 * @param array|string $rules
 	 * @return bool
 	 * @throws SentryPermissionsException
+	 * @author Daniel Berry
 	 */
 	public function update_permissions($rules = array())
 	{
