@@ -4,7 +4,7 @@ Sentry 2.0 includes several changes to the way groups and permissions are handle
 
 Removed Since v1.1
 ------------------
-- Removed nested sets
+- Removed nested groups
 - Removed group is_admin
 - Removed group level
 
