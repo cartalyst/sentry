@@ -56,11 +56,7 @@ Added a permissions section that allows you to enable permissions and define cus
 	// will return the user's current merged permissions
 	$current_permissions = Sentry::user()->permissions()
 
-<<<<<<< HEAD
-### classes/group.php
-=======
 ### classes/user.php
->>>>>>> d1129a85e1b1a719e0e9b6519b121ba1321acd66
 -Sentry::group()->update_permissions
 
 	$add_permissions = array(
@@ -73,11 +69,7 @@ Added a permissions section that allows you to enable permissions and define cus
 		'blog_admin_delete_all' => 0 // 0 - will remove a rule from the group's permissions
 	);
 
-<<<<<<< HEAD
 	Sentry::group('group_name_or_id')->update_permissions($add_permissions);
-=======
-	Sentry::user->update_permissions($add_permissions);
->>>>>>> d1129a85e1b1a719e0e9b6519b121ba1321acd66
 
 -Sentry::group()->permissions
 
