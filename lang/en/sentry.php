@@ -41,4 +41,8 @@ return array(
     'login_ip_required'    => 'Login Id and IP Adress are required to add a login attempt.',
     'single_user_required' => 'Attempts can only be added to a single user, an array was given.',
     'user_suspended'       => 'You have been suspended from trying to login into account ":account" for :time minutes.',
+
+	/** Permissions Messages **/
+	'no_rules_added'    => 'Oops, you forgot to specify any rules to be added.',
+
 );
