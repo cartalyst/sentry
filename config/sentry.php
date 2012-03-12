@@ -96,23 +96,15 @@ return array(
 		 * format module_controller_method or controller_method
 		 */
 		'rules' => array(
+			/**
+
 			// user module admin
 			'user_admin_create',
 			'user_admin_read',
 			'user_admin_update',
 			'user_admin_delete',
 
-			// blog module admin
-			'blog_admin_create',
-			'blog_admin_read',
-			'blog_admin_update',
-			'blog_admin_delete',
-
-			// product module admin
-			'product_admin_create',
-			'product_admin_read',
-			'product_admin_update',
-			'product_admin_delete',
+			 */
 		)
 	)
 );
