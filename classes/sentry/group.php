@@ -17,9 +17,12 @@ use Config;
 use DB;
 use FuelException;
 use Iterator;
+use Arr;
+use Format;
 
 class SentryGroupException extends \FuelException {}
 class SentryGroupNotFoundException extends \SentryGroupException {}
+class SentryGroupPermissionsException extends \SentryGroupException {}
 
 /**
  * Handles all of the Sentry group logic.
@@ -49,6 +52,11 @@ class Sentry_Group implements Iterator, ArrayAccess
 	protected $group = array();
 
 	/**
+	 * @var  array  Contains the rules from the sentry config
+	 */
+	protected static $rules = array();
+
+	/**
 	 * Gets the table names
 	 */
 	public static function _init()
@@ -56,6 +64,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 		static::$table = strtolower(Config::get('sentry.table.groups'));
 		static::$join_table = strtolower(Config::get('sentry.table.users_groups'));
 		$_db_instance = trim(Config::get('sentry.db_instance'));
+		static::$rules = Config::get('sentry.permissions.rules');
 
 		// db_instance check
 		if ( ! empty($_db_instance) )
@@ -157,6 +166,12 @@ class Sentry_Group implements Iterator, ArrayAccess
 				throw new \SentryGroupException(__('sentry.group_already_exists', array('group' => $fields['name'])));
 			}
 			$update['name'] = $fields['name'];
+			unset($fields['name']);
+		}
+
+		if (array_key_exists('permissions', $fields))
+		{
+			$update['permissions'] = $fields['permissions'];
 			unset($fields['name']);
 		}
 
@@ -339,6 +354,63 @@ class Sentry_Group implements Iterator, ArrayAccess
 	public function all()
 	{
 		return DB::select()->from(static::$table)->execute(static::$db_instance)->as_array();
+	}
+
+
+	/**
+	 * add/update group permission rules.
+	 *
+	 * Usage:
+	 *
+	 * $permissions_to_add = array(
+	 *      'blog_admin_create' => 1, // setting to 1 will add it to the group
+	 *      'blog_admin_delete' => 0, // setting to zero will remove it from the group if it is in there.
+	 * );
+	 * Sentry::group('groupname/id')->update_permissions($permissions_to_add);
+	 *
+	 * @param array $rules
+	 * @return bool
+	 * @throws SentryPermissionsException
+	 */
+	public function update_permissions($rules = array())
+	{
+		$current_permissions = array();
+
+		if (empty($rules))
+		{
+			throw new SentryGroupPermissionsException(__('sentry.no_rules_added'));
+		}
+
+		// grab the current group permissions & decode
+		$current_permissions = json_decode($this->get('permissions'), true);
+
+		/**
+		 * let's go through each of the $rules
+		 */
+		foreach ($rules as $key=>$val)
+		{
+			/**
+			 * check to make sure the rule is in the config
+			 */
+			if (in_array($key, static::$rules))
+			{
+				if (Arr::is_assoc($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
+				{
+					$current_permissions = Arr::merge($current_permissions, array($key=>$val));
+				}
+				elseif (!Arr::is_assoc($current_permissions) and $val === 1)
+				{
+					$current_permissions = array($key=>$val);
+				}
+				elseif(Arr::is_assoc($current_permissions) and $val === 0 and Arr::key_exists($current_permissions, $key))
+				{
+					$current_permissions = Arr::delete($current_permissions, $key);
+				}
+			}
+		}
+
+		// let's update the permissions column.
+		return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
 	}
 
 
