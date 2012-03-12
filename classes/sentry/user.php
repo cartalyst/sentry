@@ -194,7 +194,7 @@ class Sentry_User implements Iterator, ArrayAccess
 						// group column permissions
 						$group_permissions = json_decode($group['permissions'], true);
 
-						foreach ($group_permissions as $key=>$val)
+						foreach ($group_permissions as $key => $val)
 						{
 							if (!empty($key) and $val === 1)
 							{
@@ -216,7 +216,7 @@ class Sentry_User implements Iterator, ArrayAccess
 					// user column permissions
 					$user_permissions = json_decode($this->user['permissions'], true);
 
-					foreach ($user_permissions as $key=>$val)
+					foreach ($user_permissions as $key => $val)
 					{
 						if (is_array($this->permissions) and $val === 1)
 						{
@@ -1002,17 +1002,17 @@ class Sentry_User implements Iterator, ArrayAccess
 		// get the current permissions from the user column.
 		$current_permissions = json_decode($this->user['permissions'], true);
 
-		foreach ($rules as $key=>$val)
+		foreach ($rules as $key => $val)
 		{
 			if (in_array($key, $this->rules))
 			{
 				if (is_array($current_permissions))
 				{
-					$current_permissions = Arr::merge($current_permissions, array($key=>$val));
+					$current_permissions = Arr::merge($current_permissions, array($key => $val));
 				}
 				else
 				{
-					$current_permissions = array($key=>$val);
+					$current_permissions = array($key => $val);
 				}
 			}
 			else

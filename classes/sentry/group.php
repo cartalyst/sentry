@@ -375,9 +375,6 @@ class Sentry_Group implements Iterator, ArrayAccess
 	 */
 	public function update_permissions($rules = array())
 	{
-		// need this so we don't potentially fail later
-		$current_permissions = array();
-
 		if (empty($rules))
 		{
 			throw new SentryGroupPermissionsException(__('sentry.no_rules_added'));
@@ -389,7 +386,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 		/**
 		 * let's go through each of the $rules
 		 */
-		foreach ($rules as $key=>$val)
+		foreach ($rules as $key => $val)
 		{
 			/**
 			 * check to make sure the rule is in the config
@@ -398,11 +395,11 @@ class Sentry_Group implements Iterator, ArrayAccess
 			{
 				if (is_array($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
 				{
-					$current_permissions = Arr::merge($current_permissions, array($key=>$val));
+					$current_permissions = Arr::merge($current_permissions, array($key => $val));
 				}
 				elseif (!is_array($current_permissions) and $val === 1)
 				{
-					$current_permissions = array($key=>$val);
+					$current_permissions = array($key => $val);
 				}
 				elseif(is_array($current_permissions) and $val === 0 and Arr::key_exists($current_permissions, $key))
 				{
