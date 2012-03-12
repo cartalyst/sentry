@@ -19,9 +19,13 @@ use FuelException;
 use Iterator;
 use Lang;
 use Str;
+use Arr;
+use Format;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
+class SentryPermissionsException extends \SentryUserException {}
+class SentryRuleNotFoundException extends SentryPermissionsException {}
 
 /**
  * Sentry Auth User Class
@@ -72,6 +76,20 @@ class Sentry_User implements Iterator, ArrayAccess
 	protected $login_column_str = '';
 
 	/**
+	 * @var  array  Contains the merged user & group permissions
+	 */
+	protected $permissions = array();
+
+	/**
+	 * @var  array  Contains the rules from the sentry config
+	 */
+	protected $rules = array();
+
+	/**
+	 * @var  array  Contains the rules defined in the Sentry Config
+	 */
+
+	/**
 	 * Loads in the user object
 	 *
 	 * @param   int|string  User id or Login Column value
@@ -88,6 +106,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 		$_db_instance = trim(Config::get('sentry.db_instance'));
+		$this->rules = Config::get('sentry.permissions.rules');
 
 		// db_instance check
 		if ( ! empty($_db_instance) )
@@ -152,12 +171,68 @@ class Sentry_User implements Iterator, ArrayAccess
 			 * fetch the user's groups and assign as array usable via $this->groups
 			 */
 			$groups_table = Config::get('sentry.table.groups');
+
 			$this->groups = DB::select($groups_table.'.*')
 				->from($groups_table)
 				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
 				->join($this->table_usergroups)
 				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
 				->execute($this->db_instance)->as_array();
+
+			/**
+			 * fetch and merge the user's permissions if enabled
+			 */
+			if (Config::get('sentry.permissions.enabled'))
+			{
+				// let's get the group permissions first.
+				foreach($this->groups as $group)
+				{
+					if (!empty($group['permissions']))
+					{
+						// group column permissions
+						$group_permissions = json_decode($group['permissions'], true);
+
+						foreach ($group_permissions as $key=>$val)
+						{
+							if (!empty($key) and $val === 1)
+							{
+								$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
+							}
+							else
+							{
+								$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
+							}
+						}
+					}
+				}
+
+				/**
+				 * now let's merge the user's permissions
+				 */
+				if (!empty($this->user['permissions']))
+				{
+					// user column permissions
+					$user_permissions = json_decode($this->user['permissions'], true);
+
+					foreach ($user_permissions as $key=>$val)
+					{
+						if (is_array($this->permissions) and $val === 1)
+						{
+							$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
+						}
+						elseif(is_array($this->permissions) and $val === 0)
+						{
+							$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
+						}
+						elseif(!is_array($this->permissions) and $val === 1)
+						{
+							$this->permissions = array($val);
+						}
+					}
+				}
+
+				$this->permissions = array_values($this->permissions);
+			}
 		}
 	}
 
@@ -885,6 +960,64 @@ class Sentry_User implements Iterator, ArrayAccess
 		$password = hash('sha256', $salt.$password);
 
 		return $password;
+	}
+
+	/**
+	 * return user's merge permissions array
+	 *
+	 * @return array
+	 */
+	public function permissions()
+	{
+		return $this->permissions;
+	}
+
+	/**
+	 * add/update group permission rules.
+	 *
+	 * Usage:
+	 *
+	 * $permissions_to_add = array(
+	 *      'blog_admin_create' => 1, // setting to 1 will add it to the group
+	 *      'blog_admin_delete' => 0, // setting to zero will remove it from the group if it is in there.
+	 * );
+	 *
+	 * Sentry::user()->update_permissions($permissions_to_add);
+	 *
+	 * @param array|string $rules
+	 * @return bool
+	 * @throws SentryPermissionsException
+	 */
+	public function update_permissions($rules = array())
+	{
+		if (empty($rules))
+		{
+			throw new SentryPermissionsException('Oops, you forgot to specify any rules to add!');
+		}
+
+		// get the current permissions from the user column.
+		$current_permissions = json_decode($this->user['permissions'], true);
+
+		foreach ($rules as $key=>$val)
+		{
+			if (in_array($key, $this->rules))
+			{
+				if (is_array($current_permissions))
+				{
+					$current_permissions = Arr::merge($current_permissions, array($key=>$val));
+				}
+				else
+				{
+					$current_permissions = array($key=>$val);
+				}
+			}
+			else
+			{
+				throw new SentryPermissionsException(__('sentry.rule_not_found', array('rule' => $key)));
+			}
+		}
+
+		return $this->update(array('permissions' => \Format::forge($current_permissions)->to_json()));
 	}
 
 
