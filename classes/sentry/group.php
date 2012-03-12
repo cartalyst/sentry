@@ -347,7 +347,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 	}
 
 	/**
-	 * Retruns all groups
+	 * Returns all groups
 	 *
 	 * @return  array
 	 */
@@ -368,12 +368,14 @@ class Sentry_Group implements Iterator, ArrayAccess
 	 * );
 	 * Sentry::group('groupname/id')->update_permissions($permissions_to_add);
 	 *
-	 * @param array $rules
+	 * @param  array $rules
 	 * @return bool
 	 * @throws SentryPermissionsException
+	 * @author Daniel Berry
 	 */
 	public function update_permissions($rules = array())
 	{
+		// need this so we don't potentially fail later
 		$current_permissions = array();
 
 		if (empty($rules))
@@ -407,10 +409,25 @@ class Sentry_Group implements Iterator, ArrayAccess
 					$current_permissions = Arr::delete($current_permissions, $key);
 				}
 			}
+			else
+			{
+				throw new SentryGroupPermissionsException(__('sentry.rule_not_found', array('rule' => $key)));
+			}
 		}
 
 		// let's update the permissions column.
 		return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
+	}
+
+	/**
+	 * get the permissions for a single group
+	 *
+	 * @return  mixed|json
+	 * @author  Daniel Berry
+	 */
+	public function permissions()
+	{
+		return $this->get('permissions');
 	}
 
 
