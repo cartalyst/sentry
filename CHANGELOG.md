@@ -41,30 +41,37 @@ Added a permissions section that allows you to enable permissions and define cus
 			'blog_admin_delete',
 		)
 	)
-`
 
 ### classes/user.php
-- Sentry::user()->update_permissions
+-Sentry::user()->update_permissions
 
-		$add_permissions = array(
-			'blog_admin_delete'    => 0, // 0 - removes a rule from the permissions when merged
-			'product_admin_delete' => 1  // 1 - will add a special permission for this user only
-		);
-		Sentry::user->update_permissions($add_permissions);
+	$add_permissions = array(
+		'blog_admin_delete'    => 0, // 0 - removes a rule from the permissions when merged
+		'product_admin_delete' => 1  // 1 - will add a special permission for this user only
+	);
+	Sentry::user->update_permissions($add_permissions);
 
-### classes/groups.php
-- Sentry::group()->permissions
-	- give you the json version of the specified groups permissions
+-Sentry::user()->permissions
 
-- Sentry::group()->update_permissions
-	- allows you to add/remove permissions to the group permissions column
+	// will return the user's current merged permissions
+	$current_permissions = Sentry::user()->permissions()
 
-		$add_permissions = array(
-    	    'blog_admin_create'    => 1, // 1 - adds a permission
-    	    'blog_admin_read'      => 1,
-    	    'blog_admin_update'    => 1,
-    	    'blog_admin_delete'    => 1,
-    	    'product_admin_delete' => 0 // 0 - removes a permission
-		);
+### classes/group.php
+-Sentry::group()->update_permissions
 
-		Sentry::group('admin')->update_permissions($add_permissions);
+	$add_permissions = array(
+		'blog_admin_create' => 1, // 1 - will add a special permission for this user only
+		'blog_admin_delete' => 1
+		'blog_admin_delete' => 1,
+		'blog_admin_delete' => 1,
+
+		// remove blog_admin_delete_all
+		'blog_admin_delete_all' => 0 // 0 - will remove a rule from the group's permissions
+	);
+
+	Sentry::group('group_name_or_id')->update_permissions($add_permissions);
+
+-Sentry::group()->permissions
+
+	// will return the user's current merged permissions
+	$group_permissions = Sentry::group('groupname_or_id')->permissions()
