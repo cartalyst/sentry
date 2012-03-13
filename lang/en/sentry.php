@@ -44,6 +44,7 @@ return array(
 
 	/** Permissions Messages **/
 	'no_rules_added'    => 'Oops, you forgot to specify any rules to be added.',
-	'rule_not_found'    => 'The rule :rule, does not exist in your configured rules. Please check your rules in the sentry config.'
+	'rule_not_found'    => 'The rule :rule, does not exist in your configured rules. Please check your rules in the sentry config.',
+	'permission_denied' => 'Oops, you do not have permission to access :resource'
 
 );
