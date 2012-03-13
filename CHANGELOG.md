@@ -22,6 +22,13 @@ Added a permissions section that allows you to enable permissions and define cus
 		'enabled' => true,
 
 		/**
+          * super user - string
+          * this will be used for the group and rules
+          * if you change this, you need to make sure you change the
+          */
+		'superuser' => 'superuser',
+
+		/**
 	      * setup rules for permissions
 	      * These are resources that will require access permissions.
 	      * Rules are assigned to groups or specific users in the
@@ -43,7 +50,7 @@ Added a permissions section that allows you to enable permissions and define cus
 	)
 
 ### classes/user.php
--Sentry::user()->update_permissions
+-Sentry::user()->update_permissions()
 
 	$add_permissions = array(
 		'blog_admin_delete'    => 0, // 0 - removes a rule from the permissions when merged
@@ -51,13 +58,18 @@ Added a permissions section that allows you to enable permissions and define cus
 	);
 	Sentry::user->update_permissions($add_permissions);
 
--Sentry::user()->permissions
+-Sentry::user()->permissions()
 
-	// will return the user's current merged permissions
+	// will return the permissions in the user's column in json format
 	$current_permissions = Sentry::user()->permissions()
 
+-Sentry::user()->merged_permissions()
+
+	// will return the user's merged permissions in an array
+	$merged_permissions = Sentry::user()->merged_permissions()
+
 ### classes/user.php
--Sentry::group()->update_permissions
+-Sentry::group()->update_permissions()
 
 	$add_permissions = array(
 		'blog_admin_create' => 1, // 1 - will add a special permission for this user only
