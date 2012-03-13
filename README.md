@@ -2,7 +2,7 @@
 
 Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy to use authorization and authentication package built for FuelPHP.
 
-###Features
+##Features
 
 * Authentication (via username or email)
 * Authorization
@@ -15,22 +15,22 @@ Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy 
 * User Activation
 * User Metadata
 
-###Removed From v1.1
+##Removed From v1.1
 Before migrating to Sentry 2.0, please take not of the following features that have been removed and/or changed.
 
 * Nested Groups are no longer supported
 * is_admin for groups are no longer supported
 * Group levels are no longer supported.
 
-###Added In 2.0
+##Added In 2.0
 Get excited! Sentry 2.0 introduces ACL into the mix. Super simple to understand and implement.  We've tried to keep this as simple and quick as possible.
 
-###Downloading Sentry 2.0
+##Downloading Sentry 2.0
 You can download Sentry 2.0 into your FuelPHP's packages directory. You can download the latest version of Sentry via [zip here](https://github.com/cartalyst/sentry/tree/2.0/develop) or pull directly from the repository with the following command within the 'fuel/packages/' directory.
 
 	$ git clone -b 2.0/develop git@github.com:cartalyst/sentry.git sentry
 
-###Installing Sentry 2.0
+##Installing Sentry 2.0
 Once downloaded, you may want to add sentry to the always load packages array in 'app/config.php'. Installing the tables is as simple as running an oil migration.
 
 **Note:** *Your database must be setup first!*
