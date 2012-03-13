@@ -90,6 +90,13 @@ return array(
 		'enabled' => true,
 
 		/**
+		 * super user - string
+		 * this will be used for the group and rules
+		 * if you change this, you need to make sure you change the
+		 */
+		'superuser' => 'superuser',
+
+		/**
 		 * setup rules for permissions
 		 * These are resources that will require access permissions.
 		 * Rules are assigned to groups or specific users in the
@@ -97,14 +104,28 @@ return array(
 		 */
 		'rules' => array(
 			/**
+			 * config samples.
 
 			// user module admin
 			'user_admin_create',
 			'user_admin_read',
 			'user_admin_update',
 			'user_admin_delete',
+			'user_permissions',
 
-			 */
+			// blog module admin
+			'blog_admin_create',
+			'blog_admin_read',
+			'blog_admin_update',
+			'blog_admin_delete',
+
+			// product module admin
+			'product_admin_create',
+			'product_admin_read',
+			'product_admin_update',
+			'product_admin_delete',
+
+			 **/
 		)
 	)
 );
