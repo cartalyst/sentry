@@ -21,10 +21,13 @@ use Lang;
 use Str;
 use Arr;
 use Format;
+use Request;
+use Inflector;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
 class SentryPermissionsException extends \SentryUserException {}
+class SentryPermissionDenied extends SentryPermissionsException {}
 
 /**
  * Sentry Auth User Class
@@ -965,12 +968,23 @@ class Sentry_User implements Iterator, ArrayAccess
 	}
 
 	/**
-	 * return user's merge permissions array
+	 * return user's custom permissions json
+	 *
+	 * @return  array|json
+	 * @author  Daniel Berry
+	 */
+	public function permissions()
+	{
+		return $this->get('permissions');
+	}
+
+	/**
+	 * return user's merged permissions
 	 *
 	 * @return  array
 	 * @author  Daniel Berry
 	 */
-	public function permissions()
+	public function current_permissions()
 	{
 		return $this->permissions;
 	}
@@ -1004,7 +1018,7 @@ class Sentry_User implements Iterator, ArrayAccess
 
 		foreach ($rules as $key => $val)
 		{
-			if (in_array($key, $this->rules))
+			if (in_array($key, $this->rules) or $key === Config::get('sentry.permissions.superuser'))
 			{
 				if (is_array($current_permissions))
 				{
@@ -1022,6 +1036,56 @@ class Sentry_User implements Iterator, ArrayAccess
 		}
 
 		return $this->update(array('permissions' => \Format::forge($current_permissions)->to_json()));
+	}
+
+
+	/**
+	 * check to see if the user has access to a resource
+	 *
+	 * The user can specify a specific resource. If no resource is provided,
+	 * then Sentry will generate the resource automatically. If the resource
+	 * is found in the configured rules provided in the config file then the
+	 * user's current merged permissions array will be checked.
+	 *
+	 * @param   null $resource
+	 * @return  bool
+	 * @throws  SentryPermissionDenied
+	 * @author  Daniel Berry
+	 */
+	public function has_access($resource = null)
+	{
+		/**
+		 * if we have a super user (this is the global administrator,
+		 * GOD access, than just return true and skip checks
+		 */
+		if (in_array(Config::get('sentry.permissions.superuser'), $this->permissions))
+		{
+			return true;
+		}
+
+		if (empty($resource))
+		{
+			$module = Request::active()->module;
+			$controller = str_replace('controller_', '', Str::lower(Inflector::denamespace(Request::active()->controller)));
+			$method = '_'.Request::active()->action;
+
+			if (!empty($module))
+			{
+				$resource = $module.'_'.$controller.'_'.$method;
+			}
+			else
+			{
+				$resource = $controller.$method;
+			}
+		}
+
+		// if it is in the config rules & not in the array rules, than we don't have access.
+		if (in_array($resource, $this->rules) and !in_array($resource, $this->permissions))
+		{
+			throw new SentryPermissionDenied(__('sentry.permission_denied', array('resource' => $resource)));
+		}
+
+		return true;
 	}
 
 
