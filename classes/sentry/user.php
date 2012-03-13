@@ -1035,7 +1035,15 @@ class Sentry_User implements Iterator, ArrayAccess
 			}
 		}
 
-		return $this->update(array('permissions' => \Format::forge($current_permissions)->to_json()));
+		if (empty($current_permissions))
+		{
+			return $this->update(array('permissions' => ''));
+		}
+		else
+		{
+			// let's update the permissions column.
+			return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
+		}
 	}
 
 
