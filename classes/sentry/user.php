@@ -1079,7 +1079,7 @@ class Sentry_User implements Iterator, ArrayAccess
 
 			if (!empty($module))
 			{
-				$resource = $module.'_'.$controller.'_'.$method;
+				$resource = $module.'_'.$controller.$method;
 			}
 			else
 			{
