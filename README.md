@@ -16,7 +16,7 @@ Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy 
 * User Metadata
 
 ##Removed From v1.1
-Before migrating to Sentry 2.0, please take not of the following features that have been removed and/or changed.
+Before migrating to Sentry 2.0, please take note of the following features that have been removed and/or changed.
 
 * Nested Groups are no longer supported
 * is_admin for groups are no longer supported
