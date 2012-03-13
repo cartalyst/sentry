@@ -391,7 +391,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 			/**
 			 * check to make sure the rule is in the config
 			 */
-			if (in_array($key, static::$rules))
+			if (in_array($key, static::$rules) or $key === Config::get('sentry.permissions.superuser'))
 			{
 				if (is_array($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
 				{
