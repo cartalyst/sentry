@@ -22,6 +22,8 @@ Before migrating to Sentry 2.0, please take not of the following features that h
 * is_admin for groups are no longer supported
 * Group levels are no longer supported.
 
+**Running the migration file will remove the support for the features above. Make sure you test this before running on a production server.**
+
 ##Added In 2.0
 Get excited! Sentry 2.0 introduces ACL into the mix. Super simple to understand and implement.  We've tried to keep this as simple and quick as possible.
 
