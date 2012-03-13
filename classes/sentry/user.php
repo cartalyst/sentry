@@ -984,7 +984,7 @@ class Sentry_User implements Iterator, ArrayAccess
 	 * @return  array
 	 * @author  Daniel Berry
 	 */
-	public function current_permissions()
+	public function merged_permissions()
 	{
 		return $this->permissions;
 	}
