@@ -41,6 +41,9 @@ class Migrate_To_Version_Two
 
 	public function down()
 	{
+		// load the sentry config file
+		\Config::load('sentry', true);
+
 		// add group table columns level, is_admin and parent
 		\DBUtil::add_fields(\Config::get('sentry.table.groups'), array(
 			'level'    => array('constraint' => 11,  'type' => 'int'),
