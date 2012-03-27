@@ -6,7 +6,7 @@
  * @version    2.0
  * @author     Cartalyst LLC
  * @license    MIT License
- * @copyright  2011 -2012 Cartalyst LLC
+ * @copyright  2011 - 2012 Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -39,10 +39,11 @@ class Migrate_To_Version_Two
 		));
 
 		\DBUtil::modify_fields(\Config::get('sentry.table.users'), array(
-			'password'            => array('constraint' => 100),
-			'password_reset_hash' => array('constraint' => 100),
-			'remember_me'         => array('constraint' => 100),
-			'activation_hash'     => array('constraint' => 100)
+			'password'            => array('constraint' => 100, 'type' => 'varchar'),
+			'temp_password'       => array('constraint' => 100, 'type' => 'varchar'),
+			'password_reset_hash' => array('constraint' => 100, 'type' => 'varchar'),
+			'remember_me'         => array('constraint' => 100, 'type' => 'varchar'),
+			'activation_hash'     => array('constraint' => 100, 'type' => 'varchar')
 		));
 	}
 
@@ -61,11 +62,15 @@ class Migrate_To_Version_Two
 		// remove group table column permission
 		\DBUtil::drop_fields(\Config::get('sentry.table.groups'), array('permissions'));
 
+		// remove user table column permission
+		\DBUtil::drop_fields(\Config::get('sentry.table.users'), array('permissions'));
+
 		\DBUtil::modify_fields(\Config::get('sentry.table.users'), array(
-			'password'            => array('constraint' => 81),
-			'password_reset_hash' => array('constraint' => 81),
-			'remember_me'         => array('constraint' => 81),
-			'activation_hash'     => array('constraint' => 81)
+			'password'            => array('constraint' => 81, 'type' => 'varchar'),
+			'temp_password'       => array('constraint' => 81, 'type' => 'varchar'),
+			'password_reset_hash' => array('constraint' => 81, 'type' => 'varchar'),
+			'remember_me'         => array('constraint' => 81, 'type' => 'varchar'),
+			'activation_hash'     => array('constraint' => 81, 'type' => 'varchar')
 		));
 	}
 }

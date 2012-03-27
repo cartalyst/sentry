@@ -3,10 +3,10 @@
  * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
- * @version    1.0
+ * @version    2.0
  * @author     Cartalyst LLC
  * @license    MIT License
- * @copyright  2011 Cartalyst LLC
+ * @copyright  2011 - 2012 Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -16,7 +16,15 @@
  {
  	public static function forge($strategy, $options = array())
 	{
-		$class = '\\Sentry\\Hash_Strategy_'.\Inflector::classify($strategy);
+		if ($strategy === null or empty($strategy))
+		{
+			throw new \SentryUserException(__('sentry.hash_strategy_null'));
+		}
+
+		echo 'hi';
+		exit;
+
+		$class = '\\Sentry\\Hash_Strategy_'.$strategy;
 
 		return new $class($options);
 	}
