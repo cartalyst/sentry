@@ -37,6 +37,13 @@ class Migrate_To_Version_Two
 		\DBUtil::add_fields(\Config::get('sentry.table.users'), array(
 			'permissions' => array('type' => 'text'),
 		));
+
+		\DBUtil::modify_fields(\Config::get('sentry.table.users'), array(
+			'password'            => array('constraint' => 100),
+			'password_reset_hash' => array('constraint' => 100),
+			'remember_me'         => array('constraint' => 100),
+			'activation_hash'     => array('constraint' => 100)
+		));
 	}
 
 	public function down()
@@ -46,12 +53,19 @@ class Migrate_To_Version_Two
 
 		// add group table columns level, is_admin and parent
 		\DBUtil::add_fields(\Config::get('sentry.table.groups'), array(
-			'level'    => array('constraint' => 11,  'type' => 'int'),
-			'is_admin' => array('constraint' => 1,   'type' => 'tinyint'),
-			'parent' => array('constraint' => 11, 'type' => 'int'),
+			'level'    => array('constraint' => 11, 'type' => 'int'),
+			'is_admin' => array('constraint' => 1,  'type' => 'tinyint'),
+			'parent'   => array('constraint' => 11, 'type' => 'int'),
 		));
 
 		// remove group table column permission
 		\DBUtil::drop_fields(\Config::get('sentry.table.groups'), array('permissions'));
+
+		\DBUtil::modify_fields(\Config::get('sentry.table.users'), array(
+			'password'            => array('constraint' => 81),
+			'password_reset_hash' => array('constraint' => 81),
+			'remember_me'         => array('constraint' => 81),
+			'activation_hash'     => array('constraint' => 81)
+		));
 	}
 }
