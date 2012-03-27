@@ -19,15 +19,28 @@ use FuelException;
 use Iterator;
 use Lang;
 use Str;
+use Arr;
+use Format;
+use Request;
+use Inflector;
 
 class SentryUserException extends \FuelException {}
 class SentryUserNotFoundException extends \SentryUserException {}
+class SentryPermissionsException extends \SentryUserException {}
+class SentryPermissionDenied extends SentryPermissionsException {}
 
 /**
  * Sentry Auth User Class
  *
  * @package  Sentry
  * @author   Daniel Petrie
+ */
+
+/**
+ * Sentry v2.0 Updates
+ *
+ * @package  Sentry
+ * @auth     Daniel Berry
  */
 class Sentry_User implements Iterator, ArrayAccess
 {
@@ -77,6 +90,16 @@ class Sentry_User implements Iterator, ArrayAccess
 	protected $login_column_str = '';
 
 	/**
+	 * @var  array  Contains the merged user & group permissions
+	 */
+	protected $permissions = array();
+
+	/**
+	 * @var  array  Contains the rules from the sentry config
+	 */
+	protected $rules = array();
+
+	/**
 	 * Loads in the user object
 	 *
 	 * @param   int|string  User id or Login Column value
@@ -92,6 +115,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 		$_db_instance = trim(Config::get('sentry.db_instance'));
+		$this->rules = Config::get('sentry.permissions.rules');
 
 		// init a hashing mechanism
 		$strategy = Config::get('sentry.hash.strategy');
@@ -157,51 +181,71 @@ class Sentry_User implements Iterator, ArrayAccess
 				throw new \SentryUserNotFoundException(__('sentry.user_not_found'));
 			}
 
+			/**
+			 * fetch the user's groups and assign as array usable via $this->groups
+			 */
 			$groups_table = Config::get('sentry.table.groups');
 
-			// if nested groups is true
-			if (Config::get('sentry.nested_groups'))
+			$this->groups = DB::select($groups_table.'.*')
+				->from($groups_table)
+				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
+				->join($this->table_usergroups)
+				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
+				->execute($this->db_instance)->as_array();
+
+			/**
+			 * fetch and merge the user's permissions if enabled
+			 */
+			if (Config::get('sentry.permissions.enabled'))
 			{
-				// get groups
-				$groups = DB::select('*')
-					->from($groups_table)
-					->execute($this->db_instance)->as_array('id');
-
-				// get users groups
-				$usergroups = DB::select('group_id')
-					->from($this->table_usergroups)
-					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-					->execute($this->db_instance)->as_array('group_id');
-
-				// set closure function to get nested groups
-				$children = function($parent, $group) use ($groups, &$children)
+				// let's get the group permissions first.
+				foreach($this->groups as $group)
 				{
-					$result = array($group);
-					foreach ($groups as $group)
+					if (!empty($group['permissions']))
 					{
-						if (intval($group['id']) === $parent)
+						// group column permissions
+						$group_permissions = json_decode($group['permissions'], true);
+
+						foreach ($group_permissions as $key => $val)
 						{
-							$result = array_merge($result, $children($group['id'], $group));
+							if (!empty($key) and $val === 1)
+							{
+								$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
+							}
+							else
+							{
+								$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
+							}
 						}
 					}
-					return $result;
-				};
-
-				$this->groups = array();
-
-				foreach ($usergroups as $usergroup)
-				{
-					$this->groups = array_merge($this->groups, $children($usergroup['group_id'], $groups[$usergroup['group_id']]));
 				}
-			}
-			else
-			{
-				$this->groups = DB::select($groups_table.'.*')
-					->from($groups_table)
-					->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
-					->join($this->table_usergroups)
-					->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-					->execute($this->db_instance)->as_array();
+
+				/**
+				 * now let's merge the user's permissions
+				 */
+				if (!empty($this->user['permissions']))
+				{
+					// user column permissions
+					$user_permissions = json_decode($this->user['permissions'], true);
+
+					foreach ($user_permissions as $key => $val)
+					{
+						if (is_array($this->permissions) and $val === 1)
+						{
+							$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
+						}
+						elseif(is_array($this->permissions) and $val === 0)
+						{
+							$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
+						}
+						elseif(!is_array($this->permissions) and $val === 1)
+						{
+							$this->permissions = array($val);
+						}
+					}
+				}
+
+				$this->permissions = array_values($this->permissions);
 			}
 		}
 	}
@@ -284,7 +328,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			$this->login_column => $user[$this->login_column],
 			'password' => $this->hash->create_password($user['password']),
 			'created_at' => time(),
-			'activated' => ($activation) ? 0 : 1,
+			'activated' => (bool) ($activation) ? false : true,
 			'status' => 1,
 		) + $user;
 
@@ -393,6 +437,19 @@ class Sentry_User implements Iterator, ArrayAccess
 		if (array_key_exists('username', $fields) and
 			$fields['username'] != $this->user['username'])
 		{
+			// make sure username does not already exist
+			if ($this->user_exists($fields['username'], 'username'))
+			{
+				throw new \SentryUserException(__('sentry.username_already_in_use'));
+			}
+			$update['username'] = $fields['username'];
+			unset($fields['username']);
+		}
+
+		// if updating username
+		if (array_key_exists('username', $fields) and
+			$fields['username'] != $this->user['username'])
+		{
 			// make sure email does not already exist
 			if ($this->user_exists($fields['username'], 'username'))
 			{
@@ -482,6 +539,12 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			$update['status'] = $fields['status'];
 			unset($fields['status']);
+		}
+
+		if (array_key_exists('permissions', $fields))
+		{
+			$update['permissions'] = $fields['permissions'];
+			unset($fields['permissions']);
 		}
 
 		if (empty($update) and empty($fields['metadata']))
@@ -751,8 +814,6 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->groups[] = array(
 			'id'       => $group->get('id'),
 			'name'     => $group->get('name'),
-			'level'    => $group->get('level'),
-			'is_admin' => $group->get('is_admin')
 		);
 
 		return true;
@@ -826,62 +887,6 @@ class Sentry_User implements Iterator, ArrayAccess
 		foreach ($this->groups as $group)
 		{
 			if ($group[$field] == $name)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user is an admin
-	 *
-	 * @return  bool
-	 */
-	public function is_admin()
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['is_admin'] == 1)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user has the given level
-	 *
-	 * @param   int  Level to check
-	 * @return  bool
-	 */
-	public function has_level($level)
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['level'] == $level)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the user has at least given level
-	 *
-	 * @param   int  Level to check
-	 * @return  bool
-	 */
-	public function atleast_level($level)
-	{
-		foreach ($this->groups as $group)
-		{
-			if ($group['level'] >= $level)
 			{
 				return true;
 			}
@@ -969,6 +974,136 @@ class Sentry_User implements Iterator, ArrayAccess
 	{
 		return DB::select()->from($this->table)->execute($this->db_instance)->as_array();
 	}
+
+	/**
+	 * return user's custom permissions json
+	 *
+	 * @return  array|json
+	 * @author  Daniel Berry
+	 */
+	public function permissions()
+	{
+		return $this->get('permissions');
+	}
+
+	/**
+	 * return user's merged permissions
+	 *
+	 * @return  array
+	 * @author  Daniel Berry
+	 */
+	public function merged_permissions()
+	{
+		return $this->permissions;
+	}
+
+	/**
+	 * add/update group permission rules.
+	 *
+	 * Usage:
+	 *
+	 * $permissions_to_add = array(
+	 *      'blog_admin_create' => 1, // setting to 1 will add it to the group
+	 *      'blog_admin_delete' => 0, // setting to zero will remove it from the group if it is in there.
+	 * );
+	 *
+	 * Sentry::user()->update_permissions($permissions_to_add);
+	 *
+	 * @param array|string $rules
+	 * @return bool
+	 * @throws SentryPermissionsException
+	 * @author Daniel Berry
+	 */
+	public function update_permissions($rules = array())
+	{
+		if (empty($rules))
+		{
+			throw new SentryPermissionsException('Oops, you forgot to specify any rules to add!');
+		}
+
+		// get the current permissions from the user column.
+		$current_permissions = json_decode($this->user['permissions'], true);
+
+		foreach ($rules as $key => $val)
+		{
+			if (in_array($key, $this->rules) or $key === Config::get('sentry.permissions.superuser'))
+			{
+				if (is_array($current_permissions))
+				{
+					$current_permissions = Arr::merge($current_permissions, array($key => $val));
+				}
+				else
+				{
+					$current_permissions = array($key => $val);
+				}
+			}
+			else
+			{
+				throw new SentryPermissionsException(__('sentry.rule_not_found', array('rule' => $key)));
+			}
+		}
+
+		if (empty($current_permissions))
+		{
+			return $this->update(array('permissions' => ''));
+		}
+		else
+		{
+			// let's update the permissions column.
+			return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
+		}
+	}
+
+
+	/**
+	 * check to see if the user has access to a resource
+	 *
+	 * The user can specify a specific resource. If no resource is provided,
+	 * then Sentry will generate the resource automatically. If the resource
+	 * is found in the configured rules provided in the config file then the
+	 * user's current merged permissions array will be checked.
+	 *
+	 * @param   null $resource
+	 * @return  bool
+	 * @throws  SentryPermissionDenied
+	 * @author  Daniel Berry
+	 */
+	public function has_access($resource = null)
+	{
+		/**
+		 * if we have a super user (this is the global administrator,
+		 * GOD access, than just return true and skip checks
+		 */
+		if (in_array(Config::get('sentry.permissions.superuser'), $this->permissions))
+		{
+			return true;
+		}
+
+		if (empty($resource))
+		{
+			$module = Request::active()->module;
+			$controller = str_replace('controller_', '', Str::lower(Inflector::denamespace(Request::active()->controller)));
+			$method = '_'.Request::active()->action;
+
+			if (!empty($module))
+			{
+				$resource = $module.'_'.$controller.$method;
+			}
+			else
+			{
+				$resource = $controller.$method;
+			}
+		}
+
+		// if it is in the config rules & not in the array rules, than we don't have access.
+		if (in_array($resource, $this->rules) and !in_array($resource, $this->permissions))
+		{
+			throw new SentryPermissionDenied(__('sentry.permission_denied', array('resource' => $resource)));
+		}
+
+		return true;
+	}
+
 
 	/**
 	 * Implementation of the Iterator interface

@@ -45,11 +45,6 @@ return array(
 	'login_column' => 'email',
 
 	/*
-	 * Support nested groups?
-	 */
-	'nested_groups' => true,
-
-	/*
 	 * Remember Me settings
 	 */
 	'remember_me' => array(
@@ -87,6 +82,11 @@ return array(
 		'time' => 15,
 	),
 
+	/**
+	 * Password Hashing
+	 * Sets hashing strategies for passwords
+	 * Note: you may have to adjust all password related fields in the database depending on the password hash length
+	 */
 	'hash' => array(
 
 		/**
@@ -97,8 +97,8 @@ return array(
 		'strategy' => 'SimpleAuth',
 
 		'convert'  => array(
-			'enabled' => true,
-			'from'    => 'Sha256',
+			'enabled' => false,
+			'from'    => '',
 		),
 
 		/**
@@ -117,9 +117,55 @@ return array(
 			'SimpleAuth' => array(
 
 				// simpleauth salt of your last app if any
-				'salt' => 'aaaa',
+				'salt' => '',
 			),
 		),
 	),
 
+	'permissions' => array(
+
+		/**
+		 * enable permissions - true or false
+		 */
+		'enabled' => true,
+
+		/**
+		 * super user - string
+		 * this will be used for the group and rules
+		 * if you change this, you need to make sure you change the
+		 */
+		'superuser' => 'superuser',
+
+		/**
+		 * setup rules for permissions
+		 * These are resources that will require access permissions.
+		 * Rules are assigned to groups or specific users in the
+		 * format module_controller_method or controller_method
+		 */
+		'rules' => array(
+			/**
+			 * config samples.
+			 *
+			 *	// user module admin
+			 *	'user_admin_create',
+			 *	'user_admin_read',
+			 *	'user_admin_update',
+			 *	'user_admin_delete',
+			 *	'user_permissions',
+			 *
+			 *	// blog module admin
+			 *	'blog_admin_create',
+			 *	'blog_admin_read',
+			 *	'blog_admin_update',
+			 *	'blog_admin_delete',
+			 *
+			 *	// product module admin
+			 *	'product_admin_create',
+			 *	'product_admin_read',
+			 *	'product_admin_update',
+			 *	'product_admin_delete',
+			 */
+
+		)
+	)
 );
