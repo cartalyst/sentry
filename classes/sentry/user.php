@@ -319,7 +319,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			$this->login_column => $user[$this->login_column],
 			'password' => $this->generate_password($user['password']),
 			'created_at' => time(),
-			'activated' => (bool) ($activation),
+			'activated' => (bool) ($activation) ? false : true,
 			'status' => 1,
 		) + $user;
 
