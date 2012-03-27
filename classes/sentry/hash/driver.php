@@ -26,7 +26,7 @@
 	{
 		if ($strategy === null or empty($strategy))
 		{
-			throw new \SentryUserException(__('sentry.hash_strategy_null'));
+			throw new \SentryAuthException(__('sentry.hash_strategy_null'));
 		}
 
 		$class = '\\Sentry\\Hash_Strategy_'.$strategy;

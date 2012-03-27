@@ -38,5 +38,5 @@ Autoloader::add_classes(array(
 	'Sentry\\Hash_Driver'                         => __DIR__.'/classes/sentry/hash/driver.php',
 	'Sentry\\Hash_Strategy_Sentry'                => __DIR__.'/classes/sentry/hash/strategy/sentry.php',
 	'Sentry\\Hash_Strategy_SimpleAuth'            => __DIR__.'/classes/sentry/hash/strategy/simpleauth.php',
-	'Sentry\\Hash_Strategy_Magento'               => __DIR__.'/classes/sentry/hash/strategy/magento.php',
+	'Sentry\\Hash_Strategy_BCrypt'               => __DIR__.'/classes/sentry/hash/strategy/bcrypt.php',
 ));

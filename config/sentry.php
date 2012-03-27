@@ -98,7 +98,7 @@ return array(
 
 		'convert'  => array(
 			'enabled' => false,
-			'from'    => '',
+			'from'    => null,
 		),
 
 		/**
@@ -115,9 +115,13 @@ return array(
 			'Sentry' => array(),
 
 			'SimpleAuth' => array(
-
-				// simpleauth salt of your last app if any
 				'salt' => '',
+			),
+
+			'BCrypt' => array(
+				'strength' => 4,
+				// if you want to use a bacrypt hash with an algorithm
+				'hashing_algorithm' => null,
 			),
 		),
 	),
