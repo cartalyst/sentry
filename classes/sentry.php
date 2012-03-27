@@ -315,7 +315,7 @@ class Sentry
 	 *
 	 * @param   string  Encoded Login Column value
 	 * @param   string  User's activation code
-	 * @return  bool
+	 * @return  bool|array
 	 * @throws  SentryAuthException
 	 */
 	public static function activate_user($login_column_value, $code, $decode = true)

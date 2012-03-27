@@ -47,6 +47,11 @@ class Sentry_User implements Iterator, ArrayAccess
 	protected $groups = array();
 
 	/**
+	 * @var  object  Hashing Object
+	 */
+	protected $hash = null;
+
+	/**
 	 * @var  string  Table name
 	 */
 	protected $table = null;
@@ -81,13 +86,17 @@ class Sentry_User implements Iterator, ArrayAccess
 	public function __construct($id = null, $check_exists = false)
 	{
 		// load and set config
-
 		$this->table = strtolower(Config::get('sentry.table.users'));
 		$this->table_usergroups = strtolower(Config::get('sentry.table.users_groups'));
 		$this->table_metadata = strtolower(Config::get('sentry.table.users_metadata'));
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 		$_db_instance = trim(Config::get('sentry.db_instance'));
+
+		// init a hashing mechanism
+		$strategy = Config::get('sentry.hash.strategy');
+		$options = Config::get('sentry.hash.strategies.'.$strategy);
+		$this->hash = Hash_Driver::forge($strategy, $options);
 
 		// db_instance check
 		if ( ! empty($_db_instance) )
@@ -273,7 +282,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		// set new user values
 		$new_user = array(
 			$this->login_column => $user[$this->login_column],
-			'password' => $this->generate_password($user['password']),
+			'password' => $this->hash->create_password($user['password']),
 			'created_at' => time(),
 			'activated' => ($activation) ? 0 : 1,
 			'status' => 1,
@@ -294,7 +303,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		if ($activation)
 		{
 			$hash = Str::random('alnum', 24);
-			$new_user['activation_hash'] = $this->generate_password($hash);
+			$new_user['activation_hash'] = $this->hash->create_password($hash);
 		}
 
 		// insert new user
@@ -380,6 +389,19 @@ class Sentry_User implements Iterator, ArrayAccess
 			unset($fields['email']);
 		}
 
+		// if updating username
+		if (array_key_exists('username', $fields) and
+			$fields['username'] != $this->user['username'])
+		{
+			// make sure email does not already exist
+			if ($this->user_exists($fields['username'], 'username'))
+			{
+				throw new \SentryUserException(__('sentry.username_already_in_use'));
+			}
+			$update['username'] = $fields['username'];
+			unset($fields['username']);
+		}
+
 		// update password
 		if (array_key_exists('password', $fields))
 		{
@@ -389,7 +411,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			}
 			if ($hash_password)
 			{
-				$fields['password'] = $this->generate_password($fields['password']);
+				$fields['password'] = $this->hash->create_password($fields['password']);
 			}
 			$update['password'] = $fields['password'];
 			unset($fields['password']);
@@ -400,7 +422,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ( ! empty($fields['temp_password']))
 			{
-				$fields['temp_password'] = $this->generate_password($fields['temp_password']);
+				$fields['temp_password'] = $this->hash->create_password($fields['temp_password']);
 			}
 			$update['temp_password'] = $fields['temp_password'];
 			unset($fields['temp_password']);
@@ -411,7 +433,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ( ! empty($fields['password_reset_hash']))
 			{
-				$fields['password_reset_hash'] = $this->generate_password($fields['password_reset_hash']);
+				$fields['password_reset_hash'] = $this->hash->create_password($fields['password_reset_hash']);
 			}
 			$update['password_reset_hash'] = $fields['password_reset_hash'];
 			unset($fields['password_reset_hash']);
@@ -422,7 +444,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ( ! empty($fields['remember_me']))
 			{
-				$fields['remember_me'] = $this->generate_password($fields['remember_me']);
+				$fields['remember_me'] = $this->hash->create_password($fields['remember_me']);
 			}
 			$update['remember_me'] = $fields['remember_me'];
 			unset($fields['remember_me']);
@@ -432,7 +454,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ( ! empty($fields['activation_hash']))
 			{
-				$fields['activation_hash'] = $this->generate_password($fields['activation_hash']);
+				$fields['activation_hash'] = $this->hash->create_password($fields['activation_hash']);
 			}
 			$update['activation_hash'] = $fields['activation_hash'];
 			unset($fields['activation_hash']);
@@ -780,7 +802,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ($group[$field] == $id)
 			{
-				unset($group);
+				unset($this->groups[$key]);
 			}
 		}
 
@@ -914,14 +936,28 @@ class Sentry_User implements Iterator, ArrayAccess
 	 */
 	public function check_password($password, $field = 'password')
 	{
-		// grabs the salt from the current password
-		$salt = substr($this->user[$field], 0, 16);
+		if ($this->hash->check_password($password, $this->user[$field]))
+		{
+			return true;
+		}
 
-		// hash the inputted password
-		$password = $salt.$this->hash_password($password, $salt);
+		if (Config::get('sentry.hash.convert.enabled') === true)
+		{
+			$strategy = Config::get('sentry.hash.convert.from');
+			$options = Config::get('sentry.hash.strategies.'.$strategy);
+			$hash = Hash_Driver::forge($strategy, $options);
 
-		// check to see if passwords match
-		return $password == $this->user[$field];
+			if ($hash->check_password($password, $this->user[$field]))
+			{
+				$this->update(array(
+					'password' => $password
+				));
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -933,35 +969,6 @@ class Sentry_User implements Iterator, ArrayAccess
 	{
 		return DB::select()->from($this->table)->execute($this->db_instance)->as_array();
 	}
-
-	/**
-	 * Generates a random salt and hashes the given password with the salt.
-	 * String returned is prepended with a 16 character alpha-numeric salt.
-	 *
-	 * @param   string  Password to generate hash/salt for
-	 * @return  string
-	 */
-	protected function generate_password($password)
-	{
-		$salt = \Str::random('alnum', 16);
-
-		return $salt.$this->hash_password($password, $salt);
-	}
-
-	/**
-	 * Hash a given password with the given salt.
-	 *
-	 * @param   string  Password to hash
-	 * @param   string  Password Salt
-	 * @return  string
-	 */
-	protected function hash_password($password, $salt)
-	{
-		$password = hash('sha256', $salt.$password);
-
-		return $password;
-	}
-
 
 	/**
 	 * Implementation of the Iterator interface

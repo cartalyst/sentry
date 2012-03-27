@@ -87,4 +87,39 @@ return array(
 		'time' => 15,
 	),
 
+	'hash' => array(
+
+		/**
+		 * Strategy to use
+		 * look into classes/sentry/hash/strategy for available strategies ( or make/import your own )
+		 * Must be in strategies below
+		 */
+		'strategy' => 'SimpleAuth',
+
+		'convert'  => array(
+			'enabled' => true,
+			'from'    => 'Sha256',
+		),
+
+		/**
+		 * Available Strategies for your app
+		 * This is used to set settings for conversion, like switching from SimpleAuth hashing to Sha256 or vice versa
+		 */
+		'strategies' => array(
+			/**
+			 * config options needed for hashing
+			 * example:
+			 * 'Strategy' => array(); // additional options needed for password hashing in your driver like a configurable salt
+			 */
+
+			'Sha256' => array(),
+
+			'SimpleAuth' => array(
+
+				// simpleauth salt of your last app if any
+				'salt' => 'aaaa',
+			),
+		),
+	),
+
 );
