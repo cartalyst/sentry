@@ -12,7 +12,7 @@
 
  namespace Sentry;
 
- class Hash_Strategy_Sha256 extends Hash_Driver
+ class Hash_Strategy_Sentry extends Hash_Driver
  {
  	/**
  	 * set constructor

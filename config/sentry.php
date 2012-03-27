@@ -69,7 +69,7 @@ return array(
 		/**
 		 * enable limit - true/false
 		 */
-		'enabled' => true,
+		'enabled' => false,
 
 		/**
 		 * number of attempts before suspensions
@@ -94,7 +94,7 @@ return array(
 		 * look into classes/sentry/hash/strategy for available strategies ( or make/import your own )
 		 * Must be in strategies below
 		 */
-		'strategy' => 'SimpleAuth',
+		'strategy' => 'Sentry',
 
 		'convert'  => array(
 			'enabled' => false,
@@ -112,7 +112,7 @@ return array(
 			 * 'Strategy' => array(); // additional options needed for password hashing in your driver like a configurable salt
 			 */
 
-			'Sha256' => array(),
+			'Sentry' => array(),
 
 			'SimpleAuth' => array(
 

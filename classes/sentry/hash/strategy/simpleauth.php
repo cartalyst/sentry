@@ -20,11 +20,6 @@
  	protected $hasher  = null;
 
  	/**
- 	 * @var  array  array of configurable options for simpleauth hashing
- 	 */
- 	protected $options = array();
-
- 	/**
  	 * Constructor
  	 * Sets configuration options
  	 *

@@ -14,6 +14,14 @@
 
  abstract class Hash_Driver
  {
+ 	/**
+ 	 * @var  array  array of configurable options for simpleauth hashing
+ 	 */
+ 	protected $options = array();
+
+ 	/**
+ 	 * Creates and return hashing strategy object
+ 	 */
  	public static function forge($strategy, $options = array())
 	{
 		if ($strategy === null or empty($strategy))
@@ -21,14 +29,12 @@
 			throw new \SentryUserException(__('sentry.hash_strategy_null'));
 		}
 
-		echo 'hi';
-		exit;
-
 		$class = '\\Sentry\\Hash_Strategy_'.$strategy;
 
 		return new $class($options);
 	}
 
+	// required constructor for passing options
 	abstract public function __construct($options);
 
  	// creates the password
