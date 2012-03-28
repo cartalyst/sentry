@@ -35,5 +35,5 @@ Autoloader::add_classes(array(
 	'Sentry\\SentryGroupNotFoundException'        => __DIR__.'/classes/sentry/group.php',
 
 	// hashing
-	'Sentry\\Hash_Driver'                         => __DIR__.'/classes/sentry/hash/driver.php',
+	'Sentry\\Sentry_Hash_Driver'                         => __DIR__.'/classes/sentry/hash/driver.php',
 ));

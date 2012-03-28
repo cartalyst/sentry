@@ -69,7 +69,7 @@ return array(
 		/**
 		 * enable limit - true/false
 		 */
-		'enabled' => false,
+		'enabled' => true,
 
 		/**
 		 * number of attempts before suspensions
@@ -97,7 +97,7 @@ return array(
 		'strategy' => 'Sentry',
 
 		'convert'  => array(
-			'enabled' => null,
+			'enabled' => false,
 			'from'    => '',
 		),
 
