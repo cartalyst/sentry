@@ -43,7 +43,8 @@ return array(
     'user_suspended'       => 'You have been suspended from trying to login into account ":account" for :time minutes.',
 
     /** Hashing **/
-    'hash_strategy_null' => 'Hashing strategy is null or empty. A hashing strategy must be set.',
+    'hash_strategy_null'      => 'Hashing strategy is null or empty. A hashing strategy must be set.',
+    'hash_strategy_not_exist' => 'Hashing strategy file does not exist.',
 
 	/** Permissions Messages **/
 	'no_rules_added'    => 'Oops, you forgot to specify any rules to be added.',

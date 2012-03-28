@@ -12,7 +12,7 @@
 
  namespace Sentry;
 
- abstract class Hash_Driver
+ abstract class Sentry_Hash_Driver
  {
  	/**
  	 * @var  array  array of configurable options for simpleauth hashing
@@ -28,7 +28,7 @@
 		$file = $dir.strtolower($strategy.'.php');
 		if ( ! file_exists($file))
 		{
-			throw new \SentryAuthException('Strategy file does not exist. '.strtolower($strategy.'.php'));
+			throw new \SentryAuthException(__('sentry.strategy_file_not_exist'));
 		}
 
 		require_once $file;
@@ -38,7 +38,7 @@
 			throw new \SentryAuthException(__('sentry.hash_strategy_null'));
 		}
 
-		$class = '\\Sentry\\Hash_Strategy_'.$strategy;
+		$class = '\\Sentry\\Sentry_Hash_Strategy_'.$strategy;
 
 		return new $class($options);
 	}

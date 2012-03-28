@@ -12,7 +12,7 @@
 
  namespace Sentry;
 
- class Hash_Strategy_BCrypt extends Hash_Driver
+ class Sentry_Hash_Strategy_BCrypt extends Sentry_Hash_Driver
  {
 
  	public function __construct($options)

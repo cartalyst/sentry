@@ -12,7 +12,7 @@
 
  namespace Sentry;
 
- class Hash_Strategy_SimpleAuth extends Hash_Driver
+ class Sentry_Hash_Strategy_SimpleAuth extends Sentry_Hash_Driver
  {
  	/**
  	 * @var  object  hashing object

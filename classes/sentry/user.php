@@ -117,10 +117,17 @@ class Sentry_User implements Iterator, ArrayAccess
 		$_db_instance = trim(Config::get('sentry.db_instance'));
 		$this->rules = Config::get('sentry.permissions.rules');
 
-		// init a hashing mechanism
-		$strategy = Config::get('sentry.hash.strategy');
-		$options = Config::get('sentry.hash.strategies.'.$strategy);
-		$this->hash = Hash_Driver::forge($strategy, $options);
+		try
+		{
+			// init a hashing mechanism
+			$strategy = Config::get('sentry.hash.strategy');
+			$options = Config::get('sentry.hash.strategies.'.$strategy);
+			$this->hash = Sentry_Hash_Driver::forge($strategy, $options);
+		}
+		catch (SentryGroupNotFoundException $e)
+		{
+			throw new \SentryUserException($e->getMessage());
+		}
 
 		// db_instance check
 		if ( ! empty($_db_instance) )
@@ -950,7 +957,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			$strategy = Config::get('sentry.hash.convert.from');
 			$options = Config::get('sentry.hash.strategies.'.$strategy);
-			$hash = Hash_Driver::forge($strategy, $options);
+			$hash = Sentry_Hash_Driver::forge($strategy, $options);
 
 			if ($hash->check_password($password, $this->user[$field]))
 			{
