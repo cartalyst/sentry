@@ -24,6 +24,15 @@
  	 */
  	public static function forge($strategy, $options = array())
 	{
+		$dir = __DIR__.'/strategy/';
+		$file = $dir.strtolower($strategy.'.php');
+		if ( ! file_exists($file))
+		{
+			throw new \SentryAuthException('Strategy file does not exist. '.strtolower($strategy.'.php'));
+		}
+
+		require_once $file;
+
 		if ($strategy === null or empty($strategy))
 		{
 			throw new \SentryAuthException(__('sentry.hash_strategy_null'));

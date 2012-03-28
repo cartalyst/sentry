@@ -97,8 +97,8 @@ return array(
 		'strategy' => 'Sentry',
 
 		'convert'  => array(
-			'enabled' => false,
-			'from'    => null,
+			'enabled' => null,
+			'from'    => '',
 		),
 
 		/**
