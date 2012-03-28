@@ -206,7 +206,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			if (Config::get('sentry.permissions.enabled'))
 			{
 				// let's get the group permissions first.
-				foreach($this->groups as $group)
+				foreach ($this->groups as $group)
 				{
 					if ( ! empty($group['permissions']))
 					{
@@ -1114,7 +1114,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		 */
 		if (is_array($resource))
 		{
-			foreach($resource as $rule)
+			foreach ($resource as $rule)
 			{
 				// if it is in the config rules & not in the array rules, than we don't have access.
 				if (in_array($rule, $this->rules) and ! in_array($rule, $this->permissions) and $rule === $current_resource)
