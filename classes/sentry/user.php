@@ -208,14 +208,14 @@ class Sentry_User implements Iterator, ArrayAccess
 				// let's get the group permissions first.
 				foreach($this->groups as $group)
 				{
-					if (!empty($group['permissions']))
+					if ( ! empty($group['permissions']))
 					{
 						// group column permissions
 						$group_permissions = json_decode($group['permissions'], true);
 
 						foreach ($group_permissions as $key => $val)
 						{
-							if (!empty($key) and $val === 1)
+							if ( ! empty($key) and $val === 1)
 							{
 								$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
 							}
@@ -230,7 +230,7 @@ class Sentry_User implements Iterator, ArrayAccess
 				/**
 				 * now let's merge the user's permissions
 				 */
-				if (!empty($this->user['permissions']))
+				if ( ! empty($this->user['permissions']))
 				{
 					// user column permissions
 					$user_permissions = json_decode($this->user['permissions'], true);
@@ -245,7 +245,7 @@ class Sentry_User implements Iterator, ArrayAccess
 						{
 							$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
 						}
-						elseif(!is_array($this->permissions) and $val === 1)
+						elseif( ! is_array($this->permissions) and $val === 1)
 						{
 							$this->permissions = array($val);
 						}
@@ -1054,7 +1054,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			}
 		}
 
-		if (!is_array($current_permissions))
+		if ( ! is_array($current_permissions))
 		{
 			return $this->update(array('permissions' => ''));
 		}
