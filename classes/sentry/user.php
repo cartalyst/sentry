@@ -1028,9 +1028,13 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if (in_array($key, $this->rules) or $key === Config::get('sentry.permissions.superuser'))
 			{
-				if (is_array($current_permissions))
+				if (is_array($current_permissions) and !empty($val))
 				{
 					$current_permissions = Arr::merge($current_permissions, array($key => $val));
+				}
+				if (is_array($current_permissions) and $val === '')
+				{
+					$current_permissions = Arr::delete($current_permissions, $key);
 				}
 				else
 				{
@@ -1043,7 +1047,7 @@ class Sentry_User implements Iterator, ArrayAccess
 			}
 		}
 
-		if (empty($current_permissions))
+		if (!is_array($current_permissions))
 		{
 			return $this->update(array('permissions' => ''));
 		}
@@ -1079,26 +1083,49 @@ class Sentry_User implements Iterator, ArrayAccess
 			return true;
 		}
 
-		if (empty($resource))
-		{
-			$module = Request::active()->module;
-			$controller = str_replace('controller_', '', Str::lower(Inflector::denamespace(Request::active()->controller)));
-			$method = '_'.Request::active()->action;
+		
+		/**
+		 * Get the current page in our rule formate
+		 * We'll use this if there is no $resource set and to check our array against.
+		 */
+		$module = Request::active()->module;
+		$controller = str_replace('controller_', '', Str::lower(Inflector::denamespace(Request::active()->controller)));
+		$method = '_'.Request::active()->action;
 
-			if (!empty($module))
-			{
-				$resource = $module.'_'.$controller.$method;
-			}
-			else
-			{
-				$resource = $controller.$method;
-			}
+		if (!empty($module))
+		{
+			$current_resource = $module.'_'.$controller.$method;
+		}
+		else
+		{
+			$current_resource = $controller.$method;
 		}
 
-		// if it is in the config rules & not in the array rules, than we don't have access.
-		if (in_array($resource, $this->rules) and !in_array($resource, $this->permissions))
+		/**
+		 * if we have an array of resources, let's loop through them
+		 * and if it's not an array just check the single resource
+		 */
+		if (is_array($resource))
 		{
-			throw new SentryPermissionDenied(__('sentry.permission_denied', array('resource' => $resource)));
+			foreach($resource as $rule)
+			{
+				// if it is in the config rules & not in the array rules, than we don't have access.
+				if (in_array($rule, $this->rules) and !in_array($rule, $this->permissions) and $rule === $current_resource)
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			// assign $resource if empty.
+			$resource = ($resource) ? $resource : $current_resource;
+
+			// if it is in the config rules & not in the array rules, than we don't have access.
+			if (in_array($resource, $this->rules) and !in_array($resource, $this->permissions))
+			{
+				return false;
+			}
 		}
 
 		return true;
