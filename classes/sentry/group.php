@@ -358,7 +358,7 @@ class Sentry_Group implements Iterator, ArrayAccess
 
 
 	/**
-	 * add/update group permission rules.
+	 * Add/Update group permission rules.
 	 *
 	 * Usage:
 	 *
@@ -393,11 +393,11 @@ class Sentry_Group implements Iterator, ArrayAccess
 			 */
 			if (in_array($key, static::$rules) or $key === Config::get('sentry.permissions.superuser'))
 			{
-				if (is_array($current_permissions) and $val === 1 and !Arr::key_exists($current_permissions, $key))
+				if (is_array($current_permissions) and $val === 1 and ! Arr::key_exists($current_permissions, $key))
 				{
 					$current_permissions = Arr::merge($current_permissions, array($key => $val));
 				}
-				elseif (!is_array($current_permissions) and $val === 1)
+				elseif ( ! is_array($current_permissions) and $val === 1)
 				{
 					$current_permissions = array($key => $val);
 				}
