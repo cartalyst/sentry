@@ -225,6 +225,29 @@ class Sentry_User implements Iterator, ArrayAccess
 			 */
 			if (Config::get('sentry.permissions.enabled'))
 			{
+				/**
+				 * Check to see if custom rule exist for the current module. If custom
+				 * rules do exist, than let's merge them with the rules we found in the
+				 * primary sentry config.
+				 * 
+				 * Custom rules should be set in the modules config file in a 'rules' => array()
+				 * that matches the structure in the sentry config.
+				 * 
+				 * Rules are added to the module config file because it follows FuelPHP convention
+				 * and this is a file that will probably normally already exist meaning one less file
+				 * to create, check for and load.
+				 */
+				if (isset(\Request::active()->module))
+				{
+					\Config::load(\Request::active()->module, true);
+					$module_permissions = Config::get(\Request::active()->module.'.rules');
+
+					if (!empty($module_permissions))
+					{
+						$this->rules = Arr::merge($this->rules, $module_permissions);
+					}
+				}
+			
 				// let's get the group permissions first.
 				foreach ($this->groups as $group)
 				{
