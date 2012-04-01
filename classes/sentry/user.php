@@ -1089,9 +1089,9 @@ class Sentry_User implements Iterator, ArrayAccess
 				{
 					$current_permissions = Arr::merge($current_permissions, array($key => $val));
 				}
-				if (is_array($current_permissions) and $val === '')
+				if (is_array($current_permissions) and empty($val))
 				{
-					$current_permissions = Arr::delete($current_permissions, $key);
+					Arr::delete($current_permissions, $key);
 				}
 				else
 				{
