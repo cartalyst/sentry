@@ -131,7 +131,6 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 		$_db_instance = trim(Config::get('sentry.db_instance'));
-		$this->rules = Config::get('sentry.permissions.rules');
 
 		try
 		{
@@ -221,81 +220,12 @@ class Sentry_User implements Iterator, ArrayAccess
 				->execute($this->db_instance)->as_array();
 
 			/**
-			 * fetch and merge the user's permissions if enabled
+			 * set rules and permissions if enabled
 			 */
 			if (Config::get('sentry.permissions.enabled'))
 			{
-				/**
-				 * Check to see if custom rule exist for the current module. If custom
-				 * rules do exist, than let's merge them with the rules we found in the
-				 * primary sentry config.
-				 * 
-				 * Custom rules should be set in the modules config file in a 'rules' => array()
-				 * that matches the structure in the sentry config.
-				 * 
-				 * Rules are added to the module config file because it follows FuelPHP convention
-				 * and this is a file that will probably normally already exist meaning one less file
-				 * to create, check for and load.
-				 */
-				if (isset(\Request::active()->module))
-				{
-					\Config::load(\Request::active()->module, true);
-					$module_permissions = Config::get(\Request::active()->module.'.rules');
-
-					if (!empty($module_permissions))
-					{
-						$this->rules = Arr::merge($this->rules, $module_permissions);
-					}
-				}
-			
-				// let's get the group permissions first.
-				foreach ($this->groups as $group)
-				{
-					if ( ! empty($group['permissions']))
-					{
-						// group column permissions
-						$group_permissions = json_decode($group['permissions'], true);
-
-						foreach ($group_permissions as $key => $val)
-						{
-							if ( ! empty($key) and $val === 1)
-							{
-								$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
-							}
-							else
-							{
-								$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
-							}
-						}
-					}
-				}
-
-				/**
-				 * now let's merge the user's permissions
-				 */
-				if ( ! empty($this->user['permissions']))
-				{
-					// user column permissions
-					$user_permissions = json_decode($this->user['permissions'], true);
-
-					foreach ($user_permissions as $key => $val)
-					{
-						if (is_array($this->permissions) and $val === 1)
-						{
-							$this->permissions = array_unique(Arr::merge($this->permissions, array($key)));
-						}
-						elseif(is_array($this->permissions) and $val === 0)
-						{
-							$this->permissions = Arr::merge(array_diff($this->permissions, array($key)));
-						}
-						elseif( ! is_array($this->permissions) and $val === 1)
-						{
-							$this->permissions = array($val);
-						}
-					}
-				}
-
-				$this->permissions = array_values($this->permissions);
+				$this->rules = static::fetch_rules();
+				$this->permissions = static::fetch_permissions();
 			}
 		}
 	}
@@ -1227,6 +1157,148 @@ class Sentry_User implements Iterator, ArrayAccess
 			'user' => $user,
 			'passwords' => $passwords
 		);
+	}
+
+	protected function fetch_rules()
+	{
+		// set rules array
+		$rules = array();
+
+		// load global rules
+		$permission_file = Config::get('sentry.permissions.file');
+
+		// see if we should use config files or not
+		if ( $permission_file['name'] == 'config' or empty($permission_file['name']) or $permission_file['name'] == null)
+		{
+			// load global rules
+			$rules = Config::get('sentry.permissions.rules');
+
+			// load current module specific rules if a module is active
+			if (isset(\Request::active()->module))
+			{
+				\Config::load(\Request::active()->module, true);
+				$module_permissions = Config::get(\Request::active()->module.'.rules');
+
+				if (!empty($module_permissions))
+				{
+					$rules = Arr::merge($rules, $module_permissions);
+				}
+			}
+
+			return $rules;
+		}
+
+		// loop through module paths and see if listed file exists
+		$file = false;
+		foreach (Config::get('module_paths') as $path)
+		{
+			$path = $path.\Request::active()->module.DS;
+
+			if ( ! empty($permission_file['path']))
+			{
+				$path .= $permission_file['path'].DS.$permission_file['name'];
+			}
+			else
+			{
+				$path .= $permission_file['name'];
+			}
+
+			if (file_exists($path))
+			{
+				$file = $path;
+				break;
+			}
+		}
+
+		// if the file exists pull in rules if they are set
+		if ( $file )
+		{
+			// get file type
+			switch ($permission_file['type'])
+			{
+				case 'ini':
+					$info = parse_ini_file($file, true);
+				break;
+
+				case 'json':
+					$info = json_decode(file_get_contents($file), true);
+				break;
+
+				case 'yaml':
+					$info = \Format::forge(file_get_contents($file), 'yaml')->to_array();
+				break;
+
+				case 'php':
+					$info = include($file);
+				break;
+
+				default: // move this somewhere else for easier debugging?
+					throw new \SentryUserException(sprintf('Invalid permission file type "%s".', $type));
+			}
+
+			// now set rules if they exist
+			if (isset($info['rules']))
+			{
+				$rules = $info['rules'];
+			}
+		}
+
+		return $rules;
+	}
+
+	protected function fetch_permissions()
+	{
+		// set permissions arrray
+		$permissions = array();
+
+		// let's get the group permissions first.
+		foreach ($this->groups as $group)
+		{
+			if ( ! empty($group['permissions']))
+			{
+				// group column permissions
+				$group_permissions = json_decode($group['permissions'], true);
+
+				foreach ($group_permissions as $key => $val)
+				{
+					if ( ! empty($key) and $val === 1)
+					{
+						$permissions = array_unique(Arr::merge($permissions, array($key)));
+					}
+					else
+					{
+						$permissions = Arr::merge(array_diff($permissions, array($key)));
+					}
+				}
+			}
+		}
+
+		/**
+		 * now let's merge the user's permissions
+		 */
+		if ( ! empty($this->user['permissions']))
+		{
+			// user column permissions
+			$user_permissions = json_decode($this->user['permissions'], true);
+
+			foreach ($user_permissions as $key => $val)
+			{
+				if (is_array($permissions) and $val === 1)
+				{
+					$permissions = array_unique(Arr::merge($permissions, array($key)));
+				}
+				elseif(is_array($permissions) and $val === 0)
+				{
+					$permissions = Arr::merge(array_diff($permissions, array($key)));
+				}
+				elseif( ! is_array($permissions) and $val === 1)
+				{
+					$permissions = array($val);
+				}
+			}
+		}
+
+		return array_values($permissions);
 	}
 
 

@@ -96,6 +96,9 @@ return array(
 		 */
 		'strategy' => 'Sentry',
 
+		/**
+		 * Convert hashes from another available strategy
+		 */
 		'convert'  => array(
 			'enabled' => false,
 			'from'    => '',
@@ -120,7 +123,7 @@ return array(
 
 			'BCrypt' => array(
 				'strength' => 4,
-				// if you want to use a bacrypt hash with an algorithm
+				// if you want to use a bcrypt hash with an algorithm
 				'hashing_algorithm' => null,
 			),
 		),
@@ -141,10 +144,26 @@ return array(
 		'superuser' => 'superuser',
 
 		/**
+		 * The permission rules file name
+		 * Set name to '', null or 'config' to use config files ( will negate type option )
+		 * Set type to files type. Supported types: php, json, ini, yaml,
+		 * Path is relative to the modules base directory
+		 *
+		 * Type and Path are ignored if name is '', null or 'config'
+		 */
+		'file' => array(
+			'name' => 'config',
+			'type' => '',
+			'path' => '',
+		),
+
+		/**
 		 * setup rules for permissions
 		 * These are resources that will require access permissions.
 		 * Rules are assigned to groups or specific users in the
 		 * format module_controller_method or controller_method
+		 *
+		 * This is ignored if file above is not set to config
 		 */
 		'rules' => array(
 			/**
