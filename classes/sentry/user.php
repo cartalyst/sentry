@@ -1164,15 +1164,15 @@ class Sentry_User implements Iterator, ArrayAccess
 		// set rules array
 		$rules = array();
 
-		// load global rules
+		// get permissions file config options
 		$permission_file = Config::get('sentry.permissions.file');
+
+		// load global rules
+		$rules = Config::get('sentry.permissions.rules');
 
 		// see if we should use config files or not
 		if ( $permission_file['name'] == 'config' or empty($permission_file['name']) or $permission_file['name'] == null)
 		{
-			// load global rules
-			$rules = Config::get('sentry.permissions.rules');
-
 			// load current module specific rules if a module is active
 			if (isset(\Request::active()->module))
 			{
@@ -1211,7 +1211,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		}
 
 		// if the file exists pull in rules if they are set
-		if ( $file )
+		if ($file)
 		{
 			// get file type
 			switch ($permission_file['type'])
