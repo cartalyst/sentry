@@ -98,7 +98,7 @@ You'll notice a new "permissions" section in the config file. Here is a glimpes 
 		'blog_admin_delete'    => 0, // 0 - removes a rule from the permissions when merged
 		'product_admin_delete' => 1  // 1 - will add a special permission for this user only
 	);
-	Sentry::user->update_permissions($add_permissions);
+	Sentry::user()->update_permissions($add_permissions);
 
 -Sentry::user()->permissions()
 
@@ -111,7 +111,7 @@ You'll notice a new "permissions" section in the config file. Here is a glimpes 
 	// will return the user's merged permissions in an array
 	$merged_permissions = Sentry::user()->merged_permissions()
 
-###classes/user.php
+###classes/group.php
 -Sentry::group()->update_permissions()
 
 	$add_permissions = array(
@@ -131,4 +131,3 @@ You'll notice a new "permissions" section in the config file. Here is a glimpes 
 	// will return the group's permissions in JSON format. This is mostly for UI usage. You can use FuelPHP's Format class
 	// to easily convert it to any format thar you need.
 	$group_permissions = Sentry::group('groupname_or_id')->permissions()
-
