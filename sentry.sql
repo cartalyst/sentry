@@ -2,9 +2,7 @@ DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
-  `level` int(11) NOT NULL,
-  `is_admin` tinyint(1) NOT NULL,
-  `parent` int(11) NOT NULL,
+	`permissions` TEXT NOT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
