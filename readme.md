@@ -3,6 +3,22 @@
 Sentry is a simple, easy to use authorization and authentication package built for FuelPHP.
 It also provides additional features such as user groups and additional security features.
 
+###Quickstart
+
+* Clone sentry into *APPPATH/bundles/*
+  * ```git clone https://github.com/cartalyst/sentry-laravel.git sentry```
+* Edit *APPPATH/application/bundles.php*
+
+```php
+
+<?php
+// APPPATH/application/bundles.php
+return array(
+  'sentry' => array('auto' => true),
+);
+```
+* [Begin using Sentry!](http://sentry.cartalyst.com/manual/v1.1.html)
+
 ###Features
 
 * Authentication (via username or email)
