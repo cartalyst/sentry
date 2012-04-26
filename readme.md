@@ -17,6 +17,8 @@ return array(
   'sentry' => array('auto' => true),
 );
 ```
+* Edit your *APPPATH/application/config/db.php* file and make sure your database credentials are valid
+* Run ```php artisan migrate sentry```
 * [Begin using Sentry!](http://sentry.cartalyst.com/manual/v1.1.html)
 
 ###Features
