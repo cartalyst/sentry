@@ -523,9 +523,9 @@ class Sentry
 	{
 		$encoded_val = Cookie::get(Config::get('sentry::sentry.remember_me.cookie_name'));
 
-		if ($encoded_val)
+		if ($encoded_val['value'])
 		{
-			$val = base64_decode($encoded_val);
+			$val = base64_decode($encoded_val['value']);
 			list($login_column, $hash) = explode(':', $val);
 
 			// if user is validated
