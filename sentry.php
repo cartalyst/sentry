@@ -19,6 +19,7 @@ use DB;
 use Request;
 use Session;
 use Lang;
+use Str;
 
 class SentryException extends \Exception {}
 class SentryConfigException extends SentryException {}
