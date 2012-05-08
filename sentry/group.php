@@ -204,7 +204,7 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 
 		try
 		{
-			DB::connection($this->db_instance)->pdo->beginTransaction();
+			DB::connection(static::$db_instance)->pdo->beginTransaction();
 
 			// delete users groups
 			$delete_user_groups = DB::connection(static::$db_instance)
@@ -218,11 +218,11 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 				->where('id', '=', $this->group['id'])
 				->delete();
 
-			DB::connection($this->db_instance)->pdo->commit();
+			DB::connection(static::$db_instance)->pdo->commit();
 		}
 		catch(\Database_Exception $e) {
 
-			DB::connection($this->db_instance)->pdo->rollBack();
+			DB::connection(static::$db_instance)->pdo->rollBack();
 			return false;
 		}
 
