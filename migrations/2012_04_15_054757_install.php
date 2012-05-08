@@ -11,6 +11,7 @@ class Sentry_Install {
 	{
 		// create user table
 		Schema::table(Config::get('sentry::sentry.table.users'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
 			$table->string('username');
@@ -31,6 +32,7 @@ class Sentry_Install {
 
 		// create user metadata table
 		Schema::table(Config::get('sentry::sentry.table.users_metadata'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->integer('user_id')->primary()->unsigned();
 			$table->string('first_name');
@@ -39,6 +41,7 @@ class Sentry_Install {
 
 		// create groups table
 		Schema::table(Config::get('sentry::sentry.table.groups'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
 			$table->string('name');
@@ -47,6 +50,7 @@ class Sentry_Install {
 
 		// create users group relation table
 		Schema::table(Config::get('sentry::sentry.table.users_groups'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->integer('user_id')->unsigned();
 			$table->integer('group_id')->unsigned();
@@ -54,6 +58,7 @@ class Sentry_Install {
 
 		// create suspension table
 		Schema::table(Config::get('sentry::sentry.table.users_suspended'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
 			$table->string('login_id');
@@ -74,11 +79,28 @@ class Sentry_Install {
 	public function down()
 	{
 		// drop all tables
-		Schema::drop(Config::get('sentry::sentry.table.users'));
-		Schema::drop(Config::get('sentry::sentry.table.users_metadata'));
-		Schema::drop(Config::get('sentry::sentry.table.groups'));
-		Schema::drop(Config::get('sentry::sentry.table.users_groups'));
-		Schema::drop(Config::get('sentry::sentry.table.users_suspended'));
-	}
+		Schema::table(Config::get('sentry::sentry.table.users'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+		Schema::table(Config::get('sentry::sentry.table.users_metadata'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
 
+		Schema::table(Config::get('sentry::sentry.table.groups'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+
+		Schema::table(Config::get('sentry::sentry.table.users_groups'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+
+		Schema::table(Config::get('sentry::sentry.table.users_suspended'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+	}
 }
