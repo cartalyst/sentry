@@ -136,8 +136,6 @@ class Sentry_Attempts
 		}
 		elseif ($result)
 		{
-
-			print_r($result[0]);
 			$this->attempts = $result[0]['attempts'];
 		}
 		else
