@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -14,6 +14,9 @@ namespace Sentry;
 
 use Str;
 
+/**
+ * Default Sentry Hashing Driver
+ */
 class Sentry_Hash_Strategy_Sentry extends Sentry_Hash_Driver
 {
 	/**

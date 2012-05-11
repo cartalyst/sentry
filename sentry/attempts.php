@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -17,8 +17,6 @@ use DB;
 
 /**
  * Sentry Auth Attempt Class
- *
- * @author Daniel Petrie
  */
 
 class SentryAttemptsException extends SentryException {}

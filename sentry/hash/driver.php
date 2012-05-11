@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -12,17 +12,20 @@
 
  namespace Sentry;
 
- abstract class Sentry_Hash_Driver
- {
- 	/**
- 	 * @var  array  array of configurable options for simpleauth hashing
- 	 */
- 	protected $options = array();
+/**
+ * Hashing Driver
+ */
+abstract class Sentry_Hash_Driver
+{
+	/**
+	 * @var  array  array of configurable options for simpleauth hashing
+	 */
+	protected $options = array();
 
- 	/**
- 	 * Creates and return hashing strategy object
- 	 */
- 	public static function forge($strategy, $options = array())
+	/**
+	 * Creates and return hashing strategy object
+	 */
+	public static function forge($strategy, $options = array())
 	{
 		if ($strategy === null or empty($strategy))
 		{
@@ -37,10 +40,10 @@
 	// required constructor for passing options
 	abstract public function __construct($options);
 
- 	// creates the password
- 	abstract public function create_password($password);
+	// creates the password
+	abstract public function create_password($password);
 
- 	// checks the password
- 	abstract public function check_password($password, $hashed_password);
+	// checks the password
+	abstract public function check_password($password, $hashed_password);
 
- }
+}

@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -14,25 +14,28 @@
 
 use Str;
 
- class Sentry_Hash_Strategy_BCrypt extends Sentry_Hash_Driver
- {
+/**
+ * BCrypt Hashing Driver
+ */
+class Sentry_Hash_Strategy_BCrypt extends Sentry_Hash_Driver
+{
 
- 	public function __construct($options)
- 	{
- 		if ( ! isset($options['hashing_algorithm']))
- 		{
- 			$options['hashing_algorithm'] = null;
- 		}
+	public function __construct($options)
+	{
+		if ( ! isset($options['hashing_algorithm']))
+		{
+			$options['hashing_algorithm'] = null;
+		}
 
- 		if ( ! isset($options['strength']) or $options['strength'] < 4 or $options['strength'] > 31)
- 		{
- 			$options['strength'] = 8;
- 		}
+		if ( ! isset($options['strength']) or $options['strength'] < 4 or $options['strength'] > 31)
+		{
+			$options['strength'] = 8;
+		}
 
- 		$this->options = $options;
- 	}
+		$this->options = $options;
+	}
 
- 	public function create_password($password)
+	public function create_password($password)
 	{
 		$salt = '';
 
@@ -51,7 +54,7 @@ use Str;
 		return $this->hash_password($password, $salt);
 	}
 
- 	public function check_password($password, $hashed_password)
+	public function check_password($password, $hashed_password)
 	{
 		if ($this->options['hashing_algorithm'] == 'hash')
 		{
@@ -80,4 +83,4 @@ use Str;
 
 	}
 
- }
+}

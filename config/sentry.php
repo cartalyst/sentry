@@ -134,7 +134,7 @@ return array(
 		/**
 		 * enable permissions - true or false
 		 */
-		'enabled' => false,
+		'enabled' => true,
 
 		/**
 		 * super user - string
@@ -144,16 +144,23 @@ return array(
 		'superuser' => 'superuser',
 
 		/**
-		 * The permission rules file name
-		 * Set name to '', null or 'config' to use config files ( will negate type option )
-		 * Set type to files type. Supported types: php, json, ini, yaml,
-		 * Path is relative to the modules base directory
-		 *
-		 * Type and Path are ignored if name is '', null or 'config'
+		 * The permission rules file
+		 * Must return an array with a 'rules' key.
 		 */
 		'file' => array(
-			'name' => 'config',
-			'type' => '',
+			/**
+			 * Type options: config | php
+			 *
+			 * name and path are ignored if type is config
+			 * 	- name will be permissions
+			 *	- path will be the bundles config folder
+			 *
+			 * name and path are required if type is php
+			 *  - name will be the file name of the php file
+			 *  - path will be relative to the current bundles base folder
+			 */
+			'type' => 'php',
+			'name' => 'extension',
 			'path' => '',
 		),
 
@@ -161,7 +168,7 @@ return array(
 		 * setup rules for permissions
 		 * These are resources that will require access permissions.
 		 * Rules are assigned to groups or specific users in the
-		 * format module_controller_method or controller_method
+		 * format module@controller::method
 		 *
 		 * This is always used for global permissions
 		 */
@@ -169,26 +176,14 @@ return array(
 			/**
 			 * config samples.
 			 *
-			 *	// user module admin
-			 *	'user_admin_create',
-			 *	'user_admin_read',
-			 *	'user_admin_update',
-			 *	'user_admin_delete',
-			 *	'user_permissions',
-			 *
-			 *	// blog module admin
-			 *	'blog_admin_create',
-			 *	'blog_admin_read',
-			 *	'blog_admin_update',
-			 *	'blog_admin_delete',
-			 *
-			 *	// product module admin
-			 *	'product_admin_create',
-			 *	'product_admin_read',
-			 *	'product_admin_update',
-			 *	'product_admin_delete',
+			 *	'application@admin::dashboard',
+			 *	'user@admin::create',
+			 *	'user@admin::read',
+			 *	'blog@admin::delete',
+			 *  'my_custom_rule',
+			 *  'is_admin',
 			 */
-
+			'is_admin'
 		)
 	)
 );

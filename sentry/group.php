@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -14,9 +14,6 @@ namespace Sentry;
 
 use Config;
 use DB;
-use FuelException;
-use Arr;
-use Format;
 
 class SentryGroupException extends SentryException {}
 class SentryGroupNotFoundException extends SentryGroupException {}
@@ -24,8 +21,6 @@ class SentryGroupPermissionsException extends SentryGroupException {}
 
 /**
  * Handles all of the Sentry group logic.
- *
- * @author Dan Horrigan
  */
 class Sentry_Group implements \Iterator, \ArrayAccess
 {
@@ -65,7 +60,6 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 		static::$table = strtolower(Config::get('sentry::sentry.table.groups'));
 		static::$join_table = strtolower(Config::get('sentry::sentry.table.users_groups'));
 		$db_instance = trim(Config::get('sentry::sentry.db_instance'));
-		static::$rules = Config::get('sentry::sentry.permissions.rules');
 
 		// db_instance check
 		if ( ! empty($db_instance) )
@@ -382,38 +376,45 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 	 *
 	 * @param  array $rules
 	 * @return bool
-	 * @throws SentryPermissionsException
-	 * @author Daniel Berry
+	 * @throws SentryGroupPermissionsException
 	 */
 	public function update_permissions($rules = array())
 	{
-		if (empty($rules))
+		if (empty($rules) or ! is_array($rules))
 		{
 			throw new SentryGroupPermissionsException(__('sentry::sentry.no_rules_added'));
 		}
 
-		// grab the current group permissions & decode
-		$current_permissions = json_decode($this->get('permissions'), true);
+		// loop through the rules and make sure all values are a 1 or 0
+		foreach ($rules as $rule => $value)
+		{
+			if ( ! is_int($value) or $value < 0 or $value > 1)
+			{
+				throw new SentryGroupPermissionsException('A permission value must be an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+			}
+		}
 
-		/**
-		 * let's go through each of the $rules
-		 */
+		// grab the current group permissions and decode
+		$current_permissions = json_decode($this->get('permissions'), true);
+		$current_permissions = (is_array($current_permissions)) ? $current_permissions : array();
+
+		// get sentry rules
+		$all_rules = Sentry_Rules::fetch_rules();
+
+		// Let's go through each of the $rules
 		foreach ($rules as $key => $val)
 		{
-			/**
-			 * check to make sure the rule is in the config
-			 */
-			if (in_array($key, static::$rules) or $key === Config::get('sentry::sentry.permissions.superuser'))
+			// Check to make sure the rule is in the config
+			if (in_array($key, $all_rules) or $key === Config::get('sentry::sentry.permissions.superuser'))
 			{
-				if (is_array($current_permissions) and $val === 1 and ! Arr::key_exists($current_permissions, $key))
+				if ($val === 1)
 				{
-					$current_permissions = Arr::merge($current_permissions, array($key => $val));
+					if ( ! array_key_exists($key, $current_permissions))
+					{
+						$current_permissions[$key] = $val;
+					}
 				}
-				elseif ( ! is_array($current_permissions) and $val === 1)
-				{
-					$current_permissions = array($key => $val);
-				}
-				elseif(is_array($current_permissions) and $val === 0 and Arr::key_exists($current_permissions, $key))
+				else
 				{
 					unset($current_permissions[$key]);
 				}
@@ -431,7 +432,7 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 		else
 		{
 			// let's update the permissions column.
-			return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
+			return $this->update(array('permissions' => json_encode($current_permissions)));
 		}
 	}
 
@@ -439,7 +440,6 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 	 * get the permissions for a single group
 	 *
 	 * @return  mixed|json
-	 * @author  Daniel Berry
 	 */
 	public function permissions()
 	{

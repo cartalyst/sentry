@@ -26,9 +26,6 @@ class SentryConfigException extends SentryException {}
 
 /**
  * Sentry Auth class
- *
- * @package  Sentry
- * @author   Daniel Petrie
  */
 class Sentry
 {

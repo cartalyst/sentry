@@ -1,9 +1,9 @@
 <?php
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -16,27 +16,14 @@ use Config;
 use DB;
 use Lang;
 use Str;
-use Arr;
 use Request;
-use Inflector;
 
 class SentryUserException extends SentryException {}
 class SentryUserNotFoundException extends SentryUserException {}
-class SentryPermissionsException extends SentryUserException {}
-class SentryPermissionDenied extends SentryPermissionsException {}
+class SentryPermissionsException extends SentryException {}
 
 /**
  * Sentry Auth User Class
- *
- * @package  Sentry
- * @author   Daniel Petrie
- */
-
-/**
- * Sentry v2.0 Updates
- *
- * @package  Sentry
- * @auth     Daniel Berry
  */
 class Sentry_User implements \Iterator, \ArrayAccess
 {
@@ -226,7 +213,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			 */
 			if (Config::get('sentry::sentry.permissions.enabled'))
 			{
-				$this->rules = $this->fetch_rules();
+				$this->rules       = Sentry_Rules::fetch_rules();
 				$this->permissions = $this->fetch_permissions();
 			}
 		}
@@ -1015,7 +1002,6 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 * Return user's custom permissions json
 	 *
 	 * @return  array|json
-	 * @author  Daniel Berry
 	 */
 	public function permissions()
 	{
@@ -1026,7 +1012,6 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 * Return user's merged permissions
 	 *
 	 * @return  array
-	 * @author  Daniel Berry
 	 */
 	public function merged_permissions()
 	{
@@ -1048,33 +1033,41 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 * @param array|string $rules
 	 * @return bool
 	 * @throws SentryPermissionsException
-	 * @author Daniel Berry
 	 */
 	public function update_permissions($rules = array())
 	{
-		if (empty($rules))
+		if (empty($rules) or ! is_array($rules))
 		{
-			throw new SentryPermissionsException('Oops, you forgot to specify any rules to add!');
+			throw new SentryPermissionsException(__('sentry::sentry.no_rules_added'));
+		}
+
+		// loop through the rules and make sure all values are a 1 or 0
+		foreach ($rules as $rule => $value)
+		{
+			if ( ! is_int($value) or $value < 0 or $value > 1)
+			{
+				throw new SentryUserPermissionsException('A permission value must be an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+			}
 		}
 
 		// get the current permissions from the user column.
 		$current_permissions = json_decode($this->user['permissions'], true);
+		$current_permissions = ( is_array($current_permissions) ) ? $current_permissions : array();
 
 		foreach ($rules as $key => $val)
 		{
 			if (in_array($key, $this->rules) or $key === Config::get('sentry::sentry.permissions.superuser'))
 			{
-				if (is_array($current_permissions) and ! empty($val))
+				if ($val === 1)
 				{
-					$current_permissions = Arr::merge($current_permissions, array($key => $val));
-				}
-				if (is_array($current_permissions) and empty($val))
-				{
-					Arr::delete($current_permissions, $key);
+					if ( ! array_key_exists($key, $current_permissions))
+					{
+						$current_permissions[$key] = $val;
+					}
 				}
 				else
 				{
-					$current_permissions = array($key => $val);
+					unset($current_permissions[$key]);
 				}
 			}
 			else
@@ -1083,14 +1076,14 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			}
 		}
 
-		if ( ! is_array($current_permissions))
+		if (empty($current_permissions))
 		{
 			return $this->update(array('permissions' => ''));
 		}
 		else
 		{
 			// let's update the permissions column.
-			return $this->update(array('permissions' => Format::forge($current_permissions)->to_json()));
+			return $this->update(array('permissions' => json_encode($current_permissions)));
 		}
 	}
 
@@ -1105,60 +1098,51 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 *
 	 * @param   null $resource
 	 * @return  bool
-	 * @throws  SentryPermissionDenied
-	 * @author  Daniel Berry
 	 */
 	public function has_access($resource = null)
 	{
 		/**
-		 * if we have a super user (this is the global administrator,
-		 * GOD access, than just return true and skip checks
+		 * If we have a super user (this is the global administrator,
+		 * than just return true and skip checks
 		 */
 		if (in_array(Config::get('sentry::sentry.permissions.superuser'), $this->permissions))
 		{
 			return true;
 		}
 
-
 		/**
-		 * Get the current page in our rule formate
+		 * Get the current page in our rule format
 		 * We'll use this if there is no $resource set and to check our array against.
 		 */
-		$module = Request::active()->module;
-		$controller = str_replace('controller_', '', Str::lower(Inflector::denamespace(Request::active()->controller)));
-		$method = '_'.Request::active()->action;
+		$bundle     = Request::route()->bundle;
+		$controller = Request::route()->controller;
+		$action     = Request::route()->controller_action;
 
-		if ( ! empty($module))
+		// build this resource string
+		$current_resource = $bundle;
+		if ($controller)
 		{
-			$current_resource = $module.'_'.$controller.$method;
-		}
-		else
-		{
-			$current_resource = $controller.$method;
-		}
+			$current_resource .= '@'.$controller;
 
-		/**
-		 * if we have an array of resources, let's loop through them
-		 * and if it's not an array just check the single resource
-		 */
-		if (is_array($resource))
-		{
-			foreach ($resource as $rule)
+			if ($action)
 			{
-				// if it is in the config rules & not in the array rules, than we don't have access.
-				if (in_array($rule, $this->rules) and ! in_array($rule, $this->permissions) and $rule === $current_resource)
-				{
-					return false;
-				}
+				$current_resource .= '::'.$action;
 			}
 		}
-		else
-		{
-			// assign $resource if empty.
-			$resource = ($resource) ?: $current_resource;
 
+		// lets make the resource an array by default
+		$resource = ($resource) ?: $current_resource;
+
+		if ( ! is_array($resource))
+		{
+			$resource = array($resource);
+		}
+
+		// Loop through the resources and check if it exists in the rules/permissions
+		foreach ($resource as $rule)
+		{
 			// if it is in the config rules & not in the array rules, than we don't have access.
-			if (in_array($resource, $this->rules) and ! in_array($resource, $this->permissions))
+			if (in_array($rule, $this->rules) and ! in_array($rule, $this->permissions))
 			{
 				return false;
 			}
@@ -1167,6 +1151,12 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		return true;
 	}
 
+	/**
+	 * Extracts passwords from the user array
+	 *
+	 * @param   array  user array
+	 * @return  array  array of the user and extracted passwords
+	 */
 	protected function extract_passwords($user)
 	{
 		$passwords = array();
@@ -1180,96 +1170,9 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		return array(
-			'user' => $user,
+			'user'      => $user,
 			'passwords' => $passwords
 		);
-	}
-
-	protected function fetch_rules()
-	{
-		// set rules array
-		$rules = array();
-
-		// get permissions file config options
-		$permission_file = Config::get('sentry::sentry.permissions.file');
-
-		// load global rules
-		$rules = Config::get('sentry::sentry.permissions.rules');
-
-		// see if we should use config files or not
-		if ( $permission_file['name'] == 'config' or empty($permission_file['name']) or $permission_file['name'] == null)
-		{
-			// load current module specific rules if a module is active
-			if (isset(Request::active()->module))
-			{
-				Config::load(Request::active()->module, true);
-				$module_permissions = Config::get(Request::active()->module.'.rules');
-
-				if (!empty($module_permissions))
-				{
-					$rules = Arr::merge($rules, $module_permissions);
-				}
-			}
-
-			return $rules;
-		}
-
-		// loop through module paths and see if listed file exists
-		$file = false;
-		foreach (Config::get('sentry::module_paths') as $path)
-		{
-			$path = $path.Request::active()->module.DS;
-
-			if ( ! empty($permission_file['path']))
-			{
-				$path .= $permission_file['path'].DS.$permission_file['name'];
-			}
-			else
-			{
-				$path .= $permission_file['name'];
-			}
-
-			if (file_exists($path))
-			{
-				$file = $path;
-				break;
-			}
-		}
-
-		// if the file exists pull in rules if they are set
-		if ($file)
-		{
-			// get file type
-			switch ($permission_file['type'])
-			{
-				case 'ini':
-					$info = parse_ini_file($file, true);
-				break;
-
-				case 'json':
-					$info = json_decode(file_get_contents($file), true);
-				break;
-
-				case 'yaml':
-					$info = Format::forge(file_get_contents($file), 'yaml')->to_array();
-				break;
-
-				case 'php':
-					$info = include($file);
-				break;
-
-				default: // move this somewhere else for easier debugging?
-					throw new SentryUserException(sprintf('Invalid permission file type "%s".', $type));
-			}
-
-			// now set rules if they exist
-			if (isset($info['rules']))
-			{
-				$rules = $info['rules'];
-			}
-		}
-
-		return $rules;
 	}
 
 	protected function fetch_permissions()
@@ -1282,44 +1185,48 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		{
 			if ( ! empty($group['permissions']))
 			{
-				// group column permissions
+				// grab and decode the group's permissions
 				$group_permissions = json_decode($group['permissions'], true);
 
 				foreach ($group_permissions as $key => $val)
 				{
+					// add the key to the permissions array if it doesn't exist already
 					if ( ! empty($key) and $val === 1)
 					{
-						$permissions = array_unique(Arr::merge($permissions, array($key)));
+						if ( ! in_array($key, $permissions))
+						{
+							$permissions[] = $key;
+						}
 					}
+					// remove the key from the array
 					else
 					{
-						$permissions = Arr::merge(array_diff($permissions, array($key)));
+						$permissions = array_diff($permissions, array($key));
 					}
 				}
 			}
 		}
 
-		/**
-		 * now let's merge the user's permissions
-		 */
+		// now let's merge the user's permissions
 		if ( ! empty($this->user['permissions']))
 		{
-			// user column permissions
+			// grab and decode the user's permissions
 			$user_permissions = json_decode($this->user['permissions'], true);
 
 			foreach ($user_permissions as $key => $val)
 			{
-				if (is_array($permissions) and $val === 1)
+				// add to array
+				if ($val === 1)
 				{
-					$permissions = array_unique(Arr::merge($permissions, array($key)));
+					if ( ! in_array($key, $permissions))
+					{
+						$permissions[] = $key;
+					}
 				}
-				elseif(is_array($permissions) and $val === 0)
+				// remove from array
+				else
 				{
-					$permissions = Arr::merge(array_diff($permissions, array($key)));
-				}
-				elseif( ! is_array($permissions) and $val === 1)
-				{
-					$permissions = array($val);
+					$permissions = array_diff($permissions, array($key));
 				}
 			}
 		}
