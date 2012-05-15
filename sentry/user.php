@@ -1122,11 +1122,11 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		$current_resource = $bundle;
 		if ($controller)
 		{
-			$current_resource .= '@'.$controller;
+			$current_resource .= '::'.$controller;
 
 			if ($action)
 			{
-				$current_resource .= '::'.$action;
+				$current_resource .= '@'.$action;
 			}
 		}
 
