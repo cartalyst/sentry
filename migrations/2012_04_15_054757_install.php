@@ -9,13 +9,13 @@ class Sentry_Install {
 	 */
 	public function up()
 	{
-		// create user table
+		// Create user table
 		Schema::table(Config::get('sentry::sentry.table.users'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
-			$table->string('username');
-			$table->string('email');
+			$table->string('username')->unique();
+			$table->string('email')->unique();
 			$table->string('password');
 			$table->string('password_reset_hash');
 			$table->string('temp_password');
@@ -30,7 +30,7 @@ class Sentry_Install {
 			$table->text('permissions');
 		});
 
-		// create user metadata table
+		// Create user metadata table
 		Schema::table(Config::get('sentry::sentry.table.users_metadata'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
@@ -39,12 +39,12 @@ class Sentry_Install {
 			$table->string('last_name');
 		});
 
-		// create groups table
+		// Create groups table
 		Schema::table(Config::get('sentry::sentry.table.groups'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
-			$table->string('name');
+			$table->string('name')->unique();
 			$table->text('permissions');
 		});
 
