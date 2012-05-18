@@ -1,6 +1,6 @@
 # Sentry
 
-Sentry is a simple, easy to use authorization and authentication package built for FuelPHP.
+Sentry is a simple, easy to use authorization and authentication package built for Laravel.
 It also provides additional features such as user groups and additional security features.
 
 ###Quickstart

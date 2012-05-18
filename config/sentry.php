@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Part of the Sentry package for FuelPHP.
+ * Part of the Sentry package for Laravel.
  *
  * @package    Sentry
  * @version    2.0
  * @author     Cartalyst LLC
  * @license    MIT License
- * @copyright  2011 - 2012 Cartalyst LLC
+ * @copyright  (c) 2011 - 2012, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -184,6 +184,8 @@ return array(
 			 *  'is_admin',
 			 */
 			'is_admin'
-		)
-	)
+		),
+
+	),
+
 );

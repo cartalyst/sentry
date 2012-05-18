@@ -6,7 +6,7 @@
  * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
- * @copyright  2011 - 2012 Cartalyst LLC
+ * @copyright  (c) 2011 - 2012, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -24,6 +24,7 @@ class SentryUserSuspendedException extends SentryAttemptsException {}
 
 class Sentry_Attempts
 {
+
 	/**
 	 * @var  string  Database instance
 	 */
@@ -261,4 +262,5 @@ class Sentry_Attempts
 			__('sentry::sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))
 		);
 	}
+
 }

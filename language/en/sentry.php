@@ -1,6 +1,17 @@
 <?php
+/**
+ * Part of the Sentry package for Laravel.
+ *
+ * @package    Sentry
+ * @version    1.0
+ * @author     Cartalyst LLC
+ * @license    MIT License
+ * @copyright  (c) 2011 - 2012, Cartalyst LLC
+ * @link       http://cartalyst.com
+ */
 
 return array(
+
 	/** General Exception Messages **/
 	'account_not_activated'  => 'User has not activated their account.',
 	'account_is_disabled'    => 'This account has been disabled.',
@@ -49,6 +60,6 @@ return array(
 	/** Permissions Messages **/
 	'no_rules_added'    => 'Oops, you forgot to specify any rules to be added.',
 	'rule_not_found'    => 'The rule :rule, does not exist in your configured rules. Please check your rules in the sentry config.',
-	'permission_denied' => 'Oops, you do not have permission to access :resource'
+	'permission_denied' => 'Oops, you do not have permission to access :resource',
 
 );

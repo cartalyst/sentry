@@ -6,7 +6,7 @@
  * @version    1.0
  * @author     Cartalyst LLC
  * @license    MIT License
- * @copyright  2011 - 2012 Cartalyst LLC
+ * @copyright  (c) 2011 - 2012, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
@@ -27,6 +27,7 @@ class SentryPermissionsException extends SentryException {}
  */
 class Sentry_User implements \Iterator, \ArrayAccess
 {
+
 	/**
 	 * @var  string  Database instance
 	 */
@@ -1316,4 +1317,5 @@ class Sentry_User implements \Iterator, \ArrayAccess
 
 		throw new \OutOfBoundsException('Property "'.$offset.'" not found for '.get_called_class().'.');
 	}
+
 }
