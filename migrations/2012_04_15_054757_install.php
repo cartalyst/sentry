@@ -25,7 +25,7 @@ class Sentry_Install
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
 			$table->increments('id')->unsigned();
-			$table->string('username')->unique();
+			$table->string('username');
 			$table->string('email')->unique();
 			$table->string('password');
 			$table->string('password_reset_hash');
