@@ -18,7 +18,7 @@ namespace Sentry;
  * @author Daniel Petrie
  */
 
-class SentryAttemptsException extends \Fuel_Exception {}
+class SentryAttemptsException extends \FuelException {}
 class SentryUserSuspendedException extends \SentryAttemptsException {}
 
 class Sentry_Attempts
