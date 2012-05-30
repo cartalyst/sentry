@@ -1,6 +1,6 @@
 <?php
 /**
- * Part of the Sentry package for Laravel.
+ * Part of the Sentry bundle for Laravel.
  *
  * NOTICE OF LICENSE
  *
