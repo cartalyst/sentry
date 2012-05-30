@@ -102,6 +102,7 @@ class Sentry_Install
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->drop();
 		});
+
 		Schema::table(Config::get('sentry::sentry.table.users_metadata'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->drop();

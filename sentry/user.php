@@ -384,7 +384,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		$update_metadata = null;
 
 		if (array_key_exists($this->login_column, $fields) and
-			$fields[$this->login_column] != $this->user[$this->login_column] and
+			strtolower($fields[$this->login_column]) != strtolower($this->user[$this->login_column]) and
 			$this->user_exists($fields[$this->login_column]))
 		{
 			throw new SentryUserException(
