@@ -527,7 +527,8 @@ class Sentry_User implements \Iterator, \ArrayAccess
 
 		if (array_key_exists('permissions', $fields))
 		{
-			$update['permissions'] = $fields['permissions'];
+			$permissions = $this->process_permissions($fields['permissions']);
+			$update['permissions'] = json_encode($permissions);
 			unset($fields['permissions']);
 		}
 
@@ -1045,6 +1046,22 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 */
 	public function update_permissions($rules = array())
 	{
+		// get the current permissions from the user column.
+		$current_permissions = $this->process_permissions($rules);
+
+		if (empty($current_permissions))
+		{
+			return $this->update(array('permissions' => ''));
+		}
+		else
+		{
+			// let's update the permissions column.
+			return $this->update(array('permissions' => json_encode($current_permissions)));
+		}
+	}
+
+	protected function process_permissions($rules = array())
+	{
 		if (empty($rules) or ! is_array($rules))
 		{
 			throw new SentryPermissionsException(__('sentry::sentry.no_rules_added'));
@@ -1059,7 +1076,6 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			}
 		}
 
-		// get the current permissions from the user column.
 		$current_permissions = json_decode($this->user['permissions'], true);
 		$current_permissions = ( is_array($current_permissions) ) ? $current_permissions : array();
 
@@ -1085,15 +1101,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			}
 		}
 
-		if (empty($current_permissions))
-		{
-			return $this->update(array('permissions' => ''));
-		}
-		else
-		{
-			// let's update the permissions column.
-			return $this->update(array('permissions' => json_encode($current_permissions)));
-		}
+		return $current_permissions;
 	}
 
 

@@ -190,7 +190,8 @@ return array(
 			 *  'my_custom_rule',
 			 *  'is_admin',
 			 */
-			'is_admin'
+			'is_admin',
+			'superuser',
 		),
 
 	),

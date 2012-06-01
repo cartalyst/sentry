@@ -30,27 +30,27 @@ class SentryRulesException extends SentryException {}
 
 class Sentry_Rules
 {
-
 	protected static $rules = false;
 
-	/**
-	 * Fetch needs rules
-	 */
-	public static function fetch_rules()
-	{
-		if (static::$rules)
-		{
-			return static::$rules;
-		}
+	protected static $bundle_rules = false;
 
+
+	protected static function generate_rules()
+	{
 		// set rules array
 		static::$rules = array();
+		static::$bundle_rules = array();
 
 		// get permissions file config options
 		$permission_file = Config::get('sentry::sentry.permissions.file');
 
 		// load global rules
 		static::$rules = Config::get('sentry::sentry.permissions.rules');
+
+		foreach (static::$rules as $rule)
+		{
+			static::$bundle_rules['sentry'][\Str::slug($rule, '_')] = $rule;
+		}
 
 		// see if type is config
 		if ( $permission_file['type'] == 'config' or empty($permission_file['type']) or $permission_file['type'] == null)
@@ -67,12 +67,11 @@ class Sentry_Rules
 						if ( ! in_array($rule, static::$rules))
 						{
 							static::$rules[] = $rule;
+							static::$bundle_rules[$bundle][\Str::slug($rule, '_')] = $rule;
 						}
 					}
 				}
 			}
-
-			return static::$rules;
 		}
 
 		// The type was not a config, need to find the set file and see if it exists.
@@ -98,13 +97,46 @@ class Sentry_Rules
 						if ( ! in_array($rule, static::$rules))
 						{
 							static::$rules[] = $rule;
+							static::$bundle_rules[$bundle][\Str::slug($rule, '_')] = $rule;
 						}
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Fetch needs rules
+	 */
+	public static function fetch_rules()
+	{
+		// generate rules if they are not set
+		if ( ! static::$rules)
+		{
+			static::generate_rules();
+		}
 
 		return static::$rules;
+	}
+
+	/**
+	 * Fetch needs rules
+	 */
+	public static function fetch_bundle_rules($bundle = null)
+	{
+		// generate rules if they are not set
+		if ( ! static::$bundle_rules)
+		{
+			static::generate_rules();
+		}
+
+		// if a bundle was passed, only return that bundles rules
+		if ($bundle)
+		{
+			return (array_key_exists($bundle, static::$bundle_rules)) ? static::$bundle_rules[$bundle] : array();
+		}
+
+		return static::$bundle_rules;
 	}
 
 }
