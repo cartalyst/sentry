@@ -1070,9 +1070,9 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		// loop through the rules and make sure all values are a 1 or 0
 		foreach ($rules as $rule => $value)
 		{
-			if ( ! is_int($value) or $value < 0 or $value > 1)
+			if ( ! empty($value) and $value !== 0 and $value !== 1)
 			{
-				throw new SentryUserPermissionsException('A permission value must be an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+				throw new SentryUserPermissionsException('A permission value must be empty or an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
 			}
 		}
 
@@ -1083,12 +1083,12 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		{
 			if (in_array($key, $this->rules) or $key === Config::get('sentry::sentry.permissions.superuser'))
 			{
-				if ($val === 1)
+				if ($val === 1 or $val === 0)
 				{
-					if ( ! array_key_exists($key, $current_permissions))
-					{
+					// if ( ! array_key_exists($key, $current_permissions))
+					// {
 						$current_permissions[$key] = $val;
-					}
+					// }
 				}
 				else
 				{

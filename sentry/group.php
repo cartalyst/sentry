@@ -397,9 +397,9 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 		// loop through the rules and make sure all values are a 1 or 0
 		foreach ($rules as $rule => $value)
 		{
-			if ( ! is_int($value) or $value < 0 or $value > 1)
+			if ( ! empty($value) and $value !== 1)
 			{
-				throw new SentryGroupPermissionsException('A permission value must be an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+				throw new SentryGroupPermissionsException('A permission value must be empty or an integer of 1. Value passed: '.$value.' ('.gettype($value).')');
 			}
 		}
 
@@ -418,10 +418,10 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 			{
 				if ($val === 1)
 				{
-					if ( ! array_key_exists($key, $current_permissions))
-					{
+					// if ( ! array_key_exists($key, $current_permissions))
+					// {
 						$current_permissions[$key] = $val;
-					}
+					// }
 				}
 				else
 				{
