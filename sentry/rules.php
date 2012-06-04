@@ -49,7 +49,7 @@ class Sentry_Rules
 
 		foreach (static::$rules as $rule)
 		{
-			static::$bundle_rules['sentry'][\Str::slug($rule, '_')] = $rule;
+			static::$bundle_rules['sentry'][] = $rule;
 		}
 
 		// see if type is config
@@ -67,7 +67,7 @@ class Sentry_Rules
 						if ( ! in_array($rule, static::$rules))
 						{
 							static::$rules[] = $rule;
-							static::$bundle_rules[$bundle][\Str::slug($rule, '_')] = $rule;
+							static::$bundle_rules[$bundle][] = $rule;
 						}
 					}
 				}
@@ -97,7 +97,7 @@ class Sentry_Rules
 						if ( ! in_array($rule, static::$rules))
 						{
 							static::$rules[] = $rule;
-							static::$bundle_rules[$bundle][\Str::slug($rule, '_')] = $rule;
+							static::$bundle_rules[$bundle][] = $rule;
 						}
 					}
 				}
