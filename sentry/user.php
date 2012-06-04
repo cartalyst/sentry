@@ -323,6 +323,11 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			$metadata = array();
 		}
 
+		if (array_key_exists('permissions', $new_user))
+		{
+			$new_user['permissions'] = json_encode($new_user['permissions']);
+		}
+
 		// set activation hash if activation = true
 		if ($activation)
 		{
