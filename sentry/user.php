@@ -1046,7 +1046,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 */
 	public function update_permissions($rules = array())
 	{
-		// get the current permissions from the user column.
+		// get and reformat permissions
 		$current_permissions = $this->process_permissions($rules);
 
 		if (empty($current_permissions))
@@ -1085,10 +1085,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			{
 				if ($val === 1 or $val === 0)
 				{
-					// if ( ! array_key_exists($key, $current_permissions))
-					// {
-						$current_permissions[$key] = $val;
-					// }
+					$current_permissions[$key] = $val;
 				}
 				else
 				{
