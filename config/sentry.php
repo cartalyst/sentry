@@ -124,7 +124,7 @@ return array(
 
 			'Sentry' => array(),
 
-			'SimpleAuth' => array(
+			'Oscommerce' => array(
 				'salt' => '',
 			),
 
