@@ -267,8 +267,8 @@ class Sentry
 			throw new SentryException(__('sentry::sentry.user_not_found'));
 		}
 
-		Session::set(Config::get('sentry::sentry.session.user'), $id);
-		Session::set(Config::get('sentry::sentry.session.provider'), $provider);
+		Session::put(Config::get('sentry::sentry.session.user'), $id);
+		Session::put(Config::get('sentry::sentry.session.provider'), $provider);
 		return true;
 	}
 
