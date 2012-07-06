@@ -25,5 +25,7 @@ Autoloader::namespaces(array(
 
 // Set the global alias for Sentry
 Autoloader::alias('Sentry\\Sentry', 'Sentry');
+Autoloader::alias('Sentry\\SentryException', 'SentryException');
 
 Sentry::_init();
+
