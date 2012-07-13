@@ -1014,6 +1014,20 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	}
 
 	/**
+	 * Return paginated users
+	 *
+	 * @return  Laravel\Paginator
+	 */
+	public function paginate()
+	{
+		$users = DB::connection($this->db_instance)
+			->table($this->table)
+			->paginate();
+
+		return $users;
+	}
+
+	/**
 	 * Return user's custom permissions json
 	 *
 	 * @return  array|json
