@@ -435,19 +435,6 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			unset($fields['username']);
 		}
 
-		// if updating username
-		if (array_key_exists('username', $fields) and
-			$fields['username'] != $this->user['username'])
-		{
-			// make sure email does not already exist
-			if ($this->user_exists($fields['username'], 'username'))
-			{
-				throw new SentryUserException(__('sentry::sentry.username_already_in_use'));
-			}
-			$update['username'] = $fields['username'];
-			unset($fields['username']);
-		}
-
 		// update password
 		if (array_key_exists('password', $fields))
 		{
