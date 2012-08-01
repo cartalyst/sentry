@@ -390,17 +390,14 @@ class Sentry_Group implements \Iterator, \ArrayAccess
 	 */
 	public function update_permissions($rules = array())
 	{
-		// get and reformat permissions
-		$current_permissions = $this->process_permissions($rules);
-
-		if (empty($current_permissions))
+		if (empty($rules))
 		{
-			return $this->update(array('permissions' => ''));
+			return $this->update(array('permissions' => array()));
 		}
 		else
 		{
 			// let's update the permissions column.
-			return $this->update(array('permissions' => json_encode($current_permissions)));
+			return $this->update(array('permissions' => $rules));
 		}
 	}
 
