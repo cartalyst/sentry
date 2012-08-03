@@ -1053,7 +1053,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	{
 		if (empty($rules))
 		{
-			return $this->update(array('permissions' => array());
+			return $this->update(array('permissions' => array()));
 		}
 		else
 		{
