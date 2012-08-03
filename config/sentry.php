@@ -36,6 +36,7 @@ return array(
 		'users_groups'    => 'users_groups',
 		'users_metadata'  => 'users_metadata',
 		'users_suspended' => 'users_suspended',
+		'rules'           => 'rules',
 	),
 
 	/*
@@ -151,6 +152,15 @@ return array(
 		'superuser' => 'superuser',
 
 		/**
+		 * Source of defined rules
+		 * Possible choices: file / database.
+		 * If file is chosen it reads the rules from config/sentry.php's permissions->rules array
+		 * If database is chosen it reads the rules from the rules table defined in the table array
+		 *
+		 */
+		'rules_source' => 'file';
+
+		/**
 		 * The permission rules file
 		 * Must return an array with a 'rules' key.
 		 */
@@ -172,6 +182,8 @@ return array(
 		),
 
 		/**
+		 * !Ignored if database is selected instead of file!
+		 *
 		 * setup rules for permissions
 		 * These are resources that will require access permissions.
 		 * Rules are assigned to groups or specific users in the
