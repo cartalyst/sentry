@@ -97,6 +97,12 @@ class Sentry_Install
 			$table->string('description')->nullable();
 		});
 
+		// insert default values
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'is_admin', 'description' => 'administrative privilage'));
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'superuser'));
+
 	}
 
 	/**
