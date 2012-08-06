@@ -158,7 +158,7 @@ return array(
 		 * If database is chosen it reads the rules from the rules table defined in the table array
 		 *
 		 */
-		'rules_source' => 'file';
+		'rules_source' => 'database',
 
 		/**
 		 * The permission rules file
