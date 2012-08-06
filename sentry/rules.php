@@ -22,6 +22,7 @@ namespace Sentry;
 
 use Bundle;
 use Config;
+use DB;
 
 /**
  * Sentry Auth Attempt Class
@@ -44,14 +45,14 @@ class Sentry_Rules
 		static::$bundle_rules = array();
 
 		// set source property
-		if ( Config::get('sentry::sentry.permissions.rules_source' == 'database')
+		if ( Config::get('sentry::sentry.permissions.rules_source') == 'database')
 		{
+
 			static::$source = 'database';
 			$db_rules_container = array();
 
-			$db_rules =  DB::connection(trim(Config::get('sentry::sentry.db_instance')))
-				->table(Config::get('sentry::sentry.table.rules'))
-				->only('rule');
+			$db_rules = 
+				DB::table(Config::get('sentry::sentry.table.rules'))->get(array('rule'));
 
 			// if there was a result - populate the rules
 			if ($db_rules !== null)
@@ -63,6 +64,9 @@ class Sentry_Rules
 				}
 
 				static::$rules = $db_rules_container;
+
+				/*var_dump(static::$rules);
+				exit();*/
 			}
 		}
 		else
