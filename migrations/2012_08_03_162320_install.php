@@ -88,6 +88,21 @@ class Sentry_Install
 			$table->integer('unsuspend_at');
 		});
 
+		// create rules table
+		Schema::table(Config::get('sentry::sentry.table.rules'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->create();
+			$table->increments('id')->unsigned();
+			$table->string('rule')->unique();
+			$table->string('description')->nullable();
+		});
+
+		// insert default values
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'is_admin', 'description' => 'administrative privilage'));
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'superuser'));
+
 	}
 
 	/**
@@ -119,6 +134,11 @@ class Sentry_Install
 		});
 
 		Schema::table(Config::get('sentry::sentry.table.users_suspended'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+
+		Schema::table(Config::get('sentry::sentry.table.rules'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->drop();
 		});
