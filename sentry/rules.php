@@ -64,9 +64,6 @@ class Sentry_Rules
 				}
 
 				static::$rules = $db_rules_container;
-
-				/*var_dump(static::$rules);
-				exit();*/
 			}
 		}
 		else
