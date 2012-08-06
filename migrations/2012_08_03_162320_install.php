@@ -94,7 +94,7 @@ class Sentry_Install
 			$table->create();
 			$table->increments('id')->unsigned();
 			$table->string('rule')->unique();
-			$table->string('description');
+			$table->string('description')->nullable();
 		});
 
 	}
