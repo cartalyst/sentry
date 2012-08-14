@@ -41,12 +41,11 @@ class Sentry_Install
 			$table->string('remember_me');
 			$table->string('activation_hash');
 			$table->string('ip_address');
-			$table->timestamp('last_login');
-			$table->timestamp('updated_at');
-			$table->timestamp('created_at');
 			$table->string('status');
 			$table->string('activated');
 			$table->text('permissions');
+			$table->timestamp('last_login');
+			$table->timestamps();
 		});
 
 		// Create user metadata table
