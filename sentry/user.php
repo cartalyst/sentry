@@ -1061,7 +1061,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		{
 			if ( ! empty($value) and $value !== 0 and $value !== 1)
 			{
-				throw new SentryUserPermissionsException('A permission value must be empty or an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+				throw new SentryPermissionsException('A permission value must be empty or an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
 			}
 		}
 
