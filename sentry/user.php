@@ -435,19 +435,6 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			unset($fields['username']);
 		}
 
-		// if updating username
-		if (array_key_exists('username', $fields) and
-			$fields['username'] != $this->user['username'])
-		{
-			// make sure email does not already exist
-			if ($this->user_exists($fields['username'], 'username'))
-			{
-				throw new SentryUserException(__('sentry::sentry.username_already_in_use'));
-			}
-			$update['username'] = $fields['username'];
-			unset($fields['username']);
-		}
-
 		// update password
 		if (array_key_exists('password', $fields))
 		{
@@ -1074,7 +1061,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		{
 			if ( ! empty($value) and $value !== 0 and $value !== 1)
 			{
-				throw new SentryUserPermissionsException('A permission value must be empty or an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
+				throw new SentryPermissionsException('A permission value must be empty or an integer of 1 or 0. Value passed: '.$value.' ('.gettype($value).')');
 			}
 		}
 
@@ -1127,28 +1114,33 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		/**
-		 * Get the current page in our rule format
-		 * We'll use this if there is no $resource set and to check our array against.
+		 * If no resource is passed, lets autogen one based on the route object
+		 * We also check for CLI because the Request route object doesn't exist in CLI environment
 		 */
-		$bundle     = Request::route()->bundle;
-		$controller = Request::route()->controller;
-		$action     = Request::route()->controller_action;
-
-		// build this resource string
-		$current_resource = $bundle;
-		if ($controller)
+		if ( ! $resource and ! Request::cli() )
 		{
-			$current_resource .= '::'.$controller;
+			/**
+			 * Get the current page in our rule format
+			 * We'll use this if there is no $resource set and to check our array against.
+			 */
+			$bundle     = Request::route()->bundle;
+			$controller = Request::route()->controller;
+			$action     = Request::route()->controller_action;
 
-			if ($action)
+			// build this resource string
+			$resource = $bundle;
+			if ($controller)
 			{
-				$current_resource .= '@'.$action;
+				$resource .= '::'.$controller;
+
+				if ($action)
+				{
+					$resource .= '@'.$action;
+				}
 			}
 		}
 
 		// lets make the resource an array by default
-		$resource = ($resource) ?: $current_resource;
-
 		if ( ! is_array($resource))
 		{
 			$resource = array($resource);

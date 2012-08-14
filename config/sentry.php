@@ -187,7 +187,7 @@ return array(
 		 * setup rules for permissions
 		 * These are resources that will require access permissions.
 		 * Rules are assigned to groups or specific users in the
-		 * format module@controller::method
+		 * format bundle::controller@method
 		 *
 		 * This is always used for global permissions
 		 */
@@ -195,10 +195,10 @@ return array(
 			/**
 			 * config samples.
 			 *
-			 *	'application@admin::dashboard',
-			 *	'user@admin::create',
-			 *	'user@admin::read',
-			 *	'blog@admin::delete',
+			 *	'application::admin@dashboard',
+			 *	'user::admin@create',
+			 *	'user::admin@read',
+			 *	'blog::admin@delete',
 			 *  'my_custom_rule',
 			 *  'is_admin',
 			 */
