@@ -1114,28 +1114,33 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		/**
-		 * Get the current page in our rule format
-		 * We'll use this if there is no $resource set and to check our array against.
+		 * If no resource is passed, lets autogen one based on the route object
+		 * We also check for CLI because the Request route object doesn't exist in CLI environment
 		 */
-		$bundle     = Request::route()->bundle;
-		$controller = Request::route()->controller;
-		$action     = Request::route()->controller_action;
-
-		// build this resource string
-		$current_resource = $bundle;
-		if ($controller)
+		if ( ! $resource and ! Request::cli() )
 		{
-			$current_resource .= '::'.$controller;
+			/**
+			 * Get the current page in our rule format
+			 * We'll use this if there is no $resource set and to check our array against.
+			 */
+			$bundle     = Request::route()->bundle;
+			$controller = Request::route()->controller;
+			$action     = Request::route()->controller_action;
 
-			if ($action)
+			// build this resource string
+			$resource = $bundle;
+			if ($controller)
 			{
-				$current_resource .= '@'.$action;
+				$resource .= '::'.$controller;
+
+				if ($action)
+				{
+					$resource .= '@'.$action;
+				}
 			}
 		}
 
 		// lets make the resource an array by default
-		$resource = ($resource) ?: $current_resource;
-
 		if ( ! is_array($resource))
 		{
 			$resource = array($resource);

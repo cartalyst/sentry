@@ -22,6 +22,7 @@ namespace Sentry;
 
 use Bundle;
 use Config;
+use DB;
 
 /**
  * Sentry Auth Attempt Class
@@ -34,6 +35,8 @@ class Sentry_Rules
 
 	protected static $bundle_rules = false;
 
+	protected static $source = null;
+
 
 	protected static function generate_rules()
 	{
@@ -41,11 +44,38 @@ class Sentry_Rules
 		static::$rules = array();
 		static::$bundle_rules = array();
 
+		// set source property
+		if ( Config::get('sentry::sentry.permissions.rules_source') == 'database')
+		{
+
+			static::$source = 'database';
+			$db_rules_container = array();
+
+			$db_rules = 
+				DB::table(Config::get('sentry::sentry.table.rules'))->get(array('rule'));
+
+			// if there was a result - populate the rules
+			if ($db_rules !== null)
+			{
+				foreach ($db_rules as &$db_rule)
+				{
+					$db_rule = get_object_vars($db_rule);
+					$db_rules_container[] = $db_rule['rule'];
+				}
+
+				static::$rules = $db_rules_container;
+			}
+		}
+		else
+		{
+			static::$source = 'file';
+
+			// load global rules
+			static::$rules = Config::get('sentry::sentry.permissions.rules');
+		}
+
 		// get permissions file config options
 		$permission_file = Config::get('sentry::sentry.permissions.file');
-
-		// load global rules
-		static::$rules = Config::get('sentry::sentry.permissions.rules');
 
 		foreach (static::$rules as $rule)
 		{
