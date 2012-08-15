@@ -66,7 +66,7 @@ class Sentry_Install
 			$table->text('permissions');
 		});
 
-		// create users group relation table
+		// Create users group relation table
 		Schema::table(Config::get('sentry::sentry.table.users_groups'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
@@ -74,7 +74,7 @@ class Sentry_Install
 			$table->integer('group_id')->unsigned();
 		});
 
-		// create suspension table
+		// Create suspension table
 		Schema::table(Config::get('sentry::sentry.table.users_suspended'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->create();
@@ -87,6 +87,20 @@ class Sentry_Install
 			$table->timestamp('unsuspend_at');
 		});
 
+		// Create rules table
+		Schema::table(Config::get('sentry::sentry.table.rules'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->create();
+			$table->increments('id')->unsigned();
+			$table->string('rule')->unique();
+			$table->string('description')->nullable();
+		});
+
+		// Insert default values
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'superuser', 'description' => 'Access to Everything'));
+		DB::table(Config::get('sentry::sentry.table.rules'))
+			->insert(array('rule' => 'is_admin', 'description' => 'Administrative Privileges'));
 	}
 
 	/**
@@ -96,7 +110,7 @@ class Sentry_Install
 	 */
 	public function down()
 	{
-		// drop all tables
+		// Drop all tables
 		Schema::table(Config::get('sentry::sentry.table.users'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->drop();
@@ -118,6 +132,11 @@ class Sentry_Install
 		});
 
 		Schema::table(Config::get('sentry::sentry.table.users_suspended'), function($table) {
+			$table->on(Config::get('sentry::sentry.db_instance'));
+			$table->drop();
+		});
+
+		Schema::table(Config::get('sentry::sentry.table.rules'), function($table) {
 			$table->on(Config::get('sentry::sentry.db_instance'));
 			$table->drop();
 		});
