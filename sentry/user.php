@@ -898,6 +898,11 @@ class Sentry_User implements \Iterator, \ArrayAccess
 
 		foreach ($this->groups as $group)
 		{
+			if (is_array($name) and in_array($group[$field], $name))
+			{
+				return true;
+			}
+
 			if ($group[$field] == $name)
 			{
 				return true;
@@ -905,6 +910,25 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if the current user is in all the given groups
+	 *
+	 * @param   string  Group name
+	 * @return  bool
+	 */
+	public function in_groups(array $groups)
+	{
+		foreach ($this->groups as $group)
+		{
+			if ( ! in_array($group, $groups))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
