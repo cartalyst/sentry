@@ -816,10 +816,15 @@ class Sentry_User implements Iterator, ArrayAccess
 
 		foreach ($this->groups as $group)
 		{
-			if ($group[$field] == $name)
+			if (is_array($name) && in_array($group[$field], $name))
 			{
 				return true;
 			}
+			elseif ($group[$field] == $name)
+			{
+				return true;
+			}
+
 		}
 
 		return false;
