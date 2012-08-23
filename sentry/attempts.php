@@ -123,14 +123,14 @@ class Sentry_Attempts
 		{
 			$row = get_object_vars($row);
 			// check if last attempt was more than 15 min ago - if so reset counter
-			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= time())
+			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= static::sql_timestamp())
 			{
 				$this->clear($row['login_id'], $row['ip']);
 				$row['attempts'] = 0;
 			}
 
 			// check unsuspended time and clear if time is > than it
-			if ($row['unsuspend_at'] and $row['unsuspend_at'] <= time())
+			if ($row['unsuspend_at'] and $row['unsuspend_at'] <= static::sql_timestamp())
 			{
 				$this->clear($row['login_id'], $row['ip']);
 				$row['attempts'] = 0;
@@ -200,7 +200,7 @@ class Sentry_Attempts
 				->where('ip', '=', $this->ip_address)
 				->update(array(
 					'attempts' => ++$this->attempts,
-					'last_attempt_at' => time(),
+					'last_attempt_at' => static::sql_timestamp(),
 				));
 		}
 		else
@@ -211,7 +211,7 @@ class Sentry_Attempts
 					'login_id' => $this->login_id,
 					'ip' => $this->ip_address,
 					'attempts' => ++$this->attempts,
-					'last_attempt_at' => time(),
+					'last_attempt_at' => static::sql_timestamp(),
 				));
 		}
 	}
@@ -262,13 +262,25 @@ class Sentry_Attempts
 			->where('unsuspend_at', '=', null)
 			->or_where('unsuspend_at', '=', 0)
 			->update(array(
-				'suspended_at' => time(),
-				'unsuspend_at' => time()+(static::$limit['time'] * 60),
+				'suspended_at' => static::sql_timestamp(),
+				'unsuspend_at' => static::sql_timestamp()+(static::$limit['time'] * 60),
 			));
 
 		throw new SentryUserSuspendedException(
 			__('sentry::sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))
 		);
 	}
+
+	/**
+	 * Returns an SQL timestamp appropriate
+	 * for the currect database driver.
+	 *
+	 * @return   string
+	 */
+	protected static function sql_timestamp()
+	{
+		return date(DB::connection(static::$db_instance)->grammar()->grammar->datetime);
+	}
+
 
 }

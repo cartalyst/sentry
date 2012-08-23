@@ -307,7 +307,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		$new_user = array(
 			$this->login_column => $user[$this->login_column],
 			'password' => $this->hash->create_password($user['password']),
-			'created_at' => time(),
+			'created_at' => $this->sql_timestamp(),
 			'activated' => (bool) ($activation) ? false : true,
 			'status' => 1,
 		) + $user;
@@ -530,7 +530,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		// add update time
-		$update['updated_at'] = time();
+		$update['updated_at'] = $this->sql_timestamp();
 
 		// update user table
 		if ($update)
@@ -1266,6 +1266,16 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		return array_values($permissions);
 	}
 
+	/**
+	 * Returns an SQL timestamp appropriate
+	 * for the currect database driver.
+	 *
+	 * @return   string
+	 */
+	protected function sql_timestamp()
+	{
+		return date(DB::connection($this->db_instance)->grammar()->grammar->datetime);
+	}
 
 	/**
 	 * Implementation of the Iterator interface
