@@ -6,7 +6,7 @@ It also provides additional features such as user groups and additional security
 ###Quickstart
 
 * Clone sentry into *APPPATH/bundles/*
-  * ```git clone https://github.com/cartalyst/sentry-laravel.git sentry```
+  * ```git clone https://github.com/cartalyst/sentry.git sentry```
 * Edit *APPPATH/application/bundles.php*
 
 ```php
@@ -19,7 +19,7 @@ return array(
 ```
 * Edit your *APPPATH/application/config/db.php* file and make sure your database credentials are valid
 * Run ```php artisan migrate sentry```
-* [Begin using Sentry!](http://sentry.cartalyst.com/manual/v1.1.html)
+* [Begin using Sentry!](http://getplatform.com/manuals/sentry)
 
 ###Features
 
@@ -34,4 +34,4 @@ return array(
 
 ###Docs
 
-<!-- [http://sentry.cartalyst.com/manual/v1.1.html](http://sentry.cartalyst.com/manual/v1.1.html) -->
+<!-- [http://getplatform.com/manuals/sentry](http://getplatform.com/manuals/sentry) -->
