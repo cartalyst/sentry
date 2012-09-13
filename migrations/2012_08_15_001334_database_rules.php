@@ -38,9 +38,11 @@ class Sentry_Database_Rules
 		});
 
 		// Insert default values
-		DB::table(Config::get('sentry::sentry.table.rules'))
+		DB::connection(Config::get('sentry::sentry.db_instance'))
+			->table(Config::get('sentry::sentry.table.rules'))
 			->insert(array('rule' => 'superuser', 'description' => 'Access to Everything'));
-		DB::table(Config::get('sentry::sentry.table.rules'))
+		DB::connection(Config::get('sentry::sentry.db_instance'))
+			->table(Config::get('sentry::sentry.table.rules'))
 			->insert(array('rule' => 'is_admin', 'description' => 'Administrative Privileges'));
 	}
 
