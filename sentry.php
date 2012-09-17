@@ -267,6 +267,11 @@ class Sentry
 			throw new SentryException(__('sentry::sentry.user_not_found'));
 		}
 
+		if ( ! is_int($id))
+		{
+			$id = static::user($id)->get('id');
+		}
+
 		Session::put(Config::get('sentry::sentry.session.user'), $id);
 		Session::put(Config::get('sentry::sentry.session.provider'), $provider);
 		return true;
