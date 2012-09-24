@@ -66,6 +66,17 @@ return array(
 		 * How long the cookie should last. (seconds)
 		 */
 		'expire' => 20160, // 2 weeks - minutes
+		
+		 /**
+                 * Domain name credentials are stored in
+                 */
+                'cookie_domain' => null,
+
+                /**
+                 * path name credentials are stored in
+                 */
+                'cookie_path' => '/',
+
 	),
 
 	/**
