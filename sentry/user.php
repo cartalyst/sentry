@@ -493,7 +493,7 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			unset($fields['activation_hash']);
 		}
 
-		if (array_key_exists('last_login', $fields) and ! empty($fields['last_login']) and is_int($fields['last_login']))
+		if (array_key_exists('last_login', $fields) and ! empty($fields['last_login']))
 		{
 			$update['last_login'] = $fields['last_login'];
 			unset($fields['last_login']);

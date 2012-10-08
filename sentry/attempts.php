@@ -122,15 +122,12 @@ class Sentry_Attempts
 		foreach ($result as &$row)
 		{
 			$row = get_object_vars($row);
-			// check if last attempt was more than 15 min ago - if so reset counter
-			if ($row['last_attempt_at'] and ($row['last_attempt_at'] + static::$limit['time'] * 60) <= static::sql_timestamp())
-			{
-				$this->clear($row['login_id'], $row['ip']);
-				$row['attempts'] = 0;
-			}
+
+			$time = new \DateTime($row['last_attempt_at']);
+			$time = $time->modify('+'.static::$limit['time'].' minutes')->getTimestamp();
 
 			// check unsuspended time and clear if time is > than it
-			if ($row['unsuspend_at'] and $row['unsuspend_at'] <= static::sql_timestamp())
+			if ($row['unsuspend_at'] != '0000-00-00 00:00:00' and $row['unsuspend_at'] <= static::sql_timestamp())
 			{
 				$this->clear($row['login_id'], $row['ip']);
 				$row['attempts'] = 0;
@@ -254,17 +251,21 @@ class Sentry_Attempts
 			throw new SentryUserSuspendedException(__('sentry::sentry.login_ip_required'));
 		}
 
+		$unsuspend_at = new \DateTime(static::sql_timestamp());
+		$unsuspend_at->modify('+'.static::$limit['time'].' minutes');
+
 		// only updates table if unsuspended at has no value
 		$result = DB::connection(static::$db_instance)
-			->table(static::$table_suspend)
-			->where('login_id', '=', $this->login_id)
-			->where('ip', '=', $this->ip_address) //\Input::real_ip()
-			->where('unsuspend_at', '=', null)
-			->or_where('unsuspend_at', '=', 0)
-			->update(array(
-				'suspended_at' => static::sql_timestamp(),
-				'unsuspend_at' => static::sql_timestamp()+(static::$limit['time'] * 60),
-			));
+            ->table(static::$table_suspend)
+            ->where('login_id', '=', $this->login_id)
+            ->where('ip', '=', $this->ip_address) //\Input::real_ip()
+            ->where('unsuspend_at', '=', null)
+            ->or_where('unsuspend_at', '=', 0)
+            ->or_where('unsuspend_at','=','0000-00-00 00:00:00')
+            ->update(array(
+                'suspended_at' => static::sql_timestamp(),
+                'unsuspend_at' => static::sql_timestamp($unsuspend_at->getTimestamp()),
+            ));
 
 		throw new SentryUserSuspendedException(
 			__('sentry::sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))
@@ -277,9 +278,14 @@ class Sentry_Attempts
 	 *
 	 * @return   string
 	 */
-	protected static function sql_timestamp()
+	protected static function sql_timestamp($time = null)
 	{
-		return date(DB::connection(static::$db_instance)->grammar()->grammar->datetime);
+		if ($time == null)
+		{
+			$time = time();
+		}
+
+		return date(DB::connection(static::$db_instance)->grammar()->grammar->datetime, $time);
 	}
 
 
