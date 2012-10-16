@@ -84,7 +84,7 @@ class Sentry
 		// This allows users to override sentry settings without having to edit the bundle code.
 		if( is_array( Config::get('sentry') ) ) {
 			$config = Config::get('sentry::sentry');
-			$config = array_merge( $config, Config::get('sentry') );
+			$config = array_merge_recursive( $config, Config::get('sentry') );
 			Config::set('sentry::sentry', $config );
 		}
 		// set static vars for later use
