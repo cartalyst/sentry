@@ -269,7 +269,7 @@ class Sentry
 
 		if ( ! is_int($id))
 		{
-			$id = static::user($id)->get('id');
+			$id = (int) static::user($id)->get('id');
 		}
 
 		Session::put(Config::get('sentry::sentry.session.user'), $id);
