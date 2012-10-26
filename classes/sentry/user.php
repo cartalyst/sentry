@@ -1088,7 +1088,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		 * if we have a super user (this is the global administrator,
 		 * GOD access, than just return true and skip checks
 		 */
-		if (in_array(Config::get('sentry.permissions.superuser'), $this->permissions))
+		if (in_array(Config::get('sentry.permissions.superuser'), $this->user))
 		{
 			return true;
 		}
