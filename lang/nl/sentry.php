@@ -35,7 +35,7 @@ return array(
 	'no_user_selected_to_get'         => 'Er is geen gebruiker geselecteerd om op te halen.',
 
 	/** Attempts Exception Messages **/
-    'user_suspended'       => 'Je hebt te vaak geprobeerd in te loggen op het account ":account", je wordt voor :time minuten geblokkerd.',
-    'login_ip_required'    => 'Login id en IP adres zijn verplicht bij registratie van een login poging.',
-    'single_user_required' => 'Login pogingen kunnen alleen aan een enkele gebruiker worden toegewezen, een array is niet mogelijk.',
+    	'user_suspended'       => 'Je hebt te vaak geprobeerd in te loggen op het account ":account", je wordt voor :time minuten geblokkeerd.',
+   	'login_ip_required'    => 'Login id en IP adres zijn verplicht bij registratie van een login poging.',
+    	'single_user_required' => 'Login pogingen kunnen alleen aan een enkele gebruiker worden toegewezen, een array is niet mogelijk.',
 );
