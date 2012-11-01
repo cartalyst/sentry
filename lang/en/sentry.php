@@ -47,8 +47,9 @@ return array(
     'hash_strategy_not_exist' => 'Hashing strategy file does not exist.',
 
 	/** Permissions Messages **/
-	'no_rules_added'    => 'Oops, you forgot to specify any rules to be added.',
-	'rule_not_found'    => 'The rule :rule, does not exist in your configured rules. Please check your rules in the sentry config.',
-	'permission_denied' => 'Oops, you do not have permission to access :resource'
-
+	'no_rules_added'             => 'Oops, you forgot to specify any rules to be added.',
+	'rule_not_found'             => 'The rule :rule, does not exist in your configured rules. Please check your rules in the sentry config.',
+	'permission_denied'          => 'Oops, you do not have permission to access :resource',
+	'nonexistent_guest_group_id' => 'Sentry Config Item: Configured "permissions.guest_group" with id :id does not exist.',
+	'invalid_guest_group'        => 'Sentry Config Item: "sentry.guest_group" must either be an integer or set to false.'
 );

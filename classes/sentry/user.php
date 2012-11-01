@@ -3,7 +3,7 @@
  * Part of the Sentry package for FuelPHP.
  *
  * @package    Sentry
- * @version    2.0
+ * @version    2.1
  * @author     Cartalyst LLC
  * @license    MIT License
  * @copyright  2011 - 2012 Cartalyst LLC
@@ -128,6 +128,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		$this->table = strtolower(Config::get('sentry.table.users'));
 		$this->table_usergroups = strtolower(Config::get('sentry.table.users_groups'));
 		$this->table_metadata = strtolower(Config::get('sentry.table.users_metadata'));
+		$this->groups_table = Config::get('sentry.table.groups');
 		$this->login_column = strtolower(Config::get('sentry.login_column'));
 		$this->login_column_str = ucfirst($this->login_column);
 		$_db_instance = trim(Config::get('sentry.db_instance'));
@@ -210,13 +211,12 @@ class Sentry_User implements Iterator, ArrayAccess
 			/**
 			 * fetch the user's groups and assign as array usable via $this->groups
 			 */
-			$groups_table = Config::get('sentry.table.groups');
-
-			$this->groups = DB::select($groups_table.'.*')
-				->from($groups_table)
+			
+			$this->groups = DB::select($this->groups_table.'.*')
+				->from($this->groups_table)
 				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
 				->join($this->table_usergroups)
-				->on($this->table_usergroups.'.group_id', '=', $groups_table.'.id')
+				->on($this->table_usergroups.'.group_id', '=', $this->groups_table.'.id')
 				->execute($this->db_instance)->as_array();
 
 			/**
@@ -226,6 +226,47 @@ class Sentry_User implements Iterator, ArrayAccess
 			{
 				$this->rules = static::fetch_rules();
 				$this->permissions = static::fetch_permissions();
+			}
+		}
+		
+		/**
+		* If no user logged in, place in guest group if configured
+		*/
+		
+		$this->guest_group = Config::get('sentry.permissions.guest_group');
+
+		if (! $this->user)
+		{
+			if (is_int($this->guest_group))
+			{
+				// Fetch the configured guest group
+				$this->groups = DB::select($this->groups_table.'.*')
+					->from($this->groups_table)
+					->where('id', '=', $this->guest_group)
+					->execute($this->db_instance)->as_array();
+
+				// Throw exception if group doesn't exist
+				if (empty($this->groups))
+				{
+					throw new \SentryAuthConfigException(__('sentry.nonexistent_guest_group_id', array('id' => $this->guest_group)));
+				}
+
+				/**
+				 * set (guest) rules and permissions if enabled
+				 */
+				if (Config::get('sentry.permissions.enabled'))
+				{
+					$this->rules = static::fetch_rules();
+					$this->permissions = static::fetch_permissions();
+				}
+			}
+			else
+			{
+				// Throw exception if something else than int or false is configured
+				if ($this->guest_group != false)
+				{
+					throw new \SentryAuthConfigException(__('sentry.invalid_guest_group'));
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-# Sentry 2.0
+# Sentry 2.1
 
-Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy to use authorization and authentication package built for FuelPHP.
+After the introduction of features like ACL (permissions) in 2.0, the new 2.1 version extends this by bringing you support for guest permissions.
 
 ##Features
 
@@ -9,6 +9,7 @@ Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy 
 * Groups
 * ACL (Permissions)
 	- Group Level or custom per user
+	- Put guests in a dedicated group, if wished
 * Remember Me
 * User Suspension / Login Attempt Limiter
 * Password Reset
@@ -16,7 +17,7 @@ Sentry 2.0 adds new features like ACL (permissions) to the already simple, easy 
 * User Metadata
 
 ##Removed From v1.1
-Before migrating to Sentry 2.0, please take note of the following features that have been removed and/or changed.
+Before migrating from 1.1 to Sentry 2.0, please take note of the following features that have been removed and/or changed.
 
 * Nested Groups are no longer supported
 * is_admin for groups are no longer supported
@@ -24,8 +25,16 @@ Before migrating to Sentry 2.0, please take note of the following features that 
 
 **Running the migration file will remove the support for the features above. Make sure you test this before running on a production server.**
 
-##Added In 2.0
+If you migrate from 2.0 to 2.1 you will have an easy life, since no features have been removed.
+
+##Added features
+** 2.0 **
 Get excited! Sentry 2.0 introduces ACL into the mix. Super simple to understand and implement.  We've tried to keep this as simple and quick as possible.
+
+** 2.1 **
+In 2.1 we extend our solid ACL system with the following features:
+
+* Guests can be put in a group specified in the config file
 
 ##Downloading Sentry 2.0
 You can download Sentry 2.0 into your FuelPHP's packages directory. You can download the latest version of Sentry via [zip here](https://github.com/cartalyst/sentry/tree/2.0/develop) or pull directly from the repository with the following command within the 'fuel/packages/' directory.

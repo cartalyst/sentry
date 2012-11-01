@@ -144,6 +144,14 @@ return array(
 		'superuser' => 'superuser',
 
 		/**
+		 * guest_group - int or false
+		 * Do you want to place non-logged in users (guests) into a 
+		 * specific group? If so, create the wished group and set the group id.
+		 * If not, set to false.
+		 */
+		'guest_group' => false,
+
+		/**
 		 * The permission rules file name
 		 * Set name to '', null or 'config' to use config files ( will negate type option )
 		 * Set type to files type. Supported types: php, json, ini, yaml,
