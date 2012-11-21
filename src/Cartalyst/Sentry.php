@@ -28,18 +28,13 @@ use Illuminate\CookieJar;
 class Sentry
 {
 	/**
-	 * The current user
+	 * The user
 	 *
 	 * @var  Cartalyst\Sentry\Model\User
 	 */
 	protected $user;
 
-	/**
-	 * The user provider to authenticate with
-	 *
-	 * @var  Cartalyst\Sentry\Provider\User
-	 */
-	protected $provider;
+	protected $userInterface;
 
 	/**
 	 * Session provider sentry should use
@@ -54,10 +49,10 @@ class Sentry
 	 * @param   userModel  User Object
 	 * @return  object  Auth Instance
 	 */
-	public function __construct(UserProvider $userProvider = null)
+	public function __construct(Sentry\UserInterface $userInterface)
 	{
 		// set dependencies
-		$this->provider = ($userProvider) ?: new Sentry\User();
+		$this->userInterface = $userInterface;
 	}
 
 	/**
@@ -74,7 +69,7 @@ class Sentry
 		$this->logout();
 
 		// validate user
-		$user = $this->provider->findByCredentials($login, $password);
+		$user = $this->userInterface->findByCredentials($login, $password);
 
 		if ($user)
 		{
@@ -104,9 +99,9 @@ class Sentry
 	 *
 	 * @param   User  $user
 	 */
-	public function login($user, $remember = false)
+	public function login(Sentry\UserInterface $user, $remember = false)
 	{
-		$user = $this->provider->clearResetPassword($user);
+		$user = $this->userInterface->clearResetPassword($user);
 
 		$this->user = $user;
 
@@ -121,6 +116,8 @@ class Sentry
 	public function logout()
 	{
 		$this->user = null;
+
+		// clear sessions
 	}
 
 	/**
@@ -142,7 +139,7 @@ class Sentry
 	 */
 	public function activate($login, $activationCode)
 	{
-		return $this->provider->activate($login, $activationCode);
+		return $this->userInterface->activate($login, $activationCode);
 	}
 
 	/**
@@ -154,7 +151,7 @@ class Sentry
 	 */
 	public function resetPassword($login, $password)
 	{
-		return $this->provider->resetPassword($login, $password);
+		return $this->userInterface->resetPassword($login, $password);
 
 	}
 
@@ -167,7 +164,7 @@ class Sentry
 	 */
 	public function confirmResetPassword($login, $resetCode)
 	{
-		return $this->provider->confirmResetPassword($login, $resetCode);
+		return $this->userInterface->confirmResetPassword($login, $resetCode);
 	}
 
 }
