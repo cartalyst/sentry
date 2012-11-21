@@ -130,41 +130,27 @@ class Sentry
 		return ! is_null($this->user);
 	}
 
-	/**
-	 * Activate a user
-	 *
-	 * @param   string  $login
-	 * @param   string  $activationCode
-	 * @return  bool
-	 */
-	public function activate($login, $activationCode)
+	public function getUserInterface()
 	{
-		return $this->userInterface->activate($login, $activationCode);
+		return $this->userInterface;
+	}
+
+	public function setUserInterface(Sentry\UserInterface $userInterface)
+	{
+		$this->userInterface = $userInterface;
 	}
 
 	/**
-	 * Reset a user's password
+	 * Dynamically pass methods to the user object, as that's
+	 * the most likely object the developer will want to alter
 	 *
-	 * @param   string   $login
-	 * @param   string   $password
-	 * @return  string|false
+	 * @param  string  $method
+	 * @param  array   $parameters
+	 * @return mixed
 	 */
-	public function resetPassword($login, $password)
+	public function __call($method, $parameters)
 	{
-		return $this->userInterface->resetPassword($login, $password);
-
-	}
-
-	/**
-	 * Confirm a password reset request
-	 *
-	 * @param   string  $login
-	 * @param   string  $resetCode
-	 * @return  bool
-	 */
-	public function confirmResetPassword($login, $resetCode)
-	{
-		return $this->userInterface->confirmResetPassword($login, $resetCode);
+		return call_user_func_array(array($this->userInterface, $method), $parameters);
 	}
 
 }
