@@ -1,0 +1,16 @@
+<?php namespace Cartalyst\Sentry\Provider;
+
+interface User
+{
+	public function findByLogin($login);
+
+	public function findByCredentials($login, $password);
+
+	public function activate($login, $activationCode);
+
+	public function resetPassword($login, $password);
+
+	public function confirmResetPassword($login, $resetCode);
+
+	public function clearResetPassword($user);
+}
