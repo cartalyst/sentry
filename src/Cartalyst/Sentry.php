@@ -28,13 +28,20 @@ use Illuminate\CookieJar;
 class Sentry
 {
 	/**
-	 * The user
+	 * The current user
 	 *
-	 * @var  Cartalyst\Sentry\Model\User
+	 * @var  Cartalyst\Sentry\UserInterface
 	 */
 	protected $user;
 
+	/**
+	 * The user interface
+	 *
+	 * @var  Cartalyst\Sentry\UserInterface
+	 */
 	protected $userInterface;
+
+	protected $hashInterface;
 
 	/**
 	 * Session provider sentry should use
@@ -49,10 +56,14 @@ class Sentry
 	 * @param   userModel  User Object
 	 * @return  object  Auth Instance
 	 */
-	public function __construct(Sentry\UserInterface $userInterface)
+	public function __construct(
+		Sentry\UserInterface $userInterface,
+		Sentry\HashInterface $hashInterface
+	)
 	{
 		// set dependencies
 		$this->userInterface = $userInterface;
+		$this->hashInterface = $hashInterface;
 	}
 
 	/**
@@ -130,27 +141,55 @@ class Sentry
 		return ! is_null($this->user);
 	}
 
-	public function getUserInterface()
+	/**
+	 * Activate a user
+	 *
+	 * @param   string  $login
+	 * @param   string  $activationCode
+	 * @return  bool
+	 */
+	public function activate($login, $activationCode)
 	{
-		return $this->userInterface;
-	}
-
-	public function setUserInterface(Sentry\UserInterface $userInterface)
-	{
-		$this->userInterface = $userInterface;
+		return $this->userInterface->activate($login, $activationCode);
 	}
 
 	/**
-	 * Dynamically pass methods to the user object, as that's
-	 * the most likely object the developer will want to alter
+	 * Reset a user's password
 	 *
-	 * @param  string  $method
-	 * @param  array   $parameters
-	 * @return mixed
+	 * @param   string   $login
+	 * @param   string   $password
+	 * @return  string|false
 	 */
-	public function __call($method, $parameters)
+	public function resetPassword($login, $password)
 	{
-		return call_user_func_array(array($this->userInterface, $method), $parameters);
+		return $this->userInterface->resetPassword($login, $password);
 	}
 
+	/**
+	 * Confirm a password reset request
+	 *
+	 * @param   string  $login
+	 * @param   string  $resetCode
+	 * @return  bool
+	 */
+	public function confirmResetPassword($login, $resetCode)
+	{
+		return $this->userInterface->confirmResetPassword($login, $resetCode);
+	}
+
+	/**
+	 * Get the current user or requested user by login
+	 *
+	 * @param   string  $login
+	 * @return  Sentry\UserInterface|null
+	 */
+	public function user($login = null)
+	{
+		if ($login)
+		{
+			return $this->userInterface->findByLogin($login);
+		}
+
+		return $this->user;
+	}
 }

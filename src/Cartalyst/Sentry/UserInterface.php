@@ -12,5 +12,5 @@ interface UserInterface
 
 	public function confirmResetPassword($login, $resetCode);
 
-	public function clearResetPassword($user);
+	public function clearResetPassword(UserInterface $user);
 }

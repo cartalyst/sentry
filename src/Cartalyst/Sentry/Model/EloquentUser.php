@@ -88,7 +88,7 @@ class EloquentUser extends EloquentModel implements UserInterface
 		return false;
 	}
 
-	public function clearResetPassword($user)
+	public function clearResetPassword(UserInterface $user)
 	{
 		if ($user->temp_password or $user->reset_password_hash)
 		{
