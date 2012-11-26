@@ -2,6 +2,8 @@
 
 interface UserInterface
 {
+	public function findById($id);
+
 	public function findByLogin($login);
 
 	public function findByCredentials($login, $password);

@@ -4,19 +4,23 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\UserInterface;
 
 
-class EloquentUser extends EloquentModel implements UserInterface
+class User extends EloquentModel implements UserInterface
 {
 	protected $table = 'users';
 
 	protected $hidden = array('password');
 
-	public $loginColumn = 'email';
+	protected $loginColumn = 'email';
 
 	/**
 	 * -----------------------------------------
 	 * UserInterface Methods
 	 * -----------------------------------------
 	 */
+	public function findById($id)
+	{
+		return $this->find($id);
+	}
 
 	public function findByLogin($login)
 	{

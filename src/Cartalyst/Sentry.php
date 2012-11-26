@@ -41,7 +41,12 @@ class Sentry
 	 */
 	protected $userInterface;
 
-	protected $hashInterface;
+	/**
+	 * The user interface
+	 *
+	 * @var  Cartalyst\Sentry\GroupInterface
+	 */
+	protected $groupInterface;
 
 	/**
 	 * Session provider sentry should use
@@ -58,12 +63,12 @@ class Sentry
 	 */
 	public function __construct(
 		Sentry\UserInterface $userInterface,
-		Sentry\HashInterface $hashInterface
+		Sentry\GroupInterface $groupInterface
 	)
 	{
 		// set dependencies
 		$this->userInterface = $userInterface;
-		$this->hashInterface = $hashInterface;
+		$this->groupInterface = $groupInterface;
 	}
 
 	/**
@@ -183,13 +188,20 @@ class Sentry
 	 * @param   string  $login
 	 * @return  Sentry\UserInterface|null
 	 */
-	public function user($login = null)
+	public function user()
 	{
-		if ($login)
-		{
-			return $this->userInterface->findByLogin($login);
-		}
-
-		return $this->user;
+		return $this->userInterface;
 	}
+
+	/**
+	 * Get a group object
+	 *
+	 * @param   string  $id
+	 * @return  Sentry\GroupInterface|null
+	 */
+	public function group()
+	{
+		return $this->groupInterface;
+	}
+
 }
