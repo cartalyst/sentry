@@ -104,6 +104,11 @@ class User extends EloquentModel implements UserInterface
 		return $user;
 	}
 
+	public function groups()
+	{
+		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'user_group', 'user_id', 'group_id');
+	}
+
 	protected function randomString()
 	{
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
