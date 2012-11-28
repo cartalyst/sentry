@@ -2,14 +2,31 @@
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\UserInterface;
+use Cartalyst\Sentry\UserGroupInterface;
+use Cartalyst\Sentry\GroupInterface;
 
 
-class User extends EloquentModel implements UserInterface
+class User extends EloquentModel implements UserInterface, UserGroupInterface
 {
+	/**
+	 * The table associated with the model.
+	 *
+	 * @var string
+	 */
 	protected $table = 'users';
 
+	/**
+	 * The attributes that should be hidden for arrays.
+	 *
+	 * @var array
+	 */
 	protected $hidden = array('password');
 
+	/**
+	 * The login column
+	 *
+	 * @var string
+	 */
 	protected $loginColumn = 'email';
 
 	/**
@@ -17,11 +34,34 @@ class User extends EloquentModel implements UserInterface
 	 * UserInterface Methods
 	 * -----------------------------------------
 	 */
+
+	/**
+	 * Get user login column
+	 *
+	 * @return  string
+	 */
+	public function getLoginColumn()
+	{
+		return $this->loginColumn;
+	}
+
+	/**
+	 * Get user login column
+	 *
+	 * @param   integer  $id
+	 * @return  Cartalyst\Sentry\UserInterface
+	 */
 	public function findById($id)
 	{
 		return $this->find($id);
 	}
 
+	/**
+	 * Get user by login value
+	 *
+	 * @param   string  $login
+	 * @return  Cartalyst\Sentry\UserInterface
+	 */
 	public function findByLogin($login)
 	{
 		$user = $this->where($this->loginColumn, '=', $login)->first();
@@ -29,6 +69,13 @@ class User extends EloquentModel implements UserInterface
 		return ($user) ?: false;
 	}
 
+	/**
+	 * Get user by credentials
+	 *
+	 * @param   string  $login
+	 * @param   string  $password
+	 * @return  Cartalyst\Sentry\UserInterface
+	 */
 	public function findByCredentials($login, $password)
 	{
 		$user = $this->findByLogin($login);
@@ -41,78 +88,105 @@ class User extends EloquentModel implements UserInterface
 		return false;
 	}
 
-	public function activate($login, $activationCode)
+	/**
+	 * -----------------------------------------
+	 * UserGroupInterface Methods
+	 * -----------------------------------------
+	 */
+
+	/**
+	 * Get user's groups
+	 *
+	 * @return Cartalyst\Sentry\GroupInterface
+	 */
+	public function getGroups()
 	{
-		$user = $this->findByLogin($login);
+		return $this->groups()->where('user_id', '=', 1)->get();
+	}
 
-		if ($user and $activationCode === $user->activation_hash)
+	/**
+	 * Add user to group
+	 *
+	 * @param   integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return  bool
+	 */
+	public function addGroup($group)
+	{
+		if ( $group instanceof GroupInterface or is_int($group))
 		{
-			$user->activation_hash = null;
-			$user->activated = 1;
-			$user->save();
-
-			return true;
+			return $this->groups()->attach($group);
 		}
 
 		return false;
 	}
 
-	public function resetPassword($login, $password)
+	/**
+	 * Add user to multiple groups
+	 *
+	 * @param   array  $groups integer|Cartalyst\Sentry\GroupInterface
+	 */
+	public function addGroups(array $groups)
 	{
-		$user = $this->findByLogin($login);
-
-		if ($user)
+		foreach ($groups as $group)
 		{
-			$resetCode = $this->randomString();
+			$this->addGroup($group);
+		}
+	}
 
-			$user->temp_password = $password;
-			$user->reset_password_hash = $resetCode;
-			$user->save();
-
-			return $resetCode;
+	/**
+	 * Remove user from group
+	 *
+	 * @param   integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return  bool
+	 */
+	public function removeGroup($group)
+	{
+		if ( $group instanceof GroupInterface or is_int($group))
+		{
+			return $this->groups()->detach($group);
 		}
 
 		return false;
 	}
 
-	public function confirmResetPassword($login, $resetCode)
+	/**
+	 * Remove user from multiple groups
+	 *
+	 * @param   array  $groups integer|Cartalyst\Sentry\GroupInterface
+	 */
+	public function removeGroups(array $groups)
 	{
-		$user = $this->findByLogin($login);
-
-		if ($user and $resetCode === $user->reset_password_hash)
+		foreach ($groups as $group)
 		{
-			$user->password = $user->temp_password;
-			$user->temp_password = null;
-			$user->reset_password_hash = null;
-			$user->save();
+			$this->removeGroup($group);
+		}
+	}
 
-			return true;
+	/**
+	 * See if user is in a group
+	 *
+	 * @param   integer  $group
+	 * @return  bool
+	 */
+	public function inGroup($group)
+	{
+		foreach ($this->getGroups() as $_group)
+		{
+			if ($group == $_group->id)
+			{
+				return true;
+			}
 		}
 
 		return false;
 	}
 
-	public function clearResetPassword(UserInterface $user)
-	{
-		if ($user->temp_password or $user->reset_password_hash)
-		{
-			$user->temp_password = null;
-			$user->reset_password_hash = null;
-			$user->save();
-		}
-
-		return $user;
-	}
-
-	public function groups()
+	/**
+	 * relate users to groups
+	 */
+	protected function groups()
 	{
 		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'user_group', 'user_id', 'group_id');
 	}
 
-	protected function randomString()
-	{
-		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, 40);
-	}
 }

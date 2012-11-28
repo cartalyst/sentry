@@ -18,9 +18,14 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\ProviderInterface;
+use Cartalyst\Sentry\UserInterface;
+use Cartalyst\Sentry\GroupInterface;
+
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Session\CookieStore;
 use Illuminate\CookieJar;
+
 
 /**
  * Sentry Auth class
@@ -35,18 +40,11 @@ class Sentry
 	protected $user;
 
 	/**
-	 * The user interface
+	 * Provider Interface
 	 *
-	 * @var  Cartalyst\Sentry\UserInterface
+	 * @var  Cartalyst\Sentry\ProviderInterface
 	 */
-	protected $userInterface;
-
-	/**
-	 * The user interface
-	 *
-	 * @var  Cartalyst\Sentry\GroupInterface
-	 */
-	protected $groupInterface;
+	protected $provider;
 
 	/**
 	 * Session provider sentry should use
@@ -56,19 +54,21 @@ class Sentry
 	protected $session;
 
 	/**
+	 * Throttle Enabled
+	 *
+	 */
+	protected $throttle = true;
+
+	/**
 	 * Initantiate the Auth class and inject dependencies
 	 *
 	 * @param   userModel  User Object
 	 * @return  object  Auth Instance
 	 */
-	public function __construct(
-		Sentry\UserInterface $userInterface,
-		Sentry\GroupInterface $groupInterface
-	)
+	public function __construct(ProviderInterface $providerInterface)
 	{
 		// set dependencies
-		$this->userInterface = $userInterface;
-		$this->groupInterface = $groupInterface;
+		$this->provider = $providerInterface;
 	}
 
 	/**
@@ -84,14 +84,26 @@ class Sentry
 		// run logout to clear any current sentry session
 		$this->logout();
 
+		if ($this->throttle and ! $this->provider->throttleInterface()->check($login))
+		{
+			echo 'disallow login';
+			exit;
+		}
+
 		// validate user
-		$user = $this->userInterface->findByCredentials($login, $password);
+		$user = $this->provider->userInterface()->findByCredentials($login, $password);
 
 		if ($user)
 		{
-			$this->login($user, $remember);
+			$this->login($user, $remember, false);
 
 			return true;
+		}
+
+		// add attempt if throttle is enabled
+		if ($this->throttle)
+		{
+			$this->provider->throttleInterface()->addAttempt($login);
 		}
 
 		return false;
@@ -103,7 +115,6 @@ class Sentry
 	 * @param   string  $login
 	 * @param   string  $password
 	 * @return  bool
-	 * @throws  SentryException
 	 */
 	public function authenticateAndRemember($login, $password)
 	{
@@ -115,11 +126,30 @@ class Sentry
 	 *
 	 * @param   User  $user
 	 */
-	public function login(Sentry\UserInterface $user, $remember = false)
+	public function login(UserInterface $user, $remember = false, $checkThrottle = true)
 	{
-		$user = $this->userInterface->clearResetPassword($user);
+		if ( ! $user->{$user->getLoginColumn()})
+		{
+			echo 'invalid user';
+			exit;
+		}
 
-		$this->user = $user;
+		// check for throttle
+		if ($this->throttle)
+		{
+			if ($checkThrottle and ! $this->provider->throttleInterface()->check($user->{$user->getLoginColumn()}))
+			{
+				echo 'disallow login';
+				exit;
+			}
+
+			$this->provider->throttleInterface()->clearAttempts($user->{$user->getLoginColumn()});
+		}
+
+		$this->user = $this->provider->clearResetPassword($user);
+
+		echo 'logged in!';
+		exit;
 
 		// set sessions
 	}
@@ -147,42 +177,6 @@ class Sentry
 	}
 
 	/**
-	 * Activate a user
-	 *
-	 * @param   string  $login
-	 * @param   string  $activationCode
-	 * @return  bool
-	 */
-	public function activate($login, $activationCode)
-	{
-		return $this->userInterface->activate($login, $activationCode);
-	}
-
-	/**
-	 * Reset a user's password
-	 *
-	 * @param   string   $login
-	 * @param   string   $password
-	 * @return  string|false
-	 */
-	public function resetPassword($login, $password)
-	{
-		return $this->userInterface->resetPassword($login, $password);
-	}
-
-	/**
-	 * Confirm a password reset request
-	 *
-	 * @param   string  $login
-	 * @param   string  $resetCode
-	 * @return  bool
-	 */
-	public function confirmResetPassword($login, $resetCode)
-	{
-		return $this->userInterface->confirmResetPassword($login, $resetCode);
-	}
-
-	/**
 	 * Get the current user or requested user by login
 	 *
 	 * @param   string  $login
@@ -190,18 +184,36 @@ class Sentry
 	 */
 	public function user()
 	{
-		return $this->userInterface;
+		return $this->provider->userInterface();
+	}
+
+	public function enableThrottle($limit = null, $minutes = null)
+	{
+		if ( ! is_int($limit) and ! is_null($limit))
+		{
+			throw new \Exception('throttle exception');
+		}
+
+		if ( ! is_int($minutes) and ! is_null($minutes))
+		{
+			throw new \Exception('throttle exception');
+		}
+
+		$this->throttle = true;
+		! is_null($limit) and $this->provider->throttleInterface()->setAttemptLimit($limit);
+		! is_null($minutes) and $this->provider->throttleInterface()->setSuspensionTime($minutes);
+	}
+
+	public function disableThrottle()
+	{
+		$this->throttle = false;
 	}
 
 	/**
-	 * Get a group object
 	 *
-	 * @param   string  $id
-	 * @return  Sentry\GroupInterface|null
 	 */
-	public function group()
+	public function __call($method, $args)
 	{
-		return $this->groupInterface;
+		return call_user_func_array(array($this->provider, $method), $args);
 	}
-
 }
