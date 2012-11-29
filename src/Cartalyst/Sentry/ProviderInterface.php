@@ -3,25 +3,46 @@
 interface ProviderInterface
 {
 	/**
-	 * Get user interface
+	 * Get the user interface
 	 *
 	 * @return  Cartalyst\Sentry\UserInterface
 	 */
 	public function userInterface();
 
 	/**
-	 * Get user interface
+	 * Get the group interface
 	 *
 	 * @return  Cartalyst\Sentry\GroupInterface
 	 */
 	public function groupInterface();
 
 	/**
-	 * Get user interface
+	 * Get the throttle interface
 	 *
 	 * @return  Cartalyst\Sentry\ThrottleInterface
 	 */
 	public function throttleInterface();
+
+	/**
+	 * Get the hash interface
+	 *
+	 * @return  Cartalyst\Sentry\ThrottleInterface
+	 */
+	public function hashInterface();
+
+	/**
+	 * Registers a user
+	 *
+	 * @return
+	 */
+	public function register(array $attributes);
+
+	/**
+	 * Registers a user
+	 *
+	 * @return
+	 */
+	public function save(UserInterface $user);
 
 	/**
 	 * Activate a user
@@ -31,6 +52,14 @@ interface ProviderInterface
 	 * @return  bool
 	 */
 	public function activate($login, $activationCode);
+
+	/**
+	 * Check if user is activated
+	 *
+	 * @param   UserInterface  $user
+	 * @return  bool
+	 */
+	public function isActivated(UserInterface $user);
 
 	/**
 	 * Reset a user's password
@@ -48,7 +77,7 @@ interface ProviderInterface
 	 * @param   string  $resetCode
 	 * @return  bool
 	 */
-	public function confirmResetPassword($login, $resetCode);
+	public function ResetPasswordConfirm($login, $resetCode);
 
 	/**
 	 * Clears Password Reset Fields
@@ -57,5 +86,22 @@ interface ProviderInterface
 	 * @return  $user
 	 */
 	public function clearResetPassword(UserInterface $user);
+
+	/**
+	 * Hash String
+	 *
+	 * @param   string  $str
+	 * @return  string
+	 */
+	public function hash($str);
+
+	/**
+	 * Check Hash Values
+	 *
+	 * @param   string  $str
+	 * @param   string  $hashed_str
+	 * @return  bool
+	 */
+	public function checkHash($str, $hashed_str);
 
 }

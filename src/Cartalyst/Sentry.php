@@ -91,9 +91,9 @@ class Sentry
 		}
 
 		// validate user
-		$user = $this->provider->userInterface()->findByCredentials($login, $password);
+		$user = $this->provider->userInterface()->findByLogin($login);
 
-		if ($user)
+		if ($user and $this->checkHash($password, $user->password))
 		{
 			$this->login($user, $remember, false);
 
@@ -146,11 +146,14 @@ class Sentry
 			$this->provider->throttleInterface()->clearAttempts($user->{$user->getLoginColumn()});
 		}
 
+		// check if the user is activated
+		if ( ! $this->provider->isActivated($user))
+		{
+			echo 'user not activated';
+			exit;
+		}
+
 		$this->user = $this->provider->clearResetPassword($user);
-
-		echo 'logged in!';
-		exit;
-
 		// set sessions
 	}
 
@@ -174,6 +177,11 @@ class Sentry
 	public function check()
 	{
 		return ! is_null($this->user);
+	}
+
+	public function activeUser()
+	{
+		return $this->user;
 	}
 
 	/**

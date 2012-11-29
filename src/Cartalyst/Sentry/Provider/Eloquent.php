@@ -5,6 +5,7 @@ use Cartalyst\Sentry\UserInterface;
 use Cartalyst\Sentry\Model\User;
 use Cartalyst\Sentry\Model\Group;
 use Cartalyst\Sentry\Model\Throttle;
+use Cartalyst\Sentry\HashInterface;
 
 class Eloquent implements ProviderInterface
 {
@@ -30,15 +31,23 @@ class Eloquent implements ProviderInterface
 	protected $throttleInterface;
 
 	/**
+	 * The hashing interface
+	 *
+	 * @var  Cartalyst\Sentry\HashInterface
+	 */
+	protected $hashInterface;
+
+	/**
 	 * Constructor
 	 *
 	 * @return  Cartalyst\Sentry\ProviderInterface
 	 */
-	public function __construct()
+	public function __construct(HashInterface $hashInterface)
 	{
 		$this->userInterface = new User();
 		$this->groupInterface = new Group();
 		$this->throttleInterface = new Throttle();
+		$this->hashInterface = $hashInterface;
 	}
 
 	/**
@@ -72,6 +81,16 @@ class Eloquent implements ProviderInterface
 	}
 
 	/**
+	 * Get hash interface
+	 *
+	 * @return  Cartalyst\Sentry\HashInterface
+	 */
+	public function hashInterface()
+	{
+		return $this->hashInterface;
+	}
+
+	/**
 	 * Activate a user
 	 *
 	 * @param   string  $login
@@ -82,7 +101,7 @@ class Eloquent implements ProviderInterface
 	{
 		$user = $this->userInterface->findByLogin($login);
 
-		if ($user and $activationCode === $user->activation_hash)
+		if ($user and $this->checkHash($activationCode, $user->activation_hash))
 		{
 			$user->activation_hash = null;
 			$user->activated = 1;
@@ -92,6 +111,17 @@ class Eloquent implements ProviderInterface
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if user is activated
+	 *
+	 * @param   UserInterface  $user
+	 * @return  bool
+	 */
+	public function isActivated(UserInterface $user)
+	{
+		return $user->activated;
 	}
 
 	/**
@@ -109,8 +139,8 @@ class Eloquent implements ProviderInterface
 		{
 			$resetCode = $this->randomString();
 
-			$user->temp_password = $password;
-			$user->reset_password_hash = $resetCode;
+			$user->temp_password = $this->hash($password);
+			$user->reset_password_hash = $this->hash($resetCode);
 			$user->save();
 
 			return $resetCode;
@@ -120,17 +150,44 @@ class Eloquent implements ProviderInterface
 	}
 
 	/**
+	 * Registers a user
+	 *
+	 * @return
+	 */
+	public function register(array $attributes)
+	{
+		$user = $this->userInterface->fill($attributes);
+
+		$activationCode = $this->randomString();
+		$user->activation_hash = $this->hash($activationCode);
+		$user->activated = 0;
+		$user->save();
+
+		return $activationCode;
+	}
+
+	/**
+	 * Registers a user
+	 *
+	 * @return
+	 */
+	public function save(UserInterface $user)
+	{
+		return $user->save();
+	}
+
+	/**
 	 * Confirm a password reset request
 	 *
 	 * @param   string  $login
 	 * @param   string  $resetCode
 	 * @return  bool
 	 */
-	public function confirmResetPassword($login, $resetCode)
+	public function resetPasswordConfirm($login, $resetCode)
 	{
 		$user = $this->userInterface->findByLogin($login);
 
-		if ($user and $resetCode === $user->reset_password_hash)
+		if ($user and $this->checkHash($resetCode, $user->reset_password_hash))
 		{
 			$user->password = $user->temp_password;
 			$user->temp_password = null;
@@ -159,6 +216,29 @@ class Eloquent implements ProviderInterface
 		}
 
 		return $user;
+	}
+
+	/**
+	 * Hash String
+	 *
+	 * @param   string  $str
+	 * @return  string
+	 */
+	public function hash($str)
+	{
+		return $this->hashInterface->hash($str);
+	}
+
+	/**
+	 * Check Hash Values
+	 *
+	 * @param   string  $str
+	 * @param   string  $hashed_str
+	 * @return  bool
+	 */
+	public function checkHash($str, $hashed_str)
+	{
+		return $this->hashInterface->checkHash($str, $hashed_str);
 	}
 
 	/**

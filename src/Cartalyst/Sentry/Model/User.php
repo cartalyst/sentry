@@ -30,6 +30,15 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	protected $loginColumn = 'email';
 
 	/**
+	 * Allowed Permissions Values
+	 */
+	protected $allowedPermissionsValues = array(
+		-1, // override denail
+		0, // remove
+		1, // allowed
+	);
+
+	/**
 	 * -----------------------------------------
 	 * UserInterface Methods
 	 * -----------------------------------------
@@ -86,6 +95,80 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		}
 
 		return false;
+	}
+
+	public function getPermissions($permissions)
+	{
+		return ( ! is_null($permissions)) ? json_decode($permissions, true) : array();
+	}
+
+	public function setPermissions($permissions)
+	{
+		// merge permissions
+		$permissions = $permissions + $this->permissions;
+
+		// loop through and remove all permissions with value of 0
+		foreach ($permissions as $permission => $val)
+		{
+			if ( ! in_array($val, $this->allowedPermissionsValues, true))
+			{
+				throw new \Exception($permission.' invalid permission value of '.$val. '. Must be: '.implode(', ', $this->allowedPermissionsValues));
+			}
+
+			if ($val === 0)
+			{
+				unset($permissions[$permission]);
+			}
+		}
+
+		return json_encode($permissions);
+	}
+
+	/**
+	 * Save the model to the database.
+	 *
+	 * @return bool
+	 */
+	public function save()
+	{
+		$keyName = $this->getKeyName();
+
+		// First we need to create a fresh query instance and touch the creation and
+		// update timestamp on the model which are maintained by us for developer
+		// convenience. Then we will just continue saving the model instances.
+		$query = $this->newQuery();
+
+		if ($this->timestamps)
+		{
+			$this->updateTimestamps();
+		}
+
+		// If the model already exists in the database we can just update our record
+		// that is already in this database using the current IDs in this "where"
+		// clause to only update this model. Otherwise, we'll just insert them.
+		if ($this->exists)
+		{
+			$query->where($keyName, '=', $this->getKey());
+
+			$query->update($this->attributes);
+		}
+
+		// If the model is brand new, we'll insert it into our database and set the
+		// ID attribute on the model to the value of the newly inserted row's ID
+		// which is typically an auto-increment value managed by the database.
+		else
+		{
+			if ($this->incrementing)
+			{
+				$this->$keyName = $query->insertGetId($this->attributes);
+			}
+			else
+			{
+				$query->insert($this->attributes);
+			}
+		}
+
+		return $this->exists = true;
 	}
 
 	/**
