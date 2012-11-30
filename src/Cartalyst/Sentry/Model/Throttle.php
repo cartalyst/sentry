@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\ThrottleInterface;
+use Cartalyst\Sentry\UserSuspendedException;
+use Cartalyst\Sentry\UserBannedException;
 use DateTime;
 
 class Throttle extends EloquentModel implements ThrottleInterface
@@ -14,7 +16,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	protected $table = 'throttle';
 
 	/**
-	 * Current Login Throttle Boject
+	 * Current login throttle object
 	 *
 	 * @var  Throttle
 	 */
@@ -124,7 +126,6 @@ class Throttle extends EloquentModel implements ThrottleInterface
 
 		$this->current->suspended = 1;
 		$this->current->suspended_at = $this->freshTimestamp();
-
 		return $this->current->save();
 	}
 
@@ -198,7 +199,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 		// check if the user is banned
 		if ($this->current->banned)
 		{
-			return false;
+			throw new UserBannedException();
 		}
 
 		// check if the user is suspended
@@ -214,11 +215,15 @@ class Throttle extends EloquentModel implements ThrottleInterface
 
 				return true;
 			}
+
+			throw new UserSuspendedException();
 		}
 
 		if ($this->getAttempts($login) >= $this->limit)
 		{
-			return false;
+			$this->suspend($login);
+
+			throw new UserSuspendedException();
 		}
 
 		return true;

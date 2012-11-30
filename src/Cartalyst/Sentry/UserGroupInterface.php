@@ -46,4 +46,11 @@ interface UserGroupInterface
 	 * @return  bool
 	 */
 	public function inGroup($group);
+
+	/**
+	 * Get merged permissions - user overrides groups
+	 *
+	 * @return  array
+	 */
+	public function getGroupPermissions();
 }

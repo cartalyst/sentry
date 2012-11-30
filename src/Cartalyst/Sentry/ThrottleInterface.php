@@ -1,5 +1,10 @@
 <?php namespace Cartalyst\Sentry;
 
+use RuntimeException;
+
+class UserSuspendedException extends RuntimeException {}
+class UserBannedException extends RuntimeException {}
+
 interface ThrottleInterface
 {
 	/**

@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\UserInterface;
 use Cartalyst\Sentry\UserGroupInterface;
 use Cartalyst\Sentry\GroupInterface;
+use Cartalyst\Sentry\HashInterface;
+use Cartalyst\Sentry\Hash\Bcrypt;
 
 
 class User extends EloquentModel implements UserInterface, UserGroupInterface
@@ -31,12 +33,39 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 
 	/**
 	 * Allowed Permissions Values
+	 * options:
+	 *   -1 => deny
+	 *    0 => delete
+	 *    1 => add
 	 */
-	protected $allowedPermissionsValues = array(
-		-1, // override denail
-		0, // remove
-		1, // allowed
+	protected $allowedPermissionsValues = array(-1, 0, 1);
+
+	/**
+	 * Super user permissions, gives access to everything
+	 *
+	 * @var string
+	 */
+	protected $superUser = 'superuser';
+
+	protected $hashInterface;
+
+	protected $hashedFields = array(
+		'password',
+		'temp_password',
+		'reset_password_hash',
 	);
+
+	/**
+	 * Create a new Eloquent model instance.
+	 *
+	 * @param  array  $attributes
+	 * @return void
+	 */
+	public function __construct(array $attributes = array(), HashInterface $hashInterface = null)
+	{
+		$this->fill($attributes);
+		$this->hashInterface = ($hashInterface) ?: new Bcrypt;
+	}
 
 	/**
 	 * -----------------------------------------
@@ -73,9 +102,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function findByLogin($login)
 	{
-		$user = $this->where($this->loginColumn, '=', $login)->first();
-
-		return ($user) ?: false;
+		return $this->where($this->loginColumn, '=', $login)->first();
 	}
 
 	/**
@@ -85,27 +112,170 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 * @param   string  $password
 	 * @return  Cartalyst\Sentry\UserInterface
 	 */
-	public function findByCredentials($login, $password)
+	public function findByCredentials(array $attributes)
 	{
-		$user = $this->findByLogin($login);
+		$query = $this->newQuery();
+		$hashedAttributes = array();
 
-		if ($user and $password === $user->password)
+		foreach ($attributes as $attribute => $value)
 		{
-			return $user;
+			if (in_array($attribute, $this->hashedFields))
+			{
+				$hashedAttributes += array($attribute => $value);
+				continue;
+			}
+
+			$query = $query->where($attribute, '=', $value);
+		}
+
+		$user = $query->first();
+
+		if ( ! $user)
+		{
+			return false;
+		}
+
+		foreach ($hashedAttributes as $attribute => $value)
+		{
+			if ( ! $this->checkHash($value, $user->password))
+			{
+				return false;
+			}
+		}
+
+		return ($user) ?: false;
+	}
+
+	/**
+	 * Registers a user
+	 *
+	 * @return string
+	 */
+	public function register()
+	{
+		$activationCode = $this->randomString();
+		$this->activation_hash = $this->hash($activationCode);
+		$this->activated = 0;
+		$this->save();
+
+		return $activationCode;
+	}
+
+	/**
+	 * Activate a user
+	 *
+	 * @param   string  $login
+	 * @param   string  $activationCode
+	 * @return  bool
+	 */
+	public function activate($activationCode)
+	{
+		// don't save if they are already activated...
+		if ($this->activated)
+		{
+			return true;
+		}
+
+		if ($this->exists and $this->checkHash($activationCode, $this->activation_hash))
+		{
+			$this->activation_hash = null;
+			$this->activated = 1;
+			$this->save();
+
+			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * Check if user is activated
+	 *
+	 * @param   UserInterface  $user
+	 * @return  bool
+	 */
+	public function isActivated()
+	{
+		return $this->activated;
+	}
+
+	/**
+	 * Reset a user's password
+	 *
+	 * @param   string   $login
+	 * @param   string   $password
+	 * @return  string|false
+	 */
+	public function resetPassword($password)
+	{
+		$resetCode = $this->randomString();
+
+		$this->temp_password = $password;
+		$this->reset_password_hash = $resetCode;
+		$this->save();
+
+		return $resetCode;
+	}
+
+	/**
+	 * Confirm a password reset request
+	 *
+	 * @param   string  $login
+	 * @param   string  $resetCode
+	 * @return  bool
+	 */
+	public function resetPasswordConfirm($resetCode)
+	{
+		if ($this->checkHash($resetCode, $this->reset_password_hash))
+		{
+			$this->password = $this->temp_password;
+			$this->temp_password = null;
+			$this->reset_password_hash = null;
+			$this->save();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Clears Password Reset Fields
+	 *
+	 * @param   UserInterface  $user
+	 * @return  $user
+	 */
+	public function clearResetPassword()
+	{
+		if ($this->temp_password or $this->reset_password_hash)
+		{
+			$this->temp_password = null;
+			$this->reset_password_hash = null;
+			$this->save();
+		}
+	}
+
+	/**
+	 * Get user specific permissions
+	 *
+	 * @param   string  $permissions json
+	 * @return  array
+	 */
 	public function getPermissions($permissions)
 	{
 		return ( ! is_null($permissions)) ? json_decode($permissions, true) : array();
 	}
 
+	/**
+	 * Set user specific permissions
+	 *
+	 * @param   array  $permissions
+	 * @return  string json
+	 */
 	public function setPermissions($permissions)
 	{
 		// merge permissions
-		$permissions = $permissions + $this->permissions;
+		$permissions = (array) $permissions + $this->permissions;
 
 		// loop through and remove all permissions with value of 0
 		foreach ($permissions as $permission => $val)
@@ -124,51 +294,47 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		return json_encode($permissions);
 	}
 
+
 	/**
-	 * Save the model to the database.
+	 * See if a user has a required permission
 	 *
-	 * @return bool
+	 * @param   string  $permission
+	 * @return  bool
 	 */
-	public function save()
+	public function hasAccess($permission)
 	{
-		$keyName = $this->getKeyName();
-
-		// First we need to create a fresh query instance and touch the creation and
-		// update timestamp on the model which are maintained by us for developer
-		// convenience. Then we will just continue saving the model instances.
-		$query = $this->newQuery();
-
-		if ($this->timestamps)
+		// check if they are a super user
+		if (array_key_exists('superuser', $this->permissions) and $this->permissions['superuser'] === 1)
 		{
-			$this->updateTimestamps();
+			return true;
 		}
 
-		// If the model already exists in the database we can just update our record
-		// that is already in this database using the current IDs in this "where"
-		// clause to only update this model. Otherwise, we'll just insert them.
-		if ($this->exists)
-		{
-			$query->where($keyName, '=', $this->getKey());
+		$mergedPermissions = $this->permissions + $this->getGroupPermissions();
 
-			$query->update($this->attributes);
+		// check to see if permissions exists in user or group permissions
+		if ( array_key_exists($permission, $mergedPermissions) and $mergedPermissions[$permission] === 1)
+		{
+			return true;
 		}
 
-		// If the model is brand new, we'll insert it into our database and set the
-		// ID attribute on the model to the value of the newly inserted row's ID
-		// which is typically an auto-increment value managed by the database.
-		else
+		return false;
+	}
+
+	/**
+	 * Get merged group permissions
+	 *
+	 * @return  array
+	 */
+	public function getGroupPermissions()
+	{
+		$permissions = array();
+		// loop through user groups
+		foreach ($this->groups as $group)
 		{
-			if ($this->incrementing)
-			{
-				$this->$keyName = $query->insertGetId($this->attributes);
-			}
-			else
-			{
-				$query->insert($this->attributes);
-			}
+			$permissions += $group->permissions;
 		}
 
-		return $this->exists = true;
+		return $permissions;
 	}
 
 	/**
@@ -184,7 +350,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function getGroups()
 	{
-		return $this->groups()->where('user_id', '=', 1)->get();
+		return $this->groups()->where('user_id', '=', $this->id)->get();
 	}
 
 	/**
@@ -195,12 +361,33 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function addGroup($group)
 	{
-		if ( $group instanceof GroupInterface or is_int($group))
+		if ($this->inGroup($group))
 		{
-			return $this->groups()->attach($group);
+			return true;
 		}
 
-		return false;
+		if ( $group instanceof GroupInterface)
+		{
+			if ( ! $group->exists)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			$_group = new Group();
+
+			$field = (is_int($group)) ? 'id' : 'name';
+
+			$group = $_group->where($field, '=', $group)->first();
+
+			if ( ! $group)
+			{
+				return false;
+			}
+		}
+
+		return $this->groups()->attach($group);
 	}
 
 	/**
@@ -224,12 +411,12 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function removeGroup($group)
 	{
-		if ( $group instanceof GroupInterface or is_int($group))
+		if ( ! $this->inGroup($group))
 		{
-			return $this->groups()->detach($group);
+			return true;
 		}
 
-		return false;
+		return $this->groups()->detach($group);
 	}
 
 	/**
@@ -248,14 +435,22 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * See if user is in a group
 	 *
-	 * @param   integer  $group
+	 * @param   integer|string|Cartalyst\Sentry\GroupInterface  $group
 	 * @return  bool
 	 */
 	public function inGroup($group)
 	{
-		foreach ($this->getGroups() as $_group)
+		foreach ($this->getGroups() as $userGroups)
 		{
-			if ($group == $_group->id)
+			if ($group instanceof GroupInterface and $group->id === $userGroups->group_id)
+			{
+				return true;
+			}
+			elseif (is_int($group) and $group === $userGroups->group_id)
+			{
+				return true;
+			}
+			elseif ($group === $userGroups->name)
 			{
 				return true;
 			}
@@ -269,7 +464,77 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	protected function groups()
 	{
-		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'user_group', 'user_id', 'group_id');
+		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'user_group');
 	}
 
+	/**
+	 * Hash String
+	 *
+	 * @param   string  $str
+	 * @return  string
+	 */
+	protected function hash($str)
+	{
+		return $this->hashInterface->hash($str);
+	}
+
+	/**
+	 * Check Hash Values
+	 *
+	 * @param   string  $str
+	 * @param   string  $hashed_str
+	 * @return  bool
+	 */
+	protected function checkHash($str, $hashed_str)
+	{
+		return $this->hashInterface->checkHash($str, $hashed_str);
+	}
+
+	/**
+	 * Generate a random string
+	 *
+	 * @return  string
+	 */
+	protected function randomString()
+	{
+		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		return substr(str_shuffle(str_repeat($pool, 5)), 0, 40);
+	}
+
+	/**
+	 * Set a given attribute on the model.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
+	public function setAttribute($key, $value)
+	{
+		// hash required fields when necessary
+		if (in_array($key, $this->hashedFields))
+		{
+			if (($key == 'password' and $value == $this->temp_password) or empty($value))
+			{
+				// do nothing
+			}
+			else
+			{
+				$value = $this->hash($value);
+			}
+
+		}
+
+		// First we will check for the presence of a mutator for the set operation
+		// which simply lets the developers tweak the attribute as it is set on
+		// the model, such as "json_encoding" an listing of data for storage.
+		if ($this->hasSetMutator($key))
+		{
+			$method = 'set'.camel_case($key);
+
+			return $this->attributes[$key] = $this->$method($value);
+		}
+
+		$this->attributes[$key] = $value;
+	}
 }

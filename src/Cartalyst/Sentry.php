@@ -79,31 +79,43 @@ class Sentry
 	 * @param   bool    remember user
 	 * @return  bool
 	 */
-	public function authenticate($login, $password, $remember = false)
+	public function authenticate(array $credentials, $remember = false)
 	{
 		// run logout to clear any current sentry session
 		$this->logout();
 
-		if ($this->throttle and ! $this->provider->throttleInterface()->check($login))
+		// get a user object and find the required authentication column
+		$user = $this->user();
+		$login = $user->getLoginColumn();
+
+		// make sure the required login column is passed
+		if ( ! array_key_exists($login, $credentials))
 		{
-			echo 'disallow login';
-			exit;
+			throw new \Exception('login field required');
 		}
 
-		// validate user
-		$user = $this->provider->userInterface()->findByLogin($login);
+		// if throttle is enabled, check throttle status
+		if ($this->throttle and ! $this->provider->throttleInterface()->check($credentials[$login]))
+		{
+			return false;
+		}
 
-		if ($user and $this->checkHash($password, $user->password))
+		// find user by passed credentials
+		$user = $user->findByCredentials($credentials);
+
+		// log user in if found
+		if ($user)
 		{
 			$this->login($user, $remember, false);
 
 			return true;
 		}
 
+		// user not found
 		// add attempt if throttle is enabled
 		if ($this->throttle)
 		{
-			$this->provider->throttleInterface()->addAttempt($login);
+			$this->provider->throttleInterface()->addAttempt($credentials[$login]);
 		}
 
 		return false;
@@ -128,10 +140,10 @@ class Sentry
 	 */
 	public function login(UserInterface $user, $remember = false, $checkThrottle = true)
 	{
-		if ( ! $user->{$user->getLoginColumn()})
+		// make sure the user exists
+		if ( ! $this->user()->findByLogin($user->{$user->getLoginColumn()}))
 		{
-			echo 'invalid user';
-			exit;
+			throw new UserNotExistsException();
 		}
 
 		// check for throttle
@@ -139,21 +151,22 @@ class Sentry
 		{
 			if ($checkThrottle and ! $this->provider->throttleInterface()->check($user->{$user->getLoginColumn()}))
 			{
-				echo 'disallow login';
-				exit;
+				return false;
 			}
 
 			$this->provider->throttleInterface()->clearAttempts($user->{$user->getLoginColumn()});
 		}
 
 		// check if the user is activated
-		if ( ! $this->provider->isActivated($user))
+		if ( ! $user->isActivated())
 		{
-			echo 'user not activated';
-			exit;
+			throw new UserNotActivatedException();
 		}
 
-		$this->user = $this->provider->clearResetPassword($user);
+		$user->clearResetPassword();
+
+		$this->user = $user;
+
 		// set sessions
 	}
 
@@ -179,13 +192,18 @@ class Sentry
 		return ! is_null($this->user);
 	}
 
+	/**
+	 * Returns active authenticated user
+	 *
+	 * @return Sentry\UserInterface
+	 */
 	public function activeUser()
 	{
 		return $this->user;
 	}
 
 	/**
-	 * Get the current user or requested user by login
+	 * Gets a user object
 	 *
 	 * @param   string  $login
 	 * @return  Sentry\UserInterface|null
@@ -195,6 +213,21 @@ class Sentry
 		return $this->provider->userInterface();
 	}
 
+	/**
+	 * Gets a group object
+	 */
+	public function group()
+	{
+		return $this->provider->groupInterface();
+	}
+
+	/**
+	 * Enable throttling
+	 *
+	 * @param   integer  $limit
+	 * @param   integer  $minutes
+	 * @throws
+	 */
 	public function enableThrottle($limit = null, $minutes = null)
 	{
 		if ( ! is_int($limit) and ! is_null($limit))
@@ -212,14 +245,14 @@ class Sentry
 		! is_null($minutes) and $this->provider->throttleInterface()->setSuspensionTime($minutes);
 	}
 
+	/**
+	 * Disables throttling
+	 */
 	public function disableThrottle()
 	{
 		$this->throttle = false;
 	}
 
-	/**
-	 *
-	 */
 	public function __call($method, $args)
 	{
 		return call_user_func_array(array($this->provider, $method), $args);
