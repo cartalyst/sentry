@@ -22,7 +22,12 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password');
+	protected $hidden = array(
+		'password',
+		'temp_password',
+		'reset_password_hash',
+		'activation_hash',
+	);
 
 	/**
 	 * The login column
@@ -47,8 +52,18 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	protected $superUser = 'superuser';
 
+	/**
+	 * Hashing Interface
+	 *
+	 * @var Cartalyst\Sentry\HashInterface
+	 */
 	protected $hashInterface;
 
+	/**
+	 * Fields that should be hashed
+	 *
+	 * @var array
+	 */
 	protected $hashedFields = array(
 		'password',
 		'temp_password',
@@ -117,8 +132,11 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		$query = $this->newQuery();
 		$hashedAttributes = array();
 
+		// build query from given attributes
 		foreach ($attributes as $attribute => $value)
 		{
+			// remove hashed attributes to check later as we need to check these
+			// values after we retrieved them because of salts
 			if (in_array($attribute, $this->hashedFields))
 			{
 				$hashedAttributes += array($attribute => $value);
@@ -128,6 +146,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 			$query = $query->where($attribute, '=', $value);
 		}
 
+		// retrieve the user
 		$user = $query->first();
 
 		if ( ! $user)
@@ -135,6 +154,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 			return false;
 		}
 
+		// now we check for hashed values to make sure they match as well
 		foreach ($hashedAttributes as $attribute => $value)
 		{
 			if ( ! $this->checkHash($value, $user->password))
@@ -153,7 +173,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function register()
 	{
+		// generate an activation code
 		$activationCode = $this->randomString();
+
 		$this->activation_hash = $this->hash($activationCode);
 		$this->activated = 0;
 		$this->save();
@@ -176,6 +198,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 			return true;
 		}
 
+		// if the user exists and the activation code matches, activate and update required fields
 		if ($this->exists and $this->checkHash($activationCode, $this->activation_hash))
 		{
 			$this->activation_hash = null;
@@ -208,6 +231,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function resetPassword($password)
 	{
+		// generate a reset code
 		$resetCode = $this->randomString();
 
 		$this->temp_password = $password;
@@ -226,7 +250,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function resetPasswordConfirm($resetCode)
 	{
-		if ($this->checkHash($resetCode, $this->reset_password_hash))
+		// if the user exists and the reset code matches, reset and update required fields
+		if ($this->exists and $this->checkHash($resetCode, $this->reset_password_hash))
 		{
 			$this->password = $this->temp_password;
 			$this->temp_password = null;
@@ -309,9 +334,10 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 			return true;
 		}
 
+		// merge permissions together, user permissions override group permissions
 		$mergedPermissions = $this->permissions + $this->getGroupPermissions();
 
-		// check to see if permissions exists in user or group permissions
+		// check to see if user has access with merged permissions
 		if ( array_key_exists($permission, $mergedPermissions) and $mergedPermissions[$permission] === 1)
 		{
 			return true;
@@ -328,7 +354,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	public function getGroupPermissions()
 	{
 		$permissions = array();
-		// loop through user groups
+
+		// loop through user groups and merge their permissions
 		foreach ($this->groups as $group)
 		{
 			$permissions += $group->permissions;
@@ -361,11 +388,13 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function addGroup($group)
 	{
+		// check to see if they are already in the group
 		if ($this->inGroup($group))
 		{
 			return true;
 		}
 
+		// if a group object was passed, check to see if it exists
 		if ( $group instanceof GroupInterface)
 		{
 			if ( ! $group->exists)
@@ -373,6 +402,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 				return false;
 			}
 		}
+		// otherwise query data passed to make sure the group exists
 		else
 		{
 			$_group = new Group();

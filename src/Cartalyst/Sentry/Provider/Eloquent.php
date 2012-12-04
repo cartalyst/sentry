@@ -150,7 +150,7 @@ class Eloquent implements ProviderInterface
 	{
 		if ( ! $object instanceof UserInterface and ! $object instanceof GroupInterface)
 		{
-			throw new \Exception('invalid object');
+			throw new InvalidObjectException;
 		}
 
 		return $object->delete();

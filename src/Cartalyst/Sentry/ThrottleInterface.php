@@ -62,6 +62,14 @@ interface ThrottleInterface
 	public function unsuspend($login);
 
 	/**
+	 * Check if user is suspended
+	 *
+	 * @param   string  $Login
+	 * @return  bool
+	 */
+	public function isSuspended($login);
+
+	/**
 	 * Ban a login
 	 *
 	 * @param   string  $Login
@@ -78,10 +86,10 @@ interface ThrottleInterface
 	public function unban($login);
 
 	/**
-	 * Check Throttle Status
+	 * Check if user is banned
 	 *
 	 * @param   string  $Login
 	 * @return  bool
 	 */
-	public function check($login);
+	public function isBanned($login);
 }

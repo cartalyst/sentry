@@ -1,10 +1,14 @@
 <?php namespace Cartalyst\Sentry\Model;
 
+use Cartalyst\SentryException;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\ThrottleInterface;
 use Cartalyst\Sentry\UserSuspendedException;
 use Cartalyst\Sentry\UserBannedException;
 use DateTime;
+
+class ThrottleLimitException extends SentryException {}
+class ThrottleTimeException extends SentryException {}
 
 class Throttle extends EloquentModel implements ThrottleInterface
 {
@@ -50,6 +54,11 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	 */
 	public function setAttemptLimit($limit)
 	{
+		if ( ! is_int($limit) and ! is_null($limit))
+		{
+			throw new ThrottleLimitException;
+		}
+
 		$this->limit = $limit;
 	}
 
@@ -60,6 +69,11 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	 */
 	public function setSuspensionTime($minutes)
 	{
+		if ( ! is_int($minutes) and ! is_null($minutes))
+		{
+			throw new ThrottleTimeException;
+		}
+
 		$this->time = $minutes;
 	}
 
@@ -72,6 +86,26 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	public function getAttempts($login)
 	{
 		$this->findByLogin($login);
+
+		if ($this->current->last_attempt_at)
+		{
+			if ( ! is_string($this->current->last_attempt_at))
+			{
+				$this->current->last_attempt_at = $this->current->last_attempt_at->format('Y-m-d H:i:s');
+			}
+			$clearTime = new DateTime($this->current->last_attempt_at);
+			$clear_at = $clearTime->modify('+'.$this->time.' minutes');
+			$now = new DateTime();
+
+			if ($clear_at <= $now)
+			{
+				$this->current->attempts = 0;
+			}
+
+			unset($clearTime);
+			unset($clear_at);
+			unset($now);
+		}
 
 		return $this->current->attributes['attempts'];
 	}
@@ -90,7 +124,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 		$this->current->last_attempt_at = $this->freshTimeStamp();
 
 		// if they fail the check now, suspend them
-		if ( ! $this->check($login))
+		if ($this->getAttempts($login) >= $this->limit)
 		{
 			return $this->suspend($login);
 		}
@@ -106,7 +140,19 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	 */
 	public function clearAttempts($login)
 	{
-		return $this->unsuspend($login);
+		$this->findByLogin($login);
+
+		if ($this->getAttempts($login) === 0 and $this->current->suspended === 0)
+		{
+			return true;
+		}
+
+		$this->current->attempts = 0;
+		$this->current->last_attempt_at = null;
+		$this->current->suspended = 0;
+		$this->current->suspended_at = null;
+
+		return $this->current->save();
 	}
 
 	/**
@@ -145,10 +191,39 @@ class Throttle extends EloquentModel implements ThrottleInterface
 		}
 
 		$this->current->attempts = 0;
+		$this->current->last_attempt_at = null;
 		$this->current->suspended = 0;
 		$this->current->suspended_at = null;
 
 		return $this->current->save();
+	}
+
+	public function isSuspended($login)
+	{
+		$this->login = $this->findByLogin($login);
+
+		// check if the user is suspended
+		if ($this->current->suspended)
+		{
+			$suspended = new DateTime($this->current->suspended_at);
+			$unsuspend_at = $suspended->modify('+'.$this->time.' minutes');
+			$now = new DateTime();
+
+			if ($unsuspend_at <= $now)
+			{
+				$this->unsuspend($this->current->login);
+
+				return false;
+			}
+
+			unset($suspended);
+			unset($unsuspend_at);
+			unset($now);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -186,47 +261,17 @@ class Throttle extends EloquentModel implements ThrottleInterface
 		return $this->current->save();
 	}
 
-	/**
-	 * Check Throttle Status
-	 *
-	 * @param   string  $Login
-	 * @return  bool
-	 */
-	public function check($login)
+	public function isBanned($login)
 	{
-		$this->findByLogin($login);
+		$this->login = $this->findByLogin($login);
 
 		// check if the user is banned
 		if ($this->current->banned)
 		{
-			throw new UserBannedException();
+			return true;
 		}
 
-		// check if the user is suspended
-		if ($this->current->suspended)
-		{
-			$suspended = new DateTime($this->current->suspended_at);
-			$unsuspend_at = $suspended->modify('+'.$this->time.' minutes');
-			$now = new DateTime();
-
-			if ($unsuspend_at <= $now)
-			{
-				$this->unsuspend($this->current->login);
-
-				return true;
-			}
-
-			throw new UserSuspendedException();
-		}
-
-		if ($this->getAttempts($login) >= $this->limit)
-		{
-			$this->suspend($login);
-
-			throw new UserSuspendedException();
-		}
-
-		return true;
+		return false;
 	}
 
 	/**

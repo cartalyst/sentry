@@ -43,14 +43,16 @@ class Group extends EloquentModel implements GroupInterface
 		// merge permissions
 		$permissions = (array) $permissions + $this->permissions;
 
-		// loop through and remove all permissions with value of 0
+		// loop through and adjsut permissions as needed
 		foreach ($permissions as $permission => $val)
 		{
+			// lets make sure their is a valid permission value
 			if ( ! in_array($val, $this->allowedPermissionsValues, true))
 			{
 				throw new \Exception($permission.' invalid permission value of '.$val. '. Must be: '.implode(', ', $this->allowedPermissionsValues));
 			}
 
+			// if the value is 0, delete it
 			if ($val === 0)
 			{
 				unset($permissions[$permission]);

@@ -1,7 +1,10 @@
 <?php namespace Cartalyst\Sentry;
 
+use Cartalyst\SentryException;
 use Cartalyst\Sentry\UserInterface;
 use Cartalyst\Sentry\GroupInterface;
+
+class InvalidObjectException extends SentryException {}
 
 interface ProviderInterface
 {

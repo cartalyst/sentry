@@ -20,11 +20,20 @@
 
 use Cartalyst\Sentry\ProviderInterface;
 use Cartalyst\Sentry\UserInterface;
-use Cartalyst\Sentry\GroupInterface;
+use Cartalyst\Sentry\SessionInterface;
+use Cartalyst\Sentry\CookieInterface;
+use Exception;
 
 use Illuminate\Session\Store as SessionStore;
-use Illuminate\Session\CookieStore;
-use Illuminate\CookieJar;
+// use Illuminate\Session\CookieStore;
+// use Illuminate\CookieJar;
+
+
+// Exceptions
+class SentryException extends Exception {}
+class LoginFieldRequiredException extends SentryException {}
+class UserNotFoundException extends SentryException {}
+class UserNotActivatedException extends SentryException {}
 
 
 /**
@@ -54,6 +63,13 @@ class Sentry
 	protected $session;
 
 	/**
+	 * Session provider sentry should use
+	 *
+	 * @var  Illuminate\Session\Store
+	 */
+	protected $cookie;
+
+	/**
 	 * Throttle Enabled
 	 *
 	 */
@@ -65,10 +81,12 @@ class Sentry
 	 * @param   userModel  User Object
 	 * @return  object  Auth Instance
 	 */
-	public function __construct(ProviderInterface $providerInterface)
+	public function __construct(ProviderInterface $providerInterface, SessionInterface $sessionInterface, CookieInterface $cookieInterface)
 	{
 		// set dependencies
 		$this->provider = $providerInterface;
+		$this->session  = $sessionInterface;
+		$this->cookie   = $cookieInterface;
 	}
 
 	/**
@@ -78,6 +96,7 @@ class Sentry
 	 * @param   string  password value
 	 * @param   bool    remember user
 	 * @return  bool
+	 * @throws  LoginFieldRequiredException,
 	 */
 	public function authenticate(array $credentials, $remember = false)
 	{
@@ -91,13 +110,23 @@ class Sentry
 		// make sure the required login column is passed
 		if ( ! array_key_exists($login, $credentials))
 		{
-			throw new \Exception('login field required');
+			throw new LoginFieldRequiredException;
 		}
 
-		// if throttle is enabled, check throttle status
-		if ($this->throttle and ! $this->provider->throttleInterface()->check($credentials[$login]))
+		// if throttle is enabled, check throttle status before we do anything else
+		if ($this->throttle)
 		{
-			return false;
+			// check if user is banned
+			if ($this->provider->throttleInterface()->isBanned($credentials[$login]))
+			{
+				throw new UserBannedException;
+			}
+
+			// check if user is suspended
+			if ($this->provider->throttleInterface()->isSuspended($credentials[$login]))
+			{
+				throw new UserSuspendedException;
+			}
 		}
 
 		// find user by passed credentials
@@ -106,6 +135,13 @@ class Sentry
 		// log user in if found
 		if ($user)
 		{
+			if ($this->throttle)
+			{
+				$this->provider->throttleInterface()->clearAttempts($credentials[$login]);
+			}
+
+			$user->clearResetPassword();
+
 			$this->login($user, $remember, false);
 
 			return true;
@@ -128,9 +164,9 @@ class Sentry
 	 * @param   string  $password
 	 * @return  bool
 	 */
-	public function authenticateAndRemember($login, $password)
+	public function authenticateAndRemember(array $credentials)
 	{
-		return $this->authenticate($login, $password, true);
+		return $this->authenticate($credentials, true);
 	}
 
 	/**
@@ -138,23 +174,12 @@ class Sentry
 	 *
 	 * @param   User  $user
 	 */
-	public function login(UserInterface $user, $remember = false, $checkThrottle = true)
+	public function login(UserInterface $user, $remember = false)
 	{
 		// make sure the user exists
-		if ( ! $this->user()->findByLogin($user->{$user->getLoginColumn()}))
+		if ( ! $user->exists)
 		{
-			throw new UserNotExistsException();
-		}
-
-		// check for throttle
-		if ($this->throttle)
-		{
-			if ($checkThrottle and ! $this->provider->throttleInterface()->check($user->{$user->getLoginColumn()}))
-			{
-				return false;
-			}
-
-			$this->provider->throttleInterface()->clearAttempts($user->{$user->getLoginColumn()});
+			throw new UserNotFoundException();
 		}
 
 		// check if the user is activated
@@ -163,11 +188,25 @@ class Sentry
 			throw new UserNotActivatedException();
 		}
 
-		$user->clearResetPassword();
-
 		$this->user = $user;
 
 		// set sessions
+		$this->session->put($this->session->getKey(), $user);
+
+		if ($remember)
+		{
+			$this->cookie->forever($this->cookie->getKey(), $user);
+		}
+	}
+
+	/**
+	 * Log a user in
+	 *
+	 * @param   User  $user
+	 */
+	public function loginAndRemember(userInterface $user)
+	{
+		return $this->login($user, true);
 	}
 
 	/**
@@ -179,7 +218,8 @@ class Sentry
 	{
 		$this->user = null;
 
-		// clear sessions
+		$this->session->flush();
+		// $this->cookie->flush();
 	}
 
 	/**
@@ -189,6 +229,20 @@ class Sentry
 	 */
 	public function check()
 	{
+		if ($this->user)
+		{
+			return true;
+		}
+
+		// check session
+		$this->user = $this->session->get($this->session->getKey(), null);
+
+		// check for cookie
+		if ( ! $this->user)
+		{
+			$this->user = $this->cookie->get($this->cookie->getKey());
+		}
+
 		return ! is_null($this->user);
 	}
 
@@ -199,6 +253,13 @@ class Sentry
 	 */
 	public function activeUser()
 	{
+		if ( ! $this->check())
+		{
+			return null;
+		}
+
+		$this->user = $this->provider->userInterface()->findById($this->user->id);
+
 		return $this->user;
 	}
 
@@ -230,16 +291,6 @@ class Sentry
 	 */
 	public function enableThrottle($limit = null, $minutes = null)
 	{
-		if ( ! is_int($limit) and ! is_null($limit))
-		{
-			throw new \Exception('throttle exception');
-		}
-
-		if ( ! is_int($minutes) and ! is_null($minutes))
-		{
-			throw new \Exception('throttle exception');
-		}
-
 		$this->throttle = true;
 		! is_null($limit) and $this->provider->throttleInterface()->setAttemptLimit($limit);
 		! is_null($minutes) and $this->provider->throttleInterface()->setSuspensionTime($minutes);

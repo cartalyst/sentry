@@ -67,7 +67,7 @@ interface UserInterface
 	 * @param   string  $resetCode
 	 * @return  bool
 	 */
-	public function ResetPasswordConfirm($resetCode);
+	public function resetPasswordConfirm($resetCode);
 
 	/**
 	 * Clears Password Reset Fields
