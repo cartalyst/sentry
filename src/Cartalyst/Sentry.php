@@ -22,19 +22,6 @@ use Cartalyst\Sentry\ProviderInterface;
 use Cartalyst\Sentry\UserInterface;
 use Cartalyst\Sentry\SessionInterface;
 use Cartalyst\Sentry\CookieInterface;
-use Exception;
-
-use Illuminate\Session\Store as SessionStore;
-// use Illuminate\Session\CookieStore;
-// use Illuminate\CookieJar;
-
-
-// Exceptions
-class SentryException extends Exception {}
-class LoginFieldRequiredException extends SentryException {}
-class UserNotFoundException extends SentryException {}
-class UserNotActivatedException extends SentryException {}
-
 
 /**
  * Sentry Auth class
@@ -103,58 +90,49 @@ class Sentry
 		// run logout to clear any current sentry session
 		$this->logout();
 
-		// get a user object and find the required authentication column
-		$user = $this->user();
-		$login = $user->getLoginColumn();
-
-		// make sure the required login column is passed
-		if ( ! array_key_exists($login, $credentials))
+		try
 		{
-			throw new LoginFieldRequiredException;
+			// find user by passed credentials
+			$user = $this->user()->findByCredentials($credentials);
 		}
-
-		// if throttle is enabled, check throttle status before we do anything else
-		if ($this->throttle)
+		catch (Sentry\UserNotFoundException $e)
 		{
-			// check if user is banned
-			if ($this->provider->throttleInterface()->isBanned($credentials[$login]))
-			{
-				throw new UserBannedException;
-			}
-
-			// check if user is suspended
-			if ($this->provider->throttleInterface()->isSuspended($credentials[$login]))
-			{
-				throw new UserSuspendedException;
-			}
-		}
-
-		// find user by passed credentials
-		$user = $user->findByCredentials($credentials);
-
-		// log user in if found
-		if ($user)
-		{
+			// add attempt if throttle is enabled
 			if ($this->throttle)
 			{
-				$this->provider->throttleInterface()->clearAttempts($credentials[$login]);
+				// get a user object and find the required authentication column
+				$login = $this->user()->getLoginColumn();
+
+				if ( ! $this->provider->throttleInterface()->check($credentials[$login]))
+				{
+					return false;
+				}
+
+				$this->provider->throttleInterface()->addAttempt($credentials[$login]);
+
+				unset($login);
 			}
 
-			$user->clearResetPassword();
-
-			$this->login($user, $remember, false);
-
-			return true;
+			return false;
 		}
 
-		// user not found
-		// add attempt if throttle is enabled
 		if ($this->throttle)
 		{
-			$this->provider->throttleInterface()->addAttempt($credentials[$login]);
+			// before we proceed, check the users' throttle status
+			if ( ! $this->provider->throttleInterface()->check($credentials[$user->getLoginColumn()]))
+			{
+				return false;
+			}
+
+			// no exception was thrown for checking, go ahead and clear everything
+			$this->provider->throttleInterface()->clearAttempts($credentials[$user->getLoginColumn()]);
 		}
 
-		return false;
+		$user->clearResetPassword();
+
+		$this->login($user, $remember, false);
+
+		return true;
 	}
 
 	/**
@@ -219,7 +197,7 @@ class Sentry
 		$this->user = null;
 
 		$this->session->flush();
-		// $this->cookie->flush();
+		$this->cookie->flush();
 	}
 
 	/**

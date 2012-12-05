@@ -1,9 +1,12 @@
 <?php namespace Cartalyst\Sentry;
 
 use RuntimeException;
+use OutOfBoundsException;
 
 class UserSuspendedException extends RuntimeException {}
 class UserBannedException extends RuntimeException {}
+class ThrottleLimitException extends OutOfBoundsException {}
+class ThrottleTimeException extends OutOfBoundsException {}
 
 interface ThrottleInterface
 {
@@ -92,4 +95,12 @@ interface ThrottleInterface
 	 * @return  bool
 	 */
 	public function isBanned($login);
+
+	/**
+	 * Check if user throttle status
+	 *
+	 * @param   string  $Login
+	 * @return  bool
+	 */
+	public function check($login);
 }

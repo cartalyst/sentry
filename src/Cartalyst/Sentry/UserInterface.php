@@ -1,5 +1,12 @@
 <?php namespace Cartalyst\Sentry;
 
+use RuntimeException;
+
+class UserExistsException extends RuntimeException {}
+class UserNotActivatedException extends RuntimeException {}
+class LoginFieldRequiredException extends RuntimeException {}
+class UserNotFoundException extends RuntimeException {}
+
 interface UserInterface
 {
 	/**
@@ -28,8 +35,7 @@ interface UserInterface
 	/**
 	 * Get user by credentials
 	 *
-	 * @param   string  $login
-	 * @param   string  $password
+	 * @param   array  $credentials
 	 * @return  Cartalyst\Sentry\UserInterface
 	 */
 	public function findByCredentials(array $attributes);
@@ -54,20 +60,18 @@ interface UserInterface
 	/**
 	 * Reset a user's password
 	 *
-	 * @param   string   $login
-	 * @param   string   $password
 	 * @return  string|false
 	 */
-	public function resetPassword($password);
+	public function resetPassword();
 
 	/**
 	 * Confirm a password reset request
 	 *
-	 * @param   string  $login
+	 * @param   string  $password
 	 * @param   string  $resetCode
 	 * @return  bool
 	 */
-	public function resetPasswordConfirm($resetCode);
+	public function resetPasswordConfirm($password, $resetCode);
 
 	/**
 	 * Clears Password Reset Fields

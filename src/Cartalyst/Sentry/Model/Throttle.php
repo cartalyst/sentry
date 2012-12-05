@@ -1,14 +1,12 @@
 <?php namespace Cartalyst\Sentry\Model;
 
-use Cartalyst\SentryException;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\ThrottleInterface;
 use Cartalyst\Sentry\UserSuspendedException;
 use Cartalyst\Sentry\UserBannedException;
+use Cartalyst\Sentry\ThrottleLimitException;
+use Cartalyst\Sentry\ThrottleTimeException;
 use DateTime;
-
-class ThrottleLimitException extends SentryException {}
-class ThrottleTimeException extends SentryException {}
 
 class Throttle extends EloquentModel implements ThrottleInterface
 {
@@ -272,6 +270,21 @@ class Throttle extends EloquentModel implements ThrottleInterface
 		}
 
 		return false;
+	}
+
+	public function check($login)
+	{
+		if ($this->isBanned($login))
+		{
+			throw new UserBannedException;
+		}
+
+		if ($this->isSuspended($login))
+		{
+			throw new UserSuspendedException;
+		}
+
+		return true;
 	}
 
 	/**

@@ -6,6 +6,9 @@ use Cartalyst\Sentry\UserGroupInterface;
 use Cartalyst\Sentry\GroupInterface;
 use Cartalyst\Sentry\HashInterface;
 use Cartalyst\Sentry\Hash\Bcrypt;
+use Cartalyst\Sentry\UserExistsException;
+use Cartalyst\Sentry\UserNotFoundException;
+use Cartalyst\Sentry\LoginFieldRequiredException;
 
 
 class User extends EloquentModel implements UserInterface, UserGroupInterface
@@ -24,7 +27,6 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	protected $hidden = array(
 		'password',
-		'temp_password',
 		'reset_password_hash',
 		'activation_hash',
 	);
@@ -66,8 +68,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	protected $hashedFields = array(
 		'password',
-		'temp_password',
 		'reset_password_hash',
+		'activation_hash',
 	);
 
 	/**
@@ -106,7 +108,14 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function findById($id)
 	{
-		return $this->find($id);
+		$user = $this->find($id);
+
+		if ( ! $user)
+		{
+			throw new UserNotFoundException;
+		}
+
+		return $user;
 	}
 
 	/**
@@ -117,7 +126,14 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function findByLogin($login)
 	{
-		return $this->where($this->loginColumn, '=', $login)->first();
+		$user = $this->where($this->loginColumn, '=', $login)->first();
+
+		if ( ! $user)
+		{
+			throw new UserNotFoundException;
+		}
+
+		return $user;
 	}
 
 	/**
@@ -127,23 +143,28 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 * @param   string  $password
 	 * @return  Cartalyst\Sentry\UserInterface
 	 */
-	public function findByCredentials(array $attributes)
+	public function findByCredentials(array $credentials)
 	{
-		$query = $this->newQuery();
-		$hashedAttributes = array();
+		if ( ! array_key_exists($this->loginColumn, $credentials))
+		{
+			throw new LoginFieldRequiredException;
+		}
 
-		// build query from given attributes
-		foreach ($attributes as $attribute => $value)
+		$query = $this->newQuery();
+		$hashedCredentials = array();
+
+		// build query from given credentials
+		foreach ($credentials as $credential => $value)
 		{
 			// remove hashed attributes to check later as we need to check these
 			// values after we retrieved them because of salts
-			if (in_array($attribute, $this->hashedFields))
+			if (in_array($credential, $this->hashedFields))
 			{
-				$hashedAttributes += array($attribute => $value);
+				$hashedCredentials += array($credential => $value);
 				continue;
 			}
 
-			$query = $query->where($attribute, '=', $value);
+			$query = $query->where($credential, '=', $value);
 		}
 
 		// retrieve the user
@@ -151,19 +172,19 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 
 		if ( ! $user)
 		{
-			return false;
+			throw new UserNotFoundException;
 		}
 
 		// now we check for hashed values to make sure they match as well
-		foreach ($hashedAttributes as $attribute => $value)
+		foreach ($hashedCredentials as $credential => $value)
 		{
-			if ( ! $this->checkHash($value, $user->password))
+			if ( ! $this->checkHash($value, $user->{$credential}))
 			{
-				return false;
+				throw new UserNotFoundException;
 			}
 		}
 
-		return ($user) ?: false;
+		return $user;
 	}
 
 	/**
@@ -173,12 +194,35 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function register()
 	{
-		// generate an activation code
-		$activationCode = $this->randomString();
+		// check if user already exists
+		$user = $this->findByLogin($this->email);
 
-		$this->activation_hash = $this->hash($activationCode);
-		$this->activated = 0;
-		$this->save();
+		// see if the user already exists and is activated
+		// if so, throw exception
+		if ($user and $user->activated)
+		{
+			throw new UserExistsException;
+		}
+		// if the user does exist, but is not activated
+		// just generate a new activation code and upate the user
+		elseif ($user)
+		{
+			// generate an activation code
+			$activationCode = $this->randomString();
+
+			$user->activation_hash = $activationCode;
+			$user->save();
+		}
+		// otherwise add the activation code and save the new user
+		else
+		{
+			// generate an activation code
+			$activationCode = $this->randomString();
+
+			$this->activation_hash = $activationCode;
+			$this->activated = 0;
+			$this->save();
+		}
 
 		return $activationCode;
 	}
@@ -195,6 +239,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		// don't save if they are already activated...
 		if ($this->activated)
 		{
+			//TODO: throw already activated Exception instead ?
 			return true;
 		}
 
@@ -229,12 +274,11 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 * @param   string   $password
 	 * @return  string|false
 	 */
-	public function resetPassword($password)
+	public function resetPassword()
 	{
 		// generate a reset code
 		$resetCode = $this->randomString();
 
-		$this->temp_password = $password;
 		$this->reset_password_hash = $resetCode;
 		$this->save();
 
@@ -248,13 +292,12 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 * @param   string  $resetCode
 	 * @return  bool
 	 */
-	public function resetPasswordConfirm($resetCode)
+	public function resetPasswordConfirm($password, $resetCode)
 	{
 		// if the user exists and the reset code matches, reset and update required fields
 		if ($this->exists and $this->checkHash($resetCode, $this->reset_password_hash))
 		{
-			$this->password = $this->temp_password;
-			$this->temp_password = null;
+			$this->password = $password;
 			$this->reset_password_hash = null;
 			$this->save();
 
@@ -272,9 +315,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	public function clearResetPassword()
 	{
-		if ($this->temp_password or $this->reset_password_hash)
+		if ($this->reset_password_hash)
 		{
-			$this->temp_password = null;
 			$this->reset_password_hash = null;
 			$this->save();
 		}
@@ -542,17 +584,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	public function setAttribute($key, $value)
 	{
 		// hash required fields when necessary
-		if (in_array($key, $this->hashedFields))
+		if (in_array($key, $this->hashedFields) and ! empty($value))
 		{
-			if (($key == 'password' and $value == $this->temp_password) or empty($value))
-			{
-				// do nothing
-			}
-			else
-			{
-				$value = $this->hash($value);
-			}
-
+			$value = $this->hash($value);
 		}
 
 		// First we will check for the presence of a mutator for the set operation
