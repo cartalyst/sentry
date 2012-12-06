@@ -18,6 +18,11 @@
  * @link       http://cartalyst.com
  */
 
+use RuntimeException;
+
+class GroupNotFoundException extends RuntimeException {}
+class GroupExistsException extends RuntimeException {}
+
 interface GroupInterface
 {
 	/**

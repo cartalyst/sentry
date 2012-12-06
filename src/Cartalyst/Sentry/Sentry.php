@@ -1,4 +1,4 @@
-<?php namespace Cartalyst;
+<?php namespace Cartalyst\Sentry;
 /**
  * Part of the Sentry Package.
  *
