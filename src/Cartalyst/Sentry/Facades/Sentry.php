@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Facades;
 /**
  * Part of the Sentry Package.
  *
@@ -18,17 +18,14 @@
  * @link       http://cartalyst.com
  */
 
-interface CookieInterface
+use Illuminate\Support\Facade;
+
+class Sentry extends Facade
 {
-	public function getKey();
 
-	public function put($key, $value, $minutes);
+	protected static function getFacadeAccessor()
+	{
+		return 'sentry';
+	}
 
-	public function forever($key, $value);
-
-	public function get($key, $default = null);
-
-	public function forget($key);
-
-	public function flush();
 }

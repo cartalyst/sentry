@@ -18,17 +18,27 @@
  * @link       http://cartalyst.com
  */
 
-interface CookieInterface
+use Illuminate\Support\ServiceProvider;
+
+class SentryServiceProvider extends ServiceProvider
 {
-	public function getKey();
+	public function boot()
+	{
 
-	public function put($key, $value, $minutes);
+	}
 
-	public function forever($key, $value);
+	public function register()
+	{
+		$session = $this->app['session'];
+		$cookie  = $this->app['cookie'];
 
-	public function get($key, $default = null);
-
-	public function forget($key);
-
-	public function flush();
+		$this->app['sentry'] = $this->app->share(function($app) use($session, $cookie)
+		{
+			return new Sentry(
+				new Provider\Eloquent,
+				new Session\Laravel($session),
+				new Cookie\Laravel($cookie)
+			);
+		});
+	}
 }
