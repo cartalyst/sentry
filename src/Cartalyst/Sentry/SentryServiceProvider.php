@@ -1,4 +1,4 @@
-<?php namespace Cartalyst;
+<?php namespace Cartalyst\Sentry;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -17,9 +17,9 @@ class SentryServiceProvider extends ServiceProvider
 		$this->app['sentry'] = $this->app->share(function($app) use($session, $cookie)
 		{
 			return new Sentry(
-				new Sentry\Provider\Eloquent,
-				new Sentry\Session\Laravel($session),
-				new Sentry\Cookie\Laravel($cookie)
+				new Provider\Eloquent,
+				new Session\Laravel($session),
+				new Cookie\Laravel($cookie)
 			);
 		});
 	}

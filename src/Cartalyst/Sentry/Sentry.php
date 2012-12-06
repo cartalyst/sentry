@@ -18,11 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\ProviderInterface;
-use Cartalyst\Sentry\UserInterface;
-use Cartalyst\Sentry\SessionInterface;
-use Cartalyst\Sentry\CookieInterface;
-
 /**
  * Sentry Auth class
  */
@@ -227,7 +222,7 @@ class Sentry
 	/**
 	 * Returns active authenticated user
 	 *
-	 * @return Sentry\UserInterface
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function activeUser()
 	{
@@ -245,7 +240,7 @@ class Sentry
 	 * Gets a user object
 	 *
 	 * @param   string  $login
-	 * @return  Sentry\UserInterface|null
+	 * @return  Cartalyst\Sentry\UserInterface|null
 	 */
 	public function user()
 	{
