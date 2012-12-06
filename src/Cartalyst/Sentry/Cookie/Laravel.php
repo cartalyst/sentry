@@ -22,12 +22,18 @@ use Cartalyst\Sentry\CookieInterface;
 use Illuminate\CookieJar;
 use Session;
 
-class Laravel implements CookieInterface
-{
+class Laravel implements CookieInterface {
+
 	protected $key = 'sentryRemember';
 
 	protected $cookie;
 
+	/**
+	 * Create a new cookie manager instance.
+	 *
+	 * @param  Illuminate\CookieJar  $cookieProvider
+	 * @return void
+	 */
 	public function __construct(CookieJar $cookieDriver)
 	{
 		$this->cookie = $cookieDriver;
@@ -38,21 +44,49 @@ class Laravel implements CookieInterface
 		return $this->key;
 	}
 
+	/**
+	 * Create a new cookie instance.
+	 *
+	 * @param  string  $name
+	 * @param  string  $value
+	 * @param  int     $minutes
+	 * @return Symfony\Component\HttpFoundation\Cookie
+	 */
 	public function put($key, $value, $minutes)
 	{
 		return $this->setCookie($this->cookie->make($key, $value, $minutes));
 	}
 
+	/**
+	 * Create a cookie that lasts "forever" (five years).
+	 *
+	 * @param  string  $name
+	 * @param  string  $value
+	 * @return Symfony\Component\HttpFoundation\Cookie
+	 */
 	public function forever($key, $value)
 	{
 		return $this->setCookie($this->cookie->forever($key, $value));
 	}
 
+	/**
+	 * Get the value of the given cookie.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return mixed
+	 */
 	public function get($key, $default = null)
 	{
 		return $this->cookie->get($key, $default);
 	}
 
+	/**
+	 * Expire the given cookie.
+	 *
+	 * @param  string  $name
+	 * @return Symfony\Component\HttpFoundation\Cookie
+	 */
 	public function forget($key)
 	{
 		return $this->setCookie($this->cookie->forget($key));
@@ -65,7 +99,17 @@ class Laravel implements CookieInterface
 
 	protected function setCookie($cookie)
 	{
-		// we manually set the cookie since l4 requires you to attach it it a response which we don't have
-		return setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+		// We manually set the cookie since L4 requires you to attach
+		// it it a response which we don't have
+		return setcookie(
+			$cookie->getName(),
+			$cookie->getValue(),
+			$cookie->getExpiresTime(),
+			$cookie->getPath(),
+			$cookie->getDomain(),
+			$cookie->isSecure(),
+			$cookie->isHttpOnly()
+		);
 	}
+
 }
