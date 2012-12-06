@@ -2,6 +2,9 @@
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\GroupInterface;
+use Cartalyst\Sentry\GroupExistsException;
+use Cartalyst\Sentry\GroupNotFoundException;
+use Cartalyst\Sentry\InvalidPermissionException;
 
 
 class Group extends EloquentModel implements GroupInterface
@@ -41,7 +44,7 @@ class Group extends EloquentModel implements GroupInterface
 	public function setPermissions($permissions)
 	{
 		// merge permissions
-		$permissions = (array) $permissions + $this->permissions;
+		$permissions = (array) $permissions + (array) $this->permissions;
 
 		// loop through and adjsut permissions as needed
 		foreach ($permissions as $permission => $val)
@@ -49,7 +52,7 @@ class Group extends EloquentModel implements GroupInterface
 			// lets make sure their is a valid permission value
 			if ( ! in_array($val, $this->allowedPermissionsValues, true))
 			{
-				throw new \Exception($permission.' invalid permission value of '.$val. '. Must be: '.implode(', ', $this->allowedPermissionsValues));
+				throw new InvalidPermissionException;
 			}
 
 			// if the value is 0, delete it
@@ -76,9 +79,14 @@ class Group extends EloquentModel implements GroupInterface
 	 */
 	public function findById($id)
 	{
-		$user = $this->where($this->key, '=', $id)->first();
+		$group = $this->where($this->key, '=', $id)->first();
 
-		return ($user) ?: false;
+		if ( ! $group)
+		{
+			throw new GroupNotFoundException;
+		}
+
+		return ($group) ?: false;
 	}
 
 	/**
@@ -87,10 +95,84 @@ class Group extends EloquentModel implements GroupInterface
 	 * @param   string  $name
 	 * @return  Cartalyst\Sentry\GroupInterface or false
 	 */
-	public function findByName($login)
+	public function findByName($name)
 	{
-		$user = $this->where('name', '=', $login)->first();
+		$group = $this->where('name', '=', $name)->first();
 
-		return ($user) ?: false;
+		if ( ! $group)
+		{
+			throw new GroupNotFoundException;
+		}
+
+		return ($group) ?: false;
+	}
+
+	/**
+	 * Save the model to the database.
+	 *
+	 * @return bool
+	 */
+	public function save()
+	{
+		$keyName = $this->getKeyName();
+
+		// First we need to create a fresh query instance and touch the creation and
+		// update timestamp on the model which are maintained by us for developer
+		// convenience. Then we will just continue saving the model instances.
+		$query = $this->newQuery();
+
+		if ($this->timestamps)
+		{
+			$this->updateTimestamps();
+		}
+
+		// do some validation
+		$this->validate();
+
+		// If the model already exists in the database we can just update our record
+		// that is already in this database using the current IDs in this "where"
+		// clause to only update this model. Otherwise, we'll just insert them.
+		if ($this->exists)
+		{
+			$query->where($keyName, '=', $this->getKey());
+
+			$query->update($this->attributes);
+		}
+
+		// If the model is brand new, we'll insert it into our database and set the
+		// ID attribute on the model to the value of the newly inserted row's ID
+		// which is typically an auto-increment value managed by the database.
+		else
+		{
+			if ($this->incrementing)
+			{
+				$this->$keyName = $query->insertGetId($this->attributes);
+			}
+			else
+			{
+				$query->insert($this->attributes);
+			}
+		}
+
+		return $this->exists = true;
+	}
+
+	protected function validate()
+	{
+		// check if email already exists (unique)
+		// check if user already exists
+		try
+		{
+			$group = $this->findByName($this->name);
+		}
+		catch (GroupNotFoundException $e)
+		{
+			$group = null;
+		}
+
+		if ($group and $group->id != $this->id)
+		{
+			throw new GroupExistsException;
+		}
 	}
 }

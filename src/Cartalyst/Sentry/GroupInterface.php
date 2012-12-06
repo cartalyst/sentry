@@ -1,5 +1,10 @@
 <?php namespace Cartalyst\Sentry;
 
+use RuntimeException;
+
+class GroupNotFoundException extends RuntimeException {}
+class GroupExistsException extends RuntimeException {}
+
 interface GroupInterface
 {
 	/**

@@ -6,9 +6,10 @@ use Cartalyst\Sentry\UserGroupInterface;
 use Cartalyst\Sentry\GroupInterface;
 use Cartalyst\Sentry\HashInterface;
 use Cartalyst\Sentry\Hash\Bcrypt;
-use Cartalyst\Sentry\UserExistsException;
 use Cartalyst\Sentry\UserNotFoundException;
 use Cartalyst\Sentry\LoginFieldRequiredException;
+use Cartalyst\Sentry\UserExistsException;
+use Cartalyst\Sentry\InvalidPermissionException;
 
 
 class User extends EloquentModel implements UserInterface, UserGroupInterface
@@ -195,7 +196,14 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	public function register()
 	{
 		// check if user already exists
-		$user = $this->findByLogin($this->email);
+		try
+		{
+			$user = $this->findByLogin($this->{$this->loginColumn});
+		}
+		catch (UserNotFoundException $e)
+		{
+			$user = null;
+		}
 
 		// see if the user already exists and is activated
 		// if so, throw exception
@@ -225,6 +233,80 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		}
 
 		return $activationCode;
+	}
+
+	/**
+	 * Save the model to the database.
+	 *
+	 * @return bool
+	 */
+	public function save()
+	{
+		$keyName = $this->getKeyName();
+
+		// First we need to create a fresh query instance and touch the creation and
+		// update timestamp on the model which are maintained by us for developer
+		// convenience. Then we will just continue saving the model instances.
+		$query = $this->newQuery();
+
+		if ($this->timestamps)
+		{
+			$this->updateTimestamps();
+		}
+
+		// do some validation
+		$this->validate();
+
+		// If the model already exists in the database we can just update our record
+		// that is already in this database using the current IDs in this "where"
+		// clause to only update this model. Otherwise, we'll just insert them.
+		if ($this->exists)
+		{
+			$query->where($keyName, '=', $this->getKey());
+
+			$query->update($this->attributes);
+		}
+
+		// If the model is brand new, we'll insert it into our database and set the
+		// ID attribute on the model to the value of the newly inserted row's ID
+		// which is typically an auto-increment value managed by the database.
+		else
+		{
+			if ($this->incrementing)
+			{
+				$this->$keyName = $query->insertGetId($this->attributes);
+			}
+			else
+			{
+				$query->insert($this->attributes);
+			}
+		}
+
+		return $this->exists = true;
+	}
+
+	protected function validate()
+	{
+		// make sure an email is set
+		if (empty($this->{$this->loginColumn}))
+		{
+			throw new LoginFieldRequiredException;
+		}
+
+		// check if email already exists (unique)
+		try
+		{
+			$user = $this->findByLogin($this->{$this->loginColumn});
+		}
+		catch (UserNotFoundException $e)
+		{
+			$user = null;
+		}
+
+		if ($user and $user->id != $this->id)
+		{
+			throw new UserExistsException;
+		}
 	}
 
 	/**
@@ -342,14 +424,14 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	public function setPermissions($permissions)
 	{
 		// merge permissions
-		$permissions = (array) $permissions + $this->permissions;
+		$permissions = (array) $permissions + (array) $this->permissions;
 
 		// loop through and remove all permissions with value of 0
 		foreach ($permissions as $permission => $val)
 		{
 			if ( ! in_array($val, $this->allowedPermissionsValues, true))
 			{
-				throw new \Exception($permission.' invalid permission value of '.$val. '. Must be: '.implode(', ', $this->allowedPermissionsValues));
+				throw new InvalidPermissionException;
 			}
 
 			if ($val === 0)

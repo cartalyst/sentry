@@ -1,11 +1,13 @@
 <?php namespace Cartalyst\Sentry;
 
 use RuntimeException;
+use OutOfBoundsException;
 
-class UserExistsException extends RuntimeException {}
 class UserNotActivatedException extends RuntimeException {}
 class LoginFieldRequiredException extends RuntimeException {}
+class UserExistsException extends RuntimeException {}
 class UserNotFoundException extends RuntimeException {}
+class InvalidPermissionException extends OutOfBoundsException {}
 
 interface UserInterface
 {
