@@ -1,6 +1,6 @@
 <?php namespace Cartalyst;
 /**
- * Part of the Sentry bundle for Laravel.
+ * Part of the Sentry Package.
  *
  * NOTICE OF LICENSE
  *
@@ -11,10 +11,10 @@
  * the following URL: http://www.opensource.org/licenses/BSD-3-Clause
  *
  * @package    Sentry
- * @version    1.0
+ * @version    2.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011 - 2012, Cartalyst LLC
+ * @copyright  (c) 2011 - 2013, Cartalyst LLC
  * @link       http://cartalyst.com
  */
 
