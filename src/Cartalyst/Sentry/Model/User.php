@@ -28,6 +28,7 @@ use Cartalyst\Sentry\UserNotFoundException;
 use Cartalyst\Sentry\LoginFieldRequiredException;
 use Cartalyst\Sentry\UserExistsException;
 use Cartalyst\Sentry\InvalidPermissionException;
+use Cartalyst\Sentry\GroupNotFoundException;
 
 
 class User extends EloquentModel implements UserInterface, UserGroupInterface
@@ -541,7 +542,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		{
 			if ( ! $group->exists)
 			{
-				return false;
+				throw new GroupNotFoundException;
 			}
 		}
 		// otherwise query data passed to make sure the group exists
@@ -549,30 +550,17 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		{
 			$_group = new Group();
 
-			$field = (is_int($group)) ? 'id' : 'name';
+			$field = (is_numeric($group)) ? 'id' : 'name';
 
 			$group = $_group->where($field, '=', $group)->first();
 
 			if ( ! $group)
 			{
-				return false;
+				throw new GroupNotFoundException;
 			}
 		}
 
 		return $this->groups()->attach($group);
-	}
-
-	/**
-	 * Add user to multiple groups
-	 *
-	 * @param   array  $groups integer|Cartalyst\Sentry\GroupInterface
-	 */
-	public function addGroups(array $groups)
-	{
-		foreach ($groups as $group)
-		{
-			$this->addGroup($group);
-		}
 	}
 
 	/**
@@ -589,19 +577,6 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 		}
 
 		return $this->groups()->detach($group);
-	}
-
-	/**
-	 * Remove user from multiple groups
-	 *
-	 * @param   array  $groups integer|Cartalyst\Sentry\GroupInterface
-	 */
-	public function removeGroups(array $groups)
-	{
-		foreach ($groups as $group)
-		{
-			$this->removeGroup($group);
-		}
 	}
 
 	/**
