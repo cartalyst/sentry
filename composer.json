@@ -8,7 +8,7 @@
         },
         {
         	"name": "Daniel Petrie",
-        	"email": "dlpetrie86@gmail.com",
+        	"email": "dlpetrie86@gmail.com"
         }
     ],
     "require": {
@@ -21,6 +21,8 @@
     	"classmap": [
     		"vendor/cartalyst/sentry/src/migrations"
     	],
-        "psr-0": {"Cartalyst\\Sentry": "src/"}
+        "psr-0": {
+            "Cartalyst\\Sentry": "src/"
+        }
     },
 }
