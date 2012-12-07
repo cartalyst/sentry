@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 class Sentry extends Facade {
 
