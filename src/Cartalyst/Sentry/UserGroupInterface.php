@@ -18,8 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-interface UserGroupInterface
-{
+interface UserGroupInterface {
+
 	/**
 	 * Get user's groups
 	 *
@@ -30,31 +30,32 @@ interface UserGroupInterface
 	/**
 	 * Add user to group
 	 *
-	 * @param   int or Cartalyst\Sentry\GroupInterface
-	 * @return  bool
+	 * @param  int or Cartalyst\Sentry\GroupInterface
+	 * @return bool
 	 */
 	public function addGroup($group);
 
 	/**
 	 * Remove user from group
 	 *
-	 * @param   integer|Cartalyst\Sentry\GroupInterface  $group
-	 * @return  bool
+	 * @param  integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return bool
 	 */
 	public function removeGroup($group);
 
 	/**
 	 * See if user is in a group
 	 *
-	 * @param   integer  $group
-	 * @return  bool
+	 * @param  integer  $group
+	 * @return bool
 	 */
 	public function inGroup($group);
 
 	/**
 	 * Get merged permissions - user overrides groups
 	 *
-	 * @return  array
+	 * @return array
 	 */
 	public function getGroupPermissions();
+
 }

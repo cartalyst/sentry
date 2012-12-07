@@ -20,20 +20,20 @@
 
 use Cartalyst\Sentry\HashInterface;
 
-class Sha256 implements HashInterface
-{
+class Sha256 implements HashInterface {
+
 	/**
 	 * Salt Length
 	 *
-	 * @var  integer
+	 * @var integer
 	 */
 	protected $saltLength = 16;
 
 	/**
 	 * Hash String
 	 *
-	 * @param   string  $str
-	 * @return  string
+	 * @param  string  $str
+	 * @return string
 	 */
 	public function hash($str)
 	{
@@ -46,9 +46,9 @@ class Sha256 implements HashInterface
 	/**
 	 * Check Hash Values
 	 *
-	 * @param   string  $str
-	 * @param   string  $hashed_str
-	 * @return  bool
+	 * @param  string  $str
+	 * @param  string  $hashed_str
+	 * @return bool
 	 */
 	public function checkHash($str, $hashed_str)
 	{
@@ -62,7 +62,7 @@ class Sha256 implements HashInterface
 	/**
 	 * Create a random string for a salt
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	protected function createSalt()
 	{
@@ -70,4 +70,5 @@ class Sha256 implements HashInterface
 
 		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
 	}
+
 }

@@ -18,15 +18,46 @@
  * @link       http://cartalyst.com
  */
 
-interface SessionInterface
-{
+interface SessionInterface {
+
+	/**
+	 * Returns the session key.
+	 *
+	 * @return string
+	 */
 	public function getKey();
 
+	/**
+	 * Put a key / value pair in the session.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
 	public function put($key, $value);
 
+	/**
+	 * Get the requested item from the session.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return mixed
+	 */
 	public function get($key, $default = null);
 
+	/**
+	 * Remove an item from the session.
+	 *
+	 * @param  string  $key
+	 * @return void
+	 */
 	public function forget($key);
 
+	/**
+	 * Remove all of the items from the session.
+	 *
+	 * @return void
+	 */
 	public function flush();
+
 }

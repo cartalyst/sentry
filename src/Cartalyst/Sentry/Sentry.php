@@ -26,28 +26,28 @@ class Sentry
 	/**
 	 * The current user
 	 *
-	 * @var  Cartalyst\Sentry\UserInterface
+	 * @var Cartalyst\Sentry\UserInterface
 	 */
 	protected $user;
 
 	/**
 	 * Provider Interface
 	 *
-	 * @var  Cartalyst\Sentry\ProviderInterface
+	 * @var Cartalyst\Sentry\ProviderInterface
 	 */
 	protected $provider;
 
 	/**
 	 * Session provider sentry should use
 	 *
-	 * @var  Illuminate\Session\Store
+	 * @var Illuminate\Session\Store
 	 */
 	protected $session;
 
 	/**
 	 * Session provider sentry should use
 	 *
-	 * @var  Illuminate\Session\Store
+	 * @var Illuminate\Session\Store
 	 */
 	protected $cookie;
 
@@ -60,8 +60,8 @@ class Sentry
 	/**
 	 * Initantiate the Auth class and inject dependencies
 	 *
-	 * @param   userModel  User Object
-	 * @return  object  Auth Instance
+	 * @param  userModel  User Object
+	 * @return void
 	 */
 	public function __construct(ProviderInterface $providerInterface, SessionInterface $sessionInterface, CookieInterface $cookieInterface)
 	{
@@ -74,11 +74,11 @@ class Sentry
 	/**
 	 * Authenticate a user
 	 *
-	 * @param   string  login value
-	 * @param   string  password value
-	 * @param   bool    remember user
-	 * @return  bool
-	 * @throws  LoginFieldRequiredException,
+	 * @param  string  login value
+	 * @param  string  password value
+	 * @param  bool    remember user
+	 * @return bool
+	 * @throws LoginFieldRequiredException,
 	 */
 	public function authenticate(array $credentials, $remember = false)
 	{
@@ -133,9 +133,9 @@ class Sentry
 	/**
 	 * Authenticate a user and remember them
 	 *
-	 * @param   string  $login
-	 * @param   string  $password
-	 * @return  bool
+	 * @param  string  $login
+	 * @param  string  $password
+	 * @return bool
 	 */
 	public function authenticateAndRemember(array $credentials)
 	{
@@ -145,7 +145,8 @@ class Sentry
 	/**
 	 * Log a user in
 	 *
-	 * @param   User  $user
+	 * @param  User  $user
+	 * @return void
 	 */
 	public function login(UserInterface $user, $remember = false)
 	{
@@ -175,7 +176,8 @@ class Sentry
 	/**
 	 * Log a user in
 	 *
-	 * @param   User  $user
+	 * @param  User  $user
+	 * @return void
 	 */
 	public function loginAndRemember(userInterface $user)
 	{
@@ -185,7 +187,7 @@ class Sentry
 	/**
 	 * Log a user out
 	 *
-	 * @return  void
+	 * @return void
 	 */
 	public function logout()
 	{
@@ -198,7 +200,7 @@ class Sentry
 	/**
 	 * Check to see if the user is logged in
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	public function check()
 	{
@@ -239,8 +241,8 @@ class Sentry
 	/**
 	 * Gets a user object
 	 *
-	 * @param   string  $login
-	 * @return  Cartalyst\Sentry\UserInterface|null
+	 * @param  string  $login
+	 * @return Cartalyst\Sentry\UserInterface|null
 	 */
 	public function user()
 	{
@@ -249,6 +251,8 @@ class Sentry
 
 	/**
 	 * Gets a group object
+	 *
+	 * @return void
 	 */
 	public function group()
 	{
@@ -258,9 +262,9 @@ class Sentry
 	/**
 	 * Enable throttling
 	 *
-	 * @param   integer  $limit
-	 * @param   integer  $minutes
-	 * @throws
+	 * @param  integer  $limit
+	 * @param  integer  $minutes
+	 * @return void
 	 */
 	public function enableThrottle($limit = null, $minutes = null)
 	{
@@ -270,15 +274,25 @@ class Sentry
 	}
 
 	/**
-	 * Disables throttling
+	 * Disables throttling.
+	 *
+	 * @return void
 	 */
 	public function disableThrottle()
 	{
 		$this->throttle = false;
 	}
 
+	/**
+	 * Dynamically pass methods to the the Sentry Provider.
+	 *
+	 * @param  string  $method
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
 	public function __call($method, $args)
 	{
 		return call_user_func_array(array($this->provider, $method), $args);
 	}
+
 }

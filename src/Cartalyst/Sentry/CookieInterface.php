@@ -18,17 +18,57 @@
  * @link       http://cartalyst.com
  */
 
-interface CookieInterface
-{
+interface CookieInterface {
+
+	/**
+	 * Returns the cookie key.
+	 *
+	 * @return string
+	 */
 	public function getKey();
 
+	/**
+	 * Put a key / value pair in the cookie with an
+	 * expiry.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @param  int     $minutes
+	 * @return void
+	 */
 	public function put($key, $value, $minutes);
 
+	/**
+	 * Put a key / value pair in the cookie forever.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
 	public function forever($key, $value);
 
+	/**
+	 * Get the requested item from the session.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return mixed
+	 */
 	public function get($key, $default = null);
 
+	/**
+	 * Remove an item from the cookie.
+	 *
+	 * @param  string  $key
+	 * @return void
+	 */
 	public function forget($key);
 
+	/**
+	 * Remove all of the items from the cookie.
+	 *
+	 * @return void
+	 */
 	public function flush();
+
 }

@@ -38,21 +38,21 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Current login throttle object
 	 *
-	 * @var  Throttle
+	 * @var Throttle
 	 */
 	protected $current;
 
 	/**
 	 * Attempt limit
 	 *
-	 * @var  int
+	 * @var int
 	 */
 	protected $limit = 5;
 
 	/**
 	 * Suspensions time in minutes
 	 *
-	 * @var  int
+	 * @var int
 	 */
 	protected $time = 15;
 
@@ -66,7 +66,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Set Attempt Limit
 	 *
-	 * @param   string  $Login
+	 * @param  string  $Login
 	 */
 	public function setAttemptLimit($limit)
 	{
@@ -81,7 +81,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Set Suspension Time
 	 *
-	 * @param   string  $minutes
+	 * @param  string  $minutes
 	 */
 	public function setSuspensionTime($minutes)
 	{
@@ -96,8 +96,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Get Login Attempts
 	 *
-	 * @param   string  $Login
-	 * @return  int
+	 * @param  string  $Login
+	 * @return int
 	 */
 	public function getAttempts($login)
 	{
@@ -129,8 +129,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Add Login Attempt
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function addAttempt($login)
 	{
@@ -151,8 +151,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Clear Login Attempts
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function clearAttempts($login)
 	{
@@ -174,8 +174,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Suspend a login
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function suspend($login)
 	{
@@ -194,8 +194,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Unsuspend a login
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function unsuspend($login)
 	{
@@ -245,8 +245,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Ban a login
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function ban($login)
 	{
@@ -260,8 +260,8 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Unban a login
 	 *
-	 * @param   string  $Login
-	 * @return  bool
+	 * @param  string  $Login
+	 * @return bool
 	 */
 	public function unban($login)
 	{
@@ -308,7 +308,7 @@ class Throttle extends EloquentModel implements ThrottleInterface
 	/**
 	 * Find and set Throttle by login or get a new instance
 	 *
-	 * @param   string  $login
+	 * @param  string  $login
 	 */
 	protected function findByLogin($login)
 	{

@@ -20,19 +20,19 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class SentryServiceProvider extends ServiceProvider
-{
-	public function boot()
-	{
+class SentryServiceProvider extends ServiceProvider {
 
-	}
-
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
 	public function register()
 	{
 		$session = $this->app['session'];
 		$cookie  = $this->app['cookie'];
 
-		$this->app['sentry'] = $this->app->share(function($app) use($session, $cookie)
+		$this->app['sentry'] = $this->app->share(function($app) use ($session, $cookie)
 		{
 			return new Sentry(
 				new Provider\Eloquent,
@@ -41,4 +41,5 @@ class SentryServiceProvider extends ServiceProvider
 			);
 		});
 	}
+
 }

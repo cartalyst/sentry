@@ -8,33 +8,33 @@ use Cartalyst\Sentry\Model\Group;
 use Cartalyst\Sentry\Model\Throttle;
 use Cartalyst\Sentry\HashInterface;
 
-class Eloquent implements ProviderInterface
-{
+class Eloquent implements ProviderInterface {
+
 	/**
 	 * The user interface
 	 *
-	 * @var  Cartalyst\Sentry\UserInterface
+	 * @var Cartalyst\Sentry\UserInterface
 	 */
 	protected $userInterface;
 
 	/**
 	 * The group interface
 	 *
-	 * @var  Cartalyst\Sentry\GroupInterface
+	 * @var Cartalyst\Sentry\GroupInterface
 	 */
 	protected $groupInterface;
 
 	/**
 	 * The throttle interface
 	 *
-	 * @var  Cartalyst\Sentry\ThrottleInterface
+	 * @var Cartalyst\Sentry\ThrottleInterface
 	 */
 	protected $throttleInterface;
 
 	/**
 	 * Constructor
 	 *
-	 * @return  Cartalyst\Sentry\ProviderInterface
+	 * @return Cartalyst\Sentry\ProviderInterface
 	 */
 	public function __construct(HashInterface $hashInterface = null)
 	{
@@ -46,7 +46,7 @@ class Eloquent implements ProviderInterface
 	/**
 	 * Get user interface
 	 *
-	 * @return  Cartalyst\Sentry\UserInterface
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function userInterface()
 	{
@@ -56,7 +56,7 @@ class Eloquent implements ProviderInterface
 	/**
 	 * Get user interface
 	 *
-	 * @return  Cartalyst\Sentry\GroupInterface
+	 * @return Cartalyst\Sentry\GroupInterface
 	 */
 	public function groupInterface()
 	{
@@ -66,7 +66,7 @@ class Eloquent implements ProviderInterface
 	/**
 	 * Get user interface
 	 *
-	 * @return  Cartalyst\Sentry\ThrottleInterface
+	 * @return Cartalyst\Sentry\ThrottleInterface
 	 */
 	public function throttleInterface()
 	{
@@ -76,7 +76,7 @@ class Eloquent implements ProviderInterface
 	/**
 	 * Registers a user with activation code
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function registerUser(array $attributes)
 	{
@@ -87,7 +87,7 @@ class Eloquent implements ProviderInterface
 	/**
 	 * Creates a user
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function createUser(array $attributes)
 	{
@@ -155,4 +155,5 @@ class Eloquent implements ProviderInterface
 
 		return $object->delete();
 	}
+
 }

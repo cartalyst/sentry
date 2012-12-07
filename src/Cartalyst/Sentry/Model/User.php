@@ -113,7 +113,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get user login column
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function getLoginColumn()
 	{
@@ -123,8 +123,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get user login column
 	 *
-	 * @param   integer  $id
-	 * @return  Cartalyst\Sentry\UserInterface
+	 * @param  integer  $id
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findById($id)
 	{
@@ -141,8 +141,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get user by login value
 	 *
-	 * @param   string  $login
-	 * @return  Cartalyst\Sentry\UserInterface
+	 * @param  string  $login
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findByLogin($login)
 	{
@@ -159,9 +159,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get user by credentials
 	 *
-	 * @param   string  $login
-	 * @param   string  $password
-	 * @return  Cartalyst\Sentry\UserInterface
+	 * @param  string  $login
+	 * @param  string  $password
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findByCredentials(array $credentials)
 	{
@@ -331,9 +331,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Activate a user
 	 *
-	 * @param   string  $login
-	 * @param   string  $activationCode
-	 * @return  bool
+	 * @param  string  $login
+	 * @param  string  $activationCode
+	 * @return bool
 	 */
 	public function activate($activationCode)
 	{
@@ -360,8 +360,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Check if user is activated
 	 *
-	 * @param   UserInterface  $user
-	 * @return  bool
+	 * @param  UserInterface  $user
+	 * @return bool
 	 */
 	public function isActivated()
 	{
@@ -371,9 +371,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Reset a user's password
 	 *
-	 * @param   string   $login
-	 * @param   string   $password
-	 * @return  string|false
+	 * @param  string   $login
+	 * @param  string   $password
+	 * @return string|false
 	 */
 	public function resetPassword()
 	{
@@ -389,9 +389,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Confirm a password reset request
 	 *
-	 * @param   string  $login
-	 * @param   string  $resetCode
-	 * @return  bool
+	 * @param  string  $login
+	 * @param  string  $resetCode
+	 * @return bool
 	 */
 	public function resetPasswordConfirm($password, $resetCode)
 	{
@@ -411,8 +411,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Clears Password Reset Fields
 	 *
-	 * @param   UserInterface  $user
-	 * @return  $user
+	 * @param  UserInterface  $user
+	 * @return $user
 	 */
 	public function clearResetPassword()
 	{
@@ -426,8 +426,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get user specific permissions
 	 *
-	 * @param   string  $permissions json
-	 * @return  array
+	 * @param  string  $permissions json
+	 * @return array
 	 */
 	public function getPermissions($permissions)
 	{
@@ -437,8 +437,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Set user specific permissions
 	 *
-	 * @param   array  $permissions
-	 * @return  string json
+	 * @param  array  $permissions
+	 * @return string json
 	 */
 	public function setPermissions($permissions)
 	{
@@ -466,8 +466,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * See if a user has a required permission
 	 *
-	 * @param   string  $permission
-	 * @return  bool
+	 * @param  string  $permission
+	 * @return bool
 	 */
 	public function hasAccess($permission)
 	{
@@ -492,7 +492,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Get merged group permissions
 	 *
-	 * @return  array
+	 * @return array
 	 */
 	public function getGroupPermissions()
 	{
@@ -526,8 +526,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Add user to group
 	 *
-	 * @param   integer|Cartalyst\Sentry\GroupInterface  $group
-	 * @return  bool
+	 * @param  integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return bool
 	 */
 	public function addGroup($group)
 	{
@@ -566,8 +566,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Remove user from group
 	 *
-	 * @param   integer|Cartalyst\Sentry\GroupInterface  $group
-	 * @return  bool
+	 * @param  integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return bool
 	 */
 	public function removeGroup($group)
 	{
@@ -582,8 +582,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * See if user is in a group
 	 *
-	 * @param   integer|string|Cartalyst\Sentry\GroupInterface  $group
-	 * @return  bool
+	 * @param  integer|string|Cartalyst\Sentry\GroupInterface  $group
+	 * @return bool
 	 */
 	public function inGroup($group)
 	{
@@ -617,8 +617,8 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Hash String
 	 *
-	 * @param   string  $str
-	 * @return  string
+	 * @param  string  $str
+	 * @return string
 	 */
 	protected function hash($str)
 	{
@@ -628,9 +628,9 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Check Hash Values
 	 *
-	 * @param   string  $str
-	 * @param   string  $hashed_str
-	 * @return  bool
+	 * @param  string  $str
+	 * @param  string  $hashed_str
+	 * @return bool
 	 */
 	protected function checkHash($str, $hashed_str)
 	{
@@ -640,7 +640,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	/**
 	 * Generate a random string
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	protected function randomString()
 	{

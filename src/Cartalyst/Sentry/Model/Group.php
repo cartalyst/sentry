@@ -45,8 +45,8 @@ class Group extends EloquentModel implements GroupInterface
 	/**
 	 * Get user specific permissions
 	 *
-	 * @param   string  $permissions json
-	 * @return  array
+	 * @param  string  $permissions json
+	 * @return array
 	 */
 	public function getPermissions($permissions)
 	{
@@ -56,8 +56,8 @@ class Group extends EloquentModel implements GroupInterface
 	/**
 	 * Set user specific permissions
 	 *
-	 * @param   array  $permissions
-	 * @return  string json
+	 * @param  array  $permissions
+	 * @return string json
 	 */
 	public function setPermissions($permissions)
 	{
@@ -92,8 +92,8 @@ class Group extends EloquentModel implements GroupInterface
 	/**
 	 * Find group by id
 	 *
-	 * @param   integer  $id
-	 * @return  Cartalyst\Sentry\GroupInterface or false
+	 * @param  integer  $id
+	 * @return Cartalyst\Sentry\GroupInterface or false
 	 */
 	public function findById($id)
 	{
@@ -110,8 +110,8 @@ class Group extends EloquentModel implements GroupInterface
 	/**
 	 * Find group by name
 	 *
-	 * @param   string  $name
-	 * @return  Cartalyst\Sentry\GroupInterface or false
+	 * @param  string  $name
+	 * @return Cartalyst\Sentry\GroupInterface or false
 	 */
 	public function findByName($name)
 	{

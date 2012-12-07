@@ -58,7 +58,7 @@ class DatabaseManager implements ConnectionResolverInterface {
 	 * The events dispatcher used for the
 	 * database connection.
 	 *
-	 * @var  Illuminate\Events\Dispatcher
+	 * @var Illuminate\Events\Dispatcher
 	 */
 	protected $eventsDispatcher;
 
@@ -164,11 +164,13 @@ class DatabaseManager implements ConnectionResolverInterface {
 	 */
 	public function setDefaultConnection($name)
 	{
-		if ( ! is_string($config)) {
+		if ( ! is_string($config))
+		{
 			throw new \UnexpectedValueException("Default config should be a string.");
 		}
 
-		if ( ! array_key_exists($name, $this->configs)) {
+		if ( ! array_key_exists($name, $this->configs))
+		{
 			throw new \UnexpectedValueException("Cannot set default config [$name] as configuration deos not exist.");
 		}
 

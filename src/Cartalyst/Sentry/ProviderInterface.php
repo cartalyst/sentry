@@ -29,35 +29,35 @@ interface ProviderInterface
 	/**
 	 * Get the user interface
 	 *
-	 * @return  Cartalyst\Sentry\UserInterface
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function userInterface();
 
 	/**
 	 * Get the group interface
 	 *
-	 * @return  Cartalyst\Sentry\GroupInterface
+	 * @return Cartalyst\Sentry\GroupInterface
 	 */
 	public function groupInterface();
 
 	/**
 	 * Get the throttle interface
 	 *
-	 * @return  Cartalyst\Sentry\ThrottleInterface
+	 * @return Cartalyst\Sentry\ThrottleInterface
 	 */
 	public function throttleInterface();
 
 	/**
 	 * Registers a user with activation code
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function registerUser(array $attributes);
 
 	/**
 	 * Creates a user
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function createUser(array $attributes);
 
@@ -71,28 +71,28 @@ interface ProviderInterface
 	/**
 	 * Saves a user object
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	public function saveUser(UserInterface $user);
 
 	/**
 	 * Saves a group object
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	public function saveGroup(GroupInterface $group);
 
 	/**
 	 * Deletes a user object
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	public function deleteUser(UserInterface $user);
 
 	/**
 	 * Deletes a user object
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	public function deleteGroup(GroupInterface $group);
 

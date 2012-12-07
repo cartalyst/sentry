@@ -22,39 +22,87 @@ use Cartalyst\Sentry\SessionInterface;
 use Illuminate\Session\Store as SessionStore;
 use Session;
 
-class Laravel implements SessionInterface
-{
+class Laravel implements SessionInterface {
+
+	/**
+	 * The key used in the Session.
+	 *
+	 * @var string
+	 */
 	protected $key = 'sentry';
 
+	/**
+	 * Session store object.
+	 *
+	 * @var Illuminate\Session\Store
+	 */
 	protected $session;
 
-	public function __construct(SessionStore $sessionDriver)
+	/**
+	 * Creates a new Laravel based Session driver
+	 * for Sentry.
+	 *
+	 * @param  Illuminate\Session\Store  $session
+	 * @return void
+	 */
+	public function __construct(SessionStore $session)
 	{
-		$this->session = $sessionDriver;
+		$this->session = $session;
 	}
 
+	/**
+	 * Returns the session key.
+	 *
+	 * @return string
+	 */
 	public function getKey()
 	{
 		return $this->key;
 	}
 
+	/**
+	 * Put a key / value pair in the session.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
 	public function put($key, $value)
 	{
 		return $this->session->put($key, $value);
 	}
 
+	/**
+	 * Get the requested item from the session.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return mixed
+	 */
 	public function get($key, $default = null)
 	{
 		return $this->session->get($key, $default);
 	}
 
+	/**
+	 * Remove an item from the session.
+	 *
+	 * @param  string  $key
+	 * @return void
+	 */
 	public function forget($key)
 	{
 		return $this->session->forget($key);
 	}
 
+	/**
+	 * Remove all of the items from the session.
+	 *
+	 * @return void
+	 */
 	public function flush()
 	{
 		return $this->forget($this->key);
 	}
+
 }
