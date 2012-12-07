@@ -57,14 +57,14 @@ class Bcrypt implements HashInterface {
 	 * Check Hash Values
 	 *
 	 * @param  string  $str
-	 * @param  string  $hashed_str
+	 * @param  string  $hashedStr
 	 * @return bool
 	 */
-	public function checkHash($str, $hashed_str)
+	public function checkHash($str, $hashedStr)
 	{
-		$strength = substr($hashed_str, 4, 2);
+		$strength = substr($hashedStr, 4, 2);
 
-		return crypt($str, $hashed_str) === $hashed_str;
+		return crypt($str, $hashedStr) === $hashedStr;
 	}
 
 	/**

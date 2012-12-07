@@ -47,16 +47,16 @@ class Sha256 implements HashInterface {
 	 * Check Hash Values
 	 *
 	 * @param  string  $str
-	 * @param  string  $hashed_str
+	 * @param  string  $hashedStr
 	 * @return bool
 	 */
-	public function checkHash($str, $hashed_str)
+	public function checkHash($str, $hashedStr)
 	{
-		$salt = substr($hashed_str, 0, 16);
+		$salt = substr($hashedStr, 0, 16);
 
 		$password = $salt.hash('sha256', $salt.$str);
 
-		return $password === $hashed_str;
+		return $password === $hashedStr;
 	}
 
 	/**

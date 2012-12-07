@@ -110,16 +110,16 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 				$this->current->last_attempt_at = $this->current->last_attempt_at->format('Y-m-d H:i:s');
 			}
 			$clearTime = new DateTime($this->current->last_attempt_at);
-			$clear_at = $clearTime->modify('+'.$this->time.' minutes');
+			$clearAt = $clearTime->modify('+'.$this->time.' minutes');
 			$now = new DateTime();
 
-			if ($clear_at <= $now)
+			if ($clearAt <= $now)
 			{
 				$this->current->attempts = 0;
 			}
 
 			unset($clearTime);
-			unset($clear_at);
+			unset($clearAt);
 			unset($now);
 		}
 
@@ -222,10 +222,10 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 		if ($this->current->suspended)
 		{
 			$suspended = new DateTime($this->current->suspended_at);
-			$unsuspend_at = $suspended->modify('+'.$this->time.' minutes');
+			$unsuspendAt = $suspended->modify('+'.$this->time.' minutes');
 			$now = new DateTime();
 
-			if ($unsuspend_at <= $now)
+			if ($unsuspendAt <= $now)
 			{
 				$this->unsuspend($this->current->login);
 
@@ -233,7 +233,7 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 			}
 
 			unset($suspended);
-			unset($unsuspend_at);
+			unset($unsuspendAt);
 			unset($now);
 
 			return true;

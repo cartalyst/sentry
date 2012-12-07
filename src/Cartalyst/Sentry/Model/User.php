@@ -629,12 +629,12 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface {
 	 * Check Hash Values
 	 *
 	 * @param  string  $str
-	 * @param  string  $hashed_str
+	 * @param  string  $hashedStr
 	 * @return bool
 	 */
-	protected function checkHash($str, $hashed_str)
+	protected function checkHash($str, $hashedStr)
 	{
-		return $this->hashInterface->checkHash($str, $hashed_str);
+		return $this->hashInterface->checkHash($str, $hashedStr);
 	}
 
 	/**

@@ -32,9 +32,9 @@ interface HashInterface
 	 * Check Hash Values
 	 *
 	 * @param  string  $str
-	 * @param  string  $hashed_str
+	 * @param  string  $hashedStr
 	 * @return bool
 	 */
-	public function checkhash($str, $hashed_str);
+	public function checkhash($str, $hashedStr);
 
 }
