@@ -611,7 +611,7 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 	 */
 	protected function groups()
 	{
-		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'user_group');
+		return $this->belongsToMany(__NAMESPACE__.'\\Group', 'users_groups');
 	}
 
 	/**
