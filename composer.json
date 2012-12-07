@@ -18,6 +18,9 @@
         "illuminate/cookie": ">=1.0.0"
     },
     "autoload": {
+    	"classmap": [
+    		"vendor/cartalyst/sentry/src/migrations"
+    	],
         "psr-0": {"Cartalyst\\Sentry": "src/"}
     },
 }
