@@ -24,9 +24,8 @@ use Cartalyst\Sentry\GroupExistsException;
 use Cartalyst\Sentry\GroupNotFoundException;
 use Cartalyst\Sentry\InvalidPermissionException;
 
+class Group extends EloquentModel implements GroupInterface {
 
-class Group extends EloquentModel implements GroupInterface
-{
 	/**
 	 * The table associated with the model.
 	 *
@@ -193,4 +192,5 @@ class Group extends EloquentModel implements GroupInterface
 			throw new GroupExistsException;
 		}
 	}
+
 }

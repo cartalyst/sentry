@@ -26,8 +26,8 @@ use Cartalyst\Sentry\ThrottleLimitException;
 use Cartalyst\Sentry\ThrottleTimeException;
 use DateTime;
 
-class Throttle extends EloquentModel implements ThrottleInterface
-{
+class Throttle extends EloquentModel implements ThrottleInterface {
+
 	/**
 	 * The table associated with the model.
 	 *
@@ -324,4 +324,5 @@ class Throttle extends EloquentModel implements ThrottleInterface
 			'attempts' => 0
 		));
 	}
+
 }

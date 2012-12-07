@@ -31,8 +31,8 @@ use Cartalyst\Sentry\InvalidPermissionException;
 use Cartalyst\Sentry\GroupNotFoundException;
 
 
-class User extends EloquentModel implements UserInterface, UserGroupInterface
-{
+class User extends EloquentModel implements UserInterface, UserGroupInterface {
+
 	/**
 	 * The table associated with the model.
 	 *
@@ -676,4 +676,5 @@ class User extends EloquentModel implements UserInterface, UserGroupInterface
 
 		$this->attributes[$key] = $value;
 	}
+
 }
