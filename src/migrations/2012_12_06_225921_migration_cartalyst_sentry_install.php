@@ -23,6 +23,8 @@ class MigrationCartalystSentryInstall extends Migration {
 			$table->string('last_name')->nullable();
 			$table->string('permissions')->nullable();
 			$table->timestamps();
+
+			$table->unique('email');
 		});
 
 		Schema::create('groups', function($table)
@@ -31,6 +33,8 @@ class MigrationCartalystSentryInstall extends Migration {
 			$table->string('name');
 			$table->string('permissions')->nullable();
 			$table->timestamps();
+
+			$table->unique('name');
 		});
 
 		Schema::create('user_group', function($table)
