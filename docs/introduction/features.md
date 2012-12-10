@@ -9,7 +9,7 @@ It also provides additional features such as user groups and additional security
 * Permissions
 * Authorization
 * Remember Me
-* User Suspension / Login Attempt Limiter
+* User Suspension / Banning / Login Attempt Limiter via Throttling Driver
 * Password Reset
 * User Activation
 * Interfaces provided so you can use your own models or logic
