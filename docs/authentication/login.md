@@ -1,5 +1,5 @@
 <a id="login"></a>
-###Login
+###login($user, $remember = false)
 
 ----------
 

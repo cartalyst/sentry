@@ -1,5 +1,5 @@
 <a id="getGroups"></a>
-###getGroups
+###getGroups()
 
 ----------
 

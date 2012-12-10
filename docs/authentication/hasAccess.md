@@ -1,5 +1,5 @@
 <a id="hasAccess"></a>
-###hasAccess
+###hasAccess($permission)
 
 ----------
 

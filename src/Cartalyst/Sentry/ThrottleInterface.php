@@ -36,11 +36,26 @@ interface ThrottleInterface {
 	public function setAttemptLimit($limit);
 
 	/**
+	 * Get Attempt Limit
+	 *
+	 * @param   string  $Login
+	 * @return  int
+	 */
+	public function getAttemptLimit();
+
+	/**
 	 * Set Suspension Time
 	 *
 	 * @param  string  $minutes
 	 */
 	public function setSuspensionTime($minutes);
+
+	/**
+	 * Set Suspension Time
+	 *
+	 * @param  string  $minutes
+	 */
+	public function getSuspensionTime();
 
 	/**
 	 * Get Login Attempts
@@ -115,11 +130,31 @@ interface ThrottleInterface {
 	public function isBanned($login);
 
 	/**
-	 * Check if user throttle status
+	 * Check user throttle status
 	 *
 	 * @param  string  $Login
 	 * @return bool
 	 */
 	public function check($login);
 
+	/**
+	 * Enable throttling
+	 *
+	 * @return void
+	 */
+	public function enable();
+
+	/**
+	 * Disable throttling
+	 *
+	 * @return void
+	 */
+	public function disable();
+
+	/**
+	 * Check if throttle is enabled
+	 *
+	 * @return bool
+	 */
+	public function isEnabled();
 }

@@ -1,5 +1,5 @@
 <a id="findByCreentials"></a>
-###findByCredentials
+###findByCredentials($credentials)
 
 ----------
 

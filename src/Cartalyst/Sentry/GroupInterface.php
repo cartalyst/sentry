@@ -21,6 +21,7 @@
 use RuntimeException;
 
 class GroupNotFoundException extends RuntimeException {}
+class NameFieldRequiredException extends RuntimeException {}
 class GroupExistsException extends RuntimeException {}
 
 interface GroupInterface {

@@ -176,8 +176,14 @@ class Group extends EloquentModel implements GroupInterface {
 
 	protected function validate()
 	{
-		// check if email already exists (unique)
-		// check if user already exists
+		// check if name field was passed
+		if (empty($this->name))
+		{
+			throw new NameFieldRequiredException;
+		}
+
+
+		// check if group already exists
 		try
 		{
 			$group = $this->findByName($this->name);

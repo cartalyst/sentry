@@ -1,5 +1,5 @@
 <a id="authenticateAndRemember"></a>
-###AuthenticateAndRemember
+###authenticateAndRemember($credentials)
 
 ----------
 

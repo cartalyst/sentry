@@ -1,5 +1,5 @@
 <a id="getLoginColumn"></a>
-###getLoginCOlumn
+###getLoginCOlumn()
 
 ----------
 

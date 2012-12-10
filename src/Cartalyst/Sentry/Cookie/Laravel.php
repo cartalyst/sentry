@@ -123,7 +123,7 @@ class Laravel implements CookieInterface {
 	 * @param  Illuminate\CookieJar  $cookie
 	 * @return bool
 	 */
-	protected function setCookie(CookieJar $cookie)
+	protected function setCookie($cookie)
 	{
 		// we manually set the cookie since l4 requires you to attach it it a response which we don't have
 		return setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());

@@ -1,5 +1,5 @@
 <a id="findByName"></a>
-###findByName
+###findByName($name)
 
 ----------
 

@@ -64,6 +64,13 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 	public $timestamps = false;
 
 	/**
+	 * Throttling status
+	 *
+	 * @var bool
+	 */
+	protected $enabled = true;
+
+	/**
 	 * Set Attempt Limit
 	 *
 	 * @param  string  $Login
@@ -79,6 +86,17 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 	}
 
 	/**
+	 * Get Attempt Limit
+	 *
+	 * @param   string  $Login
+	 * @return  int
+	 */
+	public function getAttemptLimit()
+	{
+		return $this->limit;
+	}
+
+	/**
 	 * Set Suspension Time
 	 *
 	 * @param  string  $minutes
@@ -91,6 +109,47 @@ class Throttle extends EloquentModel implements ThrottleInterface {
 		}
 
 		$this->time = $minutes;
+	}
+
+	/**
+	 * Get Suspension Time
+	 *
+	 * @param   string  $Login
+	 * @return  int
+	 */
+	public function getSuspensionTime()
+	{
+		return $this->time;
+	}
+
+	/**
+	 * Enable throttling
+	 *
+	 * @return void
+	 */
+	public function enable()
+	{
+		$this->enabled = true;
+	}
+
+	/**
+	 * Disable throttling
+	 *
+	 * @return void
+	 */
+	public function disable()
+	{
+		$this->enabled = false;
+	}
+
+	/**
+	 * Check if throttle is enabled
+	 *
+	 * @return bool
+	 */
+	public function isEnabled()
+	{
+		return $this->enabled;
 	}
 
 	/**

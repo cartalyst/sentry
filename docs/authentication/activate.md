@@ -1,5 +1,5 @@
 <a id="activate"></a>
-###activate
+###activate($activationCode)
 
 ----------
 

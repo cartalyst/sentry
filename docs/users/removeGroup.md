@@ -1,5 +1,5 @@
 <a id="removeGroup"></a>
-###removeGroup
+###removeGroup($group)
 
 ----------
 

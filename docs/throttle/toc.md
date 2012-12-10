@@ -1,0 +1,20 @@
+### Throttle
+#### Sentry Throttle Methods
+
+* [addAttempt()](#addAttempt "/manuals/sentry/throttle/addAttempt")
+* [ban()](#ban "/manuals/sentry/throttle/ban")
+* [check()](#check "/manuals/sentry/throttle/check")
+* [clearAttempts()](#clearAttempts "/manuals/sentry/throttle/clearAttempts")
+* [disable()](#disable "/manuals/sentry/throttle/disable")
+* [enable()](#enable "/manuals/sentry/throttle/enable")
+* [getAttemptLimit()](#getAttempts "/manuals/sentry/throttle/getAttemptLimit")
+* [getAttempts()](#getAttempts "/manuals/sentry/throttle/getAttempts")
+* [getSuspensionTime()](#getSuspensionTime "/manuals/sentry/throttle/getSuspensionTime")
+* [isBanned()](#isBanned "/manuals/sentry/throttle/isBanned")
+* [isEnabled()](#isEnabled "/manuals/sentry/throttle/isEnabled")
+* [isSuspended()](#isSuspended "/manuals/sentry/throttle/isSuspended")
+* [setAttemptLimit()](#setAttemptLimit "/manuals/sentry/throttle/setAttemptLimit")
+* [setSuspensionTime()](#setSuspensionTime "/manuals/sentry/throttle/setSuspensionTime")
+* [suspend()](#suspend "/manuals/sentry/throttle/suspend")
+* [unban()](#unban "/manuals/sentry/throttle/unban")
+* [unsuspended()](#unsuspended "/manuals/sentry/throttle/unsuspended")

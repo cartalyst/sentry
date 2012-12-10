@@ -1,5 +1,5 @@
 <a id="loginAndRemember"></a>
-###LoginAndRemember
+###loginAndRemember($user)
 
 ----------
 

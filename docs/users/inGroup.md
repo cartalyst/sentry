@@ -1,5 +1,5 @@
 <a id="inGroup"></a>
-###inGroup
+###inGroup($group)
 
 ----------
 

@@ -1,5 +1,5 @@
 <a id="resetPasswordConfirm"></a>
-###resetPasswordConfirm
+###resetPasswordConfirm($password, $resetCode)
 
 ----------
 

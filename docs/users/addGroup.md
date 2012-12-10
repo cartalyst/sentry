@@ -1,5 +1,5 @@
 <a id="addGroup"></a>
-###addGroup
+###addGroup($group)
 
 ----------
 

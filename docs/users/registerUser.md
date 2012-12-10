@@ -1,5 +1,5 @@
 <a id="registerUser"></a>
-###registerUser
+###registerUser($attributes)
 
 ----------
 

@@ -1,5 +1,5 @@
 <a id="getGroupPermissions"></a>
-###getGroupPermissions
+###getGroupPermissions()
 
 ----------
 

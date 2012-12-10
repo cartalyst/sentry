@@ -52,12 +52,6 @@ class Sentry
 	protected $cookie;
 
 	/**
-	 * Throttle Enabled
-	 *
-	 */
-	protected $throttle = true;
-
-	/**
 	 * Initantiate the Auth class and inject dependencies
 	 *
 	 * @param  userModel  User Object
@@ -90,10 +84,10 @@ class Sentry
 			// find user by passed credentials
 			$user = $this->user()->findByCredentials($credentials);
 		}
-		catch (Sentry\UserNotFoundException $e)
+		catch (UserNotFoundException $e)
 		{
 			// add attempt if throttle is enabled
-			if ($this->throttle)
+			if ($this->provider->throttleInterface()->isEnabled())
 			{
 				// get a user object and find the required authentication column
 				$login = $this->user()->getLoginColumn();
@@ -111,7 +105,7 @@ class Sentry
 			return false;
 		}
 
-		if ($this->throttle)
+		if ($this->provider->throttleInterface()->isEnabled())
 		{
 			// before we proceed, check the users' throttle status
 			if ( ! $this->provider->throttleInterface()->check($credentials[$user->getLoginColumn()]))
@@ -242,7 +236,7 @@ class Sentry
 	 * Gets a user object
 	 *
 	 * @param  string  $login
-	 * @return Cartalyst\Sentry\UserInterface|null
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function user()
 	{
@@ -252,7 +246,7 @@ class Sentry
 	/**
 	 * Gets a group object
 	 *
-	 * @return void
+	 * @return Cartalyst\Sentry\GroupInterface
 	 */
 	public function group()
 	{
@@ -260,27 +254,13 @@ class Sentry
 	}
 
 	/**
-	 * Enable throttling
+	 * Gets a throttle object
 	 *
-	 * @param  integer  $limit
-	 * @param  integer  $minutes
-	 * @return void
+	 * @return Cartalyst\Sentry\ThrottleInterface
 	 */
-	public function enableThrottle($limit = null, $minutes = null)
+	public function throttle()
 	{
-		$this->throttle = true;
-		! is_null($limit) and $this->provider->throttleInterface()->setAttemptLimit($limit);
-		! is_null($minutes) and $this->provider->throttleInterface()->setSuspensionTime($minutes);
-	}
-
-	/**
-	 * Disables throttling.
-	 *
-	 * @return void
-	 */
-	public function disableThrottle()
-	{
-		$this->throttle = false;
+		return $this->provider->throttleInterface();
 	}
 
 	/**
