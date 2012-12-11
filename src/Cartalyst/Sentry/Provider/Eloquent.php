@@ -11,6 +11,13 @@ use Cartalyst\Sentry\HashInterface;
 class Eloquent implements ProviderInterface {
 
 	/**
+	 * The hasing interface used.
+	 *
+	 * @var Cartalyst\Sentry\HashInterface
+	 */
+	protected $hashInterface;
+
+	/**
 	 * The user interface
 	 *
 	 * @var Cartalyst\Sentry\UserInterface
@@ -38,39 +45,37 @@ class Eloquent implements ProviderInterface {
 	 */
 	public function __construct(HashInterface $hashInterface = null)
 	{
-		$this->userInterface = new User(array(), $hashInterface);
-		$this->groupInterface = new Group();
-		$this->throttleInterface = new Throttle();
+		$this->hashInterface = $hashInterface;
 	}
 
 	/**
-	 * Get user interface
+	 * Get a new user interface
 	 *
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function userInterface()
 	{
-		return $this->userInterface;
+		return new User(array(), $this->hashInterface);
 	}
 
 	/**
-	 * Get user interface
+	 * Get a new group interface
 	 *
 	 * @return Cartalyst\Sentry\GroupInterface
 	 */
 	public function groupInterface()
 	{
-		return $this->groupInterface;
+		return new Group;
 	}
 
 	/**
-	 * Get user interface
+	 * Get a new throttle interface
 	 *
 	 * @return Cartalyst\Sentry\ThrottleInterface
 	 */
 	public function throttleInterface()
 	{
-		return $this->throttleInterface;
+		return new Throttle;
 	}
 
 	/**
@@ -80,7 +85,7 @@ class Eloquent implements ProviderInterface {
 	 */
 	public function registerUser(array $attributes)
 	{
-		$user = $this->userInterface->fill($attributes);
+		$user = $this->userInterface()->fill($attributes);
 		return $user->register();
 	}
 
@@ -91,7 +96,7 @@ class Eloquent implements ProviderInterface {
 	 */
 	public function createUser(array $attributes)
 	{
-		$user = $this->userInterface->fill($attributes);
+		$user = $this->userInterface()->fill($attributes);
 		return $this->save($user);
 	}
 
@@ -102,7 +107,7 @@ class Eloquent implements ProviderInterface {
 	 */
 	public function createGroup(array $attributes)
 	{
-		$group = $this->groupInterface->fill($attributes);
+		$group = $this->groupInterface()->fill($attributes);
 		return $this->save($group);
 	}
 
@@ -125,7 +130,7 @@ class Eloquent implements ProviderInterface {
 	{
 		if ( ! $object instanceof UserInterface and ! $object instanceof GroupInterface)
 		{
-			throw new \Exception('invalid object');
+			throw new InvalidObjectException;
 		}
 
 		return $object->save();
