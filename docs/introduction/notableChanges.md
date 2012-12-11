@@ -16,7 +16,7 @@ Since we are making Sentry2 composer based and framework agnostic, we wanted to 
 
 #### Sentry::user()
 
-`Sentry::user()` used to return the active user, if they existed, or the one requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::user()` will return a sentry `UserInterface` object now for you to manipulate.  To get the active user, you now use `Sentry::activeUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, `findById()`, `findByLogin()` and `findByCredentials()`.
+`Sentry::user()` used to return the active user, if they existed, or the user requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::user()` will return a sentry `UserInterface` object now for you to manipulate.  To get the active user, you now use `Sentry::activeUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, `findById()`, `findByLogin()` and `findByCredentials()`.
 
 #### Objects over Arrays
 
