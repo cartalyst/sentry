@@ -16,7 +16,7 @@ Since we are making Sentry2 composer based and framework agnostic, we wanted to 
 
 #### Sentry::user()
 
-`Sentry::user()` used to return the active user, if they existed, or the one requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::user()` will return a sentry UserInterface object now for you to manipulate.  To get the active user, you now use `Sentry::activeUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, findById(), findByLogin() and findByCredentials().
+`Sentry::user()` used to return the active user, if they existed, or the one requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::user()` will return a sentry `UserInterface` object now for you to manipulate.  To get the active user, you now use `Sentry::activeUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, `findById()`, `findByLogin()` and `findByCredentials()`.
 
 #### Objects over Arrays
 
@@ -36,11 +36,11 @@ Sentry2 now uses BCrypt by default as it's password hashing algorithim. We still
 
 #### Sentry::group()
 
-`Sentry::group()` changes pretty much reflect the `Sentry::user()` changes.  This method no longer takes any parameters and returns an empty GroupInterface Object.  You can find specific groups by using the findById() and findByName() methods.
+`Sentry::group()` changes pretty much reflect the `Sentry::user()` changes.  This method no longer takes any parameters and returns an empty `GroupInterface` Object.  You can find specific groups by using the `findById()` and `findByName()` methods.
 
 #### Session/Cookie
 
-We used to only store the current user's id in the session, we now store the UserInterface object.
+We used to only store the current user's id in the session, we now store the `UserInterface` object.
 
 #### Throttling
 
