@@ -1,4 +1,4 @@
-###Download
+### Download
 
 Sentry2 is a full rewrite of the the Sentry library. A new API, new methods, and some db changes ( no more user metadata table), and the use of eloquent for our models.  With this rewrite we felt we should note some key changes that may cause issues if you are porting from the original Sentry library.
 
