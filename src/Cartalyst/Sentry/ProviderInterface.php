@@ -27,21 +27,21 @@ class InvalidObjectException extends OutOfBoundsException {}
 interface ProviderInterface
 {
 	/**
-	 * Get the user interface
+	 * Get a new user interface
 	 *
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function userInterface();
 
 	/**
-	 * Get the group interface
+	 * Get a new group interface
 	 *
 	 * @return Cartalyst\Sentry\GroupInterface
 	 */
 	public function groupInterface();
 
 	/**
-	 * Get the throttle interface
+	 * Get a new throttle interface
 	 *
 	 * @return Cartalyst\Sentry\ThrottleInterface
 	 */
