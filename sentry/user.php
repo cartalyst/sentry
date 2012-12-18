@@ -203,13 +203,13 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			 * fetch the user's groups and assign as array usable via $this->groups
 			 */
 			$groups_table = Config::get('sentry::sentry.table.groups');
-
+			
 			$groups = DB::connection($this->db_instance)
 				->table($groups_table)
 				->where($this->table_usergroups.'.user_id', '=', $this->user['id'])
 				->join($this->table_usergroups,
 							$this->table_usergroups.'.group_id', '=', $groups_table.'.id')
-				->get($groups_table.'.*');
+				->get(array($groups_table.'.*',$this->table_usergroups.'.is_default') );
 
 			foreach ($groups as &$group)
 			{
@@ -789,10 +789,11 @@ class Sentry_User implements \Iterator, \ArrayAccess
 	 * Adds this user to the group.
 	 *
 	 * @param   string|int  Group ID or group name
+	 * @param 	bool  default group
 	 * @return  bool
 	 * @throws  SentryUserException
 	 */
-	public function add_to_group($id)
+	public function add_to_group($id, $is_default = false)
 	{
 		if ($this->in_group($id))
 		{
@@ -819,11 +820,13 @@ class Sentry_User implements \Iterator, \ArrayAccess
 			->insert_get_id(array(
 				'user_id' => $this->user['id'],
 				'group_id' => $group->get('id'),
+				'is_default' => $is_default,
 			));
 
 		$this->groups[] = array(
 			'id'       => $group->get('id'),
 			'name'     => $group->get('name'),
+			'is_default' => $group->get('is_default'),
 		);
 
 		return true;
@@ -929,6 +932,22 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		}
 
 		return true;
+	}
+
+	/**
+	* Return the default group of the user
+	*
+	* @return   string 
+	*/
+	public function default_group(){
+
+		foreach ($this->groups as $group) {
+
+			if($group['is_default']) {
+
+				return $group['name'];
+			}
+		}
 	}
 
 	/**
