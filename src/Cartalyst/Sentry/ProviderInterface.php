@@ -24,8 +24,8 @@ use Cartalyst\Sentry\GroupInterface;
 
 class InvalidObjectException extends OutOfBoundsException {}
 
-interface ProviderInterface
-{
+interface ProviderInterface {
+
 	/**
 	 * Get a new user interface
 	 *

@@ -29,15 +29,12 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$session = $this->app['session'];
-		$cookie  = $this->app['cookie'];
-
-		$this->app['sentry'] = $this->app->share(function($app) use ($session, $cookie)
+		$this->app['sentry'] = $this->app->share(function($app)
 		{
 			return new Sentry(
 				new Provider\Eloquent,
-				new Session\Laravel($session),
-				new Cookie\Laravel($cookie)
+				new Session\Laravel($app['session']),
+				new Cookie\Laravel($app['cookie'])
 			);
 		});
 	}

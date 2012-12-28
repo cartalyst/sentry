@@ -18,51 +18,50 @@
  * @link       http://cartalyst.com
  */
 
-/**
- * Sentry Auth class
- */
-class Sentry
-{
+class Sentry {
+
 	/**
-	 * The current user
+	 * The current user.
 	 *
 	 * @var Cartalyst\Sentry\UserInterface
 	 */
 	protected $user;
 
 	/**
-	 * Provider Interface
+	 * Provider Interface.
 	 *
 	 * @var Cartalyst\Sentry\ProviderInterface
 	 */
 	protected $provider;
 
 	/**
-	 * Session provider sentry should use
+	 * Session provider sentry should use.
 	 *
 	 * @var Illuminate\Session\Store
 	 */
 	protected $session;
 
 	/**
-	 * Session provider sentry should use
+	 * Session provider sentry should use.
 	 *
 	 * @var Illuminate\Session\Store
 	 */
 	protected $cookie;
 
 	/**
-	 * Initantiate the Auth class and inject dependencies
+	 * Initantiate the Auth class and inject dependencies.
 	 *
-	 * @param  userModel  User Object
+	 * @param  Cartalyst\Sentry\ProviderInterface  $provider
+	 * @param  Cartalyst\Sentry\SessionInterface  $session
+	 * @param  Cartalyst\Sentry\CookieInterface  $cookie
 	 * @return void
 	 */
-	public function __construct(ProviderInterface $providerInterface, SessionInterface $sessionInterface, CookieInterface $cookieInterface)
+	public function __construct(ProviderInterface $provider, SessionInterface $session, CookieInterface $cookie)
 	{
-		// set dependencies
-		$this->provider = $providerInterface;
-		$this->session  = $sessionInterface;
-		$this->cookie   = $cookieInterface;
+		// Set dependencies
+		$this->provider = $provider;
+		$this->session  = $session;
+		$this->cookie   = $cookie;
 	}
 
 	/**
@@ -76,20 +75,20 @@ class Sentry
 	 */
 	public function authenticate(array $credentials, $remember = false)
 	{
-		// run logout to clear any current sentry session
+		// Run logout to clear any current sentry session
 		$this->logout();
 
 		try
 		{
-			// find user by passed credentials
+			// Find user by passed credentials
 			$user = $this->user()->findByCredentials($credentials);
 		}
 		catch (UserNotFoundException $e)
 		{
-			// add attempt if throttle is enabled
+			// Add attempt if throttle is enabled
 			if ($this->provider->throttleInterface()->isEnabled())
 			{
-				// get a user object and find the required authentication column
+				// Get a user object and find the required authentication column
 				$login = $this->user()->getLoginColumn();
 
 				if ( ! $this->provider->throttleInterface()->check($credentials[$login]))
@@ -107,13 +106,13 @@ class Sentry
 
 		if ($this->provider->throttleInterface()->isEnabled())
 		{
-			// before we proceed, check the users' throttle status
+			// Before we proceed, check the users' throttle status
 			if ( ! $this->provider->throttleInterface()->check($credentials[$user->getLoginColumn()]))
 			{
 				return false;
 			}
 
-			// no exception was thrown for checking, go ahead and clear everything
+			// No exception was thrown for checking, go ahead and clear everything
 			$this->provider->throttleInterface()->clearAttempts($credentials[$user->getLoginColumn()]);
 		}
 
@@ -139,18 +138,18 @@ class Sentry
 	/**
 	 * Log a user in
 	 *
-	 * @param  User  $user
+	 * @param  UserInterface  $user
 	 * @return void
 	 */
 	public function login(UserInterface $user, $remember = false)
 	{
-		// make sure the user exists
+		// Make sure the user exists
 		if ( ! $user->exists)
 		{
 			throw new UserNotFoundException;
 		}
 
-		// check if the user is activated
+		// Check if the user is activated
 		if ( ! $user->isActivated())
 		{
 			throw new UserNotActivatedException;
@@ -158,7 +157,7 @@ class Sentry
 
 		$this->user = $user;
 
-		// set sessions
+		// Set sessions
 		$this->session->put($this->session->getKey(), $user);
 
 		if ($remember)
@@ -170,10 +169,10 @@ class Sentry
 	/**
 	 * Log a user in
 	 *
-	 * @param  User  $user
+	 * @param  UserInterface  $user
 	 * @return void
 	 */
-	public function loginAndRemember(userInterface $user)
+	public function loginAndRemember(UserInterface $user)
 	{
 		return $this->login($user, true);
 	}
@@ -203,10 +202,10 @@ class Sentry
 			return true;
 		}
 
-		// check session
-		$this->user = $this->session->get($this->session->getKey(), null);
+		// Check session
+		$this->user = $this->session->get($this->session->getKey());
 
-		// check for cookie
+		// Check for cookie
 		if ( ! $this->user)
 		{
 			$this->user = $this->cookie->get($this->cookie->getKey());
@@ -235,7 +234,6 @@ class Sentry
 	/**
 	 * Gets a user object
 	 *
-	 * @param  string  $login
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function user()
