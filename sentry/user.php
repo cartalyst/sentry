@@ -1359,4 +1359,20 @@ class Sentry_User implements \Iterator, \ArrayAccess
 		throw new \OutOfBoundsException('Property "'.$offset.'" not found for '.get_called_class().'.');
 	}
 
+	/**
+	 * Get the user attributes and relationships in array form.
+	 *
+	 * @return array
+	 */
+	public function to_array()
+	{
+		$array = array();
+
+		foreach ($this as $offset => $value) {
+			$array[$offset] = $value;
+		}
+
+		return $array;
+	}
+
 }
