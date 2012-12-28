@@ -142,6 +142,21 @@ class Sentry
 	}
 
 	/**
+	 * Return the user id if a user is logged in
+	 *
+	 * @return  int|bool
+	 */
+	public static function user_id()
+	{
+		if (static::check())
+		{
+			return Session::get(Config::get('sentry::sentry.session.user'));
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get's either the currently logged in user's group object or the
 	 * specified group by id or name.
 	 *
