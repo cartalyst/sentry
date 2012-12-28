@@ -15,6 +15,9 @@
         "illuminate/session": "1.2.*",
         "illuminate/cookie": "1.2.*"
     },
+    "require-dev": {
+        "mockery/mockery": "0.7.2"
+    },
     "autoload": {
     	"classmap": [
             "src/Cartalyst/Sentry/ProviderInterface.php",
@@ -25,5 +28,6 @@
         "psr-0": {
             "Cartalyst\\Sentry": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
