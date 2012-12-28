@@ -98,6 +98,13 @@ class DatabaseManager implements ConnectionResolverInterface {
 		return $this->connections[$name];
 	}
 
+	/**
+	 * Sets database configuration for the given name.
+	 *
+	 * @param  string  $name
+	 * @param  array   $config
+	 * @return void
+	 */
 	public function setConfig($name, array $config)
 	{
 		$this->configs[$name] = $config;

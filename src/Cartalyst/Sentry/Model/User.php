@@ -30,7 +30,6 @@ use Cartalyst\Sentry\UserExistsException;
 use Cartalyst\Sentry\InvalidPermissionException;
 use Cartalyst\Sentry\GroupNotFoundException;
 
-
 class User extends EloquentModel implements UserInterface, UserGroupInterface {
 
 	/**

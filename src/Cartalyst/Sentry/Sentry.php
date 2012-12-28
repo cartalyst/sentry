@@ -147,13 +147,13 @@ class Sentry
 		// make sure the user exists
 		if ( ! $user->exists)
 		{
-			throw new UserNotFoundException();
+			throw new UserNotFoundException;
 		}
 
 		// check if the user is activated
 		if ( ! $user->isActivated())
 		{
-			throw new UserNotActivatedException();
+			throw new UserNotActivatedException;
 		}
 
 		$this->user = $user;
