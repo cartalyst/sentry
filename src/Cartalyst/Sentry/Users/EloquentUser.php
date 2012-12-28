@@ -20,7 +20,6 @@
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Cartalyst\Sentry\UserInterface;
-use Cartalyst\Sentry\UserGroupInterface;
 use Cartalyst\Sentry\GroupInterface;
 use Cartalyst\Sentry\HashInterface;
 use Cartalyst\Sentry\Hash\Bcrypt;
@@ -30,7 +29,7 @@ use Cartalyst\Sentry\UserExistsException;
 use Cartalyst\Sentry\InvalidPermissionException;
 use Cartalyst\Sentry\GroupNotFoundException;
 
-class User extends EloquentModel implements UserInterface, UserGroupInterface {
+class User extends EloquentModel implements UserInterface {
 
 	/**
 	 * The table associated with the model.

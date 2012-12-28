@@ -102,6 +102,44 @@ interface UserInterface {
 	public function clearResetPassword();
 
 	/**
+	 * Get user's groups
+	 *
+	 * @return Cartalyst\Sentry\GroupInterface
+	 */
+	public function getGroups();
+
+	/**
+	 * Add user to group
+	 *
+	 * @param  int or Cartalyst\Sentry\GroupInterface
+	 * @return bool
+	 */
+	public function addGroup($group);
+
+	/**
+	 * Remove user from group
+	 *
+	 * @param  integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @return bool
+	 */
+	public function removeGroup($group);
+
+	/**
+	 * See if user is in a group
+	 *
+	 * @param  integer  $group
+	 * @return bool
+	 */
+	public function inGroup($group);
+
+	/**
+	 * Get merged permissions - user overrides groups
+	 *
+	 * @return array
+	 */
+	public function getGroupPermissions();
+
+	/**
 	 * See if a user has a required permission
 	 *
 	 * @param  string  $permission
