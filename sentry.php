@@ -553,7 +553,7 @@ class Sentry
 	/**
 	 * Check if remember me is set and valid
 	 */
-	public static function is_remembered()
+	protected static function is_remembered()
 	{
 		$encoded_val = Cookie::get(Config::get('sentry::sentry.remember_me.cookie_name'));
 
