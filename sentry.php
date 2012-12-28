@@ -79,6 +79,14 @@ class Sentry
 	 */
 	public static function _init()
 	{
+		// If the user has added a config file in application/config/sentry.php
+		// merge those values into our config.
+		// This allows users to override sentry settings without having to edit the bundle code.
+		if( is_array( Config::get('sentry') ) ) {
+			$config = Config::get('sentry::sentry');
+			$config = array_merge_recursive( $config, Config::get('sentry') );
+			Config::set('sentry::sentry', $config );
+		}
 		// set static vars for later use
 		static::$login_column = trim(Config::get('sentry::sentry.login_column'));
 		static::$suspend = trim(Config::get('sentry::sentry.limit.enabled'));
