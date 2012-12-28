@@ -305,10 +305,18 @@ class Sentry
 		// invalid session values - kill the user session
 		if ($user_id === null or ! is_numeric($user_id))
 		{
-			// if they are not logged in - check for cookie and log them in
-			if (static::is_remembered())
+			try
 			{
-				return true;
+				// if they are not logged in - check for cookie and log them in
+				if (static::is_remembered())
+				{
+					return true;
+				}
+			}
+			catch(SentryException $e)
+			{
+				static::logout();
+				return false;
 			}
 
 			//else log out
@@ -545,7 +553,7 @@ class Sentry
 	/**
 	 * Check if remember me is set and valid
 	 */
-	protected static function is_remembered()
+	public static function is_remembered()
 	{
 		$encoded_val = Cookie::get(Config::get('sentry::sentry.remember_me.cookie_name'));
 
@@ -554,8 +562,16 @@ class Sentry
 			$val = base64_decode($encoded_val);
 			list($login_column, $hash) = explode(':', $val);
 
+			if ( ! static::user_exists($login_column))
+			{
+				static::logout();
+				return false;
+			}
+
+			$user = static::validate_user($login_column, $hash, 'remember_me');
+			
 			// if user is validated
-			if ($user = static::validate_user($login_column, $hash, 'remember_me'))
+			if ($user)
 			{
 				// update last login
 				$user->update(array(
