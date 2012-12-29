@@ -20,9 +20,8 @@
 
 use Cartalyst\Sentry\SessionInterface;
 use Illuminate\Session\Store as SessionStore;
-use Session;
 
-class Laravel implements SessionInterface {
+class IlluminateSession implements StorageInterface {
 
 	/**
 	 * The key used in the Session.

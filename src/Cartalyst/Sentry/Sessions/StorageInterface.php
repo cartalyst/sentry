@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-interface SessionInterface {
+interface StorageInterface {
 
 	/**
 	 * Returns the session key.
