@@ -19,6 +19,8 @@
  */
 
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Groups\NameFieldRequiredException;
+use Cartalyst\Sentry\Groups\GroupExistsException;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model implements GroupInterface {
@@ -42,12 +44,32 @@ class Group extends Model implements GroupInterface {
 	protected $allowedPermissionsValues = array(0, 1);
 
 	/**
+	 * Returns the group's ID
+	 *
+	 * @return mixed
+	 */
+	public function getGroupId()
+	{
+		return $this->getKey();
+	}
+
+	/**
+	 * Returns the group's name
+	 *
+	 * @return mixed
+	 */
+	public function getGroupName()
+	{
+		return $this->name;
+	}
+
+	/**
 	 * Validates the group and throws a number of
 	 * Exceptions if validation fails.
 	 *
-	 * @return  bool
-	 * @throws  Cartalyst\Sentry\Groups\NameFieldRequiredException
-	 * @throws  Cartalyst\Sentry\Groups\GroupExistsException
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
 	 */
 	public function validate()
 	{
@@ -67,12 +89,23 @@ class Group extends Model implements GroupInterface {
 			$group = null;
 		}
 
-		if ($group and $group->getKey() != $attributes->getKey())
+		if ($group and $group->getKey() != $this->getKey())
 		{
 			throw new GroupExistsException;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Saves the given group.
+	 *
+	 * @return bool
+	 */
+	public function save()
+	{
+		$this->validate();
+		return parent::save();
 	}
 
 	/**

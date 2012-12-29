@@ -24,22 +24,34 @@ class GroupExistsException extends \RuntimeException {}
 interface GroupInterface {
 
 	/**
+	 * Returns the group's ID
+	 *
+	 * @return mixed
+	 */
+	public function getGroupId();
+
+	/**
+	 * Returns the group's name
+	 *
+	 * @return mixed
+	 */
+	public function getGroupName();
+
+	/**
 	 * Validates the group and throws a number of
 	 * Exceptions if validation fails.
 	 *
-	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
 	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
 	 */
-	public function validate(GroupInterface $group);
+	public function validate();
 
 	/**
 	 * Saves the given group.
 	 *
-	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
-	public function save(GroupInterface $group);
+	public function save();
 
 }

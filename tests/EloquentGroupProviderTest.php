@@ -19,19 +19,8 @@
  */
 
 use Mockery as m;
-use Cartalyst\Sentry\Groups\EloquentGroup;
 
 class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
-
-	/**
-	 * Setup resources and dependencies.
-	 *
-	 * @return void
-	 */
-	public function setUp()
-	{
-		
-	}
 
 	/**
 	 * Close mockery.
