@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Hashing;
+<?php namespace Cartalyst\Sentry\Groups;
 /**
  * Part of the Sentry Package.
  *
@@ -18,23 +18,26 @@
  * @link       http://cartalyst.com
  */
 
+class GroupNotFoundException extends \RuntimeException {}
+
 interface ProviderInterface {
 
 	/**
-	 * Hash String
+	 * Find group by ID.
 	 *
-	 * @param  string  $str
-	 * @return string
+	 * @param  int  $id
+	 * @return Cartalyst\Sentry\GroupInterface  $group
+	 * @throws Cartalyst\Sentry\GroupNotFoundException
 	 */
-	public function hash($str);
+	public function findById($id);
 
 	/**
-	 * Check Hash Values
+	 * Find group by name.
 	 *
-	 * @param  string  $str
-	 * @param  string  $hashedStr
-	 * @return bool
+	 * @param  string  $name
+	 * @return Cartalyst\Sentry\GroupInterface  $group
+	 * @throws Cartalyst\Sentry\GroupNotFoundException
 	 */
-	public function checkhash($str, $hashedStr);
+	public function findByName($name);
 
 }

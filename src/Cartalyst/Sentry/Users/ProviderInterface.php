@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Users;
 /**
  * Part of the Sentry Package.
  *

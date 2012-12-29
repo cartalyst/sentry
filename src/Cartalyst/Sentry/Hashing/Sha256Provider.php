@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Hash;
+<?php namespace Cartalyst\Sentry\Hashing;
 /**
  * Part of the Sentry Package.
  *
@@ -18,16 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\HashInterface;
-
-class Bcrypt implements HashInterface {
-
-	/**
-	 * Hash Strength
-	 *
-	 * @var integer
-	 */
-	protected $strength = 8;
+class Sha256Provider implements ProviderInterface {
 
 	/**
 	 * Salt Length
@@ -44,13 +35,10 @@ class Bcrypt implements HashInterface {
 	 */
 	public function hash($str)
 	{
-		// format strength
-		$strength = str_pad($this->strength, 2, '0', STR_PAD_LEFT);
-
 		// create salt
 		$salt = $this->createSalt();
 
-		return crypt($str, '$2a$'.$strength.'$'.$salt);
+		return $salt.hash('sha256', $salt.$password);
 	}
 
 	/**
@@ -62,9 +50,11 @@ class Bcrypt implements HashInterface {
 	 */
 	public function checkHash($str, $hashedStr)
 	{
-		$strength = substr($hashedStr, 4, 2);
+		$salt = substr($hashedStr, 0, 16);
 
-		return crypt($str, $hashedStr) === $hashedStr;
+		$password = $salt.hash('sha256', $salt.$str);
+
+		return $password === $hashedStr;
 	}
 
 	/**

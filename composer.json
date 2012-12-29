@@ -20,9 +20,9 @@
     },
     "autoload": {
     	"classmap": [
-            "src/Cartalyst/Sentry/ProviderInterface.php",
-            "src/Cartalyst/Sentry/ThrottleInterface.php",
-            "src/Cartalyst/Sentry/UserInterface.php",
+            "src/Cartalyst/Sentry/Groups/ProviderInterface.php",
+            "src/Cartalyst/Sentry/Throttling/ProviderInterface.php",
+            "src/Cartalyst/Sentry/Users/ProviderInterface.php",
     		"src/migrations"
     	],
         "psr-0": {

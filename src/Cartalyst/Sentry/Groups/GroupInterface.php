@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Groups;
 /**
  * Part of the Sentry Package.
  *
@@ -18,28 +18,28 @@
  * @link       http://cartalyst.com
  */
 
-use RuntimeException;
-
-class GroupNotFoundException extends RuntimeException {}
-class NameFieldRequiredException extends RuntimeException {}
-class GroupExistsException extends RuntimeException {}
+class NameFieldRequiredException extends \RuntimeException {}
+class GroupExistsException extends \RuntimeException {}
 
 interface GroupInterface {
 
 	/**
-	 * Find group by id
+	 * Validates the group and throws a number of
+	 * Exceptions if validation fails.
 	 *
-	 * @param  integer  $id
-	 * @return Cartalyst\Sentry\GroupInterface or false
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
 	 */
-	public function findById($id);
+	public function validate(GroupInterface $group);
 
 	/**
-	 * Find group by name
+	 * Saves the given group.
 	 *
-	 * @param  string  $name
-	 * @return Cartalyst\Sentry\GroupInterface or false
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
 	 */
-	public function findByName($login);
+	public function save(GroupInterface $group);
 
 }
