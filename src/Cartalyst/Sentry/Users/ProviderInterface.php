@@ -18,16 +18,10 @@
  * @link       http://cartalyst.com
  */
 
-use RuntimeException;
-use OutOfBoundsException;
+class UserNotActivatedException extends \RuntimeException {}
+class UserNotFoundException extends \RuntimeException {}
 
-class UserNotActivatedException extends RuntimeException {}
-class LoginFieldRequiredException extends RuntimeException {}
-class UserExistsException extends RuntimeException {}
-class UserNotFoundException extends RuntimeException {}
-class InvalidPermissionException extends OutOfBoundsException {}
-
-interface UserInterface {
+interface ProviderInterface {
 
 	/**
 	 * Get user login column
@@ -39,7 +33,7 @@ interface UserInterface {
 	/**
 	 * Get user login column
 	 *
-	 * @param  integer  $id
+	 * @param  int  $id
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findById($id);
@@ -119,7 +113,7 @@ interface UserInterface {
 	/**
 	 * Remove user from group
 	 *
-	 * @param  integer|Cartalyst\Sentry\GroupInterface  $group
+	 * @param  int|Cartalyst\Sentry\GroupInterface  $group
 	 * @return bool
 	 */
 	public function removeGroup($group);
@@ -127,7 +121,7 @@ interface UserInterface {
 	/**
 	 * See if user is in a group
 	 *
-	 * @param  integer  $group
+	 * @param  int  $group
 	 * @return bool
 	 */
 	public function inGroup($group);

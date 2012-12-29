@@ -23,7 +23,7 @@ class Sha256Hasher implements HasherInterface {
 	/**
 	 * Salt Length
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $saltLength = 16;
 

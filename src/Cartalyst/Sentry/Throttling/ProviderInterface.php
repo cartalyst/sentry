@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Throttling;
 /**
  * Part of the Sentry Package.
  *
@@ -18,15 +18,12 @@
  * @link       http://cartalyst.com
  */
 
-use RuntimeException;
-use OutOfBoundsException;
+class UserSuspendedException extends \RuntimeException {}
+class UserBannedException extends \RuntimeException {}
+class ThrottleLimitException extends \OutOfBoundsException {}
+class ThrottleTimeException extends \OutOfBoundsException {}
 
-class UserSuspendedException extends RuntimeException {}
-class UserBannedException extends RuntimeException {}
-class ThrottleLimitException extends OutOfBoundsException {}
-class ThrottleTimeException extends OutOfBoundsException {}
-
-interface ThrottleInterface {
+interface ProviderInterface {
 
 	/**
 	 * Set Attempt Limit

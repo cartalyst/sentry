@@ -23,14 +23,14 @@ class BcryptHasher implements HasherInterface {
 	/**
 	 * Hash Strength
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $strength = 8;
 
 	/**
 	 * Salt Length
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $saltLength = 16;
 
