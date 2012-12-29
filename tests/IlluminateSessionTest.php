@@ -48,6 +48,12 @@ class IlluminateSessionTest extends PHPUnit_Framework_TestCase {
 		m::close();
 	}
 
+	public function testOverridingKey()
+	{
+		$this->session = new IlluminateSession($this->store, 'foo');
+		$this->assertEquals('foo', $this->session->getKey());
+	}
+
 	public function testPut()
 	{
 		$this->store->shouldReceive('put')->with('foo', 'bar')->once();

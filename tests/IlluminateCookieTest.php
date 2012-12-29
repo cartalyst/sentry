@@ -23,6 +23,8 @@ use Cartalyst\Sentry\Cookies\IlluminateCookie;
 
 class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
+	protected $jar;
+
 	protected $cookie;
 
 	/**
@@ -32,9 +34,8 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-
-
-		$this->cookie = m::mock('Cartalyst\Sentry\Cookies\IlluminateCookie[setCookie]');
+		$this->jar    = m::mock('Illuminate\CookieJar');
+		$this->cookie = new IlluminateCookie($this->jar);
 	}
 
 	/**
@@ -47,34 +48,43 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 		m::close();
 	}
 
+	public function testOverridingKey()
+	{
+		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
+		$this->cookie->put('foo', 'bar', 123);
+	}
+
 	public function testPut()
 	{
-		$this->cookie->shouldReceive('setCookie')->with('foo', 'bar')->once();
+		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
+		$this->cookie->put('foo', 'bar', 123);
+	}
 
-		$this->session->put('foo', 'bar');
+	public function testForever()
+	{
+		$this->jar->shouldReceive('forever')->with('foo', 'bar')->once();
+		$this->cookie->forever('foo', 'bar');
 	}
 
 	public function testGet()
 	{
-		$this->store->shouldReceive('get')->with('foo', null)->twice()->andReturn('bar');
+		$this->jar->shouldReceive('get')->with('foo', null)->twice()->andReturn('bar');
 
-		// Test with default "null" param as well
-		$this->assertEquals('bar', $this->session->get('foo'));
-		$this->assertEquals('bar', $this->session->get('foo', null));
+		// Ensure default param is "null"
+		$this->assertEquals('bar', $this->cookie->get('foo'));
+		$this->assertEquals('bar', $this->cookie->get('foo', null));
 	}
 
 	public function testForget()
 	{
-		$this->store->shouldReceive('forget')->with('foo')->once();
-
-		$this->session->forget('foo');
+		$this->jar->shouldReceive('forget')->with('foo')->once();
+		$this->cookie->forget('foo');
 	}
 
 	public function testFlush()
 	{
-		$this->store->shouldReceive('forget')->with($this->session->getKey())->once();
-
-		$this->session->flush();
+		$this->jar->shouldReceive('forget')->with($this->cookie->getKey())->once();
+		$this->cookie->flush();
 	}
 
 }

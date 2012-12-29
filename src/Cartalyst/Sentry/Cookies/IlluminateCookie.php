@@ -38,6 +38,13 @@ class IlluminateCookie implements CookieInterface {
 	protected $jar;
 
 	/**
+	 * The cookies queued by the guards.
+	 *
+	 * @var array
+	 */
+	protected $queuedCookies = array();
+
+	/**
 	 * Creates a new cookie instance.
 	 *
 	 * @param  Illuminate\CookieJar  $jar
@@ -75,7 +82,7 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function put($key, $value, $minutes)
 	{
-		return $this->setCookie($this->jar->make($key, $value, $minutes));
+		$this->queuedCookies[] = $this->jar->make($key, $value, $minutes);
 	}
 
 	/**
@@ -87,7 +94,7 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function forever($key, $value)
 	{
-		return $this->setCookie($this->jar->forever($key, $value));
+		$this->queuedCookies[] = $this->jar->forever($key, $value);
 	}
 
 	/**
@@ -110,7 +117,7 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function forget($key)
 	{
-		return $this->setCookie($this->jar->forget($key));
+		$this->queuedCookies[] = $this->jar->forget($key);
 	}
 
 	/**
@@ -120,20 +127,17 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function flush()
 	{
-		return $this->forget($this->key);
+		$this->forget($this->key);
 	}
 
 	/**
-	 * Writes to the cookie object.
+	 * Get the cookies queued by the driver.
 	 *
-	 * @param  Symfony\Component\HttpFoundation\Cookie  $cookie
-	 * @return bool
+	 * @return array
 	 */
-	public function setCookie(Cookie $cookie)
+	public function getQueuedCookies()
 	{
-		// We manually set the cookie since Illuminate
-		// requires you to attach it it a response
-		// which we don't have
-		return setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+		return $this->queuedCookies;
 	}
+
 }

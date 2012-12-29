@@ -26,6 +26,9 @@ class SentryServiceProvider extends ServiceProvider {
 	 * Register the service provider.
 	 *
 	 * @return void
+	 *
+	 * @todo make sure to hook onto application "after" event
+	 * to set cookies in response.
 	 */
 	public function register()
 	{
