@@ -28,7 +28,7 @@ class Sha256Hasher implements HasherInterface {
 	public $saltLength = 16;
 
 	/**
-	 * Hash String
+	 * Hash string.
 	 *
 	 * @param  string  $string
 	 * @return string
@@ -42,7 +42,7 @@ class Sha256Hasher implements HasherInterface {
 	}
 
 	/**
-	 * Check Hash Values
+	 * Check string against hashed string.
 	 *
 	 * @param  string  $string
 	 * @param  string  $hashedString
@@ -56,7 +56,7 @@ class Sha256Hasher implements HasherInterface {
 	}
 
 	/**
-	 * Create a random string for a salt
+	 * Create a random string for a salt.
 	 *
 	 * @return string
 	 */

@@ -21,7 +21,7 @@
 interface HasherInterface {
 
 	/**
-	 * Hash String
+	 * Hash string.
 	 *
 	 * @param  string  $string
 	 * @return string
@@ -29,12 +29,19 @@ interface HasherInterface {
 	public function hash($string);
 
 	/**
-	 * Check Hash Values
+	 * Check string against hashed string.
 	 *
 	 * @param  string  $string
 	 * @param  string  $hashedString
 	 * @return bool
 	 */
 	public function checkhash($string, $hashedString);
+
+	/**
+	 * Create a random string for a salt.
+	 *
+	 * @return string
+	 */
+	public function createSalt();
 
 }

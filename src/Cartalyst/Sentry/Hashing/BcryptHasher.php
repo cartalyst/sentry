@@ -35,7 +35,7 @@ class BcryptHasher implements HasherInterface {
 	public $saltLength = 16;
 
 	/**
-	 * Hash String
+	 * Hash string.
 	 *
 	 * @param  string  $string
 	 * @return string
@@ -52,7 +52,7 @@ class BcryptHasher implements HasherInterface {
 	}
 
 	/**
-	 * Check Hash Values
+	 * Check string against hashed string.
 	 *
 	 * @param  string  $string
 	 * @param  string  $hashedString
@@ -66,7 +66,7 @@ class BcryptHasher implements HasherInterface {
 	}
 
 	/**
-	 * Create a random string for a salt
+	 * Create a random string for a salt.
 	 *
 	 * @return string
 	 */
