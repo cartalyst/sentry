@@ -18,6 +18,9 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Cookies\IlluminateCookie;
+use Cartalyst\Sentry\Sentry;
+use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Illuminate\Support\ServiceProvider;
 
 class SentryServiceProvider extends ServiceProvider {
@@ -27,18 +30,55 @@ class SentryServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 *
-	 * @todo make sure to hook onto application "after" event
-	 * to set cookies in response.
 	 */
 	public function register()
 	{
+		$this->registerSession();
+
+		$this->registerCookie();
+
+		$this->registerEvents();
+
 		$this->app['sentry'] = $this->app->share(function($app)
 		{
-			return new Sentry(
-				new Provider\Eloquent,
-				new Session\Laravel($app['session']),
-				new Cookie\Laravel($app['cookie'])
-			);
+			// Once the authentication service has actually been requested by the developer
+			// we will set a variable in the application indicating such. This helps us
+			// know that we need to set any queued cookies in the after event later.
+			$app['sentry.loaded'] = true;
+
+			return new Sentry($app['sentry.session'], $app['sentry.cookie']);
+		});
+	}
+
+	protected function registerSession()
+	{
+		$this->app['sentry.session'] = $this->app->share(function($app)
+		{
+			return new IlluminateSession($app['session']);
+		});
+	}
+
+	protected function registerCookie()
+	{
+		$this->app['sentry.cookie'] = $this->app->share(function($app)
+		{
+			return new IlluminateCookie($app['cookie']);
+		});
+	}
+
+	protected function registerEvents()
+	{
+		$app = $this->app;
+
+		$app->after(function($request, $response) use ($app)
+		{
+			if (isset($app['sentry.loaded']))
+			{
+				foreach ($app['sentry.cookie']->getQueuedCookies() as $cookie)
+				{
+					$response->headers->setCookie($cookie);
+				}
+			}
 		});
 	}
 
