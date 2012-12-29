@@ -19,8 +19,6 @@
  */
 
 use Cartalyst\Sentry\Groups\GroupInterface;
-use Cartalyst\Sentry\Groups\NameFieldRequiredException;
-use Cartalyst\Sentry\Groups\GroupExistsException;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model implements GroupInterface {
@@ -61,40 +59,6 @@ class Group extends Model implements GroupInterface {
 	public function getGroupName()
 	{
 		return $this->name;
-	}
-
-	/**
-	 * Validates the group and throws a number of
-	 * Exceptions if validation fails.
-	 *
-	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
-	 */
-	public function validate()
-	{
-		// Check if name field was passed
-		if (empty($this->name))
-		{
-			throw new NameFieldRequiredException;
-		}
-
-		// Check if group already exists
-		try
-		{
-			$group = $this->findByName($this->name);
-		}
-		catch (GroupNotFoundException $e)
-		{
-			$group = null;
-		}
-
-		if ($group and $group->getKey() != $this->getKey())
-		{
-			throw new GroupExistsException;
-		}
-
-		return true;
 	}
 
 	/**

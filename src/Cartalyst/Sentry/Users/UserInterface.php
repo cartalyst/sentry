@@ -45,13 +45,11 @@ interface UserInterface {
 	public function getUserPassword();
 
 	/**
-	 * Validates the users and throws a number of
-	 * Exceptions if validation fails.
+	 * Check if user is activated
 	 *
+	 * @param  UserInterface  $user
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Users\LoginFieldRequiredException
-	 * @throws Cartalyst\Sentry\Users\UserExistsException
 	 */
-	public function validate();
+	public function isActivated();
 
 }

@@ -18,7 +18,9 @@
  * @link       http://cartalyst.com
  */
 
+class GroupExistsException extends \RuntimeException {}
 class GroupNotFoundException extends \RuntimeException {}
+class NameFieldRequiredException extends \RuntimeException {}
 
 interface ProviderInterface {
 
@@ -39,5 +41,16 @@ interface ProviderInterface {
 	 * @throws Cartalyst\Sentry\GroupNotFoundException
 	 */
 	public function findByName($name);
+
+	/**
+	 * Validates the group and throws a number of
+	 * Exceptions if validation fails.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
+	 */
+	public function validate(GroupInterface $group);
 
 }

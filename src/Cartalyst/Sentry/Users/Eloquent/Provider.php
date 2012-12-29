@@ -19,30 +19,45 @@
  */
 
 use Cartalyst\Sentry\Users\ProviderInterface;
+use Cartalyst\Sentry\Users\UserInterface;
+use Cartalyst\Sentry\Users\UserNotActivatedException;
+use Cartalyst\Sentry\Users\UserNotFoundException;
+use Cartalyst\Sentry\Groups\GroupInterface;
 
 class Provider implements ProviderInterface {
 
 	/**
-	 * Get user login column
+	 * The Eloquent user model.
 	 *
-	 * @return string
+	 * @var string
 	 */
-	public function getLoginColumn()
+	protected $model = 'Cartalyst\Sentry\Users\Eloquent\User';
+
+	/**
+	 * Create a new Eloquent User provider.
+	 *
+	 * @param  string  $model
+	 * @return void
+	 */
+	public function __construct($model = null)
 	{
-		return $this->loginColumn;
+		if (isset($model))
+		{
+			$this->model = $model;
+		}
 	}
 
 	/**
-	 * Get user login column
+	 * Finds a user by the given user ID.
 	 *
-	 * @param  int  $id
+	 * @param  mixed  $id
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findById($id)
 	{
-		$user = $this->find($id);
+		$model = $this->createModel();
 
-		if ( ! $user)
+		if ( ! $user = $model->newQuery()->find($id))
 		{
 			throw new UserNotFoundException;
 		}
@@ -51,16 +66,16 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Get user by login value
+	 * Finds a user by the login value.
 	 *
 	 * @param  string  $login
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findByLogin($login)
 	{
-		$user = $this->where($this->loginColumn, '=', $login)->first();
+		$model = $this->createModel();
 
-		if ( ! $user)
+		if ( ! $user = $model->newQuery()->where($model->getLoginAttributeName(), '=', $login)->first())
 		{
 			throw new UserNotFoundException;
 		}
@@ -69,101 +84,162 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Get user by credentials
+	 * Validate a user against the given credentials.
 	 *
-	 * @param  string  $login
-	 * @param  string  $password
+	 * @param  array  $credentials
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
-	public function findByCredentials(array $credentials)
+	public function validateCredentials(array $credentials)
 	{
-		if ( ! array_key_exists($this->loginColumn, $credentials))
-		{
-			throw new LoginFieldRequiredException;
-		}
 
-		$query = $this->newQuery();
-		$hashedCredentials = array();
-
-		// build query from given credentials
-		foreach ($credentials as $credential => $value)
-		{
-			// remove hashed attributes to check later as we need to check these
-			// values after we retrieved them because of salts
-			if (in_array($credential, $this->hashedFields))
-			{
-				$hashedCredentials += array($credential => $value);
-				continue;
-			}
-
-			$query = $query->where($credential, '=', $value);
-		}
-
-		// retrieve the user
-		$user = $query->first();
-
-		if ( ! $user)
-		{
-			throw new UserNotFoundException;
-		}
-
-		// now we check for hashed values to make sure they match as well
-		foreach ($hashedCredentials as $credential => $value)
-		{
-			if ( ! $this->checkHash($value, $user->{$credential}))
-			{
-				throw new UserNotFoundException;
-			}
-		}
-
-		return $user;
 	}
 
 	/**
-	 * Registers a user
+	 * Validates the users and throws a number of
+	 * Exceptions if validation fails.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Users\LoginFieldRequiredException
+	 * @throws Cartalyst\Sentry\Users\UserExistsException
+	 */
+	public function validate(UserInterface $user)
+	{
+
+	}
+
+	/**
+	 * Attempts to activate the given user by checking
+	 * the activate code.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $activationCode
+	 * @return bool
+	 */
+	public function validateActivate(UserInterface $user, $activationCode)
+	{
+
+	}
+
+	/**
+	 * Get a reset password code for the given user.
 	 *
 	 * @return string
 	 */
-	public function register()
+	public function getResetPasswordCode(UserInterface $user)
 	{
-		// check if user already exists
-		try
-		{
-			$user = $this->findByLogin($this->{$this->loginColumn});
-		}
-		catch (UserNotFoundException $e)
-		{
-			$user = null;
-		}
 
-		// see if the user already exists and is activated
-		// if so, throw exception
-		if ($user and $user->activated)
-		{
-			throw new UserExistsException;
-		}
-		// if the user does exist, but is not activated
-		// just generate a new activation code and upate the user
-		elseif ($user)
-		{
-			// generate an activation code
-			$activationCode = $this->randomString();
+	}
 
-			$user->activation_hash = $activationCode;
-			$user->save();
-		}
-		// otherwise add the activation code and save the new user
-		else
-		{
-			// generate an activation code
-			$activationCode = $this->randomString();
+	/**
+	 * Attemps to reset a user's password by matching
+	 * the reset code generated with the user's.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $resetCode
+	 * @param  string  $newPassword
+	 * @return bool
+	 */
+	public function attemptResetPassword(UserInterface $user, $resetCode, $newPassword)
+	{
 
-			$this->activation_hash = $activationCode;
-			$this->activated = 0;
-			$this->save();
-		}
+	}
 
-		return $activationCode;
+	/**
+	 * Wipes out the data associated with resetting
+	 * a password.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return $user
+	 */
+	public function clearResetPassword(UserInterface $user)
+	{
+
+	}
+
+	/**
+	 * Returns an arrya of groups which the given
+	 * user belongs to.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return array
+	 */
+	public function getGroups(UserInterface $user)
+	{
+
+	}
+
+	/**
+	 * Adds the user to the given group
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function addGroup(UserInterface $user, GroupInterface $group)
+	{
+
+	}
+
+	/**
+	 * Remove user from the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function removeGroup(UserInterface $user, GroupInterface $group)
+	{
+
+	}
+
+	/**
+	 * See if user is in the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function inGroup(GroupInterface $group)
+	{
+
+	}
+
+	/**
+	 * Returns an array of merged permissions for each
+	 * group the user is in.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return array
+	 */
+	public function getMergedPermissions(UserInterface $user)
+	{
+
+	}
+
+	/**
+	 * See if a user has a required permission. Permissions
+	 * are merged from all groups the user belongs to
+	 * and then are checked against the passed permission.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $permission
+	 * @return bool
+	 */
+	public function hasAccess(UserInterface $user, $permission)
+	{
+
+	}
+
+	/**
+	 * Create a new instance of the model.
+	 *
+	 * @return Illuminate\Database\Eloquent\Model
+	 */
+	public function createModel()
+	{
+		$class = '\\'.ltrim($this->model, '\\');
+
+		return new $class();
 	}
 
 }

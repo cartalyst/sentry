@@ -18,7 +18,10 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Groups\GroupExistsException;
+use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Groups\GroupNotFoundException;
+use Cartalyst\Sentry\Groups\NameFieldRequiredException;
 use Cartalyst\Sentry\Groups\ProviderInterface;
 
 class Provider implements ProviderInterface {
@@ -72,14 +75,51 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByName($name)
 	{
-		$query = $this->createModel()->getQuery();
+		$model = $this->createModel();
 
-		if ( ! $group = $query->where('name', '=', $name)->first())
+		if ( ! $group = $model->newQuery()->where('name', '=', $name)->first())
 		{
 			throw new GroupNotFoundException;
 		}
 
 		return $group;
+	}
+
+	/**
+	 * Validates the group and throws a number of
+	 * Exceptions if validation fails.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
+	 */
+	public function validate(GroupInterface $group)
+	{
+		$name = $group->getGroupName();
+
+		// Check if name field was passed
+		if ( ! $name)
+		{
+			throw new NameFieldRequiredException;
+		}
+
+		// Check if group already exists
+		try
+		{
+			$persistedGroup = $this->findByName($name);
+		}
+		catch (GroupNotFoundException $e)
+		{
+			$persistedGroup = null;
+		}
+
+		if ($persistedGroup and $persistedGroup->getGroupId() != $group->getGroupId())
+		{
+			throw new GroupExistsException;
+		}
+
+		return true;
 	}
 
 	/**
@@ -89,9 +129,9 @@ class Provider implements ProviderInterface {
 	 */
 	public function createModel()
 	{
-		$class = ltrim($this->model, '\\');
+		$class = '\\'.ltrim($this->model, '\\');
 
-		return new $class(array(), $this);
+		return new $class();
 	}
 
 }

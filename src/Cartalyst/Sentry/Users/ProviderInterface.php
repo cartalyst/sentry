@@ -18,28 +18,23 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Groups\GroupInterface;
+
 class UserNotActivatedException extends \RuntimeException {}
 class UserNotFoundException extends \RuntimeException {}
 
 interface ProviderInterface {
 
 	/**
-	 * Get user login column
+	 * Finds a user by the given user ID.
 	 *
-	 * @return string
-	 */
-	public function getLoginColumn();
-
-	/**
-	 * Get user login column
-	 *
-	 * @param  int  $id
+	 * @param  mixed  $id
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
 	public function findById($id);
 
 	/**
-	 * Get user by login value
+	 * Finds a user by the login value.
 	 *
 	 * @param  string  $login
 	 * @return Cartalyst\Sentry\UserInterface
@@ -47,98 +42,114 @@ interface ProviderInterface {
 	public function findByLogin($login);
 
 	/**
-	 * Get user by credentials
+	 * Validate a user against the given credentials.
 	 *
 	 * @param  array  $credentials
 	 * @return Cartalyst\Sentry\UserInterface
 	 */
-	public function findByCredentials(array $attributes);
+	public function validateCredentials(array $credentials);
 
 	/**
-	 * Activate a user
+	 * Validates the users and throws a number of
+	 * Exceptions if validation fails.
 	 *
-	 * @param  string  $login
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Users\LoginFieldRequiredException
+	 * @throws Cartalyst\Sentry\Users\UserExistsException
+	 */
+	public function validate(UserInterface $user);
+
+	/**
+	 * Attempts to activate the given user by checking
+	 * the activate code.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  string  $activationCode
 	 * @return bool
 	 */
-	public function activate($activationCode);
+	public function validateActivate(UserInterface $user, $activationCode);
 
 	/**
-	 * Check if user is activated
+	 * Get a reset password code for the given user.
 	 *
-	 * @param  UserInterface  $user
-	 * @return bool
+	 * @return string
 	 */
-	public function isActivated();
+	public function getResetPasswordCode(UserInterface $user);
 
 	/**
-	 * Reset a user's password
+	 * Attemps to reset a user's password by matching
+	 * the reset code generated with the user's.
 	 *
-	 * @return string|false
-	 */
-	public function resetPassword();
-
-	/**
-	 * Confirm a password reset request
-	 *
-	 * @param  string  $password
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  string  $resetCode
+	 * @param  string  $newPassword
 	 * @return bool
 	 */
-	public function resetPasswordConfirm($password, $resetCode);
+	public function attemptResetPassword(UserInterface $user, $resetCode, $newPassword);
 
 	/**
-	 * Clears Password Reset Fields
+	 * Wipes out the data associated with resetting
+	 * a password.
 	 *
-	 * @param  UserInterface  $user
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return $user
 	 */
-	public function clearResetPassword();
+	public function clearResetPassword(UserInterface $user);
 
 	/**
-	 * Get user's groups
+	 * Returns an arrya of groups which the given
+	 * user belongs to.
 	 *
-	 * @return Cartalyst\Sentry\GroupInterface
-	 */
-	public function getGroups();
-
-	/**
-	 * Add user to group
-	 *
-	 * @param  int or Cartalyst\Sentry\GroupInterface
-	 * @return bool
-	 */
-	public function addGroup($group);
-
-	/**
-	 * Remove user from group
-	 *
-	 * @param  int|Cartalyst\Sentry\GroupInterface  $group
-	 * @return bool
-	 */
-	public function removeGroup($group);
-
-	/**
-	 * See if user is in a group
-	 *
-	 * @param  int  $group
-	 * @return bool
-	 */
-	public function inGroup($group);
-
-	/**
-	 * Get merged permissions - user overrides groups
-	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return array
 	 */
-	public function getGroupPermissions();
+	public function getGroups(UserInterface $user);
 
 	/**
-	 * See if a user has a required permission
+	 * Adds the user to the given group
 	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function addGroup(UserInterface $user, GroupInterface $group);
+
+	/**
+	 * Remove user from the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function removeGroup(UserInterface $user, GroupInterface $group);
+
+	/**
+	 * See if user is in the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function inGroup(GroupInterface $group);
+
+	/**
+	 * Returns an array of merged permissions for each
+	 * group the user is in.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return array
+	 */
+	public function getMergedPermissions(UserInterface $user);
+
+	/**
+	 * See if a user has a required permission. Permissions
+	 * are merged from all groups the user belongs to
+	 * and then are checked against the passed permission.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  string  $permission
 	 * @return bool
 	 */
-	public function hasAccess($permission);
+	public function hasAccess(UserInterface $user, $permission);
 
 }

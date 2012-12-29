@@ -18,9 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-class NameFieldRequiredException extends \RuntimeException {}
-class GroupExistsException extends \RuntimeException {}
-
 interface GroupInterface {
 
 	/**
@@ -36,16 +33,6 @@ interface GroupInterface {
 	 * @return mixed
 	 */
 	public function getGroupName();
-
-	/**
-	 * Validates the group and throws a number of
-	 * Exceptions if validation fails.
-	 *
-	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
-	 */
-	public function validate();
 
 	/**
 	 * Saves the given group.
