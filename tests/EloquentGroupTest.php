@@ -200,4 +200,15 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, $group->toArray());
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testExceptionIsThrownForInvalidPermissionsDecoding()
+	{
+		$json = '{"foo":1,"bar:1';
+		$group = new Group;
+
+		$group->getPermissions($json);
+	}
+
 }

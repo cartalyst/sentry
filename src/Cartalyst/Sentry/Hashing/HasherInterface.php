@@ -18,23 +18,23 @@
  * @link       http://cartalyst.com
  */
 
-interface ProviderInterface {
+interface HasherInterface {
 
 	/**
 	 * Hash String
 	 *
-	 * @param  string  $str
+	 * @param  string  $string
 	 * @return string
 	 */
-	public function hash($str);
+	public function hash($string);
 
 	/**
 	 * Check Hash Values
 	 *
-	 * @param  string  $str
-	 * @param  string  $hashedStr
+	 * @param  string  $string
+	 * @param  string  $hashedString
 	 * @return bool
 	 */
-	public function checkhash($str, $hashedStr);
+	public function checkhash($string, $hashedString);
 
 }

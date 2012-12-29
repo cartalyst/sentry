@@ -18,43 +18,41 @@
  * @link       http://cartalyst.com
  */
 
-class Sha256Provider implements ProviderInterface {
+class Sha256Hasher implements HasherInterface {
 
 	/**
 	 * Salt Length
 	 *
 	 * @var integer
 	 */
-	protected $saltLength = 16;
+	public $saltLength = 16;
 
 	/**
 	 * Hash String
 	 *
-	 * @param  string  $str
+	 * @param  string  $string
 	 * @return string
 	 */
-	public function hash($str)
+	public function hash($string)
 	{
-		// create salt
+		// Create salt
 		$salt = $this->createSalt();
 
-		return $salt.hash('sha256', $salt.$password);
+		return $salt.hash('sha256', $salt.$string);
 	}
 
 	/**
 	 * Check Hash Values
 	 *
-	 * @param  string  $str
-	 * @param  string  $hashedStr
+	 * @param  string  $string
+	 * @param  string  $hashedString
 	 * @return bool
 	 */
-	public function checkHash($str, $hashedStr)
+	public function checkhash($string, $hashedString)
 	{
-		$salt = substr($hashedStr, 0, 16);
+		$salt = substr($hashedString, 0, 16);
 
-		$password = $salt.hash('sha256', $salt.$str);
-
-		return $password === $hashedStr;
+		return ($salt.hash('sha256', $salt.$string)) === $hashedString;
 	}
 
 	/**
@@ -62,7 +60,7 @@ class Sha256Provider implements ProviderInterface {
 	 *
 	 * @return string
 	 */
-	protected function createSalt()
+	public function createSalt()
 	{
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 

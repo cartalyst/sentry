@@ -116,7 +116,17 @@ class Group extends Model implements GroupInterface {
 	 */
 	public function getPermissions($permissions)
 	{
-		return ( ! is_null($permissions)) ? json_decode($permissions, true) : array();
+		if (is_null($permissions))
+		{
+			return array();
+		}
+
+		if ( ! $_permissions = json_decode($permissions, true))
+		{
+			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
+		}
+
+		return $_permissions;
 	}
 
 	/**

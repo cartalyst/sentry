@@ -18,51 +18,51 @@
  * @link       http://cartalyst.com
  */
 
-class BcryptProvider implements ProviderInterface {
+class BcryptHasher implements HasherInterface {
 
 	/**
 	 * Hash Strength
 	 *
 	 * @var integer
 	 */
-	protected $strength = 8;
+	public $strength = 8;
 
 	/**
 	 * Salt Length
 	 *
 	 * @var integer
 	 */
-	protected $saltLength = 16;
+	public $saltLength = 16;
 
 	/**
 	 * Hash String
 	 *
-	 * @param  string  $str
+	 * @param  string  $string
 	 * @return string
 	 */
-	public function hash($str)
+	public function hash($string)
 	{
-		// format strength
+		// Format strength
 		$strength = str_pad($this->strength, 2, '0', STR_PAD_LEFT);
 
-		// create salt
+		// Create salt
 		$salt = $this->createSalt();
 
-		return crypt($str, '$2a$'.$strength.'$'.$salt);
+		return crypt($string, '$2a$'.$strength.'$'.$salt);
 	}
 
 	/**
 	 * Check Hash Values
 	 *
-	 * @param  string  $str
-	 * @param  string  $hashedStr
+	 * @param  string  $string
+	 * @param  string  $hashedString
 	 * @return bool
 	 */
-	public function checkHash($str, $hashedStr)
+	public function checkhash($string, $hashedString)
 	{
-		$strength = substr($hashedStr, 4, 2);
+		$strength = substr($hashedString, 4, 2);
 
-		return crypt($str, $hashedStr) === $hashedStr;
+		return crypt($string, $hashedString) === $hashedString;
 	}
 
 	/**
@@ -70,7 +70,7 @@ class BcryptProvider implements ProviderInterface {
 	 *
 	 * @return string
 	 */
-	protected function createSalt()
+	public function createSalt()
 	{
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
