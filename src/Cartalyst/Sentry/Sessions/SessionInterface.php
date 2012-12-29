@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Sessions;
 /**
  * Part of the Sentry Package.
  *
@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-interface StorageInterface {
+interface SessionInterface {
 
 	/**
 	 * Returns the session key.

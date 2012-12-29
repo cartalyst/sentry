@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Cookies;
 /**
  * Part of the Sentry Package.
  *

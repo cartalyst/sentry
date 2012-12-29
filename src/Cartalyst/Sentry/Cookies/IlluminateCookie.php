@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Cookie;
+<?php namespace Cartalyst\Sentry\Cookies;
 /**
  * Part of the Sentry Package.
  *
@@ -18,34 +18,40 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\CookieInterface;
 use Illuminate\CookieJar;
-use Session;
+use Symfony\Component\HttpFoundation\Cookie;
 
-class Laravel implements CookieInterface {
+class IlluminateCookie implements CookieInterface {
 
 	/**
 	 * The key used in the Cookie.
 	 *
 	 * @var string
 	 */
-	protected $key = 'sentry_cookie';
+	protected $key = 'cartalyst_sentry';
 
 	/**
 	 * The cookie object.
 	 *
 	 * @var Illuminate\CookieJar
 	 */
-	protected $cookie;
+	protected $jar;
 
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @var  Illuminate\CookieJar
+	 * @param  Illuminate\CookieJar  $jar
+	 * @param  string  $key
+	 * @return void
 	 */
-	public function __construct(CookieJar $cookieDriver)
+	public function __construct(CookieJar $jar, $key = null)
 	{
-		$this->cookie = $cookieDriver;
+		$this->jar = $jar;
+
+		if (isset($key))
+		{
+			$this->key = $key;
+		}
 	}
 
 	/**
@@ -69,7 +75,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function put($key, $value, $minutes)
 	{
-		return $this->setCookie($this->cookie->make($key, $value, $minutes));
+		return $this->setCookie($this->jar->make($key, $value, $minutes));
 	}
 
 	/**
@@ -81,7 +87,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function forever($key, $value)
 	{
-		return $this->setCookie($this->cookie->forever($key, $value));
+		return $this->setCookie($this->jar->forever($key, $value));
 	}
 
 	/**
@@ -93,7 +99,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->cookie->get($key, $default);
+		return $this->jar->get($key, $default);
 	}
 
 	/**
@@ -104,7 +110,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function forget($key)
 	{
-		return $this->setCookie($this->cookie->forget($key));
+		return $this->setCookie($this->jar->forget($key));
 	}
 
 	/**
@@ -120,12 +126,14 @@ class Laravel implements CookieInterface {
 	/**
 	 * Writes to the cookie object.
 	 *
-	 * @param  Illuminate\CookieJar  $cookie
+	 * @param  Symfony\Component\HttpFoundation\Cookie  $cookie
 	 * @return bool
 	 */
-	protected function setCookie($cookie)
+	public function setCookie(Cookie $cookie)
 	{
-		// we manually set the cookie since l4 requires you to attach it it a response which we don't have
+		// We manually set the cookie since Illuminate
+		// requires you to attach it it a response
+		// which we don't have
 		return setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
 	}
 }

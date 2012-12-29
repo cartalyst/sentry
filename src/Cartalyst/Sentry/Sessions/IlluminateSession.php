@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Session;
+<?php namespace Cartalyst\Sentry\Sessions;
 /**
  * Part of the Sentry Package.
  *
@@ -18,17 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\SessionInterface;
 use Illuminate\Session\Store as SessionStore;
 
-class IlluminateSession implements StorageInterface {
+class IlluminateSession implements SessionInterface {
 
 	/**
 	 * The key used in the Session.
 	 *
 	 * @var string
 	 */
-	protected $key = 'sentry';
+	protected $key = 'cartalyst_sentry';
 
 	/**
 	 * Session store object.
@@ -38,15 +37,21 @@ class IlluminateSession implements StorageInterface {
 	protected $session;
 
 	/**
-	 * Creates a new Laravel based Session driver
+	 * Creates a new Illuminate based Session driver
 	 * for Sentry.
 	 *
 	 * @param  Illuminate\Session\Store  $session
+	 * @param  string  $key
 	 * @return void
 	 */
-	public function __construct(SessionStore $session)
+	public function __construct(SessionStore $session, $key = null)
 	{
 		$this->session = $session;
+
+		if (isset($key))
+		{
+			$this->key = $key;
+		}
 	}
 
 	/**
@@ -68,7 +73,7 @@ class IlluminateSession implements StorageInterface {
 	 */
 	public function put($key, $value)
 	{
-		return $this->session->put($key, $value);
+		$this->session->put($key, $value);
 	}
 
 	/**
@@ -91,7 +96,7 @@ class IlluminateSession implements StorageInterface {
 	 */
 	public function forget($key)
 	{
-		return $this->session->forget($key);
+		$this->session->forget($key);
 	}
 
 	/**
@@ -101,7 +106,7 @@ class IlluminateSession implements StorageInterface {
 	 */
 	public function flush()
 	{
-		return $this->forget($this->key);
+		$this->forget($this->key);
 	}
 
 }
