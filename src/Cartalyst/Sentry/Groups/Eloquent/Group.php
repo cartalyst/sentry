@@ -42,7 +42,7 @@ class Group extends Model implements GroupInterface {
 	protected $allowedPermissionsValues = array(0, 1);
 
 	/**
-	 * Returns the group's ID
+	 * Returns the group's ID.
 	 *
 	 * @return mixed
 	 */
@@ -52,13 +52,28 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
-	 * Returns the group's name
+	 * Returns the group's name.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getGroupName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Returns permissions for the group.
+	 *
+	 * @return array
+	 */
+	public function getGroupPermissions()
+	{
+		if ( ! $permissions = $this->permissions)
+		{
+			return array();
+		}
+
+		return $permissions;
 	}
 
 	/**
@@ -102,7 +117,7 @@ class Group extends Model implements GroupInterface {
 	public function setPermissions(array $permissions)
 	{
 		// Merge permissions
-		$permissions = array_merge((array) $this->permissions, $permissions);
+		$permissions = array_merge($this->getGroupPermissions(), $permissions);
 
 		// Loop through and adjsut permissions as needed
 		foreach ($permissions as $permission => $value)

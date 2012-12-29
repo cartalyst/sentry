@@ -45,11 +45,26 @@ interface UserInterface {
 	public function getUserPassword();
 
 	/**
+	 * Returns permissions for the user.
+	 *
+	 * @return array
+	 */
+	public function getUserPermissions();
+
+	/**
 	 * Check if user is activated
 	 *
 	 * @param  UserInterface  $user
 	 * @return bool
 	 */
 	public function isActivated();
+
+	/**
+	 * Returns if the user is a super user - has
+	 * access to everything regardless of permissions.
+	 *
+	 * @return void
+	 */
+	public function isSuperUser();
 
 }

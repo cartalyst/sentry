@@ -67,4 +67,15 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('hashed_password_here', $user->getUserPassword());
 	}
 
+	public function setSuperUserAccessToEverything()
+	{
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getUserPermissions]');
+		$user->shouldReceive('getUserPermissions')->andReturn(array(
+			'superuser' => 1,
+			'foo'       => -1,
+		));
+
+		$this->assertTrue($user->isSuperUser());
+	}
+
 }

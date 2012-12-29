@@ -86,10 +86,11 @@ class Provider implements ProviderInterface {
 	/**
 	 * Validate a user against the given credentials.
 	 *
+	 * @param  Cartalyst\Sentry\UserInterface  $user
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\UserInterface
+	 * @return bool
 	 */
-	public function validateCredentials(array $credentials)
+	public function validateCredentials(UserInterface $user, array $credentials)
 	{
 
 	}
@@ -166,7 +167,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function getGroups(UserInterface $user)
 	{
-
+		return $user->groups()->get();
 	}
 
 	/**
@@ -178,7 +179,13 @@ class Provider implements ProviderInterface {
 	 */
 	public function addGroup(UserInterface $user, GroupInterface $group)
 	{
+		if ($this->inGroup($user, $group))
+		{
+			return true;
+		}
 
+		$this->groups()->attach($group);
+		return true;
 	}
 
 	/**
@@ -190,18 +197,33 @@ class Provider implements ProviderInterface {
 	 */
 	public function removeGroup(UserInterface $user, GroupInterface $group)
 	{
+		if ( ! $this->inGroup($user, $group))
+		{
+			return true;
+		}
 
+		$this->groups()->detatch($group);
+		return true;
 	}
 
 	/**
 	 * See if user is in the given group.
 	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
-	public function inGroup(GroupInterface $group)
+	public function inGroup(UserInterface $user, GroupInterface $group)
 	{
+		foreach ($user->getGroups() as $_group)
+		{
+			if ($_group->getGroupId() == $group->getGroupId())
+			{
+				return true;
+			}
+		}
 
+		return false;
 	}
 
 	/**
@@ -213,7 +235,16 @@ class Provider implements ProviderInterface {
 	 */
 	public function getMergedPermissions(UserInterface $user)
 	{
+		$permissions = array();
 
+		foreach ($this->getGroups($user) as $group)
+		{
+			$permissions = array_merge($permissions, $group->getGroupPermissions());
+		}
+
+		$permissions = array_merge($permissions, $user->getUserPermissions());
+
+		return $permissions;
 	}
 
 	/**
@@ -227,7 +258,14 @@ class Provider implements ProviderInterface {
 	 */
 	public function hasAccess(UserInterface $user, $permission)
 	{
+		if ($user->isSuperUser())
+		{
+			return true;
+		}
 
+		$permissions = $this->getMergedPermissions($user);
+
+		return (array_key_exists($permission, $permissions) and $permissions[$permission] == 1);
 	}
 
 	/**

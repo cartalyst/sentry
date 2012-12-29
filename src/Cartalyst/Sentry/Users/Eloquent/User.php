@@ -113,6 +113,21 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Returns permissions for the user.
+	 *
+	 * @return array
+	 */
+	public function getUserPermissions()
+	{
+		if ( ! $permissions = $this->permissions)
+		{
+			return array();
+		}
+
+		return $permissions;
+	}
+
+	/**
 	 * Check if user is activated
 	 *
 	 * @param  UserInterface  $user
@@ -142,6 +157,75 @@ class User extends Model implements UserInterface {
 	public function getLoginAttributeName()
 	{
 		return $this->loginAttribute;
+	}
+
+	/**
+	 * Get user specific permissions
+	 *
+	 * @param  string  $permissions
+	 * @return array
+	 */
+	public function getPermissions($permissions)
+	{
+		if (is_null($permissions))
+		{
+			return array();
+		}
+
+		if ( ! $_permissions = json_decode($permissions, true))
+		{
+			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
+		}
+
+		return $_permissions;
+	}
+
+	/**
+	 * Set user specific permissions
+	 *
+	 * @param  array  $permissions
+	 * @return string
+	 */
+	public function setPermissions(array $permissions)
+	{
+		// Merge permissions
+		$permissions = array_merge($this->getGroupPermissions(), $permissions);
+
+		// Loop through and adjsut permissions as needed
+		foreach ($permissions as $permission => $value)
+		{
+			// Lets make sure their is a valid permission value
+			if ( ! in_array($value, $this->allowedPermissionsValues, true))
+			{
+				throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
+			}
+
+			// If the value is 0, delete it
+			if ($value === 0)
+			{
+				unset($permissions[$permission]);
+			}
+		}
+
+		return json_encode($permissions);
+	}
+
+	/**
+	 * Returns if the user is a super user - has
+	 * access to everything regardless of permissions.
+	 *
+	 * @return void
+	 */
+	public function isSuperUser()
+	{
+		$permissions = $this->getUserPermissions();
+
+		if ( ! array_key_exists('superuser', $permissions))
+		{
+			return false;
+		}
+
+		return $permissions['superuser'] == 1;
 	}
 
 }

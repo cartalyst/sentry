@@ -44,10 +44,11 @@ interface ProviderInterface {
 	/**
 	 * Validate a user against the given credentials.
 	 *
+	 * @param  Cartalyst\Sentry\UserInterface  $user
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\UserInterface
+	 * @return bool
 	 */
-	public function validateCredentials(array $credentials);
+	public function validateCredentials(UserInterface $user, array $credentials);
 
 	/**
 	 * Validates the users and throws a number of
@@ -127,10 +128,11 @@ interface ProviderInterface {
 	/**
 	 * See if user is in the given group.
 	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
-	public function inGroup(GroupInterface $group);
+	public function inGroup(UserInterface $user, GroupInterface $group);
 
 	/**
 	 * Returns an array of merged permissions for each
