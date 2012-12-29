@@ -18,11 +18,12 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Hashing\HasherInterface;
+use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Users\ProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
 use Cartalyst\Sentry\Users\UserNotFoundException;
-use Cartalyst\Sentry\Groups\GroupInterface;
 
 class Provider implements ProviderInterface {
 
@@ -34,13 +35,34 @@ class Provider implements ProviderInterface {
 	protected $model = 'Cartalyst\Sentry\Users\Eloquent\User';
 
 	/**
+	 * The hasher for the model.
+	 *
+	 * @var Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	protected $hasher;
+
+	/**
+	 * Credentials that should be hashed.
+	 *
+	 * @var array
+	 */
+	protected $hashableCredentials = array(
+		'password',
+		'reset_password_hash',
+		'activation_hash',
+	);
+
+	/**
 	 * Create a new Eloquent User provider.
 	 *
+	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
 	 * @return void
 	 */
-	public function __construct($model = null)
+	public function __construct(HasherInterface $hasher, $model = null)
 	{
+		$this->hasher = $hasher;
+
 		if (isset($model))
 		{
 			$this->model = $model;
@@ -84,15 +106,54 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Validate a user against the given credentials.
+	 * Finds a user by the given credentials.
 	 *
-	 * @param  Cartalyst\Sentry\UserInterface  $user
 	 * @param  array  $credentials
-	 * @return bool
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
-	public function validateCredentials(UserInterface $user, array $credentials)
+	public function findByCredentials(array $credentials)
 	{
+		$model = $this->createModel();
 
+		if ( ! array_key_exists(($attribute = $model->getLoginAttributeName()), $credentials))
+		{
+			throw new \InvalidArgumentException("Login attribute [$attribute] was not provided.");
+		}
+
+		$query               = $model->newQuery();
+		$hashableCredentials = $this->getHashableCredentials();
+		$hashedCredentials   = array();
+
+		// build query from given credentials
+		foreach ($credentials as $credential => $value)
+		{
+			// Remove hashed attributes to check later as we need to check these
+			// values after we retrieved them because of salts
+			if (in_array($credential, $hashableCredentials))
+			{
+				$hashedCredentials = array_merge($hashedCredentials, array($credential => $value));
+			}
+			else
+			{
+				$query = $query->where($credential, '=', $value);
+			}
+		}
+
+		if ( ! $user = $query->first())
+		{
+			return null;
+		}
+
+		// Now check the hashed credentials match ours
+		foreach ($hashedCredentials as $credential => $value)
+		{
+			if ( ! $this->hasher->checkHash($value, $user->{$credential}))
+			{
+				return null;
+			}
+		}
+
+		return $user;
 	}
 
 	/**
@@ -278,6 +339,11 @@ class Provider implements ProviderInterface {
 		$class = '\\'.ltrim($this->model, '\\');
 
 		return new $class();
+	}
+
+	public function getHashableCredentials()
+	{
+		return $this->hashableCredentials;
 	}
 
 }

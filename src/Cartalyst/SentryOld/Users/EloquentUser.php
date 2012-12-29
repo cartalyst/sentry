@@ -176,7 +176,7 @@ class User extends EloquentModel implements UserInterface {
 		{
 			// remove hashed attributes to check later as we need to check these
 			// values after we retrieved them because of salts
-			if (in_array($credential, $this->hashedFields))
+			if (in_array($credential, $this->hashabl))
 			{
 				$hashedCredentials += array($credential => $value);
 				continue;

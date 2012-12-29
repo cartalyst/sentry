@@ -103,7 +103,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 	public function testInGroup()
 	{
-		$provider = new Provider;
+		$provider = new Provider(m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 
 		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
 		$group1->shouldReceive('getGroupId')->times(3)->andReturn(123);
@@ -183,7 +183,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[groups]');
 		$user->shouldReceive('groups')->once()->andReturn($pivot);
 
-		$provider = new Provider;
+		$provider = new Provider(m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 		$this->assertEquals('foo', $provider->getGroups($user));
 	}
 
@@ -227,7 +227,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser]');
 		$user->shouldReceive('isSuperUser')->once()->andReturn(true);
 
-		$provider = new Provider;
+		$provider = new Provider(m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 		$this->assertTrue($provider->hasAccess($user, 'bar'));
 	}
 
@@ -245,6 +245,83 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($provider->hasAccess($user, 'bar'));
 		$this->assertFalse($provider->hasAccess($user, 'foo'));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFindingByCredentialsFailsWithoutLoginColumn()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->shouldReceive('createModel')->once()->andReturn($user);
+
+		$provider->findByCredentials(array(
+			'not_foo' => 'ff',
+		));
+	}
+
+	public function testFindingByCredentialsFailsWhenModelIsNull()
+	{
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('foo', '=', 'fooval')->once()->andReturn($query);
+		$query->shouldReceive('where')->with('bar', '=', 'barval')->once()->andReturn($query);
+		$query->shouldReceive('first')->andReturn(null);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+		$user->shouldReceive('newQuery')->andReturn($query);
+
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
+		$provider->shouldReceive('createModel')->once()->andReturn($user);
+		$provider->shouldReceive('getHashableCredentials')->once()->andReturn(array('baz', 'bat'));
+
+		$result = $provider->findByCredentials(array(
+			'foo' => 'fooval',
+			'bar' => 'barval',
+			'baz' => 'unhashed_baz',
+			'bat' => 'unhashed_bat',
+		));
+
+		$this->assertNull($result);
+	}
+
+	public function testFindingByCredentials()
+	{
+		$actualUser = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$actualUser->shouldReceive('getAttribute')->with('baz')->andReturn('hashed_baz');
+		$actualUser->shouldReceive('getAttribute')->with('bat')->andReturn('hashed_bat');
+
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('checkhash')->with('unhashed_baz', 'hashed_baz')->
+		once()->andReturn(true);
+		$hasher->shouldReceive('checkhash')->with('unhashed_bat', 'hashed_bat')->once()->andReturn(true);
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('foo', '=', 'fooval')->once()->andReturn($query);
+		$query->shouldReceive('where')->with('bar', '=', 'barval')->once()->andReturn($query);
+		$query->shouldReceive('first')->andReturn($actualUser);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+		$user->shouldReceive('newQuery')->andReturn($query);
+
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
+		$provider->__construct($hasher);
+
+		$provider->shouldReceive('createModel')->once()->andReturn($user);
+		$provider->shouldReceive('getHashableCredentials')->once()->andReturn(array('baz', 'bat'));
+
+		$result = $provider->findByCredentials(array(
+			'foo' => 'fooval',
+			'bar' => 'barval',
+			'baz' => 'unhashed_baz',
+			'bat' => 'unhashed_bat',
+		));
+
+		$this->assertEquals($actualUser, $result);
 	}
 
 }

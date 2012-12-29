@@ -42,13 +42,12 @@ interface ProviderInterface {
 	public function findByLogin($login);
 
 	/**
-	 * Validate a user against the given credentials.
+	 * Finds a user by the given credentials.
 	 *
-	 * @param  Cartalyst\Sentry\UserInterface  $user
 	 * @param  array  $credentials
-	 * @return bool
+	 * @return Cartalyst\Sentry\UserInterface
 	 */
-	public function validateCredentials(UserInterface $user, array $credentials);
+	public function findByCredentials(array $credentials);
 
 	/**
 	 * Validates the users and throws a number of

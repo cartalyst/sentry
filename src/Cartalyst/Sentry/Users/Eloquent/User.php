@@ -65,24 +65,6 @@ class User extends Model implements UserInterface {
 	protected $superUser = 'superuser';
 
 	/**
-	 * Hashing Interface
-	 *
-	 * @var Cartalyst\Sentry\HashInterface
-	 */
-	protected $hashInterface;
-
-	/**
-	 * Fields that should be hashed
-	 *
-	 * @var array
-	 */
-	protected $hashedFields = array(
-		'password',
-		'reset_password_hash',
-		'activation_hash',
-	);
-
-	/**
 	 * Returns the user's ID.
 	 *
 	 * @return  mixed
