@@ -52,18 +52,21 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
 		$this->cookie->put('foo', 'bar', 123);
+		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
 	}
 
 	public function testPut()
 	{
 		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
 		$this->cookie->put('foo', 'bar', 123);
+		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
 	}
 
 	public function testForever()
 	{
 		$this->jar->shouldReceive('forever')->with('foo', 'bar')->once();
 		$this->cookie->forever('foo', 'bar');
+		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
 	}
 
 	public function testGet()
@@ -73,12 +76,14 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 		// Ensure default param is "null"
 		$this->assertEquals('bar', $this->cookie->get('foo'));
 		$this->assertEquals('bar', $this->cookie->get('foo', null));
+		$this->assertEquals(0, count($this->cookie->getQueuedCookies()));
 	}
 
 	public function testForget()
 	{
 		$this->jar->shouldReceive('forget')->with('foo')->once();
 		$this->cookie->forget('foo');
+		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
 	}
 
 	public function testFlush()

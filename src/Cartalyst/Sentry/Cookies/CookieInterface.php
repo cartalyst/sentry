@@ -71,4 +71,11 @@ interface CookieInterface {
 	 */
 	public function flush();
 
+	/**
+	 * Get the cookies queued by the driver.
+	 *
+	 * @return array
+	 */
+	public function getQueuedCookies();
+
 }
