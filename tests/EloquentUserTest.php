@@ -328,6 +328,98 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->checkHash('foo', 'bar');
 	}
 
+	public function testRandomStrings()
+	{
+		$user = new User;
+		$last = '';
 
+		for ($i = 0; $i < 500; $i++)
+		{
+			$now = $user->getRandomString();
+
+			if ($now === $last)
+			{
+				throw new \UnexpectedValueException("Two random strings are the same, [$now], [$last].");
+			}
+
+			$last = $now;
+		}
+
+	}
+
+	public function testGetActivationCode()
+	{
+		$randomString = 'random_string_here';
+		$hashedRandomString = 'hashed_random_string_here';
+
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with($randomString)->once()->andReturn($hashedRandomString);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save,getRandomString]');
+		$user->setHasher($hasher);
+
+		$this->assertNull($user->activation_hash);
+		$user->shouldReceive('save')->once();
+		$user->shouldReceive('getRandomString')->once()->andReturn($randomString);
+
+		$activationCode = $user->getActivationCode();
+		$this->assertEquals($hashedRandomString, $activationCode);
+		$this->assertEquals($hashedRandomString, $user->activation_hash);
+	}
+
+	public function testGetResetPasswordCode()
+	{
+		$randomString = 'random_string_here';
+		$hashedRandomString = 'hashed_random_string_here';
+
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with($randomString)->once()->andReturn($hashedRandomString);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save,getRandomString]');
+		$user->setHasher($hasher);
+
+		$this->assertNull($user->reset_password_hash);
+		$user->shouldReceive('save')->once();
+		$user->shouldReceive('getRandomString')->once()->andReturn($randomString);
+
+		$resetCode = $user->getResetPasswordCode();
+		$this->assertEquals($hashedRandomString, $resetCode);
+		$this->assertEquals($hashedRandomString, $user->reset_password_hash);
+	}
+
+	public function testUserIsNotActivatedTwice()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkHash]');
+		$user->shouldReceive('checkHash')->never();
+		$user->activated = true;
+
+		$this->assertTrue($user->attemptActivation('not_needed'));
+	}
+
+	public function testUserActivation()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkHash,save]');
+		$user->shouldReceive('checkHash')->once()->andReturn(true);
+		$user->shouldReceive('save')->once()->andReturn(true);
+
+		$this->assertTrue($user->attemptActivation('activation_code'));
+		$this->assertNull($user->activation_hash);
+		$this->assertTrue($user->activated);
+	}
+
+	public function testResettingPassword()
+	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('new_password')->once()->andReturn('hashed_new_password');
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkHash,save]');
+		$user->setHasher($hasher);
+		$user->shouldReceive('checkHash')->once()->andReturn(true);
+		$user->shouldReceive('save')->once()->andReturn(true);
+
+		$this->assertTrue($user->attemptResetPassword('reset_code', 'new_password'));
+		$this->assertNull($user->reset_password_hash);
+		$this->assertEquals('hashed_new_password', $user->getUserPassword());
+	}
 
 }

@@ -76,13 +76,20 @@ interface UserInterface {
 	public function validate();
 
 	/**
+	 * Get an activation code for the given user.
+	 *
+	 * @return string
+	 */
+	public function getActivationCode();
+
+	/**
 	 * Attempts to activate the given user by checking
 	 * the activate code.
 	 *
 	 * @param  string  $activationCode
 	 * @return bool
 	 */
-	public function validateActivate($activationCode);
+	public function attemptActivation($activationCode);
 
 	/**
 	 * Get a reset password code for the given user.

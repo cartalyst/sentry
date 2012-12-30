@@ -262,15 +262,44 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Get an activation code for the given user.
+	 *
+	 * @return string
+	 */
+	public function getActivationCode()
+	{
+		$this->activation_hash = $this->getRandomString();
+
+		// Our code got hashed
+		$activationCode = $this->activation_hash;
+
+		$this->save();
+
+		return $activationCode;
+	}
+
+	/**
 	 * Attempts to activate the given user by checking
 	 * the activate code.
 	 *
 	 * @param  string  $activationCode
 	 * @return bool
 	 */
-	public function validateActivate($activationCode)
+	public function attemptActivation($activationCode)
 	{
+		if ($this->activated)
+		{
+			return true;
+		}
 
+		if ($this->checkHash($activationCode, $this->activation_hash))
+		{
+			$this->activation_hash = null;
+			$this->activated = true;
+			return $this->save();
+		}
+
+		return false;
 	}
 
 	/**
@@ -280,7 +309,14 @@ class User extends Model implements UserInterface {
 	 */
 	public function getResetPasswordCode()
 	{
+		$this->reset_password_hash = $this->getRandomString();
 
+		// Our code got hashed
+		$resetCode = $this->reset_password_hash;
+
+		$this->save();
+
+		return $resetCode;
 	}
 
 	/**
@@ -481,6 +517,18 @@ class User extends Model implements UserInterface {
 		}
 
 		return $this->hasher->hash($string);
+	}
+
+	/**
+	 * Generate a random string.
+	 *
+	 * @return string
+	 */
+	public function getRandomString()
+	{
+		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		return substr(str_shuffle(str_repeat($pool, 5)), 0, 40);
 	}
 
 	/**
