@@ -19,6 +19,6 @@
  */
 
 class LoginFieldRequiredException extends \UnexpectedValueException {}
-class UserNotFound extends \OutOfBoundsException {}
+class UserNotFoundException extends \OutOfBoundsException {}
 class UserNotActivatedException extends \RuntimeException {}
 class UserExistsException extends \UnexpectedValueException {}

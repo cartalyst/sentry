@@ -46,7 +46,10 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo', $provider->findById(1));
 	}
 
-	public function testFailedFindingByIdReturnsNullIfNotFound()
+	/**
+	 * @expectedException Cartalyst\Sentry\Groups\GroupNotFoundException
+	 */
+	public function testFailedFindingByIdThrowsExceptionIfNotFound()
 	{
 		$provider = m::mock('Cartalyst\Sentry\Groups\Eloquent\Provider[createModel]');
 
@@ -56,7 +59,7 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 
 		$provider->shouldReceive('createModel')->once()->andReturn($query);
 
-		$this->assertNull($provider->findById(1));
+		$provider->findById(1);
 	}
 
 	public function testFindingByName()
@@ -73,7 +76,10 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('bar', $provider->findByName('foo'));
 	}
 
-	public function testFailedFindingByNameReturnsNullIfNotFound()
+	/**
+	 * @expectedException Cartalyst\Sentry\Groups\GroupNotFoundException
+	 */
+	public function testFailedFindingByNameThrowsExceptionIfNotFound()
 	{
 		$provider = m::mock('Cartalyst\Sentry\Groups\Eloquent\Provider[createModel]');
 
@@ -84,7 +90,7 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 
 		$provider->shouldReceive('createModel')->once()->andReturn($query);
 
-		$this->assertNull($provider->findByName('foo'));
+		$provider->findByName('foo');
 	}
 
 }

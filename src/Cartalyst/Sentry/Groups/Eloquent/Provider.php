@@ -19,6 +19,7 @@
  */
 
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Groups\GroupNotFoundException;
 use Cartalyst\Sentry\Groups\ProviderInterface;
 
 class Provider implements ProviderInterface {
@@ -49,12 +50,18 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  int  $id
 	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
+	 * @throws Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findById($id)
 	{
 		$model = $this->createModel();
-		return $model->newQuery()->find($id);
+
+		if ( ! $group = $model->newQuery()->find($id))
+		{
+			throw new GroupNotFoundException("A group could not be found with ID [$id].");
+		}
+
+		return $group;
 	}
 
 	/**
@@ -62,11 +69,18 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  string  $name
 	 * @return Cartalyst\Sentry\GroupInterface  $group
+	 * @throws Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findByName($name)
 	{
 		$model = $this->createModel();
-		return $model->newQuery()->where('name', '=', $name)->first();
+
+		if ( ! $group = $model->newQuery()->where('name', '=', $name)->first())
+		{
+			throw new GroupNotFoundException("A group could not be found with the name [$name].");
+		}
+
+		return $group;
 	}
 
 	/**
