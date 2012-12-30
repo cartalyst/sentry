@@ -18,24 +18,5 @@
  * @link       http://cartalyst.com
  */
 
-interface ProviderInterface {
-
-	/**
-	 * Finds a throttler by the
-	 * given user ID.
-	 *
-	 * @param  mixed  $id
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
-	 */
-	public function findByUserId($id);
-
-	/**
-	 * Finds a throttling interface by the
-	 * given user login.
-	 *
-	 * @param  string  $login
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
-	 */
-	public function findByUserLogin($login);
-
-}
+class UserSuspendedException extends \RuntimeException {}
+class UserBannedException extends \RuntimeException {}

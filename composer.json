@@ -26,7 +26,7 @@
     "autoload": {
     	"classmap": [
             "src/Cartalyst/Sentry/Groups/Exceptions.php",
-            "src/Cartalyst/Sentry/Throttling/ProviderInterface.php",
+            "src/Cartalyst/Sentry/Throttling/Exceptions.php",
             "src/Cartalyst/Sentry/Users/Exceptions.php",
     		"src/migrations"
     	],

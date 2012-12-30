@@ -18,141 +18,134 @@
  * @link       http://cartalyst.com
  */
 
-use RuntimeException;
-use OutOfBoundsException;
-
-class UserSuspendedException extends RuntimeException {}
-class UserBannedException extends RuntimeException {}
-class ThrottleLimitException extends OutOfBoundsException {}
-class ThrottleTimeException extends OutOfBoundsException {}
-
 interface ThrottleInterface {
 
 	/**
-	 * Set Attempt Limit
+	 * Returns the associated user with the
+	 * throttler.
+	 *
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getUser();
+
+	/**
+	 * Set attempt limit.
 	 *
 	 * @param  int  $limit
 	 */
 	public function setAttemptLimit($limit);
 
 	/**
-	 * Get Attempt Limit
+	 * Get attempt limit.
 	 *
-	 * @param   string  $Login
 	 * @return  int
 	 */
 	public function getAttemptLimit();
 
 	/**
-	 * Set Suspension Time
+	 * Set suspensin time.
 	 *
-	 * @param  string  $minutes
+	 * @param  int  $minutes
 	 */
 	public function setSuspensionTime($minutes);
 
 	/**
-	 * Set Suspension Time
+	 * Get suspension time.
 	 *
-	 * @param  string  $minutes
+	 * @param  int
 	 */
 	public function getSuspensionTime();
 
 	/**
-	 * Get Login Attempts
+	 * Get the current amount of attempts
 	 *
-	 * @param  string  $Login
 	 * @return int
 	 */
-	public function getAttempts($login);
+	public function getAttempts();
 
 	/**
-	 * Add Login Attempt
+	 * Add a new login attempt.
 	 *
-	 * @param  string  $Login
-	 * @return bool
+	 * @return void
 	 */
 	public function addAttempt($login);
 
 	/**
-	 * Clear Login Attempts
+	 * Clear all login attempts
 	 *
-	 * @param  string  $Login
-	 * @return bool
+	 * @return void
 	 */
-	public function clearAttempts($login);
+	public function clearAttempts();
 
 	/**
-	 * Suspend a login
+	 * Suspend the user associated with
+	 * the throttle
 	 *
-	 * @param  string  $Login
-	 * @return bool
+	 * @return void
 	 */
-	public function suspend($login);
+	public function suspend();
 
 	/**
-	 * Unsuspend a login
+	 * Unsuspend the user.
 	 *
-	 * @param  string  $Login
-	 * @return bool
+	 * @return void
 	 */
-	public function unsuspend($login);
+	public function unsuspend();
 
 	/**
-	 * Check if user is suspended
+	 * Check if the user is suspended.
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 */
-	public function isSuspended($login);
+	public function isSuspended();
 
 	/**
-	 * Ban a login
+	 * Ban the user.
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 */
-	public function ban($login);
+	public function ban();
 
 	/**
-	 * Unban a login
+	 * Unban the user.
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 */
-	public function unban($login);
+	public function unban();
 
 	/**
 	 * Check if user is banned
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 */
-	public function isBanned($login);
+	public function isBanned();
 
 	/**
-	 * Check user throttle status
+	 * Check user throttle status.
 	 *
 	 * @param  string  $Login
 	 * @return bool
+	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
+	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
 	public function check($login);
 
 	/**
-	 * Enable throttling
+	 * Enable throttling.
 	 *
 	 * @return void
 	 */
 	public function enable();
 
 	/**
-	 * Disable throttling
+	 * Disable throttling.
 	 *
 	 * @return void
 	 */
 	public function disable();
 
 	/**
-	 * Check if throttle is enabled
+	 * Check if throttling is enabled.
 	 *
 	 * @return bool
 	 */
