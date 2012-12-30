@@ -196,4 +196,85 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($user->hasAccess('foo'));
 	}
 
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\LoginRequiredException
+	 */
+	public function testValidationThrowsLoginExceptionIfNoneGiven()
+	{
+		$user = new User;
+		$user->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\PasswordRequiredException
+	 */
+	public function testValidationThrowsPasswordExceptionIfNoneGiven()
+	{
+		$user = new User;
+		$user->email = 'foo';
+		$user->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\UserExistsException
+	 */
+	public function testValidationFailsWhenUserAlreadyExists()
+	{
+		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->email = 'foo@bar.com';
+		$user->password = 'bazbat';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('email', '=', 'foo@bar.com')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedUser);
+
+		$user->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$user->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\UserExistsException
+	 */
+	public function testValidationFailsWhenUserAlreadyExistsOnExistent()
+	{
+		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->id = 124;
+		$user->email = 'foo@bar.com';
+		$user->password = 'bazbat';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('email', '=', 'foo@bar.com')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedUser);
+
+		$user->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$user->validate();
+	}
+
+	public function testValidationDoesNotThrowAnExceptionIfPersistedUserIsThisUser()
+	{
+		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->id = 123;
+		$user->email = 'foo@bar.com';
+		$user->password = 'bazbat';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('email', '=', 'foo@bar.com')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedUser);
+
+		$user->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$this->assertTrue($user->validate());
+	}
+
 }

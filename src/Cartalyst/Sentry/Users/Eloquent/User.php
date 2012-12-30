@@ -20,6 +20,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Users\LoginRequiredException;
+use Cartalyst\Sentry\Users\PasswordRequiredException;
+use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
 
 class User extends Model implements UserInterface {
@@ -47,7 +50,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var string
 	 */
-	protected $loginAttribute = 'email';
+	protected $login = 'email';
 
 	/**
 	 * Allowed Permissions Values
@@ -57,13 +60,6 @@ class User extends Model implements UserInterface {
 	 *    1 => add
 	 */
 	protected $allowedPermissionsValues = array(-1, 0, 1);
-
-	/**
-	 * Super user permissions, gives access to everything
-	 *
-	 * @var string
-	 */
-	protected $superUser = 'superuser';
 
 	/**
 	 * Returns the user's ID.
@@ -82,7 +78,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getUserLogin()
 	{
-		return $this->{$this->loginAttribute};
+		return $this->{$this->login};
 	}
 
 	/**
@@ -138,7 +134,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getLoginName()
 	{
-		return $this->loginAttribute;
+		return $this->login;
 	}
 
 	/**
@@ -221,7 +217,26 @@ class User extends Model implements UserInterface {
 	 */
 	public function validate()
 	{
-		
+		if ( ! $login = $this->{$this->login})
+		{
+			throw new LoginRequiredException("A login is required for a user, none given.");
+		}
+
+		if ( ! $password = $this->password)
+		{
+			throw new PasswordRequiredException("A password is required for user [$login], none given.");
+		}
+
+		// Check if user aleady exists
+		$query = $this->newQuery();
+		$persistedUser = $query->where($this->getLoginName(), '=', $login)->first();
+
+		if ($persistedUser and $persistedUser->getUserId() != $this->getUserId())
+		{
+			throw new UserExistsException("A user already exists with login [$login], logins must be unique for users.");
+		}
+
+		return true;
 	}
 
 	/**
