@@ -22,6 +22,7 @@ use Cartalyst\Sentry\Throttling\ThrottleInterface;
 use Cartalyst\Sentry\Throttling\UserSuspendedException;
 use Cartalyst\Sentry\Throttling\UserBannedException;
 use Illuminate\Database\Eloquent\Model;
+use DateTime;
 
 class Throttle extends Model implements ThrottleInterface {
 
@@ -68,7 +69,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getUser()
 	{
-
+		return $this->user()->getResults();
 	}
 
 	/**
@@ -78,7 +79,12 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function setAttemptLimit($limit)
 	{
+		if ( ! $_limit = intval($limit))
+		{
+			throw new \InvalidArgumentException("Invalid limit provided.");
+		}
 
+		$this->limit = $_limit;
 	}
 
 	/**
@@ -88,7 +94,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getAttemptLimit()
 	{
-
+		return $this->limit;
 	}
 
 	/**
@@ -98,7 +104,12 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function setSuspensionTime($minutes)
 	{
+		if ( ! $_minutes = intval($minutes))
+		{
+			throw new \InvalidArgumentException("Invalid limit provided.");
+		}
 
+		$this->time = $_minutes;
 	}
 
 	/**
@@ -108,17 +119,36 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getSuspensionTime()
 	{
-
+		return $this->time;
 	}
 
 	/**
 	 * Get the current amount of attempts
 	 *
 	 * @return int
+	 * @todo change to date time
 	 */
-	public function getAttempts()
+	public function getLoginAttempts()
 	{
+		if ( ! is_string($this->last_attempt_at))
+		{
+			$this->last_attempt_at = $this->last_attempt_at->format('Y-m-d H:i:s');
+		}
 
+		$clearTime = new DateTime($this->last_attempt_at);
+		$clearAt   = $clearTime->modify('+'.$this->time.' minutes');
+		$now       = new DateTime;
+
+		if ($clearAt <= $now)
+		{
+			$this->attempts = 0;
+		}
+
+		unset($clearTime);
+		unset($clearAt);
+		unset($now);
+
+		return $this->attempts;
 	}
 
 	/**
@@ -126,9 +156,19 @@ class Throttle extends Model implements ThrottleInterface {
 	 *
 	 * @return void
 	 */
-	public function addAttempt($login)
+	public function addLoginAttempt()
 	{
+		$this->attempts++;
+		$this->last_attempt_at = $this->freshTimeStamp();
 
+		if ($this->getLoginAttempts() >= $this->limit)
+		{
+			$this->suspend();
+		}
+		else
+		{
+			$this->save();
+		}
 	}
 
 	/**
@@ -136,9 +176,17 @@ class Throttle extends Model implements ThrottleInterface {
 	 *
 	 * @return void
 	 */
-	public function clearAttempts()
+	public function clearLoginAttempts()
 	{
+		if ($this->getLoginAttempts() == 0 and ! $this->suspended)
+		{
+			return;
+		}
 
+		$this->attempts        = 0;
+		$this->last_attempt_at = null;
+		$this->suspended       = false;
+		$this->suspended_at    = null;
 	}
 
 	/**
@@ -149,7 +197,12 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function suspend()
 	{
-
+		if ( ! $this->suspended)
+		{
+			$this->suspended    = true;
+			$this->suspended_at = $this->freshTimeStamp();
+			$this->save();
+		}
 	}
 
 	/**
@@ -159,7 +212,14 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function unsuspend()
 	{
-
+		if ($this->suspended)
+		{
+			$this->attempts        = 0;
+			$this->last_attempt_at = null;
+			$this->suspended       = false;
+			$this->suspended_at    = null;
+			$this->save();
+		}
 	}
 
 	/**
@@ -169,27 +229,54 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function isSuspended()
 	{
+		if ($this->suspended)
+		{
+			$suspended   = new DateTime($this->suspended_at);
+			$unsuspendAt = $suspended->modify('+'.$this->time.' minutes');
+			$now         = new DateTime();
 
+			if ($unsuspendAt <= $now)
+			{
+				$this->unsuspend();
+				return false;
+			}
+
+			unset($suspended);
+			unset($unsuspendAt);
+			unset($now);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Ban the user.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function ban()
 	{
-
+		if ( ! $this->banned)
+		{
+			$this->banned = true;
+			$this->save();
+		}
 	}
 
 	/**
 	 * Unban the user.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function unban()
 	{
-
+		if ($this->banned)
+		{
+			$this->banned = false;
+			$this->save();
+		}
 	}
 
 	/**
@@ -199,20 +286,35 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function isBanned()
 	{
-
+		return $this->banned;
 	}
 
 	/**
 	 * Check user throttle status.
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
 	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
-	public function check($login)
+	public function check()
 	{
+		if ($this->isBanned())
+		{
+			throw new UserBannedException(sprintf(
+				'User [%s] has been banned.',
+				$this->getUser()->getUserLogin()
+			));
+		}
 
+		if ($this->isSuspended())
+		{
+			throw new UserBannedException(sprintf(
+				'User [%s] has been suspended.',
+				$this->getUser()->getUserLogin()
+			));
+		}
+
+		return true;
 	}
 
 	/**
@@ -222,7 +324,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function enable()
 	{
-
+		$this->enabled = true;
 	}
 
 	/**
@@ -232,7 +334,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function disable()
 	{
-
+		$this->enabled = false;
 	}
 
 	/**
@@ -242,7 +344,17 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function isEnabled()
 	{
+		return $this->enabled;
+	}
 
+	/**
+	 * User relationship for the throttle.
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo('Cartalyst\Sentry\Users\Eloquent\User', 'user_id');
 	}
 
 }

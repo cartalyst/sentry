@@ -61,21 +61,21 @@ interface ThrottleInterface {
 	 *
 	 * @return int
 	 */
-	public function getAttempts();
+	public function getLoginAttempts();
 
 	/**
 	 * Add a new login attempt.
 	 *
 	 * @return void
 	 */
-	public function addAttempt($login);
+	public function addLoginAttempt();
 
 	/**
 	 * Clear all login attempts
 	 *
 	 * @return void
 	 */
-	public function clearAttempts();
+	public function clearLoginAttempts();
 
 	/**
 	 * Suspend the user associated with
@@ -109,26 +109,25 @@ interface ThrottleInterface {
 	/**
 	 * Unban the user.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function unban();
 
 	/**
 	 * Check if user is banned
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function isBanned();
 
 	/**
 	 * Check user throttle status.
 	 *
-	 * @param  string  $Login
 	 * @return bool
 	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
 	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
-	public function check($login);
+	public function check();
 
 	/**
 	 * Enable throttling.
