@@ -19,6 +19,7 @@
  */
 
 use Cartalyst\Sentry\Throttling\ThrottleInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 
 class Provider implements ProviderInterface {
 
@@ -30,6 +31,25 @@ class Provider implements ProviderInterface {
 	protected $model = 'Cartalyst\Sentry\Throttling\Eloquent\Throttle';
 
 	/**
+	 * The user provider used for finding users
+	 * to attach throttles to.
+	 *
+	 * @var Cartalyst\Sentry\Users\UserInterface
+	 */
+	protected $userProvider;
+
+	/**
+	 * Creates a new throttle provider.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
+	 * @return void
+	 */
+	public function __construct(UserInterface $userProvider)
+	{
+		$this->userProvider = $userProvider;
+	}
+
+	/**
 	 * Finds a throttler by the
 	 * given user ID.
 	 *
@@ -38,7 +58,17 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserId($id)
 	{
-		
+		$user  = $this->userProvider->findById($id);
+		$model = $this->createModel();
+
+		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId())))
+		{
+			$throttle = $this->createModel();
+			$throttle->user_id = $userId;
+			$throttle->save();
+		}
+
+		return $throttle;
 	}
 
 	/**
@@ -50,7 +80,17 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserLogin($login)
 	{
-		
+		$user  = $this->userProvider->findByLogin($login);
+		$model = $this->createModel();
+
+		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId())))
+		{
+			$throttle = $this->createModel();
+			$throttle->user_id = $userId;
+			$throttle->save();
+		}
+
+		return $throttle;
 	}
 
 	/**
