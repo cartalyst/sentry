@@ -81,7 +81,7 @@ class Provider implements ProviderInterface {
 
 		if ( ! $user = $model->newQuery()->find($id))
 		{
-			throw new UserNotFoundException;
+			throw new UserNotFoundException("A user could not be found with ID [$id].");
 		}
 
 		return $user;
@@ -99,7 +99,7 @@ class Provider implements ProviderInterface {
 
 		if ( ! $user = $model->newQuery()->where($model->getLoginAttributeName(), '=', $login)->first())
 		{
-			throw new UserNotFoundException;
+			throw new UserNotFoundException("A user could not be found with a login value of [$login].");
 		}
 
 		return $user;
@@ -240,13 +240,10 @@ class Provider implements ProviderInterface {
 	 */
 	public function addGroup(UserInterface $user, GroupInterface $group)
 	{
-		if ($this->inGroup($user, $group))
+		if ( ! $this->inGroup($user, $group))
 		{
-			return true;
+			$this->groups()->attach($group);
 		}
-
-		$this->groups()->attach($group);
-		return true;
 	}
 
 	/**
@@ -254,17 +251,14 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @return bool
+	 * @return void
 	 */
 	public function removeGroup(UserInterface $user, GroupInterface $group)
 	{
-		if ( ! $this->inGroup($user, $group))
+		if ($this->inGroup($user, $group))
 		{
-			return true;
+			$this->groups()->detatch($group);
 		}
-
-		$this->groups()->detatch($group);
-		return true;
 	}
 
 	/**

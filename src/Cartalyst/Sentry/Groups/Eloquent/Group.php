@@ -170,7 +170,7 @@ class Group extends Model implements GroupInterface {
 		// Check if name field was passed
 		if ( ! $name = $this->name)
 		{
-			throw new NameFieldRequiredException;
+			throw new NameFieldRequiredException("A name field is required for a group, none given.");
 		}
 
 		// Check if group already exists
@@ -179,7 +179,7 @@ class Group extends Model implements GroupInterface {
 
 		if ($persistedGroup and $persistedGroup->getGroupId() != $this->getGroupId())
 		{
-			throw new GroupExistsException;
+			throw new GroupExistsException("A group already exists with name [$name], names must be unique for groups.");
 		}
 
 		return true;

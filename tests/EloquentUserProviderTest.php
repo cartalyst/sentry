@@ -128,7 +128,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[inGroup]');
 		$provider->shouldReceive('inGroup')->with($user, $group)->once()->andReturn(true);
 
-		$this->assertTrue($provider->addGroup($user, $group));
+		$this->assertNull($provider->addGroup($user, $group));
 	}
 
 	public function testAddingGroupAttachesToRelationship()
@@ -144,7 +144,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[groups]');
 		$provider->shouldReceive('groups')->once()->andReturn($groups);
 
-		$this->assertTrue($provider->addGroup($user, $group));
+		$this->assertNull($provider->addGroup($user, $group));
 	}
 
 	public function testRemovingFromGroupReturnsTrueIfNotInThatGruop()
@@ -155,7 +155,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[inGroup]');
 		$provider->shouldReceive('inGroup')->with($user, $group)->once()->andReturn(false);
 
-		$this->assertTrue($provider->removeGroup($user, $group));
+		$this->assertNull($provider->removeGroup($user, $group));
 	}
 
 	public function testRemovingFromGroupDetatchesRelationship()
@@ -172,7 +172,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[groups]');
 		$provider->shouldReceive('groups')->once()->andReturn($groups);
 
-		$this->assertTrue($provider->removeGroup($user, $group));
+		$this->assertNull($provider->removeGroup($user, $group));
 	}
 
 	public function testGettingGroups()
