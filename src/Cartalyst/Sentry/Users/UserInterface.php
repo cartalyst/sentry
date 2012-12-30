@@ -105,7 +105,7 @@ interface UserInterface {
 	 * Wipes out the data associated with resetting
 	 * a password.
 	 *
-	 * @return $user
+	 * @return void
 	 */
 	public function clearResetPassword();
 

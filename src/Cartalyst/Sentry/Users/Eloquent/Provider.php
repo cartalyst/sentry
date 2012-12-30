@@ -42,17 +42,6 @@ class Provider implements ProviderInterface {
 	protected $hasher;
 
 	/**
-	 * Credentials that should be hashed.
-	 *
-	 * @var array
-	 */
-	protected $hashableCredentials = array(
-		'password',
-		'reset_password_hash',
-		'activation_hash',
-	);
-
-	/**
 	 * Create a new Eloquent User provider.
 	 *
 	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
@@ -167,11 +156,6 @@ class Provider implements ProviderInterface {
 		$class = '\\'.ltrim($this->model, '\\');
 
 		return new $class();
-	}
-
-	public function getHashableCredentials()
-	{
-		return $this->hashableCredentials;
 	}
 
 }

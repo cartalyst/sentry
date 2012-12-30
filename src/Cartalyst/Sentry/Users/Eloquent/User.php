@@ -20,6 +20,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserExistsException;
@@ -46,6 +47,17 @@ class User extends Model implements UserInterface {
 	);
 
 	/**
+	 * Attributes that should be hashed.
+	 *
+	 * @var array
+	 */
+	protected $hashableAttributes = array(
+		'password',
+		'reset_password_hash',
+		'activation_hash',
+	);
+
+	/**
 	 * The login attribute.
 	 *
 	 * @var string
@@ -53,13 +65,23 @@ class User extends Model implements UserInterface {
 	protected $login = 'email';
 
 	/**
-	 * Allowed Permissions Values
-	 * options:
+	 * Allowed permissions values.
+	 *
+	 * Possible options:
 	 *   -1 => deny
 	 *    0 => delete
 	 *    1 => add
+	 *
+	 * @var array
 	 */
 	protected $allowedPermissionsValues = array(-1, 0, 1);
+
+	/**
+	 * The hasher the model uses.
+	 *
+	 * @var Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	protected $hasher;
 
 	/**
 	 * Returns the user's ID.
@@ -271,18 +293,29 @@ class User extends Model implements UserInterface {
 	 */
 	public function attemptResetPassword($resetCode, $newPassword)
 	{
+		if ($this->checkHash($resetCode, $this->reset_password_hash))
+		{
+			$this->password = $newPassword;
+			$this->reset_password_hash = null;
+			return $this->save();
+		}
 
+		return false;
 	}
 
 	/**
 	 * Wipes out the data associated with resetting
 	 * a password.
 	 *
-	 * @return $user
+	 * @return void
 	 */
 	public function clearResetPassword()
 	{
-
+		if ($this->reset_password_hash)
+		{
+			$this->reset_password_hash = null;
+			$this->save();
+		}
 	}
 
 	/**
@@ -392,6 +425,90 @@ class User extends Model implements UserInterface {
 	public function groups()
 	{
 		return $this->belongsToMany('Cartalyst\Sentry\Groups\Eloquent\Group', 'users_groups');
+	}
+
+	/**
+	 * Sets the hasher for the user.
+	 *
+	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
+	 * @return void
+	 */
+	public function setHasher(HasherInterface $hasher)
+	{
+		$this->hasher = $hasher;
+	}
+
+	/**
+	 * Returns the hasher for the user.
+	 *
+	 * @return Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	public function getHasher()
+	{
+		return $this->hasher;
+	}
+
+	/**
+	 * Check string against hashed string.
+	 *
+	 * @param  string  $string
+	 * @param  string  $hashedString
+	 * @return bool
+	 * @throws RuntimeException
+	 */
+	public function checkHash($string, $hashedString)
+	{
+		if ( ! $this->hasher)
+		{
+			throw new \RuntimeException("A hasher has not been provided for the user.");
+		}
+
+		return $this->hasher->checkHash($string, $hashedString);
+	}
+
+	/**
+	 * Hash string.
+	 *
+	 * @param  string  $string
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	public function hash($string)
+	{
+		if ( ! $this->hasher)
+		{
+			throw new \RuntimeException("A hasher has not been provided for the user.");
+		}
+
+		return $this->hasher->hash($string);
+	}
+
+	/**
+	 * Returns an array of hashable attributes.
+	 *
+	 * @return array
+	 */
+	public function gethashableAttributes()
+	{
+		return $this->hashableAttributes;
+	}
+
+	/**
+	 * Set a given attribute on the model.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
+	public function setAttribute($key, $value)
+	{
+		// Hash required fields when necessary
+		if (in_array($key, $this->hashableAttributes) and ! empty($value))
+		{
+			$value = $this->hash($value);
+		}
+
+		return parent::setAttribute($key, $value);
 	}
 
 }

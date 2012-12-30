@@ -51,7 +51,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo', $user->getUserId());
 	}
 
-	public function testUserLoginCallsLoginColumn()
+	public function testUserLoginCallsLoginAttribute()
 	{
 		$user = new User;
 		$user->email = 'foo@bar.com';
@@ -59,10 +59,13 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo@bar.com', $user->getUserLogin());
 	}
 
-	public function testUserPassowrdCallsPassowrdColumn()
+	public function testUserPassowrdCallsPasswordAttribute()
 	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('unhashed_password_here')->once()->andReturn('hashed_password_here');
 		$user = new User;
-		$user->password = 'hashed_password_here';
+		$user->setHasher($hasher);
+		$user->password = 'unhashed_password_here';
 
 		$this->assertEquals('hashed_password_here', $user->getUserPassword());
 	}
@@ -220,10 +223,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testValidationFailsWhenUserAlreadyExists()
 	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
+
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->setHasher($hasher);
 		$user->email = 'foo@bar.com';
 		$user->password = 'bazbat';
 
@@ -241,10 +248,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testValidationFailsWhenUserAlreadyExistsOnExistent()
 	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
+
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->setHasher($hasher);
 		$user->id = 124;
 		$user->email = 'foo@bar.com';
 		$user->password = 'bazbat';
@@ -260,10 +271,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	public function testValidationDoesNotThrowAnExceptionIfPersistedUserIsThisUser()
 	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
+
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
+		$user->setHasher($hasher);
 		$user->id = 123;
 		$user->email = 'foo@bar.com';
 		$user->password = 'bazbat';
@@ -276,5 +291,43 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($user->validate());
 	}
+
+	public function testClearResetPassword()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save]');
+		$user->shouldReceive('save')->never();
+		$user->clearResetPassword();
+
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with('foo_bar_baz')->once()->andReturn('hashed_foo_bar_baz');
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save]');
+		$user->setHasher($hasher);
+
+		$user->reset_password_hash = 'foo_bar_baz';
+		$user->shouldReceive('save')->once();
+		$user->clearResetPassword();
+		$this->assertNull($user->reset_password_hash);
+	}
+
+	public function testHasherSettingAndGetting()
+	{
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$user = new User;
+		$this->assertNull($user->getHasher());
+		$user->setHasher($hasher);
+		$this->assertEquals($hasher, $user->getHasher());
+	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testHasherThrowsExceptionIfNotSet()
+	{
+		$user = new User;
+		$user->checkHash('foo', 'bar');
+	}
+
+
 
 }
