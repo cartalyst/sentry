@@ -19,6 +19,7 @@
  */
 
 use Illuminate\Database\Eloquent\Model;
+use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 
 class User extends Model implements UserInterface {
@@ -112,7 +113,6 @@ class User extends Model implements UserInterface {
 	/**
 	 * Check if user is activated
 	 *
-	 * @param  UserInterface  $user
 	 * @return bool
 	 */
 	public function isActivated()
@@ -208,6 +208,174 @@ class User extends Model implements UserInterface {
 		}
 
 		return $permissions['superuser'] == 1;
+	}
+
+	/**
+	 * Validates the users and throws a number of
+	 * Exceptions if validation fails.
+	 *
+	 * @return bool
+	 * @throws Cartalyst\Sentry\Users\LoginFieldRequiredException
+	 * @throws Cartalyst\Sentry\Users\UserExistsException
+	 */
+	public function validate()
+	{
+
+	}
+
+	/**
+	 * Attempts to activate the given user by checking
+	 * the activate code.
+	 *
+	 * @param  string  $activationCode
+	 * @return bool
+	 */
+	public function validateActivate($activationCode)
+	{
+
+	}
+
+	/**
+	 * Get a reset password code for the given user.
+	 *
+	 * @return string
+	 */
+	public function getResetPasswordCode()
+	{
+
+	}
+
+	/**
+	 * Attemps to reset a user's password by matching
+	 * the reset code generated with the user's.
+	 *
+	 * @param  string  $resetCode
+	 * @param  string  $newPassword
+	 * @return bool
+	 */
+	public function attemptResetPassword($resetCode, $newPassword)
+	{
+
+	}
+
+	/**
+	 * Wipes out the data associated with resetting
+	 * a password.
+	 *
+	 * @return $user
+	 */
+	public function clearResetPassword()
+	{
+
+	}
+
+	/**
+	 * Returns an arrya of groups which the given
+	 * user belongs to.
+	 *
+	 * @return array
+	 */
+	public function getGroups()
+	{
+		return $this->groups()->get();
+	}
+
+	/**
+	 * Adds the user to the given group
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return void
+	 */
+	public function addGroup(GroupInterface $group)
+	{
+		if ( ! $this->inGroup($group))
+		{
+			$this->groups()->attach($group);
+		}
+	}
+
+	/**
+	 * Remove user from the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function removeGroup(GroupInterface $group)
+	{
+		if ($this->inGroup($group))
+		{
+			$this->groups()->detatch($group);
+		}
+	}
+
+	/**
+	 * See if user is in the given group.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return bool
+	 */
+	public function inGroup(GroupInterface $group)
+	{
+		foreach ($this->getGroups() as $_group)
+		{
+			if ($_group->getGroupId() == $group->getGroupId())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns an array of merged permissions for each
+	 * group the user is in.
+	 *
+	 * @return array
+	 */
+	public function getMergedPermissions()
+	{
+		$permissions = array();
+
+		foreach ($this->getGroups() as $group)
+		{
+			$permissions = array_merge($permissions, $group->getGroupPermissions());
+		}
+
+		$permissions = array_merge($permissions, $this->getUserPermissions());
+
+		return $permissions;
+	}
+
+	/**
+	 * See if a user has a required permission. Permissions
+	 * are merged from all groups the user belongs to
+	 * and then are checked against the passed permission.
+	 *
+	 * @param  string  $permission
+	 * @return bool
+	 */
+	public function hasAccess($permission)
+	{
+		if ($this->isSuperUser())
+		{
+			return true;
+		}
+
+		$permissions = $this->getMergedPermissions();
+
+		return (array_key_exists($permission, $permissions) and $permissions[$permission] == 1);
+	}
+
+	/**
+	 * Returns the relationship between users and
+	 * groups.
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function groups()
+	{
+		return $this->belongsToMany('Cartalyst\Sentry\Groups\Eloquent\Group', 'users_groups');
 	}
 
 }

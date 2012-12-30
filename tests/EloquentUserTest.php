@@ -78,4 +78,122 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->isSuperUser());
 	}
 
+	public function testGettingGroups()
+	{
+		$pivot = m::mock('StdClass');
+		$pivot->shouldReceive('get')->once()->andReturn('foo');
+
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[groups]');
+		$user->shouldReceive('groups')->once()->andReturn($pivot);
+
+		$this->assertEquals('foo', $user->getGroups());
+	}
+
+	public function testInGroup()
+	{
+		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$group1->shouldReceive('getGroupId')->once()->andReturn(123);
+
+		$group2 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$group2->shouldReceive('getGroupId')->once()->andReturn(124);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getGroups]');
+		$user->shouldReceive('getGroups')->once()->andReturn(array($group2));
+
+		$this->assertFalse($user->inGroup($group1));
+	}
+
+	public function testAddingToGroupChecksIfAlreadyInThatGroup()
+	{
+		$group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[inGroup,groups]');
+		$user->shouldReceive('inGroup')->with($group)->once()->andReturn(true);
+		$user->shouldReceive('groups')->never();
+
+		$user->addGroup($group);
+	}
+
+	public function testAddingGroupAttachesToRelationship()
+	{
+		$group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+
+		$relationship = m::mock('StdClass');
+		$relationship->shouldReceive('attach')->with($group)->once();
+
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[inGroup,groups]');
+		$user->shouldReceive('inGroup')->once()->andReturn(false);
+		$user->shouldReceive('groups')->once()->andReturn($relationship);
+
+		$user->addGroup($group);
+	}
+
+	public function testRemovingFromGroupDetatchesRelationship()
+	{
+		$group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+
+		$relationship = m::mock('StdClass');
+		$relationship->shouldReceive('detatch')->with($group)->once();
+
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[inGroup,groups]');
+		$user->shouldReceive('inGroup')->once()->andReturn(true);
+		$user->shouldReceive('groups')->once()->andReturn($relationship);
+
+		$user->removeGroup($group);
+	}
+
+	public function testMergedPermissions()
+	{
+		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$group1->shouldReceive('getGroupPermissions')->once()->andReturn(array(
+			'foo' => 1,
+			'bar' => 1,
+			'baz' => 1,
+		));
+
+		$group2 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$group2->shouldReceive('getGroupPermissions')->once()->andReturn(array(
+			'qux' => 1,
+		));
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getGroups,getUserPermissions]');
+		$user->shouldReceive('getGroups')->once()->andReturn(array($group1, $group2));
+		$user->shouldReceive('getUserPermissions')->once()->andReturn(array(
+			'corge' => 1,
+			'foo'   => -1,
+			'baz'   => -1,
+		));
+
+		$expected = array(
+			'foo'   => -1,
+			'bar'   => 1,
+			'baz'   => -1,
+			'qux'   => 1,
+			'corge' => 1,
+		);
+
+		$this->assertEquals($expected, $user->getMergedPermissions());
+	}
+
+	public function testSuperUserHasAccessToEverything()
+	{
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser]');
+		$user->shouldReceive('isSuperUser')->once()->andReturn(true);
+
+		$this->assertTrue($user->hasAccess('bar'));
+	}
+
+	public function testNormalUserPermissions()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->twice()->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->twice()->andReturn(array(
+			'foo' => -1,
+			'bar' => 1,
+			'baz' => 1,
+		));
+
+		$this->assertTrue($user->hasAccess('bar'));
+		$this->assertFalse($user->hasAccess('foo'));
+	}
+
 }
