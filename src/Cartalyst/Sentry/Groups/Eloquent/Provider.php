@@ -18,10 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Groups\GroupExistsException;
 use Cartalyst\Sentry\Groups\GroupInterface;
-use Cartalyst\Sentry\Groups\GroupNotFoundException;
-use Cartalyst\Sentry\Groups\NameFieldRequiredException;
 use Cartalyst\Sentry\Groups\ProviderInterface;
 
 class Provider implements ProviderInterface {
@@ -57,13 +54,7 @@ class Provider implements ProviderInterface {
 	public function findById($id)
 	{
 		$model = $this->createModel();
-
-		if ( ! $group = $model->newQuery()->find($id))
-		{
-			throw new GroupNotFoundException;
-		}
-
-		return $group;
+		return $model->newQuery()->find($id);
 	}
 
 	/**
@@ -71,55 +62,11 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  string  $name
 	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
 	 */
 	public function findByName($name)
 	{
 		$model = $this->createModel();
-
-		if ( ! $group = $model->newQuery()->where('name', '=', $name)->first())
-		{
-			throw new GroupNotFoundException;
-		}
-
-		return $group;
-	}
-
-	/**
-	 * Validates the group and throws a number of
-	 * Exceptions if validation fails.
-	 *
-	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
-	 */
-	public function validate(GroupInterface $group)
-	{
-		$name = $group->getGroupName();
-
-		// Check if name field was passed
-		if ( ! $name)
-		{
-			throw new NameFieldRequiredException;
-		}
-
-		// Check if group already exists
-		try
-		{
-			$persistedGroup = $this->findByName($name);
-		}
-		catch (GroupNotFoundException $e)
-		{
-			$persistedGroup = null;
-		}
-
-		if ($persistedGroup and $persistedGroup->getGroupId() != $group->getGroupId())
-		{
-			throw new GroupExistsException;
-		}
-
-		return true;
+		return $model->newQuery()->where('name', '=', $name)->first();
 	}
 
 	/**
@@ -131,7 +78,7 @@ class Provider implements ProviderInterface {
 	{
 		$class = '\\'.ltrim($this->model, '\\');
 
-		return new $class();
+		return new $class;
 	}
 
 }

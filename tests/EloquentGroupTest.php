@@ -147,4 +147,86 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$group->getPermissions($json);
 	}
 
+	public function testValidation()
+	{
+		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
+		$group->name = 'foo';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('name', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn(null);
+
+		$group->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$group->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 */
+	public function testValidationThrowsExceptionForMissingName()
+	{
+		$group = new Group;
+		$group->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Groups\GroupExistsException
+	 */
+	public function testValidationThrowsExceptionForDuplicateNameOnNonExistent()
+	{
+		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+
+		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
+		$group->name = 'foo';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('name', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedGroup);
+
+		$group->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$group->validate();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Groups\GroupExistsException
+	 */
+	public function testValidationThrowsExceptionForDuplicateNameOnExistent()
+	{
+		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+
+		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
+		$group->id   = 124;
+		$group->name = 'foo';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('name', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedGroup);
+
+		$group->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$group->validate();
+	}
+
+	public function testValidationDoesNotThrowAnExceptionIfPersistedGroupIsThisGroup()
+	{
+		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+
+		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
+		$group->id   = 123;
+		$group->name = 'foo';
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('name', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('first')->once()->andReturn($persistedGroup);
+
+		$group->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$group->validate();
+	}
+
 }

@@ -18,24 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-interface ProviderInterface {
-
-	/**
-	 * Find group by ID.
-	 *
-	 * @param  int  $id
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
-	 */
-	public function findById($id);
-
-	/**
-	 * Find group by name.
-	 *
-	 * @param  string  $name
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
-	 */
-	public function findByName($name);
-
-}
+class GroupExistsException extends \UnexpectedValueException {}
+class GroupNotFoundException extends \UnexpectedValueException {}
+class NameFieldRequiredException extends \UnexpectedValueException {}
