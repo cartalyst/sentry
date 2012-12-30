@@ -19,8 +19,12 @@
  */
 
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
+use Cartalyst\Sentry\Group\Eloquent\Provider as GroupProvider;
+use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
+use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
+use Cartalyst\Sentry\Users\Eloquent\User as UserProvider;
 use Illuminate\Support\ServiceProvider;
 
 class SentryServiceProvider extends ServiceProvider {
@@ -33,9 +37,17 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->registerHasher();
+
 		$this->registerSession();
 
 		$this->registerCookie();
+
+		$this->registerGroupProvider();
+
+		$this->registerUserProvider();
+
+		$this->registerThrottleProvider();
 
 		$this->registerEvents();
 
@@ -46,7 +58,22 @@ class SentryServiceProvider extends ServiceProvider {
 			// know that we need to set any queued cookies in the after event later.
 			$app['sentry.loaded'] = true;
 
-			return new Sentry($app['sentry.session'], $app['sentry.cookie']);
+			return new Sentry(
+				$app['sentry.hasher'],
+				$app['sentry.session'],
+				$app['sentry.cookie'],
+				$app['sentry.gorup'],
+				$app['sentry.user'],
+				$app['sentry.throttle']
+			);
+		});
+	}
+
+	protected function registerHasher()
+	{
+		$this->app['sentry.hasher'] = $this->app->share(function($app)
+		{
+			return new BcryptHasher;
 		});
 	}
 
@@ -63,6 +90,30 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
 		{
 			return new IlluminateCookie($app['cookie']);
+		});
+	}
+
+	protected function registerGroupProvider()
+	{
+		$this->app['sentry.group'] = $this->app->share(function($app)
+		{
+			return new GroupProvider;
+		})
+	}
+
+	protected function registerUserProvider()
+	{
+		$this->app['sentry.user'] = $this->app->share(function($app)
+		{
+			return new UserProvider($app['sentry.hasher'], $app['sentry.group']);
+		});
+	}
+
+	protected function registerThrottleProvider()
+	{
+		$this->app['sentry.throttle'] = $this->app->share(function($app)
+		{
+			return new ThrottleProvider($app['sentry.user']);
 		});
 	}
 
