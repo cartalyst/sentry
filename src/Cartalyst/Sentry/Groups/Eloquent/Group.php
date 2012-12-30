@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Groups\NameFieldRequiredException;
+use Cartalyst\Sentry\Groups\NameRequiredException;
 use Cartalyst\Sentry\Groups\GroupExistsException;
 use Cartalyst\Sentry\Groups\GroupInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -162,7 +162,7 @@ class Group extends Model implements GroupInterface {
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @throws Cartalyst\Sentry\Groups\NameRequiredException
 	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
 	 */
 	public function validate()
@@ -170,7 +170,7 @@ class Group extends Model implements GroupInterface {
 		// Check if name field was passed
 		if ( ! $name = $this->name)
 		{
-			throw new NameFieldRequiredException("A name field is required for a group, none given.");
+			throw new NameRequiredException("A name field is required for a group, none given.");
 		}
 
 		// Check if group already exists

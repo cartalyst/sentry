@@ -136,7 +136,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public function getLoginAttributeName()
+	public function getLoginName()
 	{
 		return $this->loginAttribute;
 	}
@@ -215,12 +215,13 @@ class User extends Model implements UserInterface {
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Users\LoginFieldRequiredException
+	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
+	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
 	 * @throws Cartalyst\Sentry\Users\UserExistsException
 	 */
 	public function validate()
 	{
-
+		
 	}
 
 	/**

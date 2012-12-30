@@ -27,7 +27,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		echo 'User not found';
 	}
-	catch (Cartalyst\Sentry\LoginFieldRequiredException $e)
+	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
 		echo 'Login Field required';
 	}

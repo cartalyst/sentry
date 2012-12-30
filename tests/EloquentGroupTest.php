@@ -162,7 +162,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException Cartalyst\Sentry\Groups\NameFieldRequiredException
+	 * @expectedException Cartalyst\Sentry\Groups\NameRequiredException
 	 */
 	public function testValidationThrowsExceptionForMissingName()
 	{

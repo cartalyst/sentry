@@ -69,7 +69,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$loginColumn = 'email';
 
 		$query = m::mock('StdClass');
-		$query->shouldReceive('getLoginAttributeName')->once()->andReturn($loginColumn);
+		$query->shouldReceive('getLoginName')->once()->andReturn($loginColumn);
 
 		$query->shouldReceive('newQuery')->andReturn($query);
 		$query->shouldReceive('where')->with($loginColumn, '=', 'foo@bar.com')->once()->andReturn($query);
@@ -90,7 +90,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$loginColumn = 'email';
 
 		$query = m::mock('StdClass');
-		$query->shouldReceive('getLoginAttributeName')->once()->andReturn($loginColumn);
+		$query->shouldReceive('getLoginName')->once()->andReturn($loginColumn);
 
 		$query->shouldReceive('newQuery')->andReturn($query);
 		$query->shouldReceive('where')->with($loginColumn, '=', 'foo@bar.com')->once()->andReturn($query);
@@ -107,7 +107,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 	public function testFindingByCredentialsFailsWithoutLoginColumn()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
-		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
 
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
 		$provider->shouldReceive('createModel')->once()->andReturn($user);
@@ -128,7 +128,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('first')->andReturn(null);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
-		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
 		$user->shouldReceive('newQuery')->andReturn($query);
 
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
@@ -162,7 +162,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('first')->andReturn($actualUser);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
-		$user->shouldReceive('getLoginAttributeName')->once()->andReturn('foo');
+		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
 		$user->shouldReceive('newQuery')->andReturn($query);
 
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');

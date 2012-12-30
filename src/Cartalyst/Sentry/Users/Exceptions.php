@@ -18,7 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-class LoginFieldRequiredException extends \UnexpectedValueException {}
+class LoginRequiredException extends \UnexpectedValueException {}
+class PasswordRequiredException extends \UnexpectedValueException {}
 class UserNotFoundException extends \OutOfBoundsException {}
 class UserNotActivatedException extends \RuntimeException {}
 class UserExistsException extends \UnexpectedValueException {}

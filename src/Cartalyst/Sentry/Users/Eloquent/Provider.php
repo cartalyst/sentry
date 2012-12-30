@@ -97,7 +97,7 @@ class Provider implements ProviderInterface {
 	{
 		$model = $this->createModel();
 
-		if ( ! $user = $model->newQuery()->where($model->getLoginAttributeName(), '=', $login)->first())
+		if ( ! $user = $model->newQuery()->where($model->getLoginName(), '=', $login)->first())
 		{
 			throw new UserNotFoundException("A user could not be found with a login value of [$login].");
 		}
@@ -116,7 +116,7 @@ class Provider implements ProviderInterface {
 	{
 		$model = $this->createModel();
 
-		if ( ! array_key_exists(($attribute = $model->getLoginAttributeName()), $credentials))
+		if ( ! array_key_exists(($attribute = $model->getLoginName()), $credentials))
 		{
 			throw new \InvalidArgumentException("Login attribute [$attribute] was not provided.");
 		}

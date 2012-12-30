@@ -10,7 +10,7 @@ Parameters                   | Type            | Default       | Description
 `$user`                      | UserInterface   | none          | An UserInterface object to save.
 
 `returns` bool
-`throws`  LoginFieldRequiredException, UserExistsException, InvalidPermissionsException
+`throws`  LoginRequiredException, UserExistsException, InvalidPermissionsException
 
 ####Example
 
@@ -31,7 +31,7 @@ Parameters                   | Type            | Default       | Description
 
 		// user not saved
 	}
-	catch (Cartalyst\Sentry\LoginFieldRequiredException $e)
+	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
 		echo 'login field required';
 	}

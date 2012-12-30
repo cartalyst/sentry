@@ -20,4 +20,4 @@
 
 class GroupExistsException extends \UnexpectedValueException {}
 class GroupNotFoundException extends \UnexpectedValueException {}
-class NameFieldRequiredException extends \UnexpectedValueException {}
+class NameRequiredException extends \UnexpectedValueException {}

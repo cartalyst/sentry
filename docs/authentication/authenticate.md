@@ -11,7 +11,7 @@ Parameters                   | Type            | Default       | Description
 `$remember`                  | bool            | false         | Remember if the user is authenticated or not for auto logging in.
 
 `returns` bool
-`throws`  LoginFieldRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedException, UserBannedException
+`throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedException, UserBannedException
 
 ####Example
 
@@ -36,7 +36,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		echo 'User not found';
 	}
-	catch (Cartalyst\Sentry\LoginFieldRequiredException $e)
+	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
 		echo 'Login Field required';
 	}

@@ -10,7 +10,7 @@ Parameters                   | Type            | Default       | Description
 `$credentials`               | array           | none          | An array of user fields create a user with. The Login field is required, all other fields are optional.
 
 `returns` bool
-`throws`  LoginFieldRequiredException, UserExistsException, InvalidPermissionsException
+`throws`  LoginRequiredException, UserExistsException, InvalidPermissionsException
 
 ####Example
 
@@ -23,7 +23,7 @@ Parameters                   | Type            | Default       | Description
 
 		// send activation code to user to activate their account
 	}
-	catch (Cartalyst\Sentry\LoginFieldRequiredException $e)
+	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
 		echo 'login field required';
 	}
