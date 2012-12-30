@@ -18,9 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-class LoginFieldRequiredException extends \RuntimeException {}
-class UserExistsException extends \RuntimeException {}
-
 interface UserInterface {
 
 	/**

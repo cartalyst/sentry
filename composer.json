@@ -27,7 +27,7 @@
     	"classmap": [
             "src/Cartalyst/Sentry/Groups/Exceptions.php",
             "src/Cartalyst/Sentry/Throttling/ProviderInterface.php",
-            "src/Cartalyst/Sentry/Users/ProviderInterface.php",
+            "src/Cartalyst/Sentry/Users/Exceptions.php",
     		"src/migrations"
     	],
         "psr-0": {

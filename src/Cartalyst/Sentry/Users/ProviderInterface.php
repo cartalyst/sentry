@@ -20,9 +20,6 @@
 
 use Cartalyst\Sentry\Groups\GroupInterface;
 
-class UserNotActivatedException extends \RuntimeException {}
-class UserNotFoundException extends \RuntimeException {}
-
 interface ProviderInterface {
 
 	/**
