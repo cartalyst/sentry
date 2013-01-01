@@ -422,4 +422,52 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('hashed_new_password', $user->getUserPassword());
 	}
 
+	public function testPermissionsAreMergedAndRemovedProperly()
+	{
+		$user = new User;
+		$user->permissions = array(
+			'foo' => 1,
+			'bar' => 1,
+		);
+
+		$user->permissions = array(
+			'baz' => 1,
+			'qux' => 1,
+			'foo' => 0,
+		);
+
+		$expected = array(
+			'bar' => 1,
+			'baz' => 1,
+			'qux' => 1,
+		);
+
+		$this->assertEquals($expected, $user->permissions);
+	}
+
+
+	public function testPermissionsWithArrayCastingAndJsonCasting()
+	{
+		$user = new User;
+		$user->email = 'foo@bar.com';
+		$user->permissions = array(
+			'foo' => 1,
+			'bar' => -1,
+			'baz' => 1,
+		);
+		
+		$expected = array(
+			'email' => 'foo@bar.com',
+			'permissions' => array(
+				'foo' => 1,
+				'bar' => -1,
+				'baz' => 1,
+			),
+		);
+		$this->assertEquals($expected, $user->toArray());
+
+		$expected = '{"email":"foo@bar.com","permissions":{"foo":1,"bar":-1,"baz":1}}';
+		$this->assertEquals($expected, (string) $user);
+	}
+
 }

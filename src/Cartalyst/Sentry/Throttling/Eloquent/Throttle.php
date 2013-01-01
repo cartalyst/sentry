@@ -38,14 +38,14 @@ class Throttle extends Model implements ThrottleInterface {
 	 *
 	 * @var int
 	 */
-	protected $limit = 5;
+	protected $attemptLimit = 5;
 
 	/**
 	 * Suspensions time in minutes.
 	 *
 	 * @var int
 	 */
-	protected $time = 15;
+	protected $suspensionTime = 15;
 
 	/**
 	 * Indicates if the model should be timestamped.
@@ -79,12 +79,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function setAttemptLimit($limit)
 	{
-		if ( ! $_limit = intval($limit))
-		{
-			throw new \InvalidArgumentException("Invalid limit provided.");
-		}
-
-		$this->limit = $_limit;
+		$this->attemptLimit = (int) $limit;
 	}
 
 	/**
@@ -94,7 +89,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getAttemptLimit()
 	{
-		return $this->limit;
+		return $this->attemptLimit;
 	}
 
 	/**
@@ -104,12 +99,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function setSuspensionTime($minutes)
 	{
-		if ( ! $_minutes = intval($minutes))
-		{
-			throw new \InvalidArgumentException("Invalid limit provided.");
-		}
-
-		$this->time = $_minutes;
+		$this->suspensionTime = (int) $_minutes;
 	}
 
 	/**
@@ -119,14 +109,13 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getSuspensionTime()
 	{
-		return $this->time;
+		return $this->suspensionTime;
 	}
 
 	/**
-	 * Get the current amount of attempts
+	 * Get the current amount of attempts.
 	 *
 	 * @return int
-	 * @todo change to date time
 	 */
 	public function getLoginAttempts()
 	{
@@ -136,7 +125,7 @@ class Throttle extends Model implements ThrottleInterface {
 		}
 
 		$clearTime = new DateTime($this->last_attempt_at);
-		$clearAt   = $clearTime->modify('+'.$this->time.' minutes');
+		$clearAt   = $clearTime->modify('+'.$this->suspensionTime.' minutes');
 		$now       = new DateTime;
 
 		if ($clearAt <= $now)
@@ -161,7 +150,7 @@ class Throttle extends Model implements ThrottleInterface {
 		$this->attempts++;
 		$this->last_attempt_at = $this->freshTimeStamp();
 
-		if ($this->getLoginAttempts() >= $this->limit)
+		if ($this->getLoginAttempts() >= $this->attemptLimit)
 		{
 			$this->suspend();
 		}
@@ -232,8 +221,8 @@ class Throttle extends Model implements ThrottleInterface {
 		if ($this->suspended)
 		{
 			$suspended   = new DateTime($this->suspended_at);
-			$unsuspendAt = $suspended->modify('+'.$this->time.' minutes');
-			$now         = new DateTime();
+			$unsuspendAt = $suspended->modify('+'.$this->suspensionTime.' minutes');
+			$now         = new DateTime;
 
 			if ($unsuspendAt <= $now)
 			{
@@ -355,6 +344,67 @@ class Throttle extends Model implements ThrottleInterface {
 	public function user()
 	{
 		return $this->belongsTo('Cartalyst\Sentry\Users\Eloquent\User', 'user_id');
+	}
+
+	public function setLastAttemptAt($lastAttemptAt)
+	{
+		if ( ! $lastAttemptAt instanceof DateTime)
+		{
+			$lastAttemptAt = new DateTime($lastAttemptAt);
+		}
+
+		return $lastAttemptAt;
+	}
+
+	public function getLastAttemptAt($lastAttemptAt)
+	{
+		if ( ! $lastAttemptAt instanceof DateTime)
+		{
+			$lastAttemptAt = new DateTime($lastAttemptAt);
+		}
+
+		return $lastAttemptAt;
+	}
+
+	public function setSuspendedAt($suspendedAt)
+	{
+		if ( ! $suspendedAt instanceof DateTime)
+		{
+			$suspendedAt = new DateTime($suspendedAt);
+		}
+
+		return $suspendedAt;
+	}
+
+	public function getSuspendedAtAt($suspendedAt)
+	{
+		if ( ! $suspendedAt instanceof DateTime)
+		{
+			$suspendedAt = new DateTime($suspendedAt);
+		}
+
+		return $suspendedAt;
+	}
+
+	/**
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$result = parent::toArray();
+
+		if (isset($result['last_attempt_at']))
+		{
+			$result['last_attempt_at'] = $result['last_attempt_at']->format('Y-m-d H:i:s');
+		}
+		if (isset($result['suspended_at']))
+		{
+			$result['suspended_at'] = $result['suspended_at']->format('Y-m-d H:i:s');
+		}
+
+		return $result;
 	}
 
 }

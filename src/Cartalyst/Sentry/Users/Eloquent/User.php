@@ -189,7 +189,7 @@ class User extends Model implements UserInterface {
 	public function setPermissions(array $permissions)
 	{
 		// Merge permissions
-		$permissions = array_merge($this->getGroupPermissions(), $permissions);
+		$permissions = array_merge($this->getUserPermissions(), $permissions);
 
 		// Loop through and adjsut permissions as needed
 		foreach ($permissions as $permission => $value)
@@ -557,6 +557,27 @@ class User extends Model implements UserInterface {
 		}
 
 		return parent::setAttribute($key, $value);
+	}
+
+	/**
+	 * Convert the model instance to an array.
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$result = parent::toArray();
+
+		if (isset($result['permissions']))
+		{
+			$result['permissions'] = $this->getPermissions($result['permissions']);
+		}
+		if (isset($result['suspended_at']))
+		{
+			$result['suspended_at'] = $result['suspended_at']->format('Y-m-d H:i:s');
+		}
+
+		return $result;
 	}
 
 }

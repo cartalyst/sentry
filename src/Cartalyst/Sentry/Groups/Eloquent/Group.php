@@ -151,7 +151,7 @@ class Group extends Model implements GroupInterface {
 
 		if (isset($attributes['permissions']))
 		{
-			$attributes['permissions'] = json_decode($attributes['permissions'], true);
+			$attributes['permissions'] = $this->getPermissions($attributes['permissions']);
 		}
 
 		return $attributes;

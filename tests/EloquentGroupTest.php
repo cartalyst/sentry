@@ -229,4 +229,28 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$group->validate();
 	}
 
+	public function testPermissionsWithArrayCastingAndJsonCasting()
+	{
+		$group = new Group;
+		$group->name = 'foo';
+		$group->permissions = array(
+			'foo' => 1,
+			'bar' => 0,
+			'baz' => 1,
+		);
+		
+		$expected = array(
+			'name'        => 'foo',
+			'permissions' => array(
+				'foo' => 1,
+				'baz' => 1,
+			),
+		);
+
+		$this->assertEquals($expected, $group->toArray());
+
+		$expected = '{"name":"foo","permissions":{"foo":1,"baz":1}}';
+		$this->assertEquals($expected, (string) $group);
+	}
+
 }

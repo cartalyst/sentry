@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Throttling;
 /**
  * Part of the Sentry Package.
  *
@@ -57,7 +57,7 @@ interface ThrottleInterface {
 	public function getSuspensionTime();
 
 	/**
-	 * Get the current amount of attempts
+	 * Get the current amount of attempts.
 	 *
 	 * @return int
 	 */
