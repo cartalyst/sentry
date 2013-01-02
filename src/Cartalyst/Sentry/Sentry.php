@@ -19,11 +19,12 @@
  */
 
 use Cartalyst\Sentry\Cookies\CookieInterface;
-use Cartalyst\Sentry\Group\ProviderInterface as GroupProviderInterface;
+use Cartalyst\Sentry\Groups\ProviderInterface as GroupProviderInterface;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Throttling\ProviderInterface as ThrottleProviderInterface;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
 
@@ -116,9 +117,14 @@ class Sentry {
 	}
 
 	/**
-	 * Authenticates the given user 
+	 * Logs in the given user according to the passed credentials.
+	 *
+	 * @param  array  $credentials
+	 * @param  bool  $remember
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
-	public function authenticate(array $credentials, $remember = false)
+	public function login(array $credentials, $remember = false)
 	{
 		$throttlingEnabled = $this->throttleProvider->isEnabled();
 
@@ -128,15 +134,18 @@ class Sentry {
 		}
 		catch (UserNotFoundException $e)
 		{
-			// We'll default to the login name field, but fallback to a hard-coded
-			// 'login' key in the array that was passed.
-			$loginName          = $this->userProvider->getUserLoginName();
-			$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
-
-			if ($throttlingEnabled and isset($credentials[$loginCredentialKey]))
+			if ($throttlingEnabled)
 			{
-				$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
-				$throttle->addLoginAttempt();
+				// We'll default to the login name field, but fallback to a hard-coded
+				// 'login' key in the array that was passed.
+				$loginName          = $this->userProvider->getUserLoginName();
+				$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+
+				if (isset($credentials[$loginCredentialKey]))
+				{
+					$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
+					$throttle->addLoginAttempt();
+				}
 			}
 
 			throw $e;
@@ -151,12 +160,19 @@ class Sentry {
 
 		$user->clearResetPassword();
 
-		$this->login($user, $remember);
+		$this->forceLogin($user, $remember);
+		return $this->user;
 	}
 
-	public function authenticateAndRembmer(array $credentials)
+	/**
+	 * Alias for login with the remember flag checked.
+	 *
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function loginAndRemember(array $credentials)
 	{
-		return $this->authenticate($credentials, true);
+		return $this->login($credentials, true);
 	}
 
 	/**
@@ -172,19 +188,37 @@ class Sentry {
 		}
 
 		// Check session
-		$this->user = $this->session->get($this->session->getKey());
-
-		// Check for cookie
-		if ( ! $this->user)
+		if ($user = $this->session->get($this->session->getKey()) and $user instanceof UserInterface)
 		{
-			$this->user = $this->cookie->get($this->cookie->getKey());
+			$this->user = $user;
 		}
 
-		return ! is_null($this->user);
+		// Check for cookie
+		if ( ! $this->user and $user = $this->cookie->get($this->cookie->getKey()) and $user instanceof UserInterface)
+		{
+			$this->user = $user;
+		}
+
+		return (bool) $this->getUser();
 	}
 
-	public function login(UserInterface $user, $remember = false)
+	/**
+	 * Forces a login on the given user and sets properties
+	 * in the session.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $remember
+	 * @return void
+	 * @throws Cartalyst\Sentry\Users\UserNotActivatedException
+	 */
+	public function forceLogin(UserInterface $user, $remember = false)
 	{
+		if ( ! $user->isActivated())
+		{
+			$login = $user->getUserLogin();
+			throw new UserNotActivatedException("Cannot login user [$login] as they are not activated.");
+		}
+
 		$this->user = $user;
 
 		// Set sessions
@@ -196,6 +230,11 @@ class Sentry {
 		}
 	}
 
+	/**
+	 * Logs the current user out.
+	 *
+	 * @return void
+	 */
 	public function logout()
 	{
 		unset($this->user);
