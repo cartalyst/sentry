@@ -201,9 +201,12 @@ class Sentry {
 			}
 		}
 
-		$user = $this->getUser();
+		if ( ! $user = $this->getUser())
+		{
+			return false;
+		}
 
-		return (bool) (($user) and $user->isActivated());
+		return $user->isActivated();
 	}
 
 	/**
