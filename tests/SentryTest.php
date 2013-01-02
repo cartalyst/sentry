@@ -19,7 +19,7 @@
  */
 
 use Mockery as m;
-use Cartalyst\Sentry\Sentry;
+use Cartalyst\Sentry\Sessions\IlluminateSession;
 
 class SentryTest extends PHPUnit_Framework_TestCase {
 
