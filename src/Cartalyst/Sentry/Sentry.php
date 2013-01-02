@@ -288,6 +288,36 @@ class Sentry {
 		return $this->user;
 	}
 
+	public function setGroupProvider(GroupProviderInterface $groupProvider)
+	{
+		$this->groupProvider = $groupProvider;
+	}
+
+	public function getGroupProvider()
+	{
+		return $this->groupProvider;
+	}
+
+	public function setUserProvider(UserProviderInterface $userProvider)
+	{
+		$this->userProvider = $userProvider;
+	}
+
+	public function getUserProvider()
+	{
+		return $this->userProvider;
+	}
+
+	public function setThrottleProvider(ThrottleProviderInterface $throttleProvider)
+	{
+		$this->throttleProvider = $throttleProvider;
+	}
+
+	public function getThrottleProvider()
+	{
+		return $this->throttleProvider;
+	}
+
 	/**
 	 * Handle dynamic method calls into the method.
 	 *
