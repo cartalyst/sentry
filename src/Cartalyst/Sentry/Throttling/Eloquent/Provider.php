@@ -40,6 +40,13 @@ class Provider implements ProviderInterface {
 	protected $userProvider;
 
 	/**
+	 * Throttling status.
+	 *
+	 * @var bool
+	 */
+	protected $enabled = true;
+
+	/**
 	 * Creates a new throttle provider.
 	 *
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
@@ -92,6 +99,36 @@ class Provider implements ProviderInterface {
 		}
 
 		return $throttle;
+	}
+
+	/**
+	 * Enable throttling.
+	 *
+	 * @return void
+	 */
+	public function enable()
+	{
+		$this->enabled = true;
+	}
+
+	/**
+	 * Disable throttling.
+	 *
+	 * @return void
+	 */
+	public function disable()
+	{
+		$this->enabled = false;
+	}
+
+	/**
+	 * Check if throttling is enabled.
+	 *
+	 * @return bool
+	 */
+	public function isEnabled()
+	{
+		return $this->enabled;
 	}
 
 	/**

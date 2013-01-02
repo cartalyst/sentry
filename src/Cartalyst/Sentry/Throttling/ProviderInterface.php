@@ -38,4 +38,25 @@ interface ProviderInterface {
 	 */
 	public function findByUserLogin($login);
 
+	/**
+	 * Enable throttling.
+	 *
+	 * @return void
+	 */
+	public function enable();
+
+	/**
+	 * Disable throttling.
+	 *
+	 * @return void
+	 */
+	public function disable();
+
+	/**
+	 * Check if throttling is enabled.
+	 *
+	 * @return bool
+	 */
+	public function isEnabled();
+
 }
