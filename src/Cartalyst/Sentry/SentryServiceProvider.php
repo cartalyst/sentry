@@ -19,12 +19,12 @@
  */
 
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
-use Cartalyst\Sentry\Group\Eloquent\Provider as GroupProvider;
+use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
-use Cartalyst\Sentry\Users\Eloquent\User as UserProvider;
+use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Support\ServiceProvider;
 
 class SentryServiceProvider extends ServiceProvider {
@@ -62,7 +62,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.hasher'],
 				$app['sentry.session'],
 				$app['sentry.cookie'],
-				$app['sentry.gorup'],
+				$app['sentry.group'],
 				$app['sentry.user'],
 				$app['sentry.throttle']
 			);
@@ -98,7 +98,7 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->app['sentry.group'] = $this->app->share(function($app)
 		{
 			return new GroupProvider;
-		})
+		});
 	}
 
 	protected function registerUserProvider()

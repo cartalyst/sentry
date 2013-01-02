@@ -19,7 +19,8 @@
  */
 
 use Cartalyst\Sentry\Throttling\ThrottleInterface;
-use Cartalyst\Sentry\Users\UserInterface;
+use Cartalyst\Sentry\Throttling\ProviderInterface;
+use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 
 class Provider implements ProviderInterface {
 
@@ -44,7 +45,7 @@ class Provider implements ProviderInterface {
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
 	 * @return void
 	 */
-	public function __construct(UserInterface $userProvider)
+	public function __construct(UserProviderInterface $userProvider)
 	{
 		$this->userProvider = $userProvider;
 	}
