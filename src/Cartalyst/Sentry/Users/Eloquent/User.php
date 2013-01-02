@@ -312,7 +312,7 @@ class User extends Model implements UserInterface {
 			return true;
 		}
 
-		if ($this->checkHash($activationCode, $this->activation_hash))
+		if ($activationCode == $this->activation_hash)
 		{
 			$this->activation_hash = null;
 			$this->activated = true;
@@ -349,7 +349,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function attemptResetPassword($resetCode, $newPassword)
 	{
-		if ($this->checkHash($resetCode, $this->reset_password_hash))
+		if ($resetCode == $this->reset_password_hash)
 		{
 			$this->password = $newPassword;
 			$this->reset_password_hash = null;
