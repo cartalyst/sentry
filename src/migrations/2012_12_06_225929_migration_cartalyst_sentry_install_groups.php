@@ -15,7 +15,7 @@ class MigrationCartalystSentryInstallGroups extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->string('permissions')->nullable();
+			$table->text('permissions')->nullable();
 			$table->timestamps();
 
 			$table->unique('name');
