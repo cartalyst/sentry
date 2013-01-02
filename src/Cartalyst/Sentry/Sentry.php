@@ -126,7 +126,7 @@ class Sentry {
 	 */
 	public function register(array $credentials, $activate = false)
 	{
-		$user = $this->userProvider->register($credentials);
+		$user = $this->userProvider->create($credentials);
 
 		if ($activate)
 		{

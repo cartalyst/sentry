@@ -287,7 +287,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('attemptActivation')->never();
 		$user->shouldReceive('isActivated')->once()->andReturn(false);
 
-		$this->userProvider->shouldReceive('register')->with($credentials)->once()->andReturn($user);
+		$this->userProvider->shouldReceive('create')->with($credentials)->once()->andReturn($user);
 
 		$this->assertEquals($user, $registeredUser = $this->sentry->register($credentials));
 		$this->assertFalse($registeredUser->isActivated());
@@ -305,7 +305,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('attemptActivation')->with('activation_code_here')->once();
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->userProvider->shouldReceive('register')->with($credentials)->once()->andReturn($user);
+		$this->userProvider->shouldReceive('create')->with($credentials)->once()->andReturn($user);
 
 		$this->assertEquals($user, $registeredUser = $this->sentry->register($credentials, true));
 		$this->assertTrue($registeredUser->isActivated());
