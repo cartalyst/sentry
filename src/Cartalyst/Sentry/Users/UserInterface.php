@@ -30,6 +30,13 @@ interface UserInterface {
 	public function getUserId();
 
 	/**
+	 * Returns the name for the user's login.
+	 *
+	 * @return string
+	 */
+	public function getUserLoginName();
+
+	/**
 	 * Returns the user's login.
 	 *
 	 * @return string

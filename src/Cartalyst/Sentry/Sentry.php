@@ -115,6 +115,9 @@ class Sentry {
 		$this->throttleProvider = $throttleProvider;
 	}
 
+	/**
+	 * Authenticates the given user 
+	 */
 	public function authenticate(array $credentials, $remember = false)
 	{
 		$throttlingEnabled = $this->throttleProvider->isEnabled();
@@ -125,11 +128,14 @@ class Sentry {
 		}
 		catch (UserNotFoundException $e)
 		{
-			// @todo, we should check what the login column is, e.g. 'email'
-			// and match against those credentials
-			if ($throttlingEnabled and isset($credentials['login']))
+			// We'll default to the login name field, but fallback to a hard-coded
+			// 'login' key in the array that was passed.
+			$loginName          = $this->userProvider->getUserLoginName();
+			$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+
+			if ($throttlingEnabled and isset($credentials[$loginCredentialKey]))
 			{
-				$throttle = $this->throttleProvider->findByUserLogin($credentials['login']);
+				$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
 				$throttle->addLoginAttempt();
 			}
 
@@ -226,6 +232,7 @@ class Sentry {
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return mixed
+	 * @throws BadMethodCallException
 	 */
 	public function __call($method, $parameters)
 	{

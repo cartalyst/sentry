@@ -92,6 +92,15 @@ class User extends Model implements UserInterface {
 	{
 		return $this->getKey();
 	}
+	/**
+	 * Returns the name for the user's login.
+	 *
+	 * @return string
+	 */
+	public function getUserLoginName()
+	{
+		return $this->getLoginName();
+	}
 
 	/**
 	 * Returns the user's login.

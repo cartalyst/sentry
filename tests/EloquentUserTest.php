@@ -59,6 +59,13 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo@bar.com', $user->getUserLogin());
 	}
 
+	public function testUserLoginNameCallsLoginName()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getLoginName]');
+		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
+		$this->assertEquals('foo', $user->getUserLoginName());
+	}
+
 	public function testUserPassowrdCallsPasswordAttribute()
 	{
 		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
