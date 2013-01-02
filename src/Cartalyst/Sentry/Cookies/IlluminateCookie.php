@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Cookie;
+<?php namespace Cartalyst\Sentry\Cookies;
 /**
  * Part of the Sentry Package.
  *
@@ -18,34 +18,47 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\CookieInterface;
 use Illuminate\CookieJar;
-use Session;
+use Symfony\Component\HttpFoundation\Cookie;
 
-class Laravel implements CookieInterface {
+class IlluminateCookie implements CookieInterface {
 
 	/**
 	 * The key used in the Cookie.
 	 *
 	 * @var string
 	 */
-	protected $key = 'sentry_cookie';
+	protected $key = 'cartalyst_sentry';
 
 	/**
 	 * The cookie object.
 	 *
 	 * @var Illuminate\CookieJar
 	 */
-	protected $cookie;
+	protected $jar;
+
+	/**
+	 * The cookies queued by the guards.
+	 *
+	 * @var array
+	 */
+	protected $queuedCookies = array();
 
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @var  Illuminate\CookieJar
+	 * @param  Illuminate\CookieJar  $jar
+	 * @param  string  $key
+	 * @return void
 	 */
-	public function __construct(CookieJar $cookieDriver)
+	public function __construct(CookieJar $jar, $key = null)
 	{
-		$this->cookie = $cookieDriver;
+		$this->jar = $jar;
+
+		if (isset($key))
+		{
+			$this->key = $key;
+		}
 	}
 
 	/**
@@ -69,7 +82,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function put($key, $value, $minutes)
 	{
-		return $this->setCookie($this->cookie->make($key, $value, $minutes));
+		$this->queuedCookies[] = $this->jar->make($key, $value, $minutes);
 	}
 
 	/**
@@ -81,7 +94,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function forever($key, $value)
 	{
-		return $this->setCookie($this->cookie->forever($key, $value));
+		$this->queuedCookies[] = $this->jar->forever($key, $value);
 	}
 
 	/**
@@ -93,7 +106,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->cookie->get($key, $default);
+		return $this->jar->get($key, $default);
 	}
 
 	/**
@@ -104,7 +117,7 @@ class Laravel implements CookieInterface {
 	 */
 	public function forget($key)
 	{
-		return $this->setCookie($this->cookie->forget($key));
+		$this->queuedCookies[] = $this->jar->forget($key);
 	}
 
 	/**
@@ -114,18 +127,17 @@ class Laravel implements CookieInterface {
 	 */
 	public function flush()
 	{
-		return $this->forget($this->key);
+		$this->forget($this->key);
 	}
 
 	/**
-	 * Writes to the cookie object.
+	 * Get the cookies queued by the driver.
 	 *
-	 * @param  Illuminate\CookieJar  $cookie
-	 * @return bool
+	 * @return array
 	 */
-	protected function setCookie($cookie)
+	public function getQueuedCookies()
 	{
-		// we manually set the cookie since l4 requires you to attach it it a response which we don't have
-		return setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+		return $this->queuedCookies;
 	}
+
 }

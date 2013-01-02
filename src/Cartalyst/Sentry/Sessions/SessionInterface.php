@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Sessions;
 /**
  * Part of the Sentry Package.
  *
@@ -18,34 +18,23 @@
  * @link       http://cartalyst.com
  */
 
-interface CookieInterface {
+interface SessionInterface {
 
 	/**
-	 * Returns the cookie key.
+	 * Returns the session key.
 	 *
 	 * @return string
 	 */
 	public function getKey();
 
 	/**
-	 * Put a key / value pair in the cookie with an
-	 * expiry.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
-	 * @param  int     $minutes
-	 * @return void
-	 */
-	public function put($key, $value, $minutes);
-
-	/**
-	 * Put a key / value pair in the cookie forever.
+	 * Put a key / value pair in the session.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	public function forever($key, $value);
+	public function put($key, $value);
 
 	/**
 	 * Get the requested item from the session.
@@ -57,7 +46,7 @@ interface CookieInterface {
 	public function get($key, $default = null);
 
 	/**
-	 * Remove an item from the cookie.
+	 * Remove an item from the session.
 	 *
 	 * @param  string  $key
 	 * @return void
@@ -65,7 +54,7 @@ interface CookieInterface {
 	public function forget($key);
 
 	/**
-	 * Remove all of the items from the cookie.
+	 * Remove all of the items from the session.
 	 *
 	 * @return void
 	 */

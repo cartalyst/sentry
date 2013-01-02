@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Groups;
 /**
  * Part of the Sentry Package.
  *
@@ -18,23 +18,41 @@
  * @link       http://cartalyst.com
  */
 
-interface HashInterface
-{
-	/**
-	 * Hash String
-	 *
-	 * @param  string  $str
-	 * @return string
-	 */
-	public function hash($str);
+interface GroupInterface {
 
 	/**
-	 * Check Hash Values
+	 * Returns the group's ID.
 	 *
-	 * @param  string  $str
-	 * @param  string  $hashedStr
+	 * @return mixed
+	 */
+	public function getGroupId();
+
+	/**
+	 * Returns the group's name.
+	 *
+	 * @return string
+	 */
+	public function getGroupName();
+
+	/**
+	 * Returns permissions for the group.
+	 *
+	 * @return array
+	 */
+	public function getGroupPermissions();
+
+	/**
+	 * Saves the group.
+	 *
 	 * @return bool
 	 */
-	public function checkhash($str, $hashedStr);
+	public function save();
+
+	/**
+	 * Delete the group.
+	 *
+	 * @return void
+	 */
+	public function delete();
 
 }

@@ -10,7 +10,7 @@ Parameters                   | Type            | Default       | Description
 `$credentials` (required)    | array           | none          | An array of user fields to validate and login a user by. The Login field is required, all other fields are optional.
 
 `returns` bool
-`throws`  LoginFieldRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
+`throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
 
 ####Example
 
@@ -35,7 +35,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		echo 'User not found';
 	}
-	catch (Cartalyst\Sentry\LoginFieldRequiredException $e)
+	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
 		echo 'Login Field required';
 	}

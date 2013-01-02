@@ -18,141 +18,228 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Cookies\CookieInterface;
+use Cartalyst\Sentry\Groups\ProviderInterface as GroupProviderInterface;
+use Cartalyst\Sentry\Hashing\HasherInterface;
+use Cartalyst\Sentry\Sessions\SessionInterface;
+use Cartalyst\Sentry\Throttling\ProviderInterface as ThrottleProviderInterface;
+use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
+use Cartalyst\Sentry\Users\UserInterface;
+use Cartalyst\Sentry\Users\UserNotFoundException;
+use Cartalyst\Sentry\Users\UserNotActivatedException;
+
 class Sentry {
 
 	/**
-	 * The current user.
+	 * The user that's been retrieved and is used
+	 * for authentication. Authentication methods
+	 * are available for finding the user to set
+	 * here.
 	 *
-	 * @var Cartalyst\Sentry\UserInterface
+	 * @var Cartalyst\Sentry\Users\UserInterface
 	 */
 	protected $user;
 
 	/**
-	 * Provider Interface.
+	 * The hasher used in Sentry. It's used for
+	 * protected attributes of users.
 	 *
-	 * @var Cartalyst\Sentry\ProviderInterface
+	 * @var Cartalyst\Sentry\Hashing\HasherInterface
 	 */
-	protected $provider;
+	protected $hasher;
 
 	/**
-	 * Session provider sentry should use.
+	 * The session driver used by Sentry.
 	 *
-	 * @var Illuminate\Session\Store
+	 * @var Cartalyst\Sentry\Sessions\SessionInterface
 	 */
 	protected $session;
 
 	/**
-	 * Session provider sentry should use.
+	 * The cookie driver used by Sentry.
 	 *
-	 * @var Illuminate\Session\Store
+	 * @var Cartalyst\Sentry\Cookies\CookieInterface
 	 */
 	protected $cookie;
 
 	/**
-	 * Initantiate the Auth class and inject dependencies.
+	 * The group provider, used for retrieving
+	 * objects which implement the Sentry group
+	 * interface.
 	 *
-	 * @param  Cartalyst\Sentry\ProviderInterface  $provider
-	 * @param  Cartalyst\Sentry\SessionInterface  $session
-	 * @param  Cartalyst\Sentry\CookieInterface  $cookie
-	 * @return void
+	 * @var Cartalyst\Sentry\Groups\ProviderInterface
 	 */
-	public function __construct(ProviderInterface $provider, SessionInterface $session, CookieInterface $cookie)
+	protected $groupProvider;
+
+	/**
+	 * The user provider, used for retrieving
+	 * objects which implement the Sentry user
+	 * interface.
+	 *
+	 * @var Cartalyst\Sentry\Users\ProviderInterface
+	 */
+	protected $userProvider;
+
+	/**
+	 * The throttle provider, used for retrieving
+	 * objects which implement the Sentry throttling
+	 * interface.
+	 *
+	 * @var Cartalyst\Sentry\Throttling\ProviderInterface
+	 */
+	protected $throttleProvider;
+
+	/**
+	 * Create a new Sentry object.
+	 *
+	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
+	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $session
+	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $cookie
+	 * @param  Cartalyst\Sentry\Groups\ProviderInterface  $groupProvider
+	 * @param  Cartalyst\Sentry\Users\ProviderInterface  $userProvider
+	 * @param  Cartalyst\Sentry\Throttling\ProviderInterface  $throttleProvider
+	 */
+	public function __construct(
+		HasherInterface $hasher,
+		SessionInterface $session,
+		CookieInterface $cookie,
+		GroupProviderInterface $groupProvider,
+		UserProviderInterface $userProvider,
+		ThrottleProviderInterface $throttleProvider
+	)
 	{
-		// Set dependencies
-		$this->provider = $provider;
-		$this->session  = $session;
-		$this->cookie   = $cookie;
+		$this->hasher           = $hasher;
+		$this->session          = $session;
+		$this->cookie           = $cookie;
+		$this->groupProvider    = $groupProvider;
+		$this->userProvider     = $userProvider;
+		$this->throttleProvider = $throttleProvider;
 	}
 
 	/**
-	 * Authenticate a user
+	 * Registers a user by giving the required credentials
+	 * and an optional flag for whether to activate the user.
 	 *
-	 * @param  string  login value
-	 * @param  string  password value
-	 * @param  bool    remember user
-	 * @return bool
-	 * @throws LoginFieldRequiredException,
+	 * @param  array  $credentials
+	 * @param  bool  $activate
+	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function authenticate(array $credentials, $remember = false)
+	public function register(array $credentials, $activate = false)
 	{
-		// Run logout to clear any current sentry session
-		$this->logout();
+		$user = $this->userProvider->register($credentials);
+
+		if ($activate)
+		{
+			$user->attemptActivation($user->getActivationCode());
+		}
+
+		return $this->user = $user;
+	}
+
+	/**
+	 * Logs in the given user according to the passed credentials.
+	 *
+	 * @param  array  $credentials
+	 * @param  bool  $remember
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function login(array $credentials, $remember = false)
+	{
+		$throttlingEnabled = $this->throttleProvider->isEnabled();
 
 		try
 		{
-			// Find user by passed credentials
-			$user = $this->user()->findByCredentials($credentials);
+			$user = $this->userProvider->findByCredentials($credentials);
 		}
 		catch (UserNotFoundException $e)
 		{
-			// Add attempt if throttle is enabled
-			if ($this->provider->throttleInterface()->isEnabled())
+			if ($throttlingEnabled)
 			{
-				// Get a user object and find the required authentication column
-				$login = $this->user()->getLoginColumn();
+				// We'll default to the login name field, but fallback to a hard-coded
+				// 'login' key in the array that was passed.
+				$loginName          = $this->userProvider->getUserLoginName();
+				$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
 
-				if ( ! $this->provider->throttleInterface()->check($credentials[$login]))
+				if (isset($credentials[$loginCredentialKey]))
 				{
-					return false;
+					$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
+					$throttle->addLoginAttempt();
 				}
-
-				$this->provider->throttleInterface()->addAttempt($credentials[$login]);
-
-				unset($login);
 			}
 
-			return false;
+			throw $e;
 		}
 
-		if ($this->provider->throttleInterface()->isEnabled())
+		if ($throttlingEnabled)
 		{
-			// Before we proceed, check the users' throttle status
-			if ( ! $this->provider->throttleInterface()->check($credentials[$user->getLoginColumn()]))
-			{
-				return false;
-			}
-
-			// No exception was thrown for checking, go ahead and clear everything
-			$this->provider->throttleInterface()->clearAttempts($credentials[$user->getLoginColumn()]);
+			$throttle = $this->throttleProvider->findByUserId($user->getUserId());
+			$throttle->check();
+			$throttle->clearLoginAttempts();
 		}
 
 		$user->clearResetPassword();
 
-		$this->login($user, $remember, false);
-
-		return true;
+		$this->forceLogin($user, $remember);
+		return $this->user;
 	}
 
 	/**
-	 * Authenticate a user and remember them
+	 * Alias for login with the remember flag checked.
 	 *
-	 * @param  string  $login
-	 * @param  string  $password
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function loginAndRemember(array $credentials)
+	{
+		return $this->login($credentials, true);
+	}
+
+	/**
+	 * Check to see if the user is logged in and activated.
+	 *
 	 * @return bool
 	 */
-	public function authenticateAndRemember(array $credentials)
+	public function check()
 	{
-		return $this->authenticate($credentials, true);
+		if ( ! $this->user)
+		{
+			// Check session
+			if ($user = $this->session->get($this->session->getKey()) and $user instanceof UserInterface)
+			{
+				$this->user = $user;
+			}
+
+			// Check for cookie
+			if ( ! $this->user and $user = $this->cookie->get($this->cookie->getKey()) and $user instanceof UserInterface)
+			{
+				$this->user = $user;
+			}
+		}
+
+		if ( ! $user = $this->getUser())
+		{
+			return false;
+		}
+
+		return $user->isActivated();
 	}
 
 	/**
-	 * Log a user in
+	 * Forces a login on the given user and sets properties
+	 * in the session.
 	 *
-	 * @param  UserInterface  $user
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $remember
 	 * @return void
+	 * @throws Cartalyst\Sentry\Users\UserNotActivatedException
 	 */
-	public function login(UserInterface $user, $remember = false)
+	public function forceLogin(UserInterface $user, $remember = false)
 	{
-		// Make sure the user exists
-		if ( ! $user->exists)
-		{
-			throw new UserNotFoundException;
-		}
-
-		// Check if the user is activated
 		if ( ! $user->isActivated())
 		{
-			throw new UserNotActivatedException;
+			$login = $user->getUserLogin();
+			throw new UserNotActivatedException("Cannot login user [$login] as they are not activated.");
 		}
 
 		$this->user = $user;
@@ -167,110 +254,56 @@ class Sentry {
 	}
 
 	/**
-	 * Log a user in
-	 *
-	 * @param  UserInterface  $user
-	 * @return void
-	 */
-	public function loginAndRemember(UserInterface $user)
-	{
-		return $this->login($user, true);
-	}
-
-	/**
-	 * Log a user out
+	 * Logs the current user out.
 	 *
 	 * @return void
 	 */
 	public function logout()
 	{
-		$this->user = null;
+		unset($this->user);
 
 		$this->session->flush();
 		$this->cookie->flush();
 	}
 
 	/**
-	 * Check to see if the user is logged in
+	 * Sets the user to be used by Sentry.
 	 *
-	 * @return bool
+	 * @param  Cartalyst\Sentry\Users\UserInterface
+	 * @return void
 	 */
-	public function check()
+	public function setUser(UserInterface $user)
 	{
-		if ($this->user)
-		{
-			return true;
-		}
-
-		// Check session
-		$this->user = $this->session->get($this->session->getKey());
-
-		// Check for cookie
-		if ( ! $this->user)
-		{
-			$this->user = $this->cookie->get($this->cookie->getKey());
-		}
-
-		return ! is_null($this->user);
+		$this->user = $user;
 	}
 
 	/**
-	 * Returns active authenticated user
+	 * Returns the current user being
+	 * used by Sentry, if any.
 	 *
-	 * @return Cartalyst\Sentry\UserInterface
+	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function activeUser()
+	public function getUser()
 	{
-		if ( ! $this->check())
-		{
-			return null;
-		}
-
-		$this->user = $this->provider->userInterface()->findById($this->user->id);
-
 		return $this->user;
 	}
 
 	/**
-	 * Gets a user object
-	 *
-	 * @return Cartalyst\Sentry\UserInterface
-	 */
-	public function user()
-	{
-		return $this->provider->userInterface();
-	}
-
-	/**
-	 * Gets a group object
-	 *
-	 * @return Cartalyst\Sentry\GroupInterface
-	 */
-	public function group()
-	{
-		return $this->provider->groupInterface();
-	}
-
-	/**
-	 * Gets a throttle object
-	 *
-	 * @return Cartalyst\Sentry\ThrottleInterface
-	 */
-	public function throttle()
-	{
-		return $this->provider->throttleInterface();
-	}
-
-	/**
-	 * Dynamically pass methods to the the Sentry Provider.
+	 * Handle dynamic method calls into the method.
 	 *
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return mixed
+	 * @throws BadMethodCallException
 	 */
-	public function __call($method, $args)
+	public function __call($method, $parameters)
 	{
-		return call_user_func_array(array($this->provider, $method), $args);
+		if (isset($this->user))
+		{
+			return call_user_func_array(array($this->user, $method), $parameters);
+		}
+
+		throw new \BadMethodCallException("Method [$method] is not supported by Sentry.");
 	}
 
 }

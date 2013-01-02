@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Throttling;
 /**
  * Part of the Sentry Package.
  *
@@ -18,28 +18,24 @@
  * @link       http://cartalyst.com
  */
 
-use RuntimeException;
-
-class GroupNotFoundException extends RuntimeException {}
-class NameFieldRequiredException extends RuntimeException {}
-class GroupExistsException extends RuntimeException {}
-
-interface GroupInterface {
+interface ProviderInterface {
 
 	/**
-	 * Find group by id
+	 * Finds a throttler by the
+	 * given user ID.
 	 *
-	 * @param  integer  $id
-	 * @return Cartalyst\Sentry\GroupInterface or false
+	 * @param  mixed  $id
+	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findById($id);
+	public function findByUserId($id);
 
 	/**
-	 * Find group by name
+	 * Finds a throttling interface by the
+	 * given user login.
 	 *
-	 * @param  string  $name
-	 * @return Cartalyst\Sentry\GroupInterface or false
+	 * @param  string  $login
+	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByName($login);
+	public function findByUserLogin($login);
 
 }
