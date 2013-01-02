@@ -172,7 +172,9 @@ class Provider implements ProviderInterface {
 	{
 		$class = '\\'.ltrim($this->model, '\\');
 
-		return new $class;
+		$instance = new $class;
+		$instance->setHasher($this->hasher);
+		return $instance;
 	}
 
 }
