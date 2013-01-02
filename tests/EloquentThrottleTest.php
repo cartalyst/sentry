@@ -80,4 +80,109 @@ class EloquentThrottleText extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, (string) $throttle);
 	}
 
+	public function testGettingLoginAttemptsWhenNoAttemptHasBeenMadeBefore()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[clearLoginAttemptsIfAllowed]');
+		$throttle->shouldReceive('clearLoginAttemptsIfAllowed')->never();
+
+		$this->assertEquals(0, $throttle->getLoginAttempts());
+		$throttle->attempts = 1;
+		$this->assertEquals(1, $throttle->getLoginAttempts());
+	}
+
+	public function testGettingLoginAttemptsResetsIfSuspensionTimeHasPassedSinceLastAttempt()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');;
+
+		// Let's simulate that the suspension time
+		// is 11 minutes however the last attempt was
+		// 10 minutes ago, we'll not reset the attempts
+		$throttle->setSuspensionTime(11);
+		$lastAttemptAt = new DateTime;
+		$lastAttemptAt->modify('-10 minutes');
+
+		$throttle->last_attempt_at = $lastAttemptAt;
+		$throttle->attempts = 3;
+		$this->assertEquals(3, $throttle->getLoginAttempts());
+
+		// Suspension time is 9 minutes now,
+		// our attempts shall be reset
+		$throttle->shouldReceive('save')->once();
+		$throttle->setSuspensionTime(9);
+		$this->assertEquals(0, $throttle->getLoginAttempts());
+	}
+
+	public function testSuspend()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');
+		$throttle->shouldReceive('save')->once();
+
+		$this->assertNull($throttle->suspended_at);
+		$throttle->suspend();
+
+		$this->assertNotNull($throttle->suspended_at);
+		$this->assertTrue($throttle->suspended);
+	}
+
+	public function testUnsuspend()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');
+		$throttle->shouldReceive('save')->once();
+
+		$throttle->attempts        = 3;
+		$throttle->last_attempt_at = date('Y-m-d H:i:s');
+		$throttle->suspended       = true;
+		$throttle->suspended_at    = date('Y-m-d H:i:s');
+
+		$throttle->unsuspend();
+		$this->assertEquals(0, $throttle->attempts);
+		$this->assertNull($throttle->last_attempt_at);
+		$this->assertFalse($throttle->suspended);
+		$this->assertNull($throttle->suspended_at);
+	}
+
+	public function testIsSuspended()
+	{
+		$throttle = new Throttle;
+		$this->assertFalse($throttle->isSuspended());
+	}
+
+	public function testIsSuspendedRemovesSuspensionIfEnoughTimeHasPassed()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');
+		$throttle->shouldReceive('save')->once();
+		$throttle->suspended = true;
+
+		
+		// Still suspended
+		$throttle->setSuspensionTime(11);
+		$suspendedAt = new DateTime;
+		$suspendedAt->modify('-10 minutes');
+		$throttle->suspended_at = $suspendedAt;
+
+		$this->assertTrue($throttle->isSuspended());
+
+		// Unsuspend time, because suspension time is 9
+		// minutes however we were suspended at 10 minutes
+		// ago
+		$throttle->setSuspensionTime(9);
+		$this->assertFalse($throttle->isSuspended());
+	}
+
+	public function testAddLoginAttempt()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[suspend,save]');
+		$throttle->shouldReceive('save')->once();
+		$throttle->shouldReceive('suspend')->once();
+
+		$throttle->setAttemptLimit(5);
+		$throttle->attempts = 3;
+
+		$throttle->addLoginAttempt();
+		$this->assertEquals(4, $throttle->getLoginAttempts());
+
+		$throttle->addLoginAttempt();
+		$this->assertEquals(5, $throttle->getLoginAttempts());
+	}
+
 }

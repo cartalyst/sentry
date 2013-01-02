@@ -99,7 +99,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function setSuspensionTime($minutes)
 	{
-		$this->suspensionTime = (int) $_minutes;
+		$this->suspensionTime = (int) $minutes;
 	}
 
 	/**
@@ -119,23 +119,10 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getLoginAttempts()
 	{
-		if ( ! is_string($this->last_attempt_at))
+		if ($this->attempts > 0 and $this->last_attempt_at)
 		{
-			$this->last_attempt_at = $this->last_attempt_at->format('Y-m-d H:i:s');
+			$this->clearLoginAttemptsIfAllowed();
 		}
-
-		$clearTime = new DateTime($this->last_attempt_at);
-		$clearAt   = $clearTime->modify('+'.$this->suspensionTime.' minutes');
-		$now       = new DateTime;
-
-		if ($clearAt <= $now)
-		{
-			$this->attempts = 0;
-		}
-
-		unset($clearTime);
-		unset($clearAt);
-		unset($now);
 
 		return $this->attempts;
 	}
@@ -167,7 +154,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function clearLoginAttempts()
 	{
-		if ($this->getLoginAttempts() == 0 and ! $this->suspended)
+		if ($this->getLoginAttempts() > 0 and ! $this->suspended)
 		{
 			return;
 		}
@@ -176,6 +163,7 @@ class Throttle extends Model implements ThrottleInterface {
 		$this->last_attempt_at = null;
 		$this->suspended       = false;
 		$this->suspended_at    = null;
+		$this->save();
 	}
 
 	/**
@@ -218,23 +206,10 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function isSuspended()
 	{
-		if ($this->suspended)
+		if ($this->suspended and $this->suspended_at)
 		{
-			$suspended   = new DateTime($this->suspended_at);
-			$unsuspendAt = $suspended->modify('+'.$this->suspensionTime.' minutes');
-			$now         = new DateTime;
-
-			if ($unsuspendAt <= $now)
-			{
-				$this->unsuspend();
-				return false;
-			}
-
-			unset($suspended);
-			unset($unsuspendAt);
-			unset($now);
-
-			return true;
+			$this->removeSuspensionIfAllowed();
+			return (bool) $this->suspended;
 		}
 
 		return false;
@@ -346,9 +321,15 @@ class Throttle extends Model implements ThrottleInterface {
 		return $this->belongsTo('Cartalyst\Sentry\Users\Eloquent\User', 'user_id');
 	}
 
+	/**
+	 * Set mutator for the last attempt at property.
+	 *
+	 * @param  mixed  $lastAttemptAt
+	 * @return DateTime
+	 */
 	public function setLastAttemptAt($lastAttemptAt)
 	{
-		if ( ! $lastAttemptAt instanceof DateTime)
+		if ($lastAttemptAt and ! $lastAttemptAt instanceof DateTime)
 		{
 			$lastAttemptAt = new DateTime($lastAttemptAt);
 		}
@@ -356,9 +337,15 @@ class Throttle extends Model implements ThrottleInterface {
 		return $lastAttemptAt;
 	}
 
+	/**
+	 * Get mutator for the last attempt at property.
+	 *
+	 * @param  mixed  $lastAttemptAt
+	 * @return DateTime
+	 */
 	public function getLastAttemptAt($lastAttemptAt)
 	{
-		if ( ! $lastAttemptAt instanceof DateTime)
+		if ($lastAttemptAt and ! $lastAttemptAt instanceof DateTime)
 		{
 			$lastAttemptAt = new DateTime($lastAttemptAt);
 		}
@@ -366,9 +353,15 @@ class Throttle extends Model implements ThrottleInterface {
 		return $lastAttemptAt;
 	}
 
+	/**
+	 * Set mutator for the suspended at property.
+	 *
+	 * @param  mixed  $suspendedAt
+	 * @return DateTime
+	 */
 	public function setSuspendedAt($suspendedAt)
 	{
-		if ( ! $suspendedAt instanceof DateTime)
+		if ($suspendedAt and ! $suspendedAt instanceof DateTime)
 		{
 			$suspendedAt = new DateTime($suspendedAt);
 		}
@@ -376,14 +369,68 @@ class Throttle extends Model implements ThrottleInterface {
 		return $suspendedAt;
 	}
 
-	public function getSuspendedAtAt($suspendedAt)
+	/**
+	 * Get mutator for the suspended at property.
+	 *
+	 * @param  mixed  $suspendedAt
+	 * @return DateTime
+	 */
+	public function getSuspendedAt($suspendedAt)
 	{
-		if ( ! $suspendedAt instanceof DateTime)
+		if ($suspendedAt and ! $suspendedAt instanceof DateTime)
 		{
 			$suspendedAt = new DateTime($suspendedAt);
 		}
 
 		return $suspendedAt;
+	}
+
+	/**
+	 * Inspects the last attempt vs the suspension time
+	 * (the time in which attempts must space before the
+	 * account is suspended). If we can clear our attempts
+	 * now, we'll do so and save.
+	 *
+	 * @return void
+	 */
+	public function clearLoginAttemptsIfAllowed()
+	{
+		$lastAttempt     = clone($this->last_attempt_at);
+		$clearAttemptsAt = $lastAttempt->modify("+{$this->suspensionTime} minutes");
+		$now             = new DateTime;
+
+		if ($clearAttemptsAt <= $now)
+		{
+			$this->attempts = 0;
+			$this->save();
+		}
+
+		unset($lastAttempt);
+		unset($clearAttemptsAt);
+		unset($now);
+	}
+
+	/**
+	 * Inspects to see if the user can become unsuspended
+	 * or not, based on the suspension time provided. If so,
+	 * unsuspends.
+	 *
+	 * @return void
+	 */
+	public function removeSuspensionIfAllowed()
+	{
+		$suspended   = clone($this->suspended_at);
+		$unsuspendAt = $suspended->modify("+{$this->suspensionTime} minutes");
+		$now         = new DateTime;
+
+		if ($unsuspendAt <= $now)
+		{
+			$this->unsuspend();
+		}
+
+		unset($suspended);
+		unset($unsuspendAt);
+		unset($now);
 	}
 
 	/**
