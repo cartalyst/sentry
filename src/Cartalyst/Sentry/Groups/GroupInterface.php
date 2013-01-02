@@ -41,4 +41,11 @@ interface GroupInterface {
 	 */
 	public function getGroupPermissions();
 
+	/**
+	 * Saves the group.
+	 *
+	 * @return bool
+	 */
+	public function save();
+
 }

@@ -271,6 +271,17 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Saves the group.
+	 *
+	 * @return bool
+	 */
+	public function save()
+	{
+		$this->validate();
+		return parent::save();
+	}
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string

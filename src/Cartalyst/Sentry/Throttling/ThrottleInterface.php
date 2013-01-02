@@ -150,4 +150,11 @@ interface ThrottleInterface {
 	 */
 	public function isEnabled();
 
+	/**
+	 * Saves the throttle.
+	 *
+	 * @return bool
+	 */
+	public function save();
+
 }

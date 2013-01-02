@@ -83,6 +83,13 @@ interface UserInterface {
 	public function validate();
 
 	/**
+	 * Saves the user.
+	 *
+	 * @return bool
+	 */
+	public function save();
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string

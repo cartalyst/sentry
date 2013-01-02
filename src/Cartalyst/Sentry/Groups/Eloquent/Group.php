@@ -79,7 +79,7 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
-	 * Saves the given group.
+	 * Saves the group.
 	 *
 	 * @return bool
 	 */
