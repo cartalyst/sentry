@@ -27,6 +27,7 @@ interface ProviderInterface {
 	 *
 	 * @param  mixed  $id
 	 * @return Cartalyst\Sentry\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findById($id);
 
@@ -35,6 +36,7 @@ interface ProviderInterface {
 	 *
 	 * @param  string  $login
 	 * @return Cartalyst\Sentry\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByLogin($login);
 

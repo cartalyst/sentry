@@ -63,6 +63,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  mixed  $id
 	 * @return Cartalyst\Sentry\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findById($id)
 	{
@@ -81,6 +82,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  string  $login
 	 * @return Cartalyst\Sentry\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByLogin($login)
 	{
