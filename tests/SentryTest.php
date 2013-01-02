@@ -191,7 +191,9 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->once()->with('foo@bar.com')->andReturn($throttle);
 
-		$this->userProvider->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface');
+		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser);
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
 		$this->sentry->login($credentials);

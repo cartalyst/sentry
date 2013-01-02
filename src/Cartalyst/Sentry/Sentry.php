@@ -158,7 +158,7 @@ class Sentry {
 			{
 				// We'll default to the login name field, but fallback to a hard-coded
 				// 'login' key in the array that was passed.
-				$loginName          = $this->userProvider->getUserLoginName();
+				$loginName          = $this->userProvider->getEmptyUser()->getUserLoginName();
 				$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
 
 				if (isset($credentials[$loginCredentialKey]))

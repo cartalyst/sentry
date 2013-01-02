@@ -198,4 +198,12 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($user, $provider->create($attributes));
 	}
 
+	public function testGettingEmptyUserInterface()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->shouldReceive('createModel')->once()->andReturn('foo');
+
+		$this->assertEquals('foo', $provider->getEmptyUser());
+	}
+
 }

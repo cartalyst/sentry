@@ -164,6 +164,16 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Returns an empty user object.
+	 *
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getEmptyUser()
+	{
+		return $this->createModel();
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return Illuminate\Database\Eloquent\Model

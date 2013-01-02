@@ -57,4 +57,11 @@ interface ProviderInterface {
 	 */
 	public function create(array $credentials);
 
+	/**
+	 * Returns an empty user object.
+	 *
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getEmptyUser();
+
 }
