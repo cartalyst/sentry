@@ -185,4 +185,65 @@ class EloquentThrottleText extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(5, $throttle->getLoginAttempts());
 	}
 
+	public function testBanning()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');
+		$throttle->shouldReceive('save')->twice();
+
+		$throttle->ban();
+		$this->assertTrue($throttle->isBanned());
+		$throttle->unban();
+		$this->assertFalse($throttle->isBanned());
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Throttling\UserBannedException
+	 */
+	public function testCheckingThrowsProperExceptionWhenUserIsBanned()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[isBanned,isSuspended,getUser]');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(true);
+		$throttle->shouldReceive('isSuspended')->never();
+		$throttle->shouldReceive('getUser')->once()->andReturn($user);
+
+		$throttle->check();
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Throttling\UserBannedException
+	 */
+	public function testCheckingThrowsProperExceptionWhenUserIsSuspended()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[isBanned,isSuspended,getUser]');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(true);
+		$throttle->shouldReceive('getUser')->once()->andReturn($user);
+
+		$throttle->check();
+	}
+
+	public function testCheckingWhenUserIsOkay()
+	{
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[isBanned,isSuspended]');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
+
+		$this->assertTrue($throttle->check());
+	}
+
+	public function testEnabling()
+	{
+		$throttle = new Throttle;
+		$throttle->enable();
+		$this->assertTrue($throttle->isEnabled());
+		$throttle->disable();
+		$this->assertFalse($throttle->isEnabled());
+	}
+
 }
