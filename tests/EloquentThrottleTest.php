@@ -213,7 +213,7 @@ class EloquentThrottleText extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException Cartalyst\Sentry\Throttling\UserBannedException
+	 * @expectedException Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
 	public function testCheckingThrowsProperExceptionWhenUserIsSuspended()
 	{

@@ -272,7 +272,7 @@ class Throttle extends Model implements ThrottleInterface {
 
 		if ($this->isSuspended())
 		{
-			throw new UserBannedException(sprintf(
+			throw new UserSuspendedException(sprintf(
 				'User [%s] has been suspended.',
 				$this->getUser()->getUserLogin()
 			));
