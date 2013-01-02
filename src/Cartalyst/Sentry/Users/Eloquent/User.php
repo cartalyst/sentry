@@ -556,7 +556,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return array
 	 */
-	public function gethashableAttributes()
+	public function getHashableAttributes()
 	{
 		return $this->hashableAttributes;
 	}

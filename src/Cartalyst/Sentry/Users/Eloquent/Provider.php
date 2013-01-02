@@ -112,16 +112,16 @@ class Provider implements ProviderInterface {
 			throw new \InvalidArgumentException("Login attribute [$attribute] was not provided.");
 		}
 
-		$query               = $model->newQuery();
-		$hashableCredentials = $this->getHashableCredentials();
-		$hashedCredentials   = array();
+		$query              = $model->newQuery();
+		$hashableAttributes = $model->getHashableAttributes();
+		$hashedCredentials  = array();
 
 		// build query from given credentials
 		foreach ($credentials as $credential => $value)
 		{
 			// Remove hashed attributes to check later as we need to check these
 			// values after we retrieved them because of salts
-			if (in_array($credential, $hashableCredentials))
+			if (in_array($credential, $hashableAttributes))
 			{
 				$hashedCredentials = array_merge($hashedCredentials, array($credential => $value));
 			}

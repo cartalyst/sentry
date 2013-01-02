@@ -130,10 +130,10 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
 		$user->shouldReceive('newQuery')->andReturn($query);
+		$user->shouldReceive('getHashableAttributes')->once()->andReturn(array('baz', 'bat'));
 
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
 		$provider->shouldReceive('createModel')->once()->andReturn($user);
-		$provider->shouldReceive('getHashableCredentials')->once()->andReturn(array('baz', 'bat'));
 
 		$result = $provider->findByCredentials(array(
 			'foo' => 'fooval',
@@ -164,12 +164,12 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
 		$user->shouldReceive('newQuery')->andReturn($query);
+		$user->shouldReceive('getHashableAttributes')->once()->andReturn(array('baz', 'bat'));
 
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
 		$provider->__construct($hasher);
 
 		$provider->shouldReceive('createModel')->once()->andReturn($user);
-		$provider->shouldReceive('getHashableCredentials')->once()->andReturn(array('baz', 'bat'));
 
 		$result = $provider->findByCredentials(array(
 			'foo' => 'fooval',
