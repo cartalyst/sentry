@@ -105,7 +105,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.user'] = $this->app->share(function($app)
 		{
-			return new UserProvider($app['sentry.hasher'], $app['sentry.group']);
+			return new UserProvider($app['sentry.hasher']);
 		});
 	}
 
