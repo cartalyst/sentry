@@ -47,4 +47,12 @@ interface ProviderInterface {
 	 */
 	public function findByCredentials(array $credentials);
 
+	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\UserInterface
+	 */
+	public function create(array $credentials);
+
 }

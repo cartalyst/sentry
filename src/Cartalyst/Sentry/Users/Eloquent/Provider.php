@@ -147,6 +147,21 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\UserInterface
+	 */
+	public function create(array $credentials)
+	{
+		$user = $this->createModel();
+		$user->fill($credentials);
+		$user->save();
+
+		return $user;
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return Illuminate\Database\Eloquent\Model

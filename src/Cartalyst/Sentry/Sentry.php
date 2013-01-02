@@ -117,8 +117,24 @@ class Sentry {
 	}
 
 	/**
-	 * 
+	 * Registers a user by giving the required credentials
+	 * and an optional flag for whether to activate the user.
+	 *
+	 * @param  array  $credentials
+	 * @param  bool  $activate
+	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
+	public function register(array $credentials, $activate = false)
+	{
+		$user = $this->userProvider->register($credentials);
+
+		if ($activate)
+		{
+			$user->attemptActivation($user->getActivationCode());
+		}
+
+		return $this->user = $user;
+	}
 
 	/**
 	 * Logs in the given user according to the passed credentials.

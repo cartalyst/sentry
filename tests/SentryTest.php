@@ -275,4 +275,40 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($this->sentry->check());
 	}
 
+	public function testRegisteringUser()
+	{
+		$credentials = array(
+			'email'    => 'foo@bar.com',
+			'password' => 'sdf_sdf',
+		);
+
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('getActivationCode')->never();
+		$user->shouldReceive('attemptActivation')->never();
+		$user->shouldReceive('isActivated')->once()->andReturn(false);
+
+		$this->userProvider->shouldReceive('register')->with($credentials)->once()->andReturn($user);
+
+		$this->assertEquals($user, $registeredUser = $this->sentry->register($credentials));
+		$this->assertFalse($registeredUser->isActivated());
+	}
+
+	public function testRegisteringUserWithActivationDone()
+	{
+		$credentials = array(
+			'email'    => 'foo@bar.com',
+			'password' => 'sdf_sdf',
+		);
+
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('getActivationCode')->once()->andReturn('activation_code_here');
+		$user->shouldReceive('attemptActivation')->with('activation_code_here')->once();
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+
+		$this->userProvider->shouldReceive('register')->with($credentials)->once()->andReturn($user);
+
+		$this->assertEquals($user, $registeredUser = $this->sentry->register($credentials, true));
+		$this->assertTrue($registeredUser->isActivated());
+	}
+
 }
