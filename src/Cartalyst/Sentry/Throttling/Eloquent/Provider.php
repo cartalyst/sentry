@@ -69,7 +69,7 @@ class Provider implements ProviderInterface {
 		$user  = $this->userProvider->findById($id);
 		$model = $this->createModel();
 
-		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId())))
+		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId()))->first())
 		{
 			$throttle = $this->createModel();
 			$throttle->user_id = $userId;
@@ -91,7 +91,7 @@ class Provider implements ProviderInterface {
 		$user  = $this->userProvider->findByLogin($login);
 		$model = $this->createModel();
 
-		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId())))
+		if ( ! $throttle = $model->where('user_id', '=', ($userId = $user->getUserId()))->first())
 		{
 			$throttle = $this->createModel();
 			$throttle->user_id = $userId;
