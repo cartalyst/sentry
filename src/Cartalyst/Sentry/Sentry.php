@@ -117,6 +117,10 @@ class Sentry {
 	}
 
 	/**
+	 * 
+	 */
+
+	/**
 	 * Logs in the given user according to the passed credentials.
 	 *
 	 * @param  array  $credentials
@@ -176,30 +180,30 @@ class Sentry {
 	}
 
 	/**
-	 * Check to see if the user is logged in
+	 * Check to see if the user is logged in and activated.
 	 *
 	 * @return bool
 	 */
 	public function check()
 	{
-		if ($this->user)
+		if ( ! $this->user)
 		{
-			return true;
+			// Check session
+			if ($user = $this->session->get($this->session->getKey()) and $user instanceof UserInterface)
+			{
+				$this->user = $user;
+			}
+
+			// Check for cookie
+			if ( ! $this->user and $user = $this->cookie->get($this->cookie->getKey()) and $user instanceof UserInterface)
+			{
+				$this->user = $user;
+			}
 		}
 
-		// Check session
-		if ($user = $this->session->get($this->session->getKey()) and $user instanceof UserInterface)
-		{
-			$this->user = $user;
-		}
+		$user = $this->getUser();
 
-		// Check for cookie
-		if ( ! $this->user and $user = $this->cookie->get($this->cookie->getKey()) and $user instanceof UserInterface)
-		{
-			$this->user = $user;
-		}
-
-		return (bool) $this->getUser();
+		return (bool) (($user) and $user->isActivated());
 	}
 
 	/**

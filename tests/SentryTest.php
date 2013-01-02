@@ -218,16 +218,31 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->assertNull($this->sentry->getUser());
 	}
 
-	public function testCheckingUserWhenUserIsSet()
+	public function testCheckingUserWhenUserIsSetAndActivated()
 	{
-		$this->sentry->setUser(m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+
+		$this->sentry->setUser($user);
 		$this->assertTrue($this->sentry->check());
+	}
+
+	public function testCheckingUserWhenUserIsSetAndNotActivated()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('isActivated')->once()->andReturn(false);
+
+		$this->sentry->setUser($user);
+		$this->assertFalse($this->sentry->check());
 	}
 
 	public function testCheckingUserChecksSessionFirst()
 	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+
 		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->session->shouldReceive('get')->with('foo')->once()->andReturn($user);
 
 		$this->cookie->shouldReceive('getKey')->never();
 		$this->cookie->shouldReceive('get')->never();
@@ -237,11 +252,14 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testCheckingUserChecksSessionFirstAndThenCookie()
 	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+
 		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
 		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(null);
 
 		$this->cookie->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->cookie->shouldReceive('get')->with('foo')->once()->andReturn(m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->cookie->shouldReceive('get')->with('foo')->once()->andReturn($user);
 
 		$this->assertTrue($this->sentry->check());
 	}
