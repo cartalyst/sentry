@@ -18,10 +18,10 @@ class MigrationCartalystSentryInstallUsers extends Migration {
 			$table->string('password');
 			$table->string('reset_password_hash')->nullable();
 			$table->string('activation_hash')->nullable();
-			$table->boolean('activated')->default(1);
+			$table->boolean('activated')->default(0);
+			$table->string('permissions')->nullable();
 			$table->string('first_name')->nullable();
 			$table->string('last_name')->nullable();
-			$table->string('permissions')->nullable();
 			$table->timestamps();
 
 			$table->unique('email');
