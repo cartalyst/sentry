@@ -192,7 +192,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('fill')->with($attributes)->once();
 		$user->shouldReceive('save')->once();
 
-		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
 		$provider->shouldReceive('createModel')->once()->andReturn($user);
 
 		$this->assertEquals($user, $provider->create($attributes));

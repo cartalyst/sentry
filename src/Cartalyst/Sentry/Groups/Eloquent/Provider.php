@@ -84,6 +84,20 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Creates a group.
+	 *
+	 * @param  array  $attributes
+	 * @return Cartalyst\Sentry\Groups\GroupInterface
+	 */
+	public function create(array $attributes)
+	{
+		$group = $this->createModel();
+		$group->fill($attributes);
+		$group->save();
+		return $group;
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return Illuminate\Database\Eloquent\Model

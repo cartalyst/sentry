@@ -38,4 +38,12 @@ interface ProviderInterface {
 	 */
 	public function findByName($name);
 
+	/**
+	 * Creates a group.
+	 *
+	 * @param  array  $attributes
+	 * @return Cartalyst\Sentry\Groups\GroupInterface
+	 */
+	public function create(array $attributes);
+
 }

@@ -48,4 +48,11 @@ interface GroupInterface {
 	 */
 	public function save();
 
+	/**
+	 * Delete the group.
+	 *
+	 * @return void
+	 */
+	public function delete();
+
 }

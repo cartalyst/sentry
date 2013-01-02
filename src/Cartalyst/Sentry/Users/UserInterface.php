@@ -90,6 +90,13 @@ interface UserInterface {
 	public function save();
 
 	/**
+	 * Delete the user.
+	 *
+	 * @return void
+	 */
+	public function delete();
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string
