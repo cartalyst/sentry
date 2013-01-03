@@ -92,7 +92,7 @@ class Group extends Model implements GroupInterface {
 	/**
 	 * Get user specific permissions
 	 *
-	 * @param  string  $permissions
+	 * @param  string|array  $permissions
 	 * @return array
 	 */
 	public function getPermissions($permissions)
@@ -100,6 +100,11 @@ class Group extends Model implements GroupInterface {
 		if (is_null($permissions))
 		{
 			return array();
+		}
+
+		if (is_array($permissions))
+		{
+			return $permissions;
 		}
 
 		if ( ! $_permissions = json_decode($permissions, true))

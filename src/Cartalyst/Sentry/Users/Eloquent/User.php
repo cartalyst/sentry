@@ -171,7 +171,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * Get user specific permissions
 	 *
-	 * @param  string  $permissions
+	 * @param  string|array  $permissions
 	 * @return array
 	 */
 	public function getPermissions($permissions)
@@ -179,6 +179,11 @@ class User extends Model implements UserInterface {
 		if (is_null($permissions))
 		{
 			return array();
+		}
+
+		if (is_array($permissions))
+		{
+			return $permissions;
 		}
 
 		if ( ! $_permissions = json_decode($permissions, true))
