@@ -7,7 +7,6 @@ Delete a group object.  This can both create and delete an existing group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$group`                     | GroupInterface  | none          | An GroupInterface object to delete.
 
 `returns` bool
 `throws`  GroupNotFoundException

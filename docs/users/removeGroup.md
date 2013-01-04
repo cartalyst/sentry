@@ -7,7 +7,7 @@ Remove a user from a group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | mixed           | none          | Group Id, name or GroupInterface Ojbect
+`$group`                     | GroupInterface  | none          | GroupInterface instance
 
 `returns` bool
 
@@ -15,16 +15,23 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if ( Sentry::getUserProvider()->findById(1)->removeGroup('admin') )
+		$user = Sentry::getUserProvider()->findById(1);
+		$group = Sentry::getGroupProvider()->findByName('Admin');
+
+		if ($user->removeGroup($admin))
 		{
-			echo 'user removed from group';
+			echo 'User removed from Admin group.';
 		}
 		else
 		{
-			echo 'user not removed from group';
+			echo 'User not removed from Admin group.';
 		}
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User does not exist';
+		echo 'User does not exist.';
+	}
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+	{
+		echo 'Group does not exist.';
 	}

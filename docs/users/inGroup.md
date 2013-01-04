@@ -7,7 +7,7 @@ Checks if a user is in a certain group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | mixed           | none          | Group Id, name or GroupInterface Ojbect
+`$group`                     | GroupInterface  | none          | GroupInterface instance
 
 `returns` bool
 

@@ -10,6 +10,6 @@ Group Provider Methods:
 
 Group Methods
 
+* [delete()](#delete "/manuals/sentry/groups/delete")
 * [getGroupPermissions()](#getGroupPermissions "/manuals/sentry/groups/getGroupPermissions")
 * [save()](#save "/manuals/sentry/groups/save")
-* [delete()](#delete "/manuals/sentry/groups/delete")

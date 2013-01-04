@@ -1,5 +1,5 @@
-<a id="registerUser"></a>
-###registerUser($attributes)
+<a id="register"></a>
+###register($credentials)
 
 ----------
 
@@ -8,31 +8,33 @@ Registers a user which requires activation.  If the user already exists but is n
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
 `$credentials`               | array           | none          | An array of user fields create a user with. The Login field is required, all other fields are optional.
+`$activate`                  | bool            | false         | Whether or not to activate the user when it's registered
 
-`returns` bool
-`throws`  LoginRequiredException, UserExistsException, InvalidPermissionsException
+`returns` UserInterface
+`throws`  LoginRequiredException, UserExistsException
 
 ####Example
 
 	try
 	{
-		$activationCode = Sentry::registerUser(array(
+		// Let's register a user. We won't activate them right now though
+		// (we'd set the second parameter to 'true' to activate them)
+		$user = Sentry::register(array(
 			'email'    => 'testing@test.com',
 			'password' => 'test'
 		));
 
-		// send activation code to user to activate their account
+		// Let's get an activation code
+		$activationCode = $user->getActivationCode();
+
+		// Send activation code to user to activate their account
+		...
 	}
 	catch (Cartalyst\Sentry\LoginRequiredException $e)
 	{
-		echo 'login field required';
+		echo 'Login field required.';
 	}
 	catch (Cartalyst\Sentry\UserExistsException $e)
 	{
-		echo 'User already exists';
-	}
-	// only thrown if setting permissions
-	catch (Cartalyst\Sentry\InvalidPermissionException $e)
-	{
-		echo 'Invalid Permission Value';
+		echo 'User already exists.';
 	}

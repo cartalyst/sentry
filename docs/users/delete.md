@@ -7,7 +7,6 @@ Delete a user object.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$user`                      | UserInterface   | none          | An UserInterface object to delete.
 
 `returns` bool
 `throws`  UserNotFoundException

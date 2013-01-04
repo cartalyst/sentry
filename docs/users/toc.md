@@ -1,16 +1,21 @@
 ### User
-#### Sentry User Methods
+#### Sentry User & User Provider Methods
 
-* [addgetGroupProvider()](#addGroup "/manuals/sentry/users/addGroup")
-* [createUser()](#createUser "/manuals/sentry/users/createUser")
-* [deleteUser()](#deleteUser "/manuals/sentry/users/deleteUser")
+User Provider Methods:
+
+* [create()](#create "/manuals/sentry/users/create")
 * [findByCredentials()](#findByCredentials "/manuals/sentry/users/findByCredentials")
 * [findById()](#findById "/manuals/sentry/users/findById")
 * [findByLogin()](#findByLogin "/manuals/sentry/users/findByLogin")
+* [getUserProvider()](#getUserProvider "/manuals/sentry/users/getUserProvider")
+* [register()](#register "/manuals/sentry/users/register")
+
+User Methods:
+
+* [addGroup()](#addGroup "/manuals/sentry/users/addGroup")
+* [delete()](#delete "/manuals/sentry/users/delete")
 * [getGroups()](#getGroups "/manuals/sentry/users/getGroups")
 * [getLoginColumn()](#getLoginColumn "/manuals/sentry/users/getLoginColumn")
-* [ingetGroupProvider()](#inGroup "/manuals/sentry/users/inGroup")
-* [registerUser()](#registerUser "/manuals/sentry/users/registerUser")
-* [removegetGroupProvider()](#removeGroup "/manuals/sentry/users/removeGroup")
-* [saveUser()](#saveUser "/manuals/sentry/users/saveUser")
-* [user()](#user "/manuals/sentry/users/user")
+* [inGroup()](#inGroup "/manuals/sentry/users/inGroup")
+* [removeGroup()](#removeGroup "/manuals/sentry/users/removeGroup")
+* [save()](#saveUser "/manuals/sentry/users/save")

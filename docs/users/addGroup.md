@@ -7,7 +7,7 @@ Assign a user to a group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | mixed           | none          | GroupInterface instance
+`$group`                     | GroupInterface  | none          | GroupInterface instance
 
 `returns` void
 `throws` GroupNotFoundException
@@ -25,7 +25,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		echo 'User does not exist.';
 	}
-	catch (Cartalyst\Sentry\GroupNotFoundException $e)
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
 		echo 'Group does not exist.';
 	}
