@@ -3,7 +3,7 @@
 
 ----------
 
-Returns the active logged in user or null.
+Returns the user that's set with Sentry, does not check if a user is logged in or not. To do that, use `check()` instead.
 
 `returns` UserInterface|null
 `throws`  UserNotFoundException
@@ -15,9 +15,9 @@ Returns the active logged in user or null.
 	{
 		$user = Sentry::getUser();
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		// user wasn't found, should only happen if the user was deleted
-		// when they were already logged in or had a remember cookie set
+		// User wasn't found, should only happen if the user was deleted
+		// when they were already logged in or had a "remember me" cookie set
 		// and they were deleted.
 	}

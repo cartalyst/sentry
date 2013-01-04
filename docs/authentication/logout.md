@@ -3,11 +3,13 @@
 
 ----------
 
-The logout method logs the user out and destroys all Sentry sessions/cookies for the user.
+The logout method logs the user out and destroys all Sentry sessions / cookies for the user.
+
+This method does **not** fail or throw any Exceptions if there is no user logged in.
 
 `returns` void
 
 ####Example
 
-	// log the user out
+	// Log the user out
 	Sentry::logout();

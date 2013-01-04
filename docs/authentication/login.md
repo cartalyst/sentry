@@ -9,38 +9,39 @@ Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
 `$user` (required)           | UserInterface   | none          | UserInterface Object to log in with.
 `$remember`                  | bool            | false         | Remember if the user is authenticated or not for auto logging in.
-`$checkThrottle`             | bool            | true          | Check the user throttle status.
 
 `returns` bool
 `throws`  UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
 
 ####Example
 
-	// select a user
 	try
 	{
+		// Select a user
 		$user = Sentry::getUserProvider()->findById(1);
 
-		Sentry::login($user)
+		// Log the user in
+		Sentry::login($user);
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User not found';
+		echo 'User not found.';
 	}
-	catch (Cartalyst\Sentry\LoginRequiredException $e)
+	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
-		echo 'Login Field required';
+		echo 'Login field is required.';
 	}
-	catch (Cartalyst\Sentry\UserNotActivatedException $e)
+	catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
 	{
-		echo 'User not Activated';
+		echo 'User not activated.';
 	}
-	// following is only needed if throttle is enabled
-	catch (Cartalyst\Sentry\UserSuspendedException $e)
+
+	// Following is only needed if throttle is enabled
+	catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
 	{
-		echo 'User Suspended';
+		echo 'User suspended.';
 	}
-	catch (Cartalyst\Sentry\UserBannedException $e)
+	catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
 	{
-		echo 'User Banned';
+		echo 'User banned.';
 	}
