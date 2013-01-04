@@ -4,6 +4,8 @@ Sentry is a PHP 5.3+ fully-featured authentication & authorization system. It al
 
 Sentry is a framework agnostic set of interfaces with default implementations, though you can substitute any implementations you see fit.
 
+[![Build Status](https://secure.travis-ci.org/cartalyst/sentry.png)](http://travis-ci.org/cartalyst/sentry)
+
 ### Features
 
 It also provides additional features such as user groups and additional security features:
