@@ -24,7 +24,7 @@ The best features of Sentry are:
 
 There are three simple steps to install Sentry into Laravel 4:
 
-1. Add `"cartalyst/sentry": "1.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
+1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
 2. Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
 3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
 
