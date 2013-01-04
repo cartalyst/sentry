@@ -18,7 +18,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		$group = Sentry::getGroupProvider()->findById(1);
 	}
-	catch (Cartalyst\Sentry\GroupNotFoundException $e)
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
 		echo 'Group not found.';
 	}

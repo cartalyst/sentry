@@ -18,7 +18,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		$group = Sentry::getGroupProvider()->findByName('admin');
 	}
-	catch (Cartalyst\Sentry\GroupNotFoundException $e)
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
 		echo 'Group not found.';
 	}
