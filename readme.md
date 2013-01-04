@@ -1,0 +1,106 @@
+# Sentry
+
+Sentry is a PHP 5.3+ fully-featured authentication & authorization system. It also provides additional features such as user groups and additional security features.
+
+Sentry is a framework agnostic set of interfaces with default implementations, though you can substitute any implementations you see fit.
+
+### Features
+
+The best features of Sentry are:
+
+- Configurable authentication (can use any type of authentication required, such as usenrame or email)
+- Authorization
+- Activation of user *(optional)*
+- Groups and group permissions
+- "Remember me"
+- User suspension
+- Login throttling *(optional)*
+- User banning
+- Password resetting
+- User data
+
+
+### Installing In Laravel 4 (with Composer)
+
+There are three simple steps to install Sentry into Laravel 4:
+
+1. Add `"cartalyst/sentry": "1.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
+2. Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
+3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
+
+
+### Installing Using Composer
+
+```json
+{
+	"require": {
+		"cartalyst/sentry": "1.0.*"
+	}
+}
+```
+
+You heard us say how Sentry is completely interface driven? We have a number of implementations already built in for using Sentry which require the following `composer.json` file:
+
+```json
+{
+	"require": {
+		"cartalyst/sentry": "1.0.*",
+		"illuminate/cookie": "1.2.*",
+        "illuminate/database": "1.2.*",
+        "dhorrigan/capsule": "2.0.*",
+        "illuminate/session": "1.2.*"
+	}
+}
+```
+
+Now run `php composer.phar update` from the command line.
+
+Initializing Sentry requires you pass a number of dependencies to it. These dependencies are the following:
+
+1. A hasher (must implement `Cartalyst\Sentry\Hashing\HasherInterface`).
+2. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).
+3. A cookie manager (must implement `Cartalyst\Sentry\Cookies\CookieInterface`).
+4. A group provider (must implement `Cartalyst\Sentry\Groups\ProviderInterface`).
+5. A user provider (must implement `Cartalyst\Sentry\Users\ProviderInterface`).
+6. A throtte provider (must implement `Cartalyst\Sentry\Throttling\ProviderInterface`).
+
+Of course, we provide default implementations of all these for you. To setup our default implementations, the following should suffice:
+
+```php
+<?php
+
+$hasher = new Cartalyst\Sentry\Hashing\BcryptHasher; // There are other hashers available, take your pick
+
+$illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
+$session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
+
+$illuminateCookie = /* Get instance of Illuminate\CookieJar however pleases you */;
+$cookie = new Cartalyst\Sentry\Cookies\IlluminateCookie($illuminateCookie);
+
+$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\GroupProvider;
+
+$userProvider = new Cartalyst\Sentry\Users\Eloquent\UserProvider($hasher);
+
+$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\ThrottleProvider($userProvider);
+
+$sentry = new Sentry(
+	$hasher,
+	$session,
+	$cookie,
+	$groupProvider,
+	$userProvider,
+	$throttleProvider
+);
+```
+
+We have plans to add more implementations for each interface which gives you more choice on how you would like to setup Sentry. In the mean-time, if you have would like to share an implementation you have made with us please send through a pull request and we'll be ever so grateful.
+
+We're looking at making:
+
+1. A native PHP cookie manager.
+2. A native PHP session manager (that uses cookies or memcache?).
+3. Plain PDO based group, user and throttle providers.
+
+### Docs
+
+Documentation is coming as we near a stable release of Sentry 2.0. Until then, you may check our [docs](https://github.com/cartalyst/sentry/tree/master/docs) folder for docs, however some of the methods here may have changed and the docs may need updating. Bonus points go to any pull requests to help out with documentation.
