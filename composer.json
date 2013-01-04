@@ -21,6 +21,7 @@
     "suggest": {
         "illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",
         "illuminate/database": "Sentry provides Eloquent models for User, Group and Throttle providers.",
+        "dhorrigan/capsule": "Capsule is a small utility for managing databse connections given to illuminate/database outside of Laravel 4.",
         "illuminate/session": "Sentry provides an Illuminate session driver for storage integration."
     },
     "autoload": {
