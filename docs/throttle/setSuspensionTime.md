@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		Sentry::throttle()->setSuspensionTime(10);
+		Sentry::getThrottleProvider()->setSuspensionTime(10);
 	}
 	catch (Cartalyst\Sentry\ThrottleTimeException $e)
 	{

@@ -9,4 +9,4 @@ Checks to see the throttling feature is enabled.
 
 ####Example
 
-	Sentry::throttle()->isEnabled();
+	Sentry::getThrottleProvider()->isEnabled();

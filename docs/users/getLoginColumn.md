@@ -9,4 +9,4 @@ Gets the login column from the user model.
 
 ####Example
 
-	$loginColumn = Sentry::user()->getLoginColumn();
+	$loginColumn = Sentry::getUserProvider()->getLoginColumn();

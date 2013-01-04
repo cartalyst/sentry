@@ -1,5 +1,5 @@
 <a id="activeUser"></a>
-###activeUser()
+###getUser()
 
 ----------
 
@@ -13,7 +13,7 @@ Returns the active logged in user or null.
 	// get the current active/logged in user
 	try
 	{
-		$user = Sentry::activeUser();
+		$user = Sentry::getUser();
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
 	{

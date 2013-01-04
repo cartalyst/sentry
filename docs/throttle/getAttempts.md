@@ -13,4 +13,4 @@ Parameters                   | Type            | Default       | Description
 
 ####Example
 
-	Sentry::throttle()->getAttempts('test@test.com');
+	Sentry::getThrottleProvider()->getAttempts('test@test.com');

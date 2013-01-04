@@ -13,4 +13,4 @@ Parameters                   | Type            | Default       | Description
 
 ####Example
 
-	Sentry::throttle()->suspend('test@test.com');
+	Sentry::getThrottleProvider()->suspend('test@test.com');

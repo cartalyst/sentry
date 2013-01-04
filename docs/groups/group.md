@@ -1,5 +1,5 @@
 <a id="group"></a>
-###group()
+###getGroupProvider()
 
 ----------
 
@@ -10,4 +10,4 @@ Returns a GroupInterface object.
 ####Example
 
 	// retrieve a Sentry Group Object
-	$user = Sentry::group();
+	$user = Sentry::getGroupProvider();

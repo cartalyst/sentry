@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		$user = Sentry::user()->findByCredentials(array(
+		$user = Sentry::getUserProvider()->findByCredentials(array(
 			'email'    => 'john.doe@platform.com',
 			'password' => 'test',
 			'first_name' => 'John',

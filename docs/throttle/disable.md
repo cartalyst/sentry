@@ -7,4 +7,4 @@ Disables throttling feature.
 
 ####Example
 
-	Sentry::throttle()->disable();
+	Sentry::getThrottleProvider()->disable();

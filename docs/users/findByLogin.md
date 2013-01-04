@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		$user = Sentry::user()->findByLogin('john.doe@platform.com');
+		$user = Sentry::getUserProvider()->findByLogin('john.doe@platform.com');
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
 	{

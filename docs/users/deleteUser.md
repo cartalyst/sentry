@@ -17,7 +17,7 @@ Parameters                   | Type            | Default       | Description
 	try
 	{
 		// find existing user
-		$user = Sentry::user()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 
 		// delete
 		if (Sentry::deleteUser($user))

@@ -17,7 +17,7 @@ Parameters                   | Type            | Default       | Description
 	// select a user
 	try
 	{
-		$user = Sentry::user()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 
 		Sentry::loginAndRemember($user)
 	}

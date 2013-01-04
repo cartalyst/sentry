@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		Sentry::throttle()->setAttemptLimit(3);
+		Sentry::getThrottleProvider()->setAttemptLimit(3);
 	}
 	catch (Cartalyst\Sentry\`throws` ThrottleTimeException $e)
 	{

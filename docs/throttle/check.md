@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		Sentry::throttle()->check('test@test.com');
+		Sentry::getThrottleProvider()->check('test@test.com');
 	}
 	catch (Cartalyst\Sentry\UserBannedException $e)
 	{
@@ -24,5 +24,5 @@ Parameters                   | Type            | Default       | Description
 	}
 	catch (Cartalyst\Sentry\UserSuspendedException $e)
 	{
-		echo 'user is suspended for '.Sentry::throttle()->getSuspensionTime().' minutes.';
+		echo 'user is suspended for '.Sentry::getThrottleProvider()->getSuspensionTime().' minutes.';
 	}

@@ -10,4 +10,4 @@ Returns a UserInterface object.
 ####Example
 
 	// retrieve a Sentry User Object
-	$user = Sentry::user();
+	$user = Sentry::getUserProvider();

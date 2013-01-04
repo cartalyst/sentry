@@ -11,7 +11,7 @@ Retrieves the users groups.
 
 	try
 	{
-		$groups = Sentry::user()->findById(1)->getGroups();
+		$groups = Sentry::getUserProvider()->findById(1)->getGroups();
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
 	{

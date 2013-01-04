@@ -17,10 +17,10 @@ Parameters                   | Type            | Default       | Description
 	try
 	{
 		// edit existing user
-		$user = Sentry::user()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 
 		// or create a new user
-		$user = Sentry::user();
+		$user = Sentry::getUserProvider();
 		$user->email = 'test@test.com';
 		$user->first_name = 'John';
 

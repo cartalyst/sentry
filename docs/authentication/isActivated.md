@@ -11,7 +11,7 @@ Checks if a user is activated.
 
 	try
 	{
-		if (Sentry::user()->findByLogin('test@test.com')->isActivated())
+		if (Sentry::getUserProvider()->findByLogin('test@test.com')->isActivated())
 		{
 			echo 'activated';
 		}

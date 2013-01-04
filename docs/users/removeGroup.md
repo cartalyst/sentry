@@ -15,7 +15,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if ( Sentry::user()->findById(1)->removeGroup('admin') )
+		if ( Sentry::getUserProvider()->findById(1)->removeGroup('admin') )
 		{
 			echo 'user removed from group';
 		}

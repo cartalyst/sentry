@@ -15,7 +15,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if ( Sentry::user()->findById(1)->inGroup('admin') )
+		if ( Sentry::getUserProvider()->findById(1)->inGroup('admin') )
 		{
 			echo 'user is in group';
 		}

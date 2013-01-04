@@ -9,4 +9,4 @@ Retrieves the length of the suspension time set by the throttling driver.
 
 ####Example
 
-	Sentry::throttle()->getSuspensionTime();
+	Sentry::getThrottleProvider()->getSuspensionTime();

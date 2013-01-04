@@ -17,10 +17,10 @@ Parameters                   | Type            | Default       | Description
 	try
 	{
 		// edit existing group
-		$group = Sentry::group()->findById(1);
+		$group = Sentry::getGroupProvider()->findById(1);
 
 		// or create a new group
-		$group = Sentry::group();
+		$group = Sentry::getGroupProvider();
 		$group->name = 'Users';
 		$group->permissions = array(
 			'admin' => 1,

@@ -2,7 +2,7 @@
 #### Sentry Authentication Methods
 
 * [activate()](#activate "/manuals/sentry/authentication/activate")
-* [activeUser()](#activeUser "/manuals/sentry/authentication/activeUser")
+* [getUser()](#activeUser "/manuals/sentry/authentication/geUser")
 * [authenticate()](#authenticate "/manuals/sentry/authentication/authenticate")
 * [authenticateAndRemember()](#authenticateAndRemember "/manuals/sentry/authentication/authenticateAndRemember")
 * [check()](#check "/manuals/sentry/authentication/check")

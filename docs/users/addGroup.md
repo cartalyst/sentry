@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if ( Sentry::user()->findById(1)->addGroup('admin') )
+		if ( Sentry::getUserProvider()->findById(1)->addGroup('admin') )
 		{
 			echo 'user added to group';
 		}

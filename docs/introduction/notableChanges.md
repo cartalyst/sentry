@@ -14,9 +14,9 @@ Since we are making Sentry2 composer based and framework agnostic, we wanted to 
 
 `Sentry::login()` used to take 2 required paramters, login and password, and authenticate the user against them. `Sentry::login()` is now used as a login for both authentication and force login, used by passing a UserInterface object.  A new `Sentry::authenticate()` method has been introduced for authentication purposes and should replace your `Sentry::login()` methods.  This method passes an array which requires just the login (email) field by default to authenticate against. You may also choose any number of fields you may also want to validate against, such as password, first name, or any other field you may add to your users table. We always recommend using a password, but you may have your own ideas for which you want to authenticate against instead.
 
-#### Sentry::user()
+#### Sentry::getUserProvider()
 
-`Sentry::user()` used to return the active user, if they existed, or the user requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::user()` will return a sentry `UserInterface` object now for you to manipulate.  To get the active user, you now use `Sentry::activeUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, `findById()`, `findByLogin()` and `findByCredentials()`.
+`Sentry::getUserProvider()` used to return the active user, if they existed, or the user requested by passing in an optional parameter of their id or login field.  This is no longer the case.  `Sentry::getUserProvider()` will return a sentry `UserInterface` object now for you to manipulate.  To get the active user, you now use `Sentry::getUser()`.  This will check if their is an active user and return their object, otherwise it will return null.  To find specific users, you can take advantage of 3 new methods, `findById()`, `findByLogin()` and `findByCredentials()`.
 
 #### Objects over Arrays
 
@@ -34,9 +34,9 @@ Many people were initially confused as to why we would prompt for a password dur
 
 Sentry2 now uses BCrypt by default as it's password hashing algorithim. We still have a Sha256 Hashing driver included in the library you can easily switch to if you wish to still use our old hashing algorithim.
 
-#### Sentry::group()
+#### Sentry::getGroupProvider()
 
-`Sentry::group()` changes pretty much reflect the `Sentry::user()` changes.  This method no longer takes any parameters and returns an empty `GroupInterface` Object.  You can find specific groups by using the `findById()` and `findByName()` methods.
+`Sentry::getGroupProvider()` changes pretty much reflect the `Sentry::getUserProvider()` changes.  This method no longer takes any parameters and returns an empty `GroupInterface` Object.  You can find specific groups by using the `findById()` and `findByName()` methods.
 
 #### Session/Cookie
 

@@ -15,7 +15,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if (Sentry::user()->findByLogin('test@test.com')->activate('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
+		if (Sentry::getUserProvider()->findByLogin('test@test.com')->activate('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
 		{
 			echo 'activated';
 		}

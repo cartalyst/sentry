@@ -13,4 +13,4 @@ Parameters                   | Type            | Default       | Description
 
 ####Example
 
-	Sentry::throttle()->addAttmept('test@test.com');
+	Sentry::getThrottleProvider()->addAttmept('test@test.com');

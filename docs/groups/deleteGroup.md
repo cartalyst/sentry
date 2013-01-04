@@ -17,7 +17,7 @@ Parameters                   | Type            | Default       | Description
 	try
 	{
 		// find existing group
-		$group = Sentry::group()->findById(1);
+		$group = Sentry::getGroupProvider()->findById(1);
 
 		// delete
 		if (Sentry::deleteGroup($group))

@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		$user = Sentry::user()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
 	{

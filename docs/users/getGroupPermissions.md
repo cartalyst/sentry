@@ -11,7 +11,7 @@ Gets the users group permissions
 
 	try
 	{
-		$groupPermissions = Sentry::user()->findById(1)->getGroupPermissions();
+		$groupPermissions = Sentry::getUserProvider()->findById(1)->getGroupPermissions();
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
 	{

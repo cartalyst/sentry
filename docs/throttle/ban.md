@@ -13,4 +13,4 @@ Parameters                   | Type            | Default       | Description
 
 ####Example
 
-	Sentry::throttle()->ban('test@test.com');
+	Sentry::getThrottleProvider()->ban('test@test.com');

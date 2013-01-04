@@ -9,4 +9,4 @@ Retrieves the number of attempts allowed by the throttling driver.
 
 ####Example
 
-	Sentry::throttle()->getAttemptLimit();
+	Sentry::getThrottleProvider()->getAttemptLimit();
