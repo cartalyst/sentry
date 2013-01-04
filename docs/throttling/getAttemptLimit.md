@@ -3,10 +3,18 @@
 
 ----------
 
-Retrieves the number of attempts allowed by the throttling driver.
+Retrieves the number of attempts allowed by the throttle object.
 
 `returns` int
 
 ####Example
 
-	Sentry::getThrottleProvider()->getAttemptLimit();
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$attemptLimit = $throttle->getAttemptLimit();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

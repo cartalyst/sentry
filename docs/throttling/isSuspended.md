@@ -1,16 +1,20 @@
 <a id="isSuspended"></a>
-###isSuspended($login)
+###isSuspended()
 
 ----------
 
 Checks to see if the login is suspended.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | Login identifier
-
 `returns` bool
 
 ####Example
 
-	Sentry::getThrottleProvider()->isSuspended('test@test.com');
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$suspended = $throttle->isSuspended();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

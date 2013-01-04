@@ -1,18 +1,17 @@
-<a id="isBanned"></a>
-###isBanned()
+<a id="findByUserId"></a>
+###findByuserId($id)
 
 ----------
 
-Checks to see if the user is banned.
+Retrieves a throttle object based on the user ID provided. Will always retrieve a throttle object.
 
-`returns` bool
+`returns` ThrottleInterface
 
 ####Example
 
 	try
 	{
 		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
-		$banned = $throttle->isBanned();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

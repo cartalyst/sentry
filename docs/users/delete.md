@@ -5,9 +5,6 @@
 
 Delete a user object.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-
 `returns` bool
 `throws`  UserNotFoundException
 

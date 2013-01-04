@@ -1,16 +1,20 @@
 <a id="clearAttempts"></a>
-###clearAttempts($login)
+###clearAttempts()
 
 ----------
 
 Clears all a logins attempts as well as unsuspending them. This does not unban a login.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | Login identifier
-
-`returns` bool
+`returns` void
 
 ####Example
 
-	Sentry::getThrottleProvider()->clearAttempts('test@test.com');
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle->clearAttempts();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

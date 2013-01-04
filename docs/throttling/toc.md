@@ -1,5 +1,15 @@
 ### Throttle
-#### Sentry Throttle Methods
+#### Sentry Throttling Provider & Throttle Methods
+
+Throttling Provider Methods:
+
+* [disable()](#disable "/manuals/sentry/throttle/disable")
+* [enable()](#enable "/manuals/sentry/throttle/enable")
+* [findByUserId()](#findByUserId "/manuals/sentry/throttle/findByUserId")
+* [findByUserLogin()](#findByUserLogin "/manuals/sentry/throttle/findByUserLogin")
+* [isEnabled()](#isEnabled "/manuals/sentry/throttle/isEnabled")
+
+Throttle Methods:
 
 * [addAttempt()](#addAttempt "/manuals/sentry/throttle/addAttempt")
 * [ban()](#ban "/manuals/sentry/throttle/ban")

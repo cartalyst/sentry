@@ -5,9 +5,6 @@
 
 Delete a group object.  This can both create and delete an existing group.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-
 `returns` bool
 `throws`  GroupNotFoundException
 

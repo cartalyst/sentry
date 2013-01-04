@@ -1,16 +1,20 @@
 <a id="ban"></a>
-###ban($login)
+###ban()
 
 ----------
 
-Bans a login until specified otherwise with unban().
+Bans the user associated with the throttle.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | Login identifier
-
-`returns` bool
+`returns` void
 
 ####Example
 
-	Sentry::getThrottleProvider()->ban('test@test.com');
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle->ban();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

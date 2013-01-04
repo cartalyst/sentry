@@ -10,15 +10,16 @@ Parameters                   | Type            | Default       | Description
 `$limit`                     | int             | none          | Number of attempts allowed. Default is set by driver (5).  This is used to override the driver default.
 
 `returns` void
-`throws` `throws` ThrottleTimeException
+`throws` `throws` InvalidArgumentException
 
 ####Example
 
 	try
 	{
-		Sentry::getThrottleProvider()->setAttemptLimit(3);
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle->setAttemptLimit(3);
 	}
-	catch (Cartalyst\Sentry\`throws` ThrottleTimeException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'Invalid throttle limit passed. Must be an integer.'
+		echo 'User does not exist.';
 	}

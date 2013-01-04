@@ -8,7 +8,7 @@ Group Provider Methods:
 * [findById()](#findById "/manuals/sentry/groups/findById")
 * [findByName()](#findByName "/manuals/sentry/groups/findByName")
 
-Group Methods
+Group Methods:
 
 * [delete()](#delete "/manuals/sentry/groups/delete")
 * [getGroupPermissions()](#getGroupPermissions "/manuals/sentry/groups/getGroupPermissions")

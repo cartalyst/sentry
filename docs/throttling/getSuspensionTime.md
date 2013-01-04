@@ -9,4 +9,12 @@ Retrieves the length of the suspension time set by the throttling driver.
 
 ####Example
 
-	Sentry::getThrottleProvider()->getSuspensionTime();
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$attempts = $throttle->getSuspensionTime();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

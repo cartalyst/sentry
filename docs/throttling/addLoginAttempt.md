@@ -1,20 +1,18 @@
-<a id="suspend"></a>
-###suspend()
+<a id="addLoginAttempt"></a>
+###addLoginAttempt()
 
 ----------
 
-Suspends a user temporarily. Length of the suspension is set by the driver or setSuspensionTime($minutes).
+Add an attempt to the throttle object
 
 `returns` void
 
 ####Example
-
+	
 	try
 	{
 		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
-
-		// Suspend the user
-		$throttle->suspend();
+		$throttle->addAttempt();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

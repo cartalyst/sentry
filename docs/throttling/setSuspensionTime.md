@@ -1,5 +1,5 @@
 <a id="setSuspensionTime"></a>
-###setSuspensionTime($mintues)
+###setSuspensionTime($minutes)
 
 ----------
 
@@ -10,15 +10,16 @@ Parameters                   | Type            | Default       | Description
 `$mintues`                   | int             | none          | Length of the suspension in minutes. Default is set by driver (15).  This is used to override the driver default.
 
 `returns` void
-`throws` ThrottleTimeException
+`throws` `throws` InvalidArgumentException
 
 ####Example
 
 	try
 	{
-		Sentry::getThrottleProvider()->setSuspensionTime(10);
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle->setSuspensionTime(10);
 	}
-	catch (Cartalyst\Sentry\ThrottleTimeException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'Invalid throttle time passed. Must be an integer.'
+		echo 'User does not exist.';
 	}

@@ -1,16 +1,20 @@
-<a id="unban"></a>
-###unban($login)
+<a id="unbBan"></a>
+###unbBan()
 
 ----------
 
-Unbans a login.
+Un-bans the user associated with the throttle.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | Login identifier
-
-`returns` bool
+`returns` void
 
 ####Example
 
-	Sentry::getThrottleProvider()->unban('test@test.com');
+	try
+	{
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle->unBan();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
+	}

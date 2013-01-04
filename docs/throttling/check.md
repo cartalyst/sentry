@@ -1,28 +1,35 @@
 <a id="check"></a>
-###check($login)
+###check()
 
 ----------
 
-Checks a logins throttle status
+Checks a logins throttle status and throws a number of Exceptions upon failure
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | Login identifier
-
-`returns` true
+`returns` bool
 `throws`  UserBannedException, UserSuspendedException
 
 ####Example
 
 	try
 	{
-		Sentry::getThrottleProvider()->check('test@test.com');
+		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+
+		if ($throttle->check())
+		{
+			echo 'Good to go.';
+		}
 	}
-	catch (Cartalyst\Sentry\UserBannedException $e)
+	catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
 	{
-		ehco 'user is banned.';
+		ehco 'User is banned.';
 	}
-	catch (Cartalyst\Sentry\UserSuspendedException $e)
+	catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
 	{
-		echo 'user is suspended for '.Sentry::getThrottleProvider()->getSuspensionTime().' minutes.';
+		$suspensionTime = $throttle->getSuspensionTime();
+
+		echo "User is suspended for [$time] minutes.";
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User does not exist.';
 	}
