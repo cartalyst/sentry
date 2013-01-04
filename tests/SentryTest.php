@@ -75,16 +75,16 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * @expectedException Cartalyst\Sentry\Users\UserNotActivatedException
 	 */
-	public function testForceLoggingInUnactivatedUser()
+	public function testLoggingInUnactivatedUser()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(false);
 		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
 
-		$this->sentry->forceLogin($user);
+		$this->sentry->login($user);
 	}
 
-	public function testForceLoggingInUser()
+	public function testLoggingInUser()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
@@ -94,12 +94,12 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->cookie->shouldReceive('getKey')->never();
 
-		$this->sentry->forceLogin($user);
+		$this->sentry->login($user);
 	}
 
-	public function testLoggingInUser()
+	public function testAuthenticatingUser()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[forceLogin]');
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
 		$this->sentry->__construct(
 			$this->hasher,
 			$this->session,
@@ -121,13 +121,13 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user);
 
-		$this->sentry->shouldReceive('forceLogin')->with($user, false)->once();
-		$this->sentry->login($credentials);
+		$this->sentry->shouldReceive('login')->with($user, false)->once();
+		$this->sentry->authenticate($credentials);
 	}
 
-	public function testLoggingInUserWithThrottling()
+	public function testAuthenticatingUserWithThrottling()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[forceLogin]');
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
 		$this->sentry->__construct(
 			$this->hasher,
 			$this->session,
@@ -155,14 +155,14 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user);
 
-		$this->sentry->shouldReceive('forceLogin')->with($user, false)->once();
-		$this->sentry->login($credentials);
+		$this->sentry->shouldReceive('login')->with($user, false)->once();
+		$this->sentry->authenticate($credentials);
 	}
 
 	/**
 	 * @expectedException Cartalyst\Sentry\Users\UserNotFoundException
 	 */
-	public function testLoggingInUserWhereTheUserDoesNotExist()
+	public function testAuthenticatingUserWhereTheUserDoesNotExist()
 	{
 		$credentials = array(
 			'email'    => 'foo@bar.com',
@@ -172,13 +172,13 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
-		$this->sentry->login($credentials);
+		$this->sentry->authenticate($credentials);
 	}
 
 	/**
 	 * @expectedException Cartalyst\Sentry\Users\UserNotFoundException
 	 */
-	public function testLoggingInUserWhereTheUserDoesNotExistWithThrottling()
+	public function testAuthenticatingUserWhereTheUserDoesNotExistWithThrottling()
 	{
 		$credentials = array(
 			'email'    => 'foo@bar.com',
@@ -196,20 +196,20 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser);
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
-		$this->sentry->login($credentials);
+		$this->sentry->authenticate($credentials);
 	}
 
-	public function testLoggingInUserAndRemembering()
+	public function testAuthenticatingUserAndRemembering()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[authenticate]');
 
 		$credentials = array(
 			'email'    => 'foo@bar.com',
 			'password' => 'baz_bat',
 		);
 
-		$this->sentry->shouldReceive('login')->with($credentials, true)->once();
-		$this->sentry->loginAndRemember($credentials);
+		$this->sentry->shouldReceive('authenticate')->with($credentials, true)->once();
+		$this->sentry->authenticateAndRemember($credentials);
 	}
 
 	public function checkLoggingOut()

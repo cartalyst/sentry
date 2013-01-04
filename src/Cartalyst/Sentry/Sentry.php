@@ -137,14 +137,15 @@ class Sentry {
 	}
 
 	/**
-	 * Logs in the given user according to the passed credentials.
+	 * Attempts to authenticate the given user
+	 * according to the passed credentials.
 	 *
 	 * @param  array  $credentials
 	 * @param  bool  $remember
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
-	public function login(array $credentials, $remember = false)
+	public function authenticate(array $credentials, $remember = false)
 	{
 		$throttlingEnabled = $this->throttleProvider->isEnabled();
 
@@ -180,19 +181,19 @@ class Sentry {
 
 		$user->clearResetPassword();
 
-		$this->forceLogin($user, $remember);
+		$this->login($user, $remember);
 		return $this->user;
 	}
 
 	/**
-	 * Alias for login with the remember flag checked.
+	 * Alias for authenticating with the remember flag checked.
 	 *
 	 * @param  array  $credentials
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function loginAndRemember(array $credentials)
+	public function authenticateAndRemember(array $credentials)
 	{
-		return $this->login($credentials, true);
+		return $this->authenticate($credentials, true);
 	}
 
 	/**
@@ -226,7 +227,7 @@ class Sentry {
 	}
 
 	/**
-	 * Forces a login on the given user and sets properties
+	 * Logs in the given user and sets properties
 	 * in the session.
 	 *
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
@@ -234,7 +235,7 @@ class Sentry {
 	 * @return void
 	 * @throws Cartalyst\Sentry\Users\UserNotActivatedException
 	 */
-	public function forceLogin(UserInterface $user, $remember = false)
+	public function login(UserInterface $user, $remember = false)
 	{
 		if ( ! $user->isActivated())
 		{
