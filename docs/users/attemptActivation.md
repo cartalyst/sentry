@@ -1,5 +1,5 @@
-<a id="activate"></a>
-###activate($activationCode)
+<a id="attemptActivation"></a>
+###attemptActivation($activationCode)
 
 ----------
 
@@ -15,16 +15,18 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if (Sentry::getUserProvider()->findByLogin('test@test.com')->activate('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
+		$user = Sentry::getUserProvider()->findById(1);
+
+		if ($user->attemptActivation('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
 		{
-			echo 'activated';
+			echo 'Activated';
 		}
 		else
 		{
-			echo 'activation failed';
+			echo 'Activation failed.';
 		}
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User does not exist';
+		echo 'User does not exist.';
 	}

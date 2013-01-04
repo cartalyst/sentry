@@ -12,10 +12,15 @@ User Provider Methods:
 
 User Methods:
 
+* [attemptActivation()](#attemptActivation "/manuals/sentry/users/attemptActivation")
+* [attemptResetPassword()](#attemptResetPassword "/manuals/sentry/users/attemptResetPassword")
 * [addGroup()](#addGroup "/manuals/sentry/users/addGroup")
+* [clearResetPassword()](#clearResetPassword "/manuals/sentry/users/clearResetPassword")
 * [delete()](#delete "/manuals/sentry/users/delete")
 * [getGroups()](#getGroups "/manuals/sentry/users/getGroups")
 * [getLoginColumn()](#getLoginColumn "/manuals/sentry/users/getLoginColumn")
+* [getResetPasswordCode()](#getResetPasswordCode "/manuals/sentry/users/getResetPasswordCode")
+* [hasAccess()](#hasAccess "/manuals/sentry/users/hasAccess")
 * [inGroup()](#inGroup "/manuals/sentry/users/inGroup")
 * [removeGroup()](#removeGroup "/manuals/sentry/users/removeGroup")
 * [save()](#saveUser "/manuals/sentry/users/save")
