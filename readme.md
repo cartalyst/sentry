@@ -34,7 +34,7 @@ There are three simple steps to install Sentry into Laravel 4:
 ```json
 {
 	"require": {
-		"cartalyst/sentry": "1.0.*"
+		"cartalyst/sentry": "2.0.*"
 	}
 }
 ```
@@ -44,7 +44,7 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 ```json
 {
 	"require": {
-		"cartalyst/sentry": "1.0.*",
+		"cartalyst/sentry": "2.0.*",
 		"illuminate/cookie": "1.2.*",
         "illuminate/database": "1.2.*",
         "dhorrigan/capsule": "2.0.*",
