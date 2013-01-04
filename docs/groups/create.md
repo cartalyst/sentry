@@ -1,9 +1,9 @@
-<a id="createGroup"></a>
-###createGroup($attributes)
+<a id="create"></a>
+###create($attributes)
 
 ----------
 
-Creates a user.
+Creates a group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
@@ -16,7 +16,7 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		echo Sentry::createGroup(array(
+		echo Sentry::getGroupProvider()->create(array(
 			'name'    => 'Users',
 			'permissions' => array(
 				'admin' => 1,
@@ -24,16 +24,11 @@ Parameters                   | Type            | Default       | Description
 			)
 		));
 	}
-	catch (Cartalyst\Sentry\NameFieldRequiredException $e)
+	catch (Cartalyst\Sentry\Groups\NameFieldRequiredException $e)
 	{
 		echo 'Name field required';
 	}
-	catch (Cartalyst\Sentry\GroupExistsException $e)
+	catch (Cartalyst\Sentry\Groups\GroupExistsException $e)
 	{
 		echo 'Group already exists';
-	}
-	// only thrown if setting permissions
-	catch (Cartalyst\Sentry\InvalidPermissionException $e)
-	{
-		echo 'Invalid Permission Value';
 	}

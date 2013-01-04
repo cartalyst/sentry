@@ -1,5 +1,5 @@
-<a id="deleteGroup"></a>
-###deleteGroup($group)
+<a id="delete"></a>
+###delete()
 
 ----------
 
@@ -16,18 +16,20 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		// find existing group
+		// Find existing group
 		$group = Sentry::getGroupProvider()->findById(1);
 
-		// delete
-		if (Sentry::deleteGroup($group))
+		// Delete
+		if ($group->delete())
 		{
 			// group deleted
 		}
-
-		// group not deleted
+		else
+		{
+			// Group not deleted
+		}
 	}
-	catch (Cartalyst\Sentry\groupNotFoundException $e)
+	catch (Cartalyst\Sentry\Grousp\GroupNotFoundException $e)
 	{
-		echo 'group not found.';
+		echo 'Group not found.';
 	}

@@ -1,9 +1,14 @@
 ### Group
-#### Sentry Group Methods
+#### Sentry Group & Group Provider Methods
 
-* [creategetGroupProvider()](#createGroup "/manuals/sentry/groups/createGroup")
-* [deletegetGroupProvider()](#deleteGroup "/manuals/sentry/groups/deleteGroup")
+Group Provider Methods:
+
+* [getGroupProvider()](#getGroupProvider "/manuals/sentry/groups/getGroupProvider")
+* [create()](#create "/manuals/sentry/groups/create")
 * [findById()](#findById "/manuals/sentry/groups/findById")
 * [findByName()](#findByName "/manuals/sentry/groups/findByName")
-* [getGroupProvider()](#group "/manuals/sentry/groups/group")
-* [savegetGroupProvider()](#saveGroup "/manuals/sentry/groups/saveGroup")
+
+Group Methods
+
+* [save()](#save "/manuals/sentry/groups/save")
+* [delete()](#delete "/manuals/sentry/groups/delete")
