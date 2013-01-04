@@ -334,7 +334,7 @@ class Sentry {
 			return call_user_func_array(array($this->user, $method), $parameters);
 		}
 
-		throw new \BadMethodCallException("Method [$method] is not supported by Sentry.");
+		throw new \BadMethodCallException("Method [$method] is not supported by Sentry or no User has been set on Sentry to access shortcut method.");
 	}
 
 }
