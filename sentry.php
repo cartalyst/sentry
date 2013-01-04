@@ -429,7 +429,7 @@ class Sentry
 	 *
 	 * @param   string  Login Column value
 	 * @param   string  Reset password code
-	 * @return  bool
+	 * @return  bool|int  If confirmed, user Id; else, false
 	 * @throws  SentryException
 	 */
 	public static function reset_password_confirm($login_column_value, $code, $decode = true)
@@ -469,7 +469,7 @@ class Sentry
 				'remember_me' => '',
 			), false);
 
-			return true;
+			return (int) $user->id;
 		}
 
 		return false;
