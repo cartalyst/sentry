@@ -2,14 +2,16 @@
 
 ----------
 
-It also provides additional features such as user groups and additional security features.
+It also provides additional features such as user groups and additional security features:
 
-* Authentication (via username or email)
-* Groups
-* Permissions
-* Authorization
-* Remember Me
-* User Suspension / Banning / Login Attempt Limiter via Throttling Driver
-* Password Reset
-* User Activation
-* Interfaces provided so you can use your own models or logic
+- Configurable authentication (can use any type of authentication required, such as username or email)
+- Authorization
+- Activation of user *(optional)*
+- Groups and group permissions
+- "Remember me"
+- User suspension
+- Login throttling *(optional)*
+- User banning
+- Password resetting
+- User data
+- Interface driven - switch out your own implementations at will

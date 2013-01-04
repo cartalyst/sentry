@@ -6,9 +6,9 @@ Sentry is a framework agnostic set of interfaces with default implementations, t
 
 ### Features
 
-The best features of Sentry are:
+It also provides additional features such as user groups and additional security features:
 
-- Configurable authentication (can use any type of authentication required, such as usenrame or email)
+- Configurable authentication (can use any type of authentication required, such as username or email)
 - Authorization
 - Activation of user *(optional)*
 - Groups and group permissions
@@ -18,6 +18,7 @@ The best features of Sentry are:
 - User banning
 - Password resetting
 - User data
+- Interface driven - switch out your own implementations at will
 
 
 ### Installing In Laravel 4 (with Composer)
