@@ -105,4 +105,4 @@ We're looking at making:
 
 ### Docs
 
-Documentation is coming as we near a stable release of Sentry 2.0. Until then, you may check our [docs](https://github.com/cartalyst/sentry/tree/master/docs) folder for docs, however some of the methods here may have changed and the docs may need updating. Bonus points go to any pull requests to help out with documentation.
+Documentation is coming as we near a stable release of Sentry 2.0. Until then, you may check our [docs](https://github.com/cartalyst/sentry/tree/master/docs) folder, however some of the methods here may have changed and the docs *may* need updating. Bonus points go to any pull requests to help out with documentation.
