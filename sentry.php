@@ -142,6 +142,21 @@ class Sentry
 	}
 
 	/**
+	 * Return the user id if a user is logged in
+	 *
+	 * @return  int|bool
+	 */
+	public static function user_id()
+	{
+		if (static::check())
+		{
+			return Session::get(Config::get('sentry::sentry.session.user'));
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get's either the currently logged in user's group object or the
 	 * specified group by id or name.
 	 *
@@ -269,7 +284,7 @@ class Sentry
 
 		if ( ! is_int($id))
 		{
-			$id = static::user($id)->get('id');
+			$id = (int) static::user($id)->get('id');
 		}
 
 		Session::put(Config::get('sentry::sentry.session.user'), $id);
@@ -290,10 +305,18 @@ class Sentry
 		// invalid session values - kill the user session
 		if ($user_id === null or ! is_numeric($user_id))
 		{
-			// if they are not logged in - check for cookie and log them in
-			if (static::is_remembered())
+			try
 			{
-				return true;
+				// if they are not logged in - check for cookie and log them in
+				if (static::is_remembered())
+				{
+					return true;
+				}
+			}
+			catch(SentryException $e)
+			{
+				static::logout();
+				return false;
 			}
 
 			//else log out
@@ -539,8 +562,16 @@ class Sentry
 			$val = base64_decode($encoded_val);
 			list($login_column, $hash) = explode(':', $val);
 
+			if ( ! static::user_exists($login_column))
+			{
+				static::logout();
+				return false;
+			}
+
+			$user = static::validate_user($login_column, $hash, 'remember_me');
+			
 			// if user is validated
-			if ($user = static::validate_user($login_column, $hash, 'remember_me'))
+			if ($user)
 			{
 				// update last login
 				$user->update(array(
