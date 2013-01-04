@@ -2,9 +2,21 @@
 
 #### Composer
 
-	{{ Put composer/packgist installation here }}
+To install through composer, simply put the following in your `composer.json` file:
+
+```json
+{
+	"require": {
+		"cartalyst/sentry": "2.0.*"
+	},
+	"minimum-stability": "alpha"
+}
+```
+
+The `minimum-stability` flag is only required while Sentry 2 is in alpha stage. When it becomes stable you may change your flag.
 
 #### GitHub
+
 Download Sentry into the 'vendor/cartalyst' folder (or wherever you see fit for your application). You can download the latest version of Sentry via zip [here](https://github.com/cartalyst/sentry) or pull directly from the repository with the following command within the 'vendor/cartalyst' directory.
 
 [Download](https://github.com/cartalyst/sentry/zipball/master)
