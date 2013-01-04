@@ -1,9 +1,9 @@
-<a id="deleteUser"></a>
-###deleteUser($user)
+<a id="delete"></a>
+###delete()
 
 ----------
 
-Delete a user object.  This can both create and delete an existing user.
+Delete a user object.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
@@ -16,18 +16,20 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		// find existing user
+		// Find existing user
 		$user = Sentry::getUserProvider()->findById(1);
 
-		// delete
-		if (Sentry::deleteUser($user))
+		// Delete
+		if ($user->delete())
 		{
-			// user deleted
+			// User deleted
 		}
-
-		// user not deleted
+		else
+		{
+			// User not deleted
+		}
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		echo 'User not found.';
 	}

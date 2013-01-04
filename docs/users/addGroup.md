@@ -7,29 +7,25 @@ Assign a user to a group.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | mixed           | none          | Group Id, name or GroupInterface Ojbect
+`$id`                        | mixed           | none          | GroupInterface instance
 
-`returns` bool
+`returns` void
 `throws` GroupNotFoundException
 
 ####Example
 
 	try
 	{
-		if ( Sentry::getUserProvider()->findById(1)->addGroup('admin') )
-		{
-			echo 'user added to group';
-		}
-		else
-		{
-			echo 'user not added to group';
-		}
+		$user  = Sentry::getUserProvider()->findById(1);
+		$group = Sentry::getGroupProvider()->findById(1);
+
+		$user->addGroup($group);
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User does not exist';
+		echo 'User does not exist.';
 	}
 	catch (Cartalyst\Sentry\GroupNotFoundException $e)
 	{
-		echo 'Group does not exist';
+		echo 'Group does not exist.';
 	}

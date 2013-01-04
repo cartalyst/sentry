@@ -3,11 +3,11 @@
 
 ----------
 
-Find a user by their login id.
+Find a user by their login ID.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | User's login id
+`$login`                     | string          | none          | User's login ID
 
 `returns` UserInterface
 `throws`  UserNotFoundException
@@ -18,7 +18,7 @@ Parameters                   | Type            | Default       | Description
 	{
 		$user = Sentry::getUserProvider()->findByLogin('john.doe@platform.com');
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		echo 'User not found.';
 	}

@@ -7,7 +7,6 @@
 * [findByCredentials()](#findByCredentials "/manuals/sentry/users/findByCredentials")
 * [findById()](#findById "/manuals/sentry/users/findById")
 * [findByLogin()](#findByLogin "/manuals/sentry/users/findByLogin")
-* [getGroupPermissions()](#getGroupPermissions "/manuals/sentry/users/getGroupPermissions")
 * [getGroups()](#getGroups "/manuals/sentry/users/getGroups")
 * [getLoginColumn()](#getLoginColumn "/manuals/sentry/users/getLoginColumn")
 * [ingetGroupProvider()](#inGroup "/manuals/sentry/users/inGroup")

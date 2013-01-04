@@ -3,7 +3,7 @@
 
 ----------
 
-Retrieves the users groups.
+Retrieves the users' groups.
 
 `returns` GroupInterface
 
@@ -11,9 +11,10 @@ Retrieves the users groups.
 
 	try
 	{
-		$groups = Sentry::getUserProvider()->findById(1)->getGroups();
+		$user   = Sentry::getUserProvider()->findById(1);
+		$groups = $user->getGroups();
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User does not exist';
+		echo 'User does not exist.';
 	}

@@ -40,7 +40,7 @@ Sentry2 now uses BCrypt by default as it's password hashing algorithim. We still
 
 #### Session/Cookie
 
-We used to only store the current user's id in the session, we now store the `UserInterface` object.
+We used to only store the current user's ID in the session, we now store the `UserInterface` object.
 
 #### Throttling
 

@@ -15,16 +15,23 @@ Parameters                   | Type            | Default       | Description
 
 	try
 	{
-		if ( Sentry::getUserProvider()->findById(1)->inGroup('admin') )
+		$user  = Sentry::getUserProvider()->findById(1);
+		$admin = Sentry::getGroupProvider()->findByName('Admin');
+
+		if ($user->inGroup($admin))
 		{
-			echo 'user is in group';
+			echo 'User is in Admin group.';
 		}
 		else
 		{
-			echo 'user is not in group';
+			echo 'User is not in Admin group.';
 		}
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		echo 'User does not exist';
+		echo 'User does not exist.';
+	}
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+	{
+		echo 'Group not found.';
 	}

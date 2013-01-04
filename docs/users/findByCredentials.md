@@ -1,4 +1,4 @@
-<a id="findByCreentials"></a>
+<a id="findByCredentials"></a>
 ###findByCredentials($credentials)
 
 ----------
@@ -7,7 +7,7 @@ Find a user by an array of credentials, which must include the login column. Has
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------
-`$credentials`               | array           | none          | array of credentials to check against. Login field is required.
+`$credentials`               | array           | none          | Array of credentials to check against. Login field is required.
 
 `returns` UserInterface
 `throws`  UserNotFoundException
@@ -17,12 +17,12 @@ Parameters                   | Type            | Default       | Description
 	try
 	{
 		$user = Sentry::getUserProvider()->findByCredentials(array(
-			'email'    => 'john.doe@platform.com',
-			'password' => 'test',
+			'email'      => 'john.doe@platform.com',
+			'password'   => 'test',
 			'first_name' => 'John',
 		));
 	}
-	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		echo 'User not found.';
 	}

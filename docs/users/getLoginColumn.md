@@ -3,10 +3,11 @@
 
 ----------
 
-Gets the login column from the user model.
+Gets the login column for the user.
 
 `returns` string
 
 ####Example
-
-	$loginColumn = Sentry::getUserProvider()->getLoginColumn();
+	
+	$emptyUser   = Sentry::getUserProvider()->getEmptyUser();
+	$loginColumn = $emptyUser->getLoginColumn();
