@@ -51,22 +51,7 @@ class SentryServiceProvider extends ServiceProvider {
 
 		$this->registerEvents();
 
-		$this->app['sentry'] = $this->app->share(function($app)
-		{
-			// Once the authentication service has actually been requested by the developer
-			// we will set a variable in the application indicating such. This helps us
-			// know that we need to set any queued cookies in the after event later.
-			$app['sentry.loaded'] = true;
-
-			return new Sentry(
-				$app['sentry.hasher'],
-				$app['sentry.session'],
-				$app['sentry.cookie'],
-				$app['sentry.group'],
-				$app['sentry.user'],
-				$app['sentry.throttle']
-			);
-		});
+		$this->registerSentry();
 	}
 
 	protected function registerHasher()
@@ -133,4 +118,23 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	protected function registerSentry()
+	{
+		$this->app['sentry'] = $this->app->share(function($app)
+		{
+			// Once the authentication service has actually been requested by the developer
+			// we will set a variable in the application indicating such. This helps us
+			// know that we need to set any queued cookies in the after event later.
+			$app['sentry.loaded'] = true;
+
+			return new Sentry(
+				$app['sentry.hasher'],
+				$app['sentry.session'],
+				$app['sentry.cookie'],
+				$app['sentry.group'],
+				$app['sentry.user'],
+				$app['sentry.throttle']
+			);
+		});
+	}
 }
