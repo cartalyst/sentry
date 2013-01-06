@@ -322,22 +322,6 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Set mutator for the last attempt at property.
-	 *
-	 * @param  mixed  $lastAttemptAt
-	 * @return DateTime
-	 */
-	public function setLastAttemptAt($lastAttemptAt)
-	{
-		if ($lastAttemptAt and ! $lastAttemptAt instanceof DateTime)
-		{
-			$lastAttemptAt = new DateTime($lastAttemptAt);
-		}
-
-		return $lastAttemptAt;
-	}
-
-	/**
 	 * Get mutator for the last attempt at property.
 	 *
 	 * @param  mixed  $lastAttemptAt
@@ -345,28 +329,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getLastAttemptAt($lastAttemptAt)
 	{
-		if ($lastAttemptAt and ! $lastAttemptAt instanceof DateTime)
-		{
-			$lastAttemptAt = new DateTime($lastAttemptAt);
-		}
-
-		return $lastAttemptAt;
-	}
-
-	/**
-	 * Set mutator for the suspended at property.
-	 *
-	 * @param  mixed  $suspendedAt
-	 * @return DateTime
-	 */
-	public function setSuspendedAt($suspendedAt)
-	{
-		if ($suspendedAt and ! $suspendedAt instanceof DateTime)
-		{
-			$suspendedAt = new DateTime($suspendedAt);
-		}
-
-		return $suspendedAt;
+		return $this->asDateTime('last_attempt_at');
 	}
 
 	/**
@@ -377,12 +340,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function getSuspendedAt($suspendedAt)
 	{
-		if ($suspendedAt and ! $suspendedAt instanceof DateTime)
-		{
-			$suspendedAt = new DateTime($suspendedAt);
-		}
-
-		return $suspendedAt;
+		return $this->asDateTime('suspended_at');
 	}
 
 	/**
@@ -442,11 +400,11 @@ class Throttle extends Model implements ThrottleInterface {
 	{
 		$result = parent::toArray();
 
-		if (isset($result['last_attempt_at']))
+		if (isset($result['last_attempt_at']) and $result['last_attempt_at'] instanceof DateTime)
 		{
 			$result['last_attempt_at'] = $result['last_attempt_at']->format('Y-m-d H:i:s');
 		}
-		if (isset($result['suspended_at']))
+		if (isset($result['suspended_at']) and $result['suspended_at'] instanceof DateTime)
 		{
 			$result['suspended_at'] = $result['suspended_at']->format('Y-m-d H:i:s');
 		}
