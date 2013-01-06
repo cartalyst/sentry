@@ -21,7 +21,7 @@
 use Mockery as m;
 use Cartalyst\Sentry\Throttling\Eloquent\Throttle;
 
-class EloquentThrottleText extends PHPUnit_Framework_TestCase {
+class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Setup resources and dependencies.
