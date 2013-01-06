@@ -412,4 +412,29 @@ class Throttle extends Model implements ThrottleInterface {
 		return $result;
 	}
 
+	/**
+	 * Return a timestamp as DateTime object.
+	 *
+	 * @param  string  $key
+	 * @return DateTime
+	 *
+	 * @todo Remove when https://github.com/illuminate/database/pull/101 gets merged.
+	 */
+	protected function asDateTime($key)
+	{
+		if (isset($this->attributes[$key]))
+		{
+			$value = $this->attributes[$key];
+
+			if ( ! $value instanceof DateTime)
+			{
+				$format = $this->getDateFormat();
+
+				return DateTime::createFromFormat($format, $value);
+			}
+
+			return $value;
+		}
+	}
+
 }
