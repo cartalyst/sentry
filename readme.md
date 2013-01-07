@@ -22,6 +22,20 @@ It also provides additional features such as user groups and additional security
 - User data
 - Interface driven - switch out your own implementations at will
 
+### A Quick Note With Installing
+
+You must ensure your minimum stability to either "alpha" or "dev" now:
+
+```json
+{
+	"minimum-stability": "dev"
+}
+```
+
+- "alpha" will get you all alpha / beta / RC releases
+- "dev" will keep you on top of the bleeding edge releases
+
+Once the package is released you can change this flag back to "stable" or remove it.
 
 ### Installing In Laravel 4 (with Composer)
 
