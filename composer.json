@@ -1,44 +1,44 @@
 {
-    "name": "cartalyst/sentry",
-    "description": "PHP 5.3+ fully-featured authentication & authorization system",
-    "keywords": ["auth", "authentication", "security", "laravel"],
-    "license": "BSD License (3-clause)",
-    "authors": [
-        {
-            "name": "Cartalyst",
-            "email": "help@cartalyst.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0"
-    },
-    "require-dev": {
-        "mockery/mockery": "0.7.2",
-        "illuminate/cookie": "1.2.*",
-        "illuminate/database": "1.2.*",
-        "illuminate/session": "1.2.*"
-    },
-    "suggest": {
-        "illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",
-        "illuminate/database": "Sentry provides Eloquent models for User, Group and Throttle providers.",
-        "dhorrigan/capsule": "Capsule is a small utility for managing databse connections given to illuminate/database outside of Laravel 4.",
-        "illuminate/session": "Sentry provides an Illuminate session driver for storage integration."
-    },
-    "autoload": {
-    	"classmap": [
-            "src/Cartalyst/Sentry/Groups/Exceptions.php",
-            "src/Cartalyst/Sentry/Throttling/Exceptions.php",
-            "src/Cartalyst/Sentry/Users/Exceptions.php",
-    		"src/migrations"
-    	],
-        "psr-0": {
-            "Cartalyst\\Sentry": "src/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
-    },
-    "minimum-stability": "dev"
+	"name": "cartalyst/sentry",
+	"description": "PHP 5.3+ fully-featured authentication & authorization system",
+	"keywords": ["auth", "authentication", "security", "laravel"],
+	"license": "BSD License (3-clause)",
+	"authors": [
+		{
+			"name": "Cartalyst",
+			"email": "help@cartalyst.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"require-dev": {
+		"mockery/mockery": "0.7.2",
+		"illuminate/cookie": "1.2.*",
+		"illuminate/database": "1.2.*",
+		"illuminate/session": "1.2.*"
+	},
+	"suggest": {
+		"illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",
+		"illuminate/database": "Sentry provides Eloquent models for User, Group and Throttle providers.",
+		"dhorrigan/capsule": "Capsule is a small utility for managing databse connections given to illuminate/database outside of Laravel 4.",
+		"illuminate/session": "Sentry provides an Illuminate session driver for storage integration."
+	},
+	"autoload": {
+		"classmap": [
+			"src/Cartalyst/Sentry/Groups/Exceptions.php",
+			"src/Cartalyst/Sentry/Throttling/Exceptions.php",
+			"src/Cartalyst/Sentry/Users/Exceptions.php",
+			"src/migrations"
+		],
+		"psr-0": {
+			"Cartalyst\\Sentry": "src/"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "2.0-dev"
+		}
+	},
+	"minimum-stability": "dev"
 }
