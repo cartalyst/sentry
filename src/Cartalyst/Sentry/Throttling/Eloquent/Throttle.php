@@ -62,6 +62,13 @@ class Throttle extends Model implements ThrottleInterface {
 	protected $enabled = true;
 
 	/**
+	 * The date fields for the model.
+	 *
+	 * @var array
+	 */
+	protected $dates = array('last_attempt_at', 'suspended_at');
+
+	/**
 	 * Returns the associated user with the
 	 * throttler.
 	 *
@@ -322,28 +329,6 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Get mutator for the last attempt at property.
-	 *
-	 * @param  mixed  $lastAttemptAt
-	 * @return DateTime
-	 */
-	public function getLastAttemptAt($lastAttemptAt)
-	{
-		return $this->asDateTime('last_attempt_at');
-	}
-
-	/**
-	 * Get mutator for the suspended at property.
-	 *
-	 * @param  mixed  $suspendedAt
-	 * @return DateTime
-	 */
-	public function getSuspendedAt($suspendedAt)
-	{
-		return $this->asDateTime('suspended_at');
-	}
-
-	/**
 	 * Inspects the last attempt vs the suspension time
 	 * (the time in which attempts must space before the
 	 * account is suspended). If we can clear our attempts
@@ -413,28 +398,79 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Return a timestamp as DateTime object.
+	 * Set a given attribute on the model.
 	 *
 	 * @param  string  $key
-	 * @return DateTime
+	 * @param  mixed   $value
+	 * @return void
 	 *
-	 * @todo Remove when https://github.com/illuminate/database/pull/101 gets merged.
+	 * @todo Remove when https://github.com/illuminate/database/pull/105
+	 *       is accepted.
 	 */
-	protected function asDateTime($key)
+	public function setAttribute($key, $value)
 	{
-		if (isset($this->attributes[$key]))
+		// If an attribute is listed as a "date", we'll convert it from a DateTime
+		// instance into a form proper for storage on the database tables using
+		// the connection grammar's date format. We will auto set the values.
+		if (in_array($key, $this->dates))
 		{
-			$value = $this->attributes[$key];
-
-			if ( ! $value instanceof DateTime)
+			if ($value)
 			{
-				$format = $this->getDateFormat();
-
-				return DateTime::createFromFormat($format, $value);
+				$this->attributes[$key] = $this->fromDateTime($value);
 			}
-
-			return $value;
 		}
+
+		// Now we will check for the presence of a mutator for the set operation
+		// which simply lets the developers tweak the attribute as it is set on
+		// the model, such as "json_encoding" an listing of data for storage.
+		elseif ($this->hasSetMutator($key))
+		{
+			$method = 'set'.camel_case($key);
+
+			return $this->{$method}($value);
+		}
+
+		// Finally, we'll just set the attribute as it was passed to us.
+		$this->attributes[$key] = $value;
+	}
+
+	/**
+	 * Get a plain attribute (not a relationship).
+	 *
+	 * @param  string  $key
+	 * @return mixed
+	 *
+	 * @todo Remove when https://github.com/illuminate/database/pull/105
+	 *       is accepted.
+	 */
+	protected function getPlainAttribute($key)
+	{
+		$value = $this->getAttributeFromArray($key);
+
+		// If the attribute is listed as a date, we will convert it to a DateTime
+		// instance on retrieval, which makes it quite convenient to work with
+		// date fields without having to create a mutator for each property.
+		if (in_array($key, $this->dates))
+		{
+			// DateTime does not always throw an Exception for failed
+			// dates. If you pass "null" you can just receive "false" back,
+			// which may break some people's apps if they're explicitly
+			// expecting null back.
+			if ($value)
+			{
+				return $this->asDateTime($value);
+			}
+		}
+
+		// If the attribute has a get mutator, we will call that then return what
+		// it returns as the value, which is useful for transforming values on
+		// retrieval from the model to a form that is more useful for usage.
+		elseif ($this->hasGetMutator($key))
+		{
+			return $this->{'get'.camel_case($key)}($value);
+		}
+
+		return $value;
 	}
 
 }
