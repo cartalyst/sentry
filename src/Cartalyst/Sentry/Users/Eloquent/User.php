@@ -616,6 +616,10 @@ class User extends Model implements UserInterface {
 	{
 		$result = parent::toArray();
 
+		if (isset($result['activated']))
+		{
+			$result['activated'] = $this->getActivated($result['activated']);
+		}
 		if (isset($result['permissions']))
 		{
 			$result['permissions'] = $this->getPermissions($result['permissions']);

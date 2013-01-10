@@ -377,6 +377,28 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
+	 * Get mutator for the suspended property.
+	 *
+	 * @param  mixed  $suspended
+	 * @return bool
+	 */
+	public function getSuspended($suspended)
+	{
+		return (bool) $suspended;
+	}
+
+	/**
+	 * Get mutator for the banned property.
+	 *
+	 * @param  mixed  $banned
+	 * @return bool
+	 */
+	public function getBanned($banned)
+	{
+		return (bool) $banned;
+	}
+
+	/**
 	 * Convert the model instance to an array.
 	 *
 	 * @return array
@@ -385,6 +407,14 @@ class Throttle extends Model implements ThrottleInterface {
 	{
 		$result = parent::toArray();
 
+		if (isset($result['suspended']))
+		{
+			$result['suspended'] = $this->getSuspended($result['suspended']);
+		}
+		if (isset($result['banned']))
+		{
+			$result['banned'] = $this->getBanned($result['banned']);
+		}
 		if (isset($result['last_attempt_at']) and $result['last_attempt_at'] instanceof DateTime)
 		{
 			$result['last_attempt_at'] = $result['last_attempt_at']->format('Y-m-d H:i:s');
