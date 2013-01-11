@@ -86,6 +86,7 @@ class NativeCookieTest extends PHPUnit_Framework_TestCase {
      */
     public function testForget()
     {
+        $this->cookie->put('foo', 'bar', 123);
         $this->cookie->forget('foo');
         $this->assertEquals(null, $this->cookie->getValue());
     }
@@ -95,8 +96,22 @@ class NativeCookieTest extends PHPUnit_Framework_TestCase {
      */
     public function testFlush()
     {
+        $this->cookie->put('foo', 'bar', 123);
         $this->cookie->flush();
         $this->assertEquals(null, $this->cookie->getValue());
     }
 
+    /**
+     * Test provide NativeCookieException thrown as exception
+     *
+     * @runInSeparateProcess
+     * @expectedException Cartalyst\Sentry\Cookies\NativeCookieException
+     */
+    public function testExpectingNCE()
+    {
+        $this->cookie->flush();
+        $this->cookie->getKey();
+        $this->cookie->get(false);
+        $this->cookie->get('whynot');
+    }
 }
