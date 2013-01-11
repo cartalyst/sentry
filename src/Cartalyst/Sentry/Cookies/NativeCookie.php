@@ -18,9 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-class SentryCookieException extends \Exception {};
+class NativeCookieException extends \Exception {};
 
-class SentryCookie implements CookieInterface {
+class NativeCookie implements CookieInterface {
 
     /**
      * The key used in the Cookie.
@@ -83,7 +83,7 @@ class SentryCookie implements CookieInterface {
         if (!is_null($this->key)) {
             return $this->key;
         } else {
-            throw new SentryCookieException("Can't get key of current cookie since it hasn't been set yet!");
+            throw new NativeCookieException("Can't get key of current cookie since it hasn't been set yet!");
         }
     }
 
@@ -140,7 +140,7 @@ class SentryCookie implements CookieInterface {
         } elseif(!is_null($default)) {
             return $default;
         } else {
-            throw new SentryCookieException("Requested cookie doesn't exist!");
+            throw new NativeCookieException("Requested cookie doesn't exist!");
         }
     }
 
@@ -173,7 +173,7 @@ class SentryCookie implements CookieInterface {
     public function getQueuedCookies()
     {
         // validate this please!
-        throw new SentryCookieException("Called function on native Cookie Driver!");
+        return  array();
     }
 
     /**

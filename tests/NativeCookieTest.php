@@ -18,9 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Cookies\SentryCookie;
+use Cartalyst\Sentry\Cookies\NativeCookie;
 
-class SentryCookieTest extends PHPUnit_Framework_TestCase {
+class NativeCookieTest extends PHPUnit_Framework_TestCase {
 
     protected $cookie;
 
@@ -31,7 +31,7 @@ class SentryCookieTest extends PHPUnit_Framework_TestCase {
      */
     public function setUp()
     {
-        $this->cookie = new SentryCookie();
+        $this->cookie = new NativeCookie();
     }
 
     /**
@@ -62,7 +62,7 @@ class SentryCookieTest extends PHPUnit_Framework_TestCase {
 
         $timeTest = false;
 
-        if ($this->cookie->getLifeTime() > 60*60*24*31*12*1)
+        if ($this->cookie->getLifeTime() > time() + 60*60*24*31*12*1)
             $timeTest = true;
 
         $this->assertTrue($timeTest);
