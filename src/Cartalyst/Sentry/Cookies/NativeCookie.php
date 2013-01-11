@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-class NativeCookieException extends \Exception {};
+class NativeCookieException extends \Exception {}
 
 class NativeCookie implements CookieInterface {
 
