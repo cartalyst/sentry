@@ -34,7 +34,7 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-		$this->jar    = m::mock('Illuminate\CookieJar');
+		$this->jar    = m::mock('Illuminate\Cookie\CookieJar');
 		$this->cookie = new IlluminateCookie($this->jar);
 	}
 

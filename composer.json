@@ -14,9 +14,10 @@
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
-		"illuminate/cookie": "1.2.*",
-		"illuminate/database": "1.2.*",
-		"illuminate/session": "1.2.*"
+
+		"illuminate/cookie": "4.0.*",
+		"illuminate/database": "4.0.*",
+		"illuminate/session": "4.0.*"
 	},
 	"suggest": {
 		"illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",

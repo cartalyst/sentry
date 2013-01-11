@@ -57,7 +57,7 @@ $hasher = new Cartalyst\Sentry\Hashing\BcryptHasher; // There are other hashers 
 $illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
 $session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
 
-$illuminateCookie = /* Get instance of Illuminate\CookieJar however pleases you */;
+$illuminateCookie = /* Get instance of Illuminate\Cookie\CookieJar however pleases you */;
 $cookie = new Cartalyst\Sentry\Cookies\IlluminateCookie($illuminateCookie);
 
 $groupProvider = new Cartalyst\Sentry\Groups\Eloquent\GroupProvider;

@@ -53,7 +53,7 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @param  Illuminate\CookieJar  $jar
+	 * @param  Illuminate\Cookie\CookieJar  $jar
 	 * @return void
 	 */
 	public function __construct($config = array())
