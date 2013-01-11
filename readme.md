@@ -122,9 +122,8 @@ We have plans to add more implementations for each interface which gives you mor
 
 We're looking at making:
 
-1. A native PHP cookie manager.
-2. A native PHP session manager (that uses cookies or memcache?).
-3. Plain PDO based group, user and throttle providers.
+1. A native PHP session manager (that uses cookies or memcache?).
+2. Plain PDO based group, user and throttle providers.
 
 ### Docs
 
