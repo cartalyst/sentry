@@ -22,81 +22,81 @@ use Cartalyst\Sentry\Cookies\NativeCookie;
 
 class NativeCookieTest extends PHPUnit_Framework_TestCase {
 
-    protected $cookie;
+	protected $cookie;
 
-    /**
-     * Setup test.
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->cookie = new NativeCookie();
-    }
+	/**
+	 * Setup test.
+	 *
+	 * @return void
+	 */
+	public function setUp()
+	{
+		$this->cookie = new NativeCookie();
+	}
 
-    /**
-     * Tear down.
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        $this->cookie = null;
-    }
+	/**
+	 * Tear down.
+	 *
+	 * @return void
+	 */
+	public function tearDown()
+	{
+		$this->cookie = null;
+	}
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testPut()
-    {
-        $this->cookie->put('foo', 'bar', 123);
-        $this->assertEquals('bar', $this->cookie->getValue());
-    }
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testPut()
+	{
+		$this->cookie->put('foo', 'bar', 123);
+		$this->assertEquals('bar', $this->cookie->getValue());
+	}
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testForever()
-    {
-        $this->cookie->forever('foo', 'bar');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testForever()
+	{
+		$this->cookie->forever('foo', 'bar');
 
-        $timeTest = false;
+		$timeTest = false;
 
-        if ($this->cookie->getLifeTime() > time() + 60*60*24*31*12*1)
-            $timeTest = true;
+		if ($this->cookie->getLifeTime() > time() + 60*60*24*31*12*1)
+			$timeTest = true;
 
-        $this->assertTrue($timeTest);
-    }
+		$this->assertTrue($timeTest);
+	}
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testGet()
-    {
-        // Ensure default param is "null"
-        $this->cookie->put('foo', 'bar', 123);
-        $this->assertEquals('bar', $this->cookie->getValue());
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGet()
+	{
+		// Ensure default param is "null"
+		$this->cookie->put('foo', 'bar', 123);
+		$this->assertEquals('bar', $this->cookie->getValue());
 
-        $this->cookie->forget('foo');
-        $this->assertEquals(null, $this->cookie->getValue());
-    }
+		$this->cookie->forget('foo');
+		$this->assertEquals(null, $this->cookie->getValue());
+	}
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testForget()
-    {
-        $this->cookie->forget('foo');
-        $this->assertEquals(null, $this->cookie->getValue());
-    }
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testForget()
+	{
+		$this->cookie->forget('foo');
+		$this->assertEquals(null, $this->cookie->getValue());
+	}
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testFlush()
-    {
-        $this->cookie->flush();
-        $this->assertEquals(null, $this->cookie->getValue());
-    }
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testFlush()
+	{
+		$this->cookie->flush();
+		$this->assertEquals(null, $this->cookie->getValue());
+	}
 
 }
