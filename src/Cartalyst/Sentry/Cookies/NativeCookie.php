@@ -27,7 +27,7 @@ class NativeCookie implements CookieInterface {
 	 *
 	 * @var string
 	 */
-	protected $key = null;
+	protected $key = 'cartalyst_sentry';
 
 	/**
 	 * The value of the actual Cookie.
@@ -60,7 +60,7 @@ class NativeCookie implements CookieInterface {
 	{
 		// Defining default settings
 		$sentryDefaults = array(
-			'name'      => 'cartalyst_sentry',
+			'name'      => $this->key,
 			'time'      => time() + 300,
 			'domain'    => '',
 			'path'      => '/',
@@ -111,7 +111,6 @@ class NativeCookie implements CookieInterface {
 			$this->defaults['httpOnly']
 		);
 
-		$this->key      = $key;
 		$this->value    = $value;
 		$this->lifetime = $lifetime;
 	}
@@ -173,18 +172,17 @@ class NativeCookie implements CookieInterface {
 	}
 
 	/**
-	 * Get the cookies queued by the driver (not here).
+	 * Get the cookies queued by the driver (We don't queue them natively).
 	 *
 	 * @return array
 	 */
 	public function getQueuedCookies()
 	{
-		// validate this please!
-		return  array();
+		return array();
 	}
 
 	/**
-	 * Getter for property: value
+	 * Returns the value of the last set cookie.
 	 *
 	 * @return mixed
 	 */
@@ -194,7 +192,7 @@ class NativeCookie implements CookieInterface {
 	}
 
 	/**
-	 * Getter for property: lifetime
+	 * Returns the lifetime of the last set cookie.
 	 *
 	 * @return mixed
 	 */
