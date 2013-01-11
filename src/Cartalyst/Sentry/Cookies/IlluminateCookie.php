@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\CookieJar;
+use Illuminate\Cookie\CookieJar;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class IlluminateCookie implements CookieInterface {
