@@ -92,8 +92,15 @@ $hasher = new Cartalyst\Sentry\Hashing\BcryptHasher; // There are other hashers 
 $illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
 $session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
 
-$illuminateCookie = /* Get instance of Illuminate\CookieJar however pleases you */;
-$cookie = new Cartalyst\Sentry\Cookies\IlluminateCookie($illuminateCookie);
+$options = array(
+	'name'     => null, // Default "cartalyst_sentry"
+	'time'     => null, // Default 300 seconds from now
+	'domain'   => null, // Default ""
+	'path'     => null, // Default "/"
+	'secure'   => null, // Default "false"
+	'httpOnly' => null, // Default "false"
+);
+$cookie = new Cartalyst\Sentry\Cookies\NativeCookie($options);
 
 $groupProvider = new Cartalyst\Sentry\Groups\Eloquent\GroupProvider;
 
