@@ -30,11 +30,11 @@ Parameters                   | Type            | Default       | Description
 		// Send activation code to user to activate their account
 		...
 	}
-	catch (Cartalyst\Sentry\LoginRequiredException $e)
+	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
 		echo 'Login field required.';
 	}
-	catch (Cartalyst\Sentry\UserExistsException $e)
+	catch (Cartalyst\Sentry\Users\UserExistsException $e)
 	{
 		echo 'User already exists.';
 	}
