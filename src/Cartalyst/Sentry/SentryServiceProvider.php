@@ -74,7 +74,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
 		{
-			return new IlluminateCookie($app['cookie']);
+			return new IlluminateCookie($app, $app['cookie']);
 		});
 	}
 
