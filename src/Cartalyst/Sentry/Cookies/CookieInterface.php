@@ -39,7 +39,6 @@ interface CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
@@ -53,7 +52,7 @@ interface CookieInterface {
 	public function get();
 
 	/**
-	 * Remove the sentry cookie
+	 * Remove the Sentry cookie.
 	 *
 	 * @param  string  $key
 	 * @return void

@@ -102,7 +102,6 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
@@ -122,7 +121,7 @@ class IlluminateCookie implements CookieInterface {
 	}
 
 	/**
-	 * Remove the sentry cookie
+	 * Remove the Sentry cookie.
 	 *
 	 * @param  string  $key
 	 * @return void
