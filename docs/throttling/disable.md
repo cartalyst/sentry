@@ -3,19 +3,9 @@
 
 ----------
 
-Disables throttling feature. Can be done on the throttle provider (global) level or on a throttle instance itself.
+Disables throttling feature.
 
 ####Example
 
-	try
-	{
-		$provider = Sentry::getThrottleProvider();
-		$provider->disable();
-
-		$throttle = $provider->findByUserId(1);
-		$throttle->disable();
-	}
-	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
-	{
-		echo 'User does not exist.';
-	}
+	$provider = Sentry::getThrottleProvider();
+	$provider->disable();

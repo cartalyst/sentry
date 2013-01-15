@@ -289,36 +289,6 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Enable throttling.
-	 *
-	 * @return void
-	 */
-	public function enable()
-	{
-		$this->enabled = true;
-	}
-
-	/**
-	 * Disable throttling.
-	 *
-	 * @return void
-	 */
-	public function disable()
-	{
-		$this->enabled = false;
-	}
-
-	/**
-	 * Check if throttling is enabled.
-	 *
-	 * @return bool
-	 */
-	public function isEnabled()
-	{
-		return $this->enabled;
-	}
-
-	/**
 	 * User relationship for the throttle.
 	 *
 	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo

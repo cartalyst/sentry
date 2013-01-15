@@ -9,15 +9,5 @@ Checks to see the throttling feature is enabled, like `enable()` and `disable()`
 
 ####Example
 
-	try
-	{
-		$provider = Sentry::getThrottleProvider();
-		$globallyEnabled = $provider->isEnabled();
-
-		$throttle = $provider->findByUserId(1);
-		$instanceEnabled = $throttle->isEnabled();
-	}
-	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
-	{
-		echo 'User does not exist.';
-	}
+	$provider = Sentry::getThrottleProvider();
+	$enabled = $provider->isEnabled();
