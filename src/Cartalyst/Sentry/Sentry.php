@@ -199,7 +199,10 @@ class Sentry {
 	/**
 	 * Check to see if the user is logged in and activated.
 	 *
-	 * @return bool
+	 * Upon success, the logged in user is returned. Upon
+	 * failure, "false" is returned.
+	 *
+	 * @return mixed
 	 */
 	public function check()
 	{
@@ -218,12 +221,12 @@ class Sentry {
 			}
 		}
 
-		if ( ! $user = $this->getUser())
+		if ( ! $user = $this->getUser() or ! $user->isActivated())
 		{
 			return false;
 		}
 
-		return $user->isActivated();
+		return $user;
 	}
 
 	/**
