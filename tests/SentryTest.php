@@ -260,8 +260,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
 		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(null);
 
-		$this->cookie->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->cookie->shouldReceive('get')->with('foo')->once()->andReturn($user);
+		$this->cookie->shouldReceive('get')->once()->andReturn($user);
 
 		$this->assertTrue($this->sentry->check());
 	}
@@ -271,8 +270,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
 		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(null);
 
-		$this->cookie->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->cookie->shouldReceive('get')->with('foo')->once()->andReturn(null);
+		$this->cookie->shouldReceive('get')->once()->andReturn(null);
 
 		$this->assertFalse($this->sentry->check());
 	}
