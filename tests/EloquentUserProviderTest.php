@@ -197,7 +197,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 			'password' => 'foo_bar_baz',
 		);
 
-		$user = m::mock('Cartalyst\Sentry\Users\EloquentUser');
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user->shouldReceive('fill')->with($attributes)->once();
 		$user->shouldReceive('save')->once();
 
