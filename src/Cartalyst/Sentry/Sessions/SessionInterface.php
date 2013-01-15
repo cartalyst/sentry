@@ -28,36 +28,25 @@ interface SessionInterface {
 	public function getKey();
 
 	/**
-	 * Put a key / value pair in the session.
+	 * Put a value in the Sentry session.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	public function put($key, $value);
+	public function put($value);
 
 	/**
-	 * Get the requested item from the session.
+	 * Get the Sentry session value.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
 	 * @return mixed
 	 */
-	public function get($key, $default = null);
+	public function get();
 
 	/**
-	 * Remove an item from the session.
-	 *
-	 * @param  string  $key
-	 * @return void
-	 */
-	public function forget($key);
-
-	/**
-	 * Remove all of the items from the session.
+	 * Remove the Sentry session.
 	 *
 	 * @return void
 	 */
-	public function flush();
+	public function forget();
 
 }

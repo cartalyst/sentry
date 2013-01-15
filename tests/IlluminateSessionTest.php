@@ -35,7 +35,7 @@ class IlluminateSessionTest extends PHPUnit_Framework_TestCase {
 	public function setUp()
 	{
 		$this->store = m::mock('Illuminate\Session\Store');
-		$this->session = new IlluminateSession($this->store);
+		$this->session = new IlluminateSession($this->store, 'session_name_here');
 	}
 
 	/**
@@ -56,32 +56,24 @@ class IlluminateSessionTest extends PHPUnit_Framework_TestCase {
 
 	public function testPut()
 	{
-		$this->store->shouldReceive('put')->with('foo', 'bar')->once();
+		$this->store->shouldReceive('put')->with('session_name_here', 'bar')->once();
 
-		$this->session->put('foo', 'bar');
+		$this->session->put('bar');
 	}
 
 	public function testGet()
 	{
-		$this->store->shouldReceive('get')->with('foo', null)->twice()->andReturn('bar');
+		$this->store->shouldReceive('get')->with('session_name_here')->once()->andReturn('bar');
 
 		// Test with default "null" param as well
-		$this->assertEquals('bar', $this->session->get('foo'));
-		$this->assertEquals('bar', $this->session->get('foo', null));
+		$this->assertEquals('bar', $this->session->get());
 	}
 
 	public function testForget()
 	{
-		$this->store->shouldReceive('forget')->with('foo')->once();
+		$this->store->shouldReceive('forget')->with('session_name_here')->once();
 
-		$this->session->forget('foo');
-	}
-
-	public function testFlush()
-	{
-		$this->store->shouldReceive('forget')->with($this->session->getKey())->once();
-
-		$this->session->flush();
+		$this->session->forget();
 	}
 
 }

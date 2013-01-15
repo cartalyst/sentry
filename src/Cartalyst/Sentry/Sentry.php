@@ -206,7 +206,7 @@ class Sentry {
 		if ( ! $this->user)
 		{
 			// Check session
-			if ($user = $this->session->get($this->session->getKey()) and $user instanceof UserInterface)
+			if ($user = $this->session->get() and $user instanceof UserInterface)
 			{
 				$this->user = $user;
 			}
@@ -246,11 +246,11 @@ class Sentry {
 		$this->user = $user;
 
 		// Set sessions
-		$this->session->put($this->session->getKey(), $user);
+		$this->session->put($user);
 
 		if ($remember)
 		{
-			$this->cookie->forever($this->cookie->getKey(), $user);
+			$this->cookie->forever($user);
 		}
 	}
 

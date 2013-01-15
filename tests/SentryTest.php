@@ -89,10 +89,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->session->shouldReceive('put')->with('foo', $user)->once();
-
-		$this->cookie->shouldReceive('getKey')->never();
+		$this->session->shouldReceive('put')->with($user)->once();
 
 		$this->sentry->login($user);
 	}
@@ -243,8 +240,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->session->shouldReceive('get')->with('foo')->once()->andReturn($user);
+		$this->session->shouldReceive('get')->once()->andReturn($user);
 
 		$this->cookie->shouldReceive('getKey')->never();
 		$this->cookie->shouldReceive('get')->never();
@@ -257,8 +253,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(null);
+		$this->session->shouldReceive('get')->once()->andReturn(null);
 
 		$this->cookie->shouldReceive('get')->once()->andReturn($user);
 
@@ -267,8 +262,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testCheckingUserWhenNothingIsFound()
 	{
-		$this->session->shouldReceive('getKey')->once()->andReturn('foo');
-		$this->session->shouldReceive('get')->with('foo')->once()->andReturn(null);
+		$this->session->shouldReceive('get')->once()->andReturn(null);
 
 		$this->cookie->shouldReceive('get')->once()->andReturn(null);
 
