@@ -48,7 +48,7 @@ class BcryptHasher implements HasherInterface {
 		// Create salt
 		$salt = $this->createSalt();
 
-		return crypt($string, '$2a$'.$strength.'$'.$salt);
+		return crypt($string, '$2a$'.$strength.'$'.$salt.'$');
 	}
 
 	/**
