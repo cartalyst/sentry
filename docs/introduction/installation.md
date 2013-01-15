@@ -60,9 +60,9 @@ $session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
 $illuminateCookie = /* Get instance of Illuminate\Cookie\CookieJar however pleases you */;
 $cookie = new Cartalyst\Sentry\Cookies\IlluminateCookie($illuminateCookie);
 
-$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\GroupProvider;
+$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
 
-$userProvider = new Cartalyst\Sentry\Users\Eloquent\UserProvider($hasher);
+$userProvider = new Cartalyst\Sentry\Users\Eloquent\Provider($hasher);
 
 $throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\ThrottleProvider($userProvider);
 
