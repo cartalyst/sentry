@@ -264,10 +264,10 @@ class Sentry {
 	 */
 	public function logout()
 	{
-		unset($this->user);
+		$this->user = null;
 
-		$this->session->flush();
-		$this->cookie->flush();
+		$this->session->forget();
+		$this->cookie->forget();
 	}
 
 	/**

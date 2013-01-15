@@ -209,10 +209,11 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->sentry->authenticateAndRemember($credentials);
 	}
 
-	public function checkLoggingOut()
+	public function testCheckLoggingOut()
 	{
-		$this->session->shouldReceive('flush')->once();
-		$this->cookie->shouldReceive('flush')->once();
+		$this->sentry->setUser(m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->session->shouldReceive('forget')->once();
+		$this->cookie->shouldReceive('forget')->once();
 		$this->sentry->logout();
 		$this->assertNull($this->sentry->getUser());
 	}
