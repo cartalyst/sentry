@@ -73,7 +73,10 @@ class IlluminateCookie implements CookieInterface {
 		$me = $this;
 		$app->after(function($request, $response) use ($app, $me)
 		{
-			$response->headers->setCookie($me->getCookie());
+			if ($cookie = $me->getCookie())
+			{
+				$response->headers->setCookie($cookie);
+			}
 		});
 	}
 
