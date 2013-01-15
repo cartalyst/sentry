@@ -74,6 +74,8 @@ class Provider implements ProviderInterface {
 			throw new UserNotFoundException("A user could not be found with ID [$id].");
 		}
 
+		$user->setHasher($this->hasher);
+
 		return $user;
 	}
 
@@ -92,6 +94,8 @@ class Provider implements ProviderInterface {
 		{
 			throw new UserNotFoundException("A user could not be found with a login value of [$login].");
 		}
+
+		$user->setHasher($this->hasher);
 
 		return $user;
 	}
@@ -145,6 +149,8 @@ class Provider implements ProviderInterface {
 			}
 		}
 
+		$user->setHasher($this->hasher);
+
 		return $user;
 	}
 
@@ -170,7 +176,9 @@ class Provider implements ProviderInterface {
 	 */
 	public function getEmptyUser()
 	{
-		return $this->createModel();
+		$instance = $this->createModel();
+		$instance->setHasher($this->hasher);
+		return $instance;
 	}
 
 	/**
@@ -183,7 +191,6 @@ class Provider implements ProviderInterface {
 		$class = '\\'.ltrim($this->model, '\\');
 
 		$instance = new $class;
-		$instance->setHasher($this->hasher);
 		return $instance;
 	}
 
