@@ -17,7 +17,8 @@
 
 		"illuminate/cookie": "4.0.*",
 		"illuminate/database": "4.0.*",
-		"illuminate/session": "4.0.*"
+		"illuminate/session": "4.0.*",
+		"ircmaxell/password-compat": "1.0.*"
 	},
 	"suggest": {
 		"illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",

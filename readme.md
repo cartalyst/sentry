@@ -87,7 +87,7 @@ Of course, we provide default implementations of all these for you. To setup our
 ```php
 <?php
 
-$hasher = new Cartalyst\Sentry\Hashing\BcryptHasher; // There are other hashers available, take your pick
+$hasher = new Cartalyst\Sentry\Hashing\NativeHasher; // There are other hashers available, take your pick
 
 $illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
 $session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
