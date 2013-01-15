@@ -144,7 +144,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function isActivated()
 	{
-		return $this->activated;
+		return (bool) $this->activated;
 	}
 
 	/**
