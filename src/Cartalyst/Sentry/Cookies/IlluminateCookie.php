@@ -18,10 +18,18 @@
  * @link       http://cartalyst.com
  */
 
+use Illuminate\Container\Container;
 use Illuminate\Cookie\CookieJar;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class IlluminateCookie implements CookieInterface {
+
+	/**
+	 * The application instance.
+	 *
+	 * @param Illuminate\Container\Container
+	 */
+	protected $app;
 
 	/**
 	 * The key used in the Cookie.
@@ -38,11 +46,11 @@ class IlluminateCookie implements CookieInterface {
 	protected $jar;
 
 	/**
-	 * The cookies queued by the guards.
+	 * The cookie to be stored.
 	 *
-	 * @var array
+	 * @var Symfony\Component\HttpFoundation\Cookie
 	 */
-	protected $queuedCookies = array();
+	protected $cookie;
 
 	/**
 	 * Creates a new cookie instance.
@@ -51,14 +59,22 @@ class IlluminateCookie implements CookieInterface {
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function __construct(CookieJar $jar, $key = null)
+	public function __construct($app, CookieJar $jar, $key = null)
 	{
+		$this->app = $app;
 		$this->jar = $jar;
 
 		if (isset($key))
 		{
 			$this->key = $key;
 		}
+
+		// Set the cookie after the app runs
+		$me = $this;
+		$app->after(function($request, $response) use ($app, $me)
+		{
+			$response->headers->setCookie($me->getCookie());
+		});
 	}
 
 	/**
@@ -72,72 +88,60 @@ class IlluminateCookie implements CookieInterface {
 	}
 
 	/**
-	 * Put a key / value pair in the cookie with an
-	 * expiry.
+	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @param  int     $minutes
 	 * @return void
 	 */
-	public function put($key, $value, $minutes)
+	public function put($value, $minutes)
 	{
-		$this->queuedCookies[] = $this->jar->make($key, $value, $minutes);
+		$this->cookie = $this->jar->make($this->getKey(), $value, $minutes);
 	}
 
 	/**
-	 * Put a key / value pair in the cookie forever.
+	 * Put a value in the Sentry cookie forever.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	public function forever($key, $value)
+	public function forever($value)
 	{
-		$this->queuedCookies[] = $this->jar->forever($key, $value);
+		$this->cookie = $this->jar->forever($this->getKey(), $value);
 	}
 
 	/**
-	 * Get the requested item from the session.
+	 * Get the Sentry cookie value.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
 	 * @return mixed
 	 */
-	public function get($key, $default = null)
+	public function get()
 	{
-		return $this->jar->get($key, $default);
+		return $this->jar->get($this->getKey());
 	}
 
 	/**
-	 * Remove an item from the cookie.
+	 * Remove the sentry cookie
 	 *
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function forget($key)
+	public function forget()
 	{
-		$this->queuedCookies[] = $this->jar->forget($key);
+		$this->jar->forget($this->getKey());
+		$this->cookie = null;
 	}
 
 	/**
-	 * Remove all of the items from the cookie.
+	 * Returns the Symfony cookie object associated
+	 * with the illuminate cookie.
 	 *
-	 * @return void
+	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */
-	public function flush()
+	public function getCookie()
 	{
-		$this->forget($this->key);
-	}
-
-	/**
-	 * Get the cookies queued by the driver.
-	 *
-	 * @return array
-	 */
-	public function getQueuedCookies()
-	{
-		return $this->queuedCookies;
+		return $this->cookie;
 	}
 
 }

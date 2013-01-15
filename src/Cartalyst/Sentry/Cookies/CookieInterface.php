@@ -28,54 +28,36 @@ interface CookieInterface {
 	public function getKey();
 
 	/**
-	 * Put a key / value pair in the cookie with an
-	 * expiry.
+	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @param  int     $minutes
 	 * @return void
 	 */
-	public function put($key, $value, $minutes);
+	public function put($value, $minutes);
 
 	/**
-	 * Put a key / value pair in the cookie forever.
+	 * Put a value in the Sentry cookie forever.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	public function forever($key, $value);
+	public function forever($value);
 
 	/**
-	 * Get the requested item from the session.
+	 * Get the Sentry cookie value.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
 	 * @return mixed
 	 */
-	public function get($key, $default = null);
+	public function get();
 
 	/**
-	 * Remove an item from the cookie.
+	 * Remove the sentry cookie
 	 *
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function forget($key);
-
-	/**
-	 * Remove all of the items from the cookie.
-	 *
-	 * @return void
-	 */
-	public function flush();
-
-	/**
-	 * Get the cookies queued by the driver.
-	 *
-	 * @return array
-	 */
-	public function getQueuedCookies();
+	public function forget();
 
 }

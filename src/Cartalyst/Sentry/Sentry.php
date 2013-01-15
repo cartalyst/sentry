@@ -212,7 +212,7 @@ class Sentry {
 			}
 
 			// Check for cookie
-			if ( ! $this->user and $user = $this->cookie->get($this->cookie->getKey()) and $user instanceof UserInterface)
+			if ( ! $this->user and $user = $this->cookie->get() and $user instanceof UserInterface)
 			{
 				$this->user = $user;
 			}

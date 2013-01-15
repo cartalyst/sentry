@@ -23,6 +23,8 @@ use Cartalyst\Sentry\Cookies\IlluminateCookie;
 
 class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
+	protected $app;
+
 	protected $jar;
 
 	protected $cookie;
@@ -34,8 +36,12 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
+		$this->app    = m::mock('Illuminate\Container\Container');
 		$this->jar    = m::mock('Illuminate\Cookie\CookieJar');
-		$this->cookie = new IlluminateCookie($this->jar);
+
+		$this->app->shouldReceive('after')->with(m::type('Closure'))->once();
+
+		$this->cookie = new IlluminateCookie($this->app, $this->jar, 'cookie_name_here');
 	}
 
 	/**
@@ -48,48 +54,30 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 		m::close();
 	}
 
-	public function testOverridingKey()
-	{
-		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
-		$this->cookie->put('foo', 'bar', 123);
-		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
-	}
-
 	public function testPut()
 	{
-		$this->jar->shouldReceive('make')->with('foo', 'bar', 123)->once();
-		$this->cookie->put('foo', 'bar', 123);
-		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
+		$this->jar->shouldReceive('make')->with('cookie_name_here', 'bar', 123)->once();
+		$this->cookie->put('bar', 123);
 	}
 
 	public function testForever()
 	{
-		$this->jar->shouldReceive('forever')->with('foo', 'bar')->once();
-		$this->cookie->forever('foo', 'bar');
-		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
+		$this->jar->shouldReceive('forever')->with('cookie_name_here', 'bar')->once();
+		$this->cookie->forever('bar');
 	}
 
 	public function testGet()
 	{
-		$this->jar->shouldReceive('get')->with('foo', null)->twice()->andReturn('bar');
+		$this->jar->shouldReceive('get')->with('cookie_name_here')->once()->andReturn('bar');
 
 		// Ensure default param is "null"
-		$this->assertEquals('bar', $this->cookie->get('foo'));
-		$this->assertEquals('bar', $this->cookie->get('foo', null));
-		$this->assertEquals(0, count($this->cookie->getQueuedCookies()));
+		$this->assertEquals('bar', $this->cookie->get());
 	}
 
 	public function testForget()
 	{
-		$this->jar->shouldReceive('forget')->with('foo')->once();
-		$this->cookie->forget('foo');
-		$this->assertEquals(1, count($this->cookie->getQueuedCookies()));
-	}
-
-	public function testFlush()
-	{
-		$this->jar->shouldReceive('forget')->with($this->cookie->getKey())->once();
-		$this->cookie->flush();
+		$this->jar->shouldReceive('forget')->with('cookie_name_here')->once();
+		$this->cookie->forget();
 	}
 
 }

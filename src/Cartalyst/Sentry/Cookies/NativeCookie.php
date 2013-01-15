@@ -18,8 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-class NativeCookieException extends \Exception {};
-
 class NativeCookie implements CookieInterface {
 
 	/**
@@ -28,20 +26,6 @@ class NativeCookie implements CookieInterface {
 	 * @var string
 	 */
 	protected $key = 'cartalyst_sentry';
-
-	/**
-	 * The value of the actual Cookie.
-	 *
-	 * @var string
-	 */
-	protected $value = null;
-
-	/**
-	 * The lifetime of the actual Cookie.
-	 *
-	 * @var int
-	 */
-	protected $lifetime = null;
 
 	/**
 	 * Default settings
@@ -53,10 +37,11 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @param  Illuminate\Cookie\CookieJar  $jar
+	 * @param  array  $config
+	 * @param  string $key
 	 * @return void
 	 */
-	public function __construct($config = array())
+	public function __construct(array $config = array(), $key = null)
 	{
 		// Defining default settings
 		$sentryDefaults = array(
@@ -68,8 +53,13 @@ class NativeCookie implements CookieInterface {
 			'httpOnly'  => false,
 		);
 
-		// Merging settings
+		// Merge settings
 		$this->defaults = array_merge($sentryDefaults, $config);
+
+		if (isset($key))
+		{
+			$this->key = $key;
+		}
 	}
 
 	/**
@@ -79,30 +69,22 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function getKey()
 	{
-		if ( ! is_null($this->key))
-		{
-			return $this->key;
-		}
-		else
-		{
-			throw new NativeCookieException("Can't get key of current cookie since it hasn't been set yet!");
-		}
+		return $this->key;
 	}
 
 	/**
-	 * Create a cookie.
+	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @param  int     $minutes
 	 * @return void
 	 */
-	public function put($key, $value, $minutes)
+	public function put($value, $minutes)
 	{
 		$lifetime = time() + $minutes;
 
 		setcookie(
-			$key,
+			$this->getKey(),
 			$value,
 			$lifetime,
 			$this->defaults['path'],
@@ -110,95 +92,42 @@ class NativeCookie implements CookieInterface {
 			$this->defaults['secure'],
 			$this->defaults['httpOnly']
 		);
-
-		$this->value    = $value;
-		$this->lifetime = $lifetime;
 	}
 
-	/**
-	 * Create a cookie which lasts "forever".
+	**
+	 * Put a value in the Sentry cookie forever.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	public function forever($key, $value)
+	public function forever($value)
 	{
-		$this->put($key, $value, time() + 60*60*24*31*12*5);
+		$this->put($this->getKey(), $value, time() + 60*60*24*31*12*5);
 	}
 
 	/**
-	 * Get the requested cookie's value.
+	 * Get the Sentry cookie value.
 	 *
-	 * @param  string  $key
-	 * @param  mixed   $default
 	 * @return mixed
 	 */
-	public function get($key, $default = null)
+	public function get()
 	{
-		if (isset($_COOKIE[$key]))
+		if (isset($_COOKIE[$this->getKey()]))
 		{
-			return $_COOKIE[$key];
-		}
-		elseif ( ! is_null($default))
-		{
-			return $default;
-		}
-		else
-		{
-			throw new NativeCookieException("Requested cookie doesn't exist!");
+			return $_COOKIE[$this->getKey()];
 		}
 	}
 
 	/**
-	 * Remove the cookie.
+	 * Remove the sentry cookie
 	 *
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function forget($key)
+	public function forget()
 	{
-		$this->put($key, null, time() - 65535);
-	}
-
-	/**
-	 * Alias for forget().
-	 *
-	 * @return void
-	 */
-	public function flush()
-	{
-		$this->forget($this->key);
-	}
-
-	/**
-	 * Get the cookies queued by the driver (We don't queue them natively).
-	 *
-	 * @return array
-	 */
-	public function getQueuedCookies()
-	{
-		return array();
-	}
-
-	/**
-	 * Returns the value of the last set cookie.
-	 *
-	 * @return mixed
-	 */
-	public function getValue()
-	{
-		return $this->value;
-	}
-
-	/**
-	 * Returns the lifetime of the last set cookie.
-	 *
-	 * @return mixed
-	 */
-	public function getLifeTime()
-	{
-		return $this->lifetime;
+		$this->put($this->getKey(), null, time() - 65535);
 	}
 
 }
