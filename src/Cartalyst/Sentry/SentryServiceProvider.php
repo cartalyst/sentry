@@ -49,8 +49,6 @@ class SentryServiceProvider extends ServiceProvider {
 
 		$this->registerThrottleProvider();
 
-		$this->registerEvents();
-
 		$this->registerSentry();
 	}
 
@@ -99,22 +97,6 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->app['sentry.throttle'] = $this->app->share(function($app)
 		{
 			return new ThrottleProvider($app['sentry.user']);
-		});
-	}
-
-	protected function registerEvents()
-	{
-		$app = $this->app;
-
-		$app->after(function($request, $response) use ($app)
-		{
-			if (isset($app['sentry.loaded']))
-			{
-				foreach ($app['sentry.cookie']->getQueuedCookies() as $cookie)
-				{
-					$response->headers->setCookie($cookie);
-				}
-			}
 		});
 	}
 
