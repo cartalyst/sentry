@@ -45,8 +45,6 @@ class NativeCookie implements CookieInterface {
 	{
 		// Defining default settings
 		$sentryDefaults = array(
-			'name'      => $this->key,
-			'time'      => time() + 300,
 			'domain'    => '',
 			'path'      => '/',
 			'secure'    => false,
