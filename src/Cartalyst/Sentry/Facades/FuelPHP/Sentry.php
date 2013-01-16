@@ -25,6 +25,9 @@ use Cartalyst\Sentry\Sessions\FuelPHPSession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Database_Connection;
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use PDO;
 
 class Sentry {
 
@@ -35,7 +38,15 @@ class Sentry {
 	 */
 	protected static $instance;
 
-	public function instance()
+	protected static $pdoOptions = array(
+		// PDO::ATTR_CASE              => PDO::CASE_LOWER,
+		// PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION,
+		// PDO::ATTR_ORACLE_NULLS      => PDO::NULL_NATURAL,
+		// PDO::ATTR_STRINGIFY_FETCHES => false,
+		// PDO::ATTR_EMULATE_PREPARES  => false,
+	);
+
+	public static function instance()
 	{
 		if (static::$instance === null)
 		{
@@ -59,6 +70,8 @@ class Sentry {
 		$userProvider     = new UserProvider($hasher);
 		$throttleProvider = new ThrottleProvider($userProvider);
 
+		static::createDatabaseResolver();
+
 		return new BaseSentry(
 			$hasher,
 			$session,
@@ -67,6 +80,34 @@ class Sentry {
 			$userProvider,
 			$throttleProvider
 		);
+	}
+
+	public static function createDatabaseResolver()
+	{
+		// Retrieve what we need for our resolver
+		$database    = Database_Connection::instance();
+		$pdo         = $database->connection();
+		$driverName  = $database->driver_name();
+		$tablePrefix = $database->table_prefix();
+
+		// Make sure we're getting a PDO connection
+		if ( ! $pdo instanceof PDO)
+		{
+			throw new \RuntimeException("Sentry will only work with PDO database connections.");
+		}
+
+		// Let's prepare our PDO
+		static::preparePdo($pdo);
+
+		Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
+	}
+
+	public static function preparePdo(PDO $pdo)
+	{
+		foreach (static::$pdoOptions as $key => $value)
+		{
+			$pdo->setAttribute($key, $value);
+		}
 	}
 
 	/**
