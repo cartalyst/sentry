@@ -287,6 +287,17 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Delete the user.
+	 *
+	 * @return bool
+	 */
+	public function delete()
+	{
+		$this->groups()->detach();
+		return parent::delete();
+	}
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string
