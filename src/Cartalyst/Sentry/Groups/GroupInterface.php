@@ -51,7 +51,7 @@ interface GroupInterface {
 	/**
 	 * Delete the group.
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function delete();
 
