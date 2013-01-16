@@ -8,7 +8,7 @@ There are four simple steps to install Sentry into Laravel 4:
 
 1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
 2. Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
-3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
+3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
 4. If you'd like to migrate tables, simply run `php artisan migrate --package=cartalyst/sentry` from the command line. Of course, feel free to write your own migrations which insert the correct tables if you'd like!
 
 
@@ -64,7 +64,7 @@ $groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
 
 $userProvider = new Cartalyst\Sentry\Users\Eloquent\Provider($hasher);
 
-$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\ThrottleProvider($userProvider);
+$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\Provider($userProvider);
 
 $sentry = new Sentry(
 	$hasher,
