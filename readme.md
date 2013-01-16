@@ -47,6 +47,37 @@ There are four simple steps to install Sentry into Laravel 4:
 4. If you'd like to migrate tables, simply run `php artisan migrate --package=cartalyst/sentry` from the command line. Of course, feel free to write your own migrations which insert the correct tables if you'd like!
 
 
+### Installing in FuelPHP 1.x (with Composer)
+
+Using Sentry with FuelPHP is easy. We begin by creating a file at `fuel/app/composer.json` with the following:
+
+```json
+{
+	"require": {
+		"cartalyst/sentry": "2.0.*",
+		"illuminate/database": "4.0.*",
+		"ircmaxell/password-compat": "1.0.*"
+	},
+	"minimum-stability": "dev"
+}
+```
+
+Navigate to your `app` folder in Terminal and run `composer update`. You must put the following in `app/bootstrap.php` below `Autoloader::register()`:
+
+```php
+// Enable composer based autoloading
+require APPPATH.'vendor/autoload.php';
+```
+
+Great! You now have composer working with FuelPHP. Just one more step is involved now, right at the bottom of that same file, `app/bootstrap.php`, put the following:
+
+```php
+class_alias('Cartalyst\Sentry\Facades\FuelPHP\Sentry', 'Sentry');
+```
+
+This will mean you can use the FuelPHP Sentry facade as the class `Sentry`. Vòila! Sentry automatically works with your current database configuration, there is no further setup required.
+
+
 ### Installing Using Composer
 
 ```json
