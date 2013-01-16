@@ -27,6 +27,8 @@ use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
+use Cartalyst\Sentry\Users\LoginRequiredException;
+use Cartalyst\Sentry\Users\PasswordRequiredException;
 
 class Sentry {
 
@@ -136,18 +138,36 @@ class Sentry {
 		return $this->user = $user;
 	}
 
-	/**
-	 * Attempts to authenticate the given user
-	 * according to the passed credentials.
-	 *
-	 * @param  array  $credentials
-	 * @param  bool  $remember
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
-	 */
-	public function authenticate(array $credentials, $remember = false)
+
+    /**
+     * Attempts to authenticate the given user
+     * according to the passed credentials.
+     * 
+     * @param array $credentials
+     * @param bool $remember
+     * @return Cartalyst\Sentry\Users\UserInterface
+     * @throws Cartalyst\Sentry\Users\PasswordRequiredException
+     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @throws Cartalyst\Sentry\Users\LoginRequiredException
+     */
+    public function authenticate(array $credentials, $remember = false)
 	{
-		$throttlingEnabled = $this->throttleProvider->isEnabled();
+        // We'll default to the login name field, but fallback to a hard-coded
+        // 'login' key in the array that was passed.
+        $loginName = $this->userProvider->getEmptyUser()->getUserLoginName();
+        $loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+
+        $throttlingEnabled = $this->throttleProvider->isEnabled();
+
+        if (empty($credentials[$loginName]))
+        {
+            throw new LoginRequiredException('The '.$loginName.' field is required');
+        }
+
+        if (empty($credentials['password']))
+        {
+            throw new PasswordRequiredException('The Password field is required');
+        }
 
 		try
 		{
@@ -157,11 +177,6 @@ class Sentry {
 		{
 			if ($throttlingEnabled)
 			{
-				// We'll default to the login name field, but fallback to a hard-coded
-				// 'login' key in the array that was passed.
-				$loginName          = $this->userProvider->getEmptyUser()->getUserLoginName();
-				$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
-
 				if (isset($credentials[$loginCredentialKey]))
 				{
 					$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
