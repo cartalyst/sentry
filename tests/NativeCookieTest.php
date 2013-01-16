@@ -33,6 +33,12 @@ class NativeCookieTest extends PHPUnit_Framework_TestCase {
 		m::close();
 	}
 
+	public function testOverridingKey()
+	{
+		$cookie = new NativeCookie(array(), 'custom_key');
+		$this->assertEquals('custom_key', $cookie->getKey());
+	}
+
 	public function testPut()
 	{
 		$cookie = m::mock('Cartalyst\Sentry\Cookies\NativeCookie[minutesToLifetime,setCookie]');
