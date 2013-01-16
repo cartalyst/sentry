@@ -379,6 +379,19 @@ class Sentry_User implements Iterator, ArrayAccess
 			$update['email'] = $fields['email'];
 			unset($fields['email']);
 		}
+		
+		// if updating username
+		if (array_key_exists('username', $fields) and
+			$fields['username'] != $this->user['username'])
+		{
+			// make sure username does not already exist
+			if ($this->user_exists($fields['username'], 'username'))
+			{
+				throw new \SentryUserException(__('sentry.username_already_in_use'));
+			}
+			$update['username'] = $fields['username'];
+			unset($fields['username']);
+		}
 
 		// update password
 		if (array_key_exists('password', $fields))
@@ -780,7 +793,7 @@ class Sentry_User implements Iterator, ArrayAccess
 		{
 			if ($group[$field] == $id)
 			{
-				unset($group);
+				unset($this->groups[$key]);
 			}
 		}
 
@@ -803,10 +816,15 @@ class Sentry_User implements Iterator, ArrayAccess
 
 		foreach ($this->groups as $group)
 		{
-			if ($group[$field] == $name)
+			if (is_array($name) && in_array($group[$field], $name))
 			{
 				return true;
 			}
+			elseif ($group[$field] == $name)
+			{
+				return true;
+			}
+
 		}
 
 		return false;
