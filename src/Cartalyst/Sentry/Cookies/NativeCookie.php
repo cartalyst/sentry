@@ -50,7 +50,7 @@ class NativeCookie implements CookieInterface {
 			'domain'    => '',
 			'path'      => '/',
 			'secure'    => false,
-			'httpOnly'  => false,
+			'http_only' => false,
 		);
 
 		// Merge settings
@@ -81,17 +81,7 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function put($value, $minutes)
 	{
-		$lifetime = time() + $minutes;
-
-		setcookie(
-			$this->getKey(),
-			$value,
-			$lifetime,
-			$this->defaults['path'],
-			$this->defaults['domain'],
-			$this->defaults['secure'],
-			$this->defaults['httpOnly']
-		);
+		$this->setCookie($value, $this->minutesToLifetime($minutes));
 	}
 
 	/**
@@ -102,7 +92,9 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function forever($value)
 	{
-		$this->put($this->getKey(), $value, time() + 60*60*24*31*12*5);
+		// Time is 5 years, good enough as
+		// "forever".
+		$this->put($value, 2628000);
 	}
 
 	/**
@@ -112,10 +104,7 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function get()
 	{
-		if (isset($_COOKIE[$this->getKey()]))
-		{
-			return $_COOKIE[$this->getKey()];
-		}
+		return $this->getCookie();
 	}
 
 	/**
@@ -126,7 +115,55 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function forget()
 	{
-		$this->put($this->getKey(), null, time() - 65535);
+		$this->put(null, -2628000);
+	}
+
+	/**
+	 * Takes a minutes parameter (relative to now)
+	 * and converts it to a lifetime (unix timestamp).
+	 *
+	 * @param  int  $minutes
+	 * @return int
+	 */
+	public function minutesToLifetime($minutes)
+	{
+		return time() + $minutes;
+	}
+
+	/**
+	 * Actually sets the cookie.
+	 *
+	 * @param  mixed   $value
+	 * @param  int     $lifetime
+	 * @param  string  $path
+	 * @param  string  $domain
+	 * @param  bool    $secure
+	 * @param  bool    $httpOnly
+	 * @return void
+	 */
+	public function setCookie($value, $lifetime, $path = null, $domain = null, $secure = null, $httpOnly = null)
+	{
+		// Default parameters
+		if ( ! isset($path))     $path     = $this->defaults['path'];
+		if ( ! isset($domain))   $domain   = $this->defaults['domain'];
+		if ( ! isset($secure))   $secure   = $this->defaults['secure'];
+		if ( ! isset($httpOnly)) $httpOnly = $this->defaults['http_only'];
+
+		setcookie($this->getKey(), $value, $lifetime, $path, $domain, $secure, $httpOnly);
+	}
+
+	/**
+	 * Returns the cookie from the $_COOKIE
+	 * array.
+	 *
+	 * @return mixed
+	 */
+	public function getCookie()
+	{
+		if (isset($_COOKIE[$this->getKey()]))
+		{
+			return $_COOKIE[$this->getKey()];
+		}
 	}
 
 }
