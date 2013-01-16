@@ -4,7 +4,7 @@ Sentry2 is a full rewrite of the the Sentry library. A new API, new methods, and
 
 #### Dependency Injection / Interfaces / PSR
 
-We made Sentry2 to be PSR-0, PSR-1 and (mostly) PSR-2 compatible and take advantage of Dependency Injection. We feel this will allow more people to use Sentry to fit their needs. Because we have opted to use Dependency Injection, we have provided several interfaces to keep the Sentry API as consistant as possible for your application. We hope this serves you well and allows you to easily switch out classes for your own needs without having to modify your application in the future.
+We made Sentry2 to be PSR-0, PSR-1 and (mostly) PSR-2 compatible and take advantage of Dependency Injection. We feel this will allow more people to use Sentry to fit their needs. Because we have opted to use Dependency Injection, we have provided several interfaces to keep the Sentry API as consistent as possible for your application. We hope this serves you well and allows you to easily switch out classes for your own needs without having to modify your application in the future.
 
 #### Exceptions
 
@@ -12,7 +12,7 @@ Since we are making Sentry 2 composer-based and framework agnostic, we wanted to
 
 #### Sentry::login() and Sentry::force_login()
 
-`Sentry::login()` used to take 2 required paramters, login and password, and authenticate the user against them. `Sentry::login()` is now used as a login for both authentication and force login, used by passing a UserInterface object. A new `Sentry::authenticate()` method has been introduced for authentication purposes and should replace your `Sentry::login()` methods. This method passes an array which requires just the login (email) field by default to authenticate against. You may also choose any number of fields you may also want to validate against, such as password, first name, or any other field you may add to your users table. We always recommend using a password, but you may have your own ideas for which you want to authenticate against instead.
+`Sentry::login()` used to take 2 required parameters, login and password, and authenticate the user against them. `Sentry::login()` is now used as a login for both authentication and force login, used by passing a UserInterface object. A new `Sentry::authenticate()` method has been introduced for authentication purposes and should replace your `Sentry::login()` methods. This method passes an array which requires just the login (email) field by default to authenticate against. You may also choose any number of fields you may also want to validate against, such as password, first name, or any other field you may add to your users table. We always recommend using a password, but you may have your own ideas for which you want to authenticate against instead.
 
 #### Sentry::user()
 
@@ -26,7 +26,7 @@ By high demand, we now use objects over arrays for pretty much everything in Sen
 
 #### User Metadata
 
-We used to have a seperate table and array key for user metadata. This table has been completely removed, along with the metadata key. If you wish to have user metadata, simply add the columns onto the current users table.
+We used to have a separate table and array key for user metadata. This table has been completely removed, along with the metadata key. If you wish to have user metadata, simply add the columns onto the current users table.
 
 #### Password Reset
 
@@ -34,7 +34,7 @@ Many people were initially confused as to why we would prompt for a password dur
 
 #### Password Hashing
 
-Sentry2 now uses BCrypt by default as it's password hashing algorithim. We still have a Sha256 Hashing driver included in the library you can easily switch to if you wish to still use our old hashing algorithim.
+Sentry2 now uses BCrypt by default as it's password hashing algorithm. We still have a SHA-256 Hashing driver included in the library you can easily switch to if you wish to still use our old hashing algorithm.
 
 #### Sentry::group()
 
