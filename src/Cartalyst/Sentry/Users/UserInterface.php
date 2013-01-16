@@ -92,7 +92,7 @@ interface UserInterface {
 	/**
 	 * Delete the user.
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function delete();
 

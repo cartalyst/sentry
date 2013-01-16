@@ -79,6 +79,17 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
+	 * Returns the relationship between groups and
+	 * users.
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function users()
+	{
+		return $this->belongsToMany('Cartalyst\Sentry\Users\Eloquent\User', 'users_groups');
+	}
+
+	/**
 	 * Saves the group.
 	 *
 	 * @return bool
@@ -87,6 +98,17 @@ class Group extends Model implements GroupInterface {
 	{
 		$this->validate();
 		return parent::save();
+	}
+
+	/**
+	 * Delete the group.
+	 *
+	 * @return bool
+	 */
+	public function delete()
+	{
+		$this->users()->detach();
+		return parent::delete();
 	}
 
 	/**
