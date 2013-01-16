@@ -197,12 +197,15 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 			'password' => 'foo_bar_baz',
 		);
 
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+		$provider->shouldReceive('createModel')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\Eloquent\User'));
+
+		$user->shouldReceive('setHasher')->with(m::type('Cartalyst\Sentry\Hashing\HasherInterface'))->once();
 		$user->shouldReceive('fill')->with($attributes)->once();
 		$user->shouldReceive('save')->once();
-
-		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
-		$provider->shouldReceive('createModel')->once()->andReturn($user);
 
 		$this->assertEquals($user, $provider->create($attributes));
 	}

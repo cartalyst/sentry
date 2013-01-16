@@ -163,6 +163,7 @@ class Provider implements ProviderInterface {
 	public function create(array $credentials)
 	{
 		$user = $this->createModel();
+		$user->setHasher($this->hasher);
 		$user->fill($credentials);
 		$user->save();
 
