@@ -38,14 +38,6 @@ class Sentry {
 	 */
 	protected static $instance;
 
-	protected static $pdoOptions = array(
-		// PDO::ATTR_CASE              => PDO::CASE_LOWER,
-		// PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION,
-		// PDO::ATTR_ORACLE_NULLS      => PDO::NULL_NATURAL,
-		// PDO::ATTR_STRINGIFY_FETCHES => false,
-		// PDO::ATTR_EMULATE_PREPARES  => false,
-	);
-
 	public static function instance()
 	{
 		if (static::$instance === null)
@@ -96,18 +88,7 @@ class Sentry {
 			throw new \RuntimeException("Sentry will only work with PDO database connections.");
 		}
 
-		// Let's prepare our PDO
-		static::preparePdo($pdo);
-
 		Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
-	}
-
-	public static function preparePdo(PDO $pdo)
-	{
-		foreach (static::$pdoOptions as $key => $value)
-		{
-			$pdo->setAttribute($key, $value);
-		}
 	}
 
 	/**

@@ -27,16 +27,6 @@ use Cartalyst\Sentry\Cookies\FuelPHPCookie;
 class FuelPHPCookieTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * Close mockery.
-	 * 
-	 * @return void
-	 */
-	public function tearDown()
-	{
-		m::close();
-	}
-
-	/**
 	 * Setup resources and dependencies.
 	 *
 	 * @return void
@@ -44,6 +34,16 @@ class FuelPHPCookieTest extends PHPUnit_Framework_TestCase {
 	public function setUp()
 	{
 		require_once __DIR__.'/stubs/fuelphp/Cookie.php';
+	}
+
+	/**
+	 * Close mockery.
+	 * 
+	 * @return void
+	 */
+	public function tearDown()
+	{
+		m::close();
 	}
 
 	public function testOverridingKey()
@@ -93,7 +93,7 @@ class FuelPHPCookieTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('baz', $cookie->get());
 	}
 
-	public function testDelete()
+	public function testForget()
 	{
 		$cookie = new FuelPHPCookie('foo');
 		$this->assertFalse(isset($_SERVER['__cookie.delete']));

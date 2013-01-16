@@ -24,16 +24,6 @@ use Cartalyst\Sentry\Sessions\FuelPHPSession;
 class FuelPHPSessionTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * Close mockery.
-	 * 
-	 * @return void
-	 */
-	public function tearDown()
-	{
-		m::close();
-	}
-
-	/**
 	 * Setup resources and dependencies.
 	 *
 	 * @return void
@@ -41,6 +31,16 @@ class FuelPHPSessionTest extends PHPUnit_Framework_TestCase {
 	public function setUp()
 	{
 		require_once __DIR__.'/stubs/fuelphp/Fuel/Core/Session_Driver.php';
+	}
+
+	/**
+	 * Close mockery.
+	 * 
+	 * @return void
+	 */
+	public function tearDown()
+	{
+		m::close();
 	}
 
 	public function testOverridingKey()
