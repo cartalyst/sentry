@@ -41,6 +41,14 @@ Parameters                   | Type            | Default       | Description
 			echo 'Failed authentication.';
 		}
 	}
+	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+	{
+		echo 'Login field is required.';
+	}
+	catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
+	{
+		echo 'Password field is required.';
+	}	
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		// Sometimes a user is found however hashed credentials do
@@ -48,10 +56,6 @@ Parameters                   | Type            | Default       | Description
 		// by these credentials. Check the error message returned
 		// for more information
 		echo 'User not found.';
-	}
-	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
-	{
-		echo 'Login field is required.';
 	}
 	catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
 	{
