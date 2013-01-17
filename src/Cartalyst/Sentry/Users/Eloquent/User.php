@@ -437,7 +437,7 @@ class User extends Model implements UserInterface {
 	{
 		if ($this->inGroup($group))
 		{
-			$this->groups()->detatch($group);
+			$this->groups()->detach($group);
 		}
 	}
 
