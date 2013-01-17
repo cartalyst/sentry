@@ -161,7 +161,13 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function clearLoginAttempts()
 	{
-		if ($this->getLoginAttempts() > 0 and ! $this->suspended)
+		// If our login attempts is already at zero
+		// we do not need to do anything. Additionally,
+		// if we are suspended, we are not going to do
+		// anything either as clearing login attempts
+		// makes us unsuspended. We need to manually
+		// call unsuspend() in order to unsuspend.
+		if ($this->getLoginAttempts() == 0 or $this->suspended)
 		{
 			return;
 		}
