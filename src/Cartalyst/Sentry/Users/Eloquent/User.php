@@ -221,7 +221,7 @@ class User extends Model implements UserInterface {
 			}
 		}
 
-		return json_encode($permissions);
+		$this->attributes['permissions'] = json_encode($permissions);
 	}
 
 	/**
@@ -356,6 +356,18 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Checks if the provided user reset password code is
+	 * valid without actually resetting the password.
+	 *
+	 * @param  string  $resetCode
+	 * @return bool
+	 */
+	public function checkResetPasswordCode($resetCode)
+	{
+		return ($this->reset_password_hash == $resetCode);
+	}
+
+	/**
 	 * Attemps to reset a user's password by matching
 	 * the reset code generated with the user's.
 	 *
@@ -365,7 +377,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function attemptResetPassword($resetCode, $newPassword)
 	{
-		if ($resetCode == $this->reset_password_hash)
+		if ($this->checkResetPasswordCode($resetCode))
 		{
 			$this->password = $newPassword;
 			$this->reset_password_hash = null;
@@ -592,30 +604,7 @@ class User extends Model implements UserInterface {
 			$value = $this->hash($value);
 		}
 
-		// return parent::setAttribute($key, $value);
-		/**
-		 * @todo Remove when https://github.com/illuminate/database/commit/be7246d44f4667e27a196cbf91225f758b862004#L0R916 is fixed.
-		 */
-
-		// If an attribute is listed as a "date", we'll convert it from a DateTime
-		// instance into a form proper for storage on the database tables using
-		// the connection grammar's date format. We will auto set the values.
-		if (in_array($key, $this->dates))
-		{
-			$this->attributes[$key] = $this->fromDateTime($value);
-		}
-
-		// First we will check for the presence of a mutator for the set operation
-		// which simply lets the developers tweak the attribute as it is set on
-		// the model, such as "json_encoding" an listing of data for storage.
-		elseif ($this->hasSetMutator($key))
-		{
-			$method = 'set'.camel_case($key);
-
-			$value = $this->{$method}($value);
-		}
-
-		$this->attributes[$key] = $value;
+		return parent::setAttribute($key, $value);
 	}
 
 	/**

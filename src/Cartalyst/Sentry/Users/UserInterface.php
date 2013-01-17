@@ -120,6 +120,15 @@ interface UserInterface {
 	public function getResetPasswordCode();
 
 	/**
+	 * Checks if the provided user reset password code is
+	 * valid without actually resetting the password.
+	 *
+	 * @param  string  $resetCode
+	 * @return bool
+	 */
+	public function checkResetPasswordCode($resetCode);
+
+	/**
 	 * Attemps to reset a user's password by matching
 	 * the reset code generated with the user's.
 	 *
