@@ -362,7 +362,7 @@ class User extends Model implements UserInterface {
 	 * @param  string  $resetCode
 	 * @return bool
 	 */
-	public function checkResetPassword($resetCode)
+	public function checkResetPasswordCode($resetCode)
 	{
 		return ($this->reset_password_hash == $resetCode);
 	}
@@ -377,7 +377,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function attemptResetPassword($resetCode, $newPassword)
 	{
-		if ($this->checkResetPassword($resetCode))
+		if ($this->checkResetPasswordCode($resetCode))
 		{
 			$this->password = $newPassword;
 			$this->reset_password_hash = null;

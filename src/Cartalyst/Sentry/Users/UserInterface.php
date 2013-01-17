@@ -126,7 +126,7 @@ interface UserInterface {
 	 * @param  string  $resetCode
 	 * @return bool
 	 */
-	public function checkResetPassword($resetCode);
+	public function checkResetPasswordCode($resetCode);
 
 	/**
 	 * Attemps to reset a user's password by matching
