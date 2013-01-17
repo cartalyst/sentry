@@ -164,7 +164,7 @@ class Group extends Model implements GroupInterface {
 			}
 		}
 
-		return json_encode($permissions);
+		$this->attributes['permissions'] = json_encode($permissions);
 	}
 
 	/**
@@ -210,39 +210,6 @@ class Group extends Model implements GroupInterface {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Set a given attribute on the model.
-	 *
-	 * @param  string  $key
-	 * @param  mixed   $value
-	 * @return void
-	 */
-	/**
-	 * @todo Remove when https://github.com/illuminate/database/commit/be7246d44f4667e27a196cbf91225f758b862004#L0R916 is fixed.
-	 */
-	public function setAttribute($key, $value)
-	{
-		// If an attribute is listed as a "date", we'll convert it from a DateTime
-		// instance into a form proper for storage on the database tables using
-		// the connection grammar's date format. We will auto set the values.
-		if (in_array($key, $this->dates))
-		{
-			$this->attributes[$key] = $this->fromDateTime($value);
-		}
-
-		// First we will check for the presence of a mutator for the set operation
-		// which simply lets the developers tweak the attribute as it is set on
-		// the model, such as "json_encoding" an listing of data for storage.
-		elseif ($this->hasSetMutator($key))
-		{
-			$method = 'set'.camel_case($key);
-
-			$value = $this->{$method}($value);
-		}
-
-		$this->attributes[$key] = $value;
 	}
 
 }
