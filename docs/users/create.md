@@ -5,9 +5,9 @@
 
 Creates a user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$credentials`               | array           | none          | An array of user fields create a user with. The Login field is required, all other fields are optional.
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$attributes`       | array               | none                | true                | An array of user fields to create a user with. The Login field is required, all other fields are optional.
 
 `returns` UserInterface
 `throws`  LoginRequiredException, UserExistsException, InvalidPermissionsException
@@ -22,7 +22,7 @@ Parameters                   | Type            | Default       | Description
 			'permissions' => array(
 				'test'  => 1,
 				'other' => -1,
-				'admin' => 1,
+				'admin' => 1
 			)
 		));
 	}

@@ -6,6 +6,7 @@
 Checks if a user is activated.
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 

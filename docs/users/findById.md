@@ -6,7 +6,7 @@
 Find a user by their ID.
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :------------ | :--------------
 `$id`                        | int             | none          | User's ID
 
 `returns` UserInterface

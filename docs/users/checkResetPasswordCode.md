@@ -5,11 +5,12 @@
 
 Checks if the provided reset password code is valid.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------------
-`$resetCode`                 | string          | none          | Reset Password Hash
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$resetCode`        | string              | none                | true                | Reset Password Hash
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 

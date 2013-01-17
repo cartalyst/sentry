@@ -6,6 +6,7 @@
 Clears the password reset field. This automatically gets called whenever a user logs in via `authenticate()` or `authenticateAndRemember()`.
 
 `returns` void
+`throws`  UserNotFoundException
 
 ####Example
 

@@ -5,11 +5,12 @@
 
 Activate a user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$activationCode`            | string          | none          | Activation Code
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$activationCode`   | string              | none                | true                | Activation Code
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 

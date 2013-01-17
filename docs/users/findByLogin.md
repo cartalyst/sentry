@@ -6,7 +6,7 @@
 Find a user by their login ID.
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :------------ | :--------------
 `$login`                     | string          | none          | User's login ID
 
 `returns` UserInterface

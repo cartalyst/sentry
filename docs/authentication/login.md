@@ -5,13 +5,13 @@
 
 Logs a user in.
 
-Parameters                   | Type           | Default       | Description
-:--------------------------- | :------------- | :------------ | :--------------
-`$user` (required)           | UserInterface  | none          | UserInterface Object to log in with.
-`$remember`                  | boolean        | false         | Remember if the user is authenticated or not for auto logging in.
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$user`             | UserInterface       | none                | true                | UserInterface Object to log in with.
+`$remember`         | bool                | false               | false               | Remembers if the user is authenticated or not for auto logging in.
 
-`returns` boolean
-`throws`  UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
+`returns` bool
+`throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
 
 ####Example
 
@@ -23,10 +23,6 @@ Parameters                   | Type           | Default       | Description
 		// Log the user in
 		Sentry::login($user);
 	}
-	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
-	{
-		echo 'User not found.';
-	}
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
 		echo 'Login field is required.';
@@ -34,6 +30,10 @@ Parameters                   | Type           | Default       | Description
 	catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
 	{
 		echo 'User not activated.';
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User not found.';
 	}
 
 	// Following is only needed if throttle is enabled

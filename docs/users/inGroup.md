@@ -6,10 +6,11 @@
 Checks if a user is in a certain group.
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :------------ | :--------------
 `$group`                     | GroupInterface  | none          | GroupInterface instance
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 

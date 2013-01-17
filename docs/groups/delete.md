@@ -3,7 +3,7 @@
 
 ----------
 
-Delete a group object.  This can both create and delete an existing group.
+Deletes a group object.
 
 `returns` bool
 `throws`  GroupNotFoundException
@@ -12,7 +12,7 @@ Delete a group object.  This can both create and delete an existing group.
 
 	try
 	{
-		// Find existing group
+		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);
 
 		// Delete

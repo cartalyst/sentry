@@ -5,12 +5,12 @@
 
 Assign a group to a user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$group`                     | GroupInterface  | none          | GroupInterface instance
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$group`            | GroupInterface      | none                | true                | GroupInterface instance
 
 `returns` void
-`throws` GroupNotFoundException
+`throws`  UserNotFoundException, GroupNotFoundException
 
 ####Example
 

@@ -6,6 +6,7 @@
 Retrieves the users' groups.
 
 `returns` GroupInterface
+`throws`  UserNotFoundException
 
 ####Example
 

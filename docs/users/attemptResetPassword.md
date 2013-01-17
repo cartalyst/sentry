@@ -5,12 +5,13 @@
 
 Checks a reset code supplied by the user.  If the reset code is valid a new password will be given to the user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$resetCode`                 | string          | none          | Reset Code
-`$newPassword`               | string          | none          | New Password
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$resetCode`        | string              | none                | true                | Reset Code
+`$newPassword`      | string              | none                | true                | New Password
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 

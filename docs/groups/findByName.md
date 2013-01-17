@@ -3,11 +3,11 @@
 
 ----------
 
-Find a group by its id.
+Finds a group by it's name.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$name`                        | int             | none          | Group's name
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$name`             | string              | none                | true                | Group's name
 
 `returns` GroupInterface
 `throws`  GroupNotFoundException

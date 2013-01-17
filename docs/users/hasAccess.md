@@ -8,16 +8,17 @@ Checks to see if a user been granted a certain permission.  This includes any pe
 Any user with `superuser` permissions automatically has access to everything, regardless of user permissions and group permissions.
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :------------ | :--------------
 `$permission`                | string          | none          | Permission name
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findByLogin('test@test.com'); 
+		$user = Sentry::getUserProvider()->findByLogin('test@test.com');
 
 		if ( ! $user->hasAccess('admin'))
 		{

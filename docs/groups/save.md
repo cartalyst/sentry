@@ -1,24 +1,24 @@
-<a id="saveGroup"></a>
-###saveGroup($group)
+<a id="save"></a>
+###save()
 
 ----------
 
-Delete a group object.  This can be used to update an existing group.
+Saves a group object.
 
 `returns` bool
-`throws`  GroupNotFoundException
+`throws`  NameRequiredException, GroupExistsException, GroupNotFoundException
 
 ####Example
 
 	try
 	{
-		// Grab a group
+		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);
 
 		$group->name = 'Users';
 		$group->permissions = array(
 			'admin' => 1,
-			'users' => 1,
+			'users' => 1
 		);
 
 		// Save
@@ -31,11 +31,15 @@ Delete a group object.  This can be used to update an existing group.
 			// Group not saved
 		}
 	}
-	catch (Cartalyst\Sentry\Groups\NameFieldRequiredException $e)
+	catch (Cartalyst\Sentry\Groups\NameRequiredException $e)
 	{
 		echo 'Name field required.';
 	}
 	catch (Cartalyst\Sentry\Groups\GroupExistsException $e)
 	{
 		echo 'Group already exists.';
+	}
+	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+	{
+		echo 'Group not found.';
 	}
