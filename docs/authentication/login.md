@@ -3,14 +3,14 @@
 
 ----------
 
-Log a user in.
+Logs a user in.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$user` (required)           | UserInterface   | none          | UserInterface Object to log in with.
-`$remember`                  | bool            | false         | Remember if the user is authenticated or not for auto logging in.
+Parameters                   | Type           | Default       | Description
+:--------------------------- | :------------- | :------------ | :--------------
+`$user` (required)           | UserInterface  | none          | UserInterface Object to log in with.
+`$remember`                  | boolean        | false         | Remember if the user is authenticated or not for auto logging in.
 
-`returns` bool
+`returns` boolean
 `throws`  UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
 
 ####Example

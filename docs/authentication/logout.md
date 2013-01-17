@@ -11,5 +11,5 @@ This method does **not** fail or throw any Exceptions if there is no user logged
 
 ####Example
 
-	// Log the user out
+	// Logs the user out
 	Sentry::logout();
