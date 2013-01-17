@@ -23,8 +23,6 @@ use Cartalyst\Sentry\Cookies\IlluminateCookie;
 
 class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
-	protected $app;
-
 	protected $jar;
 
 	protected $cookie;
@@ -36,12 +34,9 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-		$this->app = m::mock('Illuminate\Container\Container');
 		$this->jar = m::mock('Illuminate\Cookie\CookieJar');
 
-		$this->app->shouldReceive('after')->with(m::type('Closure'))->once();
-
-		$this->cookie = new IlluminateCookie($this->app, $this->jar, 'cookie_name_here');
+		$this->cookie = new IlluminateCookie($this->jar, 'cookie_name_here');
 	}
 
 	/**

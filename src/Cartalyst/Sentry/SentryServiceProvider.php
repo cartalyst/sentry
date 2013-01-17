@@ -50,6 +50,8 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerThrottleProvider();
 
 		$this->registerSentry();
+
+		$this->registerEvents();
 	}
 
 	protected function registerHasher()
@@ -72,7 +74,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
 		{
-			return new IlluminateCookie($app, $app['cookie']);
+			return new IlluminateCookie($app['cookie']);
 		});
 	}
 
@@ -119,4 +121,18 @@ class SentryServiceProvider extends ServiceProvider {
 			);
 		});
 	}
+
+	protected function registerEvents()
+	{
+		// Set the cookie after the app runs
+		$app = $this->app;
+		$this->app->after(function($request, $response) use ($app)
+		{
+			if (isset($app['sentry.loaded']) and $app['sentry.loaded'] == true and ($cookie = $app['sentry.cookie']->getCookie()))
+			{
+				$response->headers->setCookie($cookie);
+			}
+		});
+	}
+
 }

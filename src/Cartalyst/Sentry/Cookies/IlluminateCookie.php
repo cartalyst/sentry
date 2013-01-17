@@ -25,13 +25,6 @@ use Symfony\Component\HttpFoundation\Cookie;
 class IlluminateCookie implements CookieInterface {
 
 	/**
-	 * The application instance.
-	 *
-	 * @param Illuminate\Container\Container
-	 */
-	protected $app;
-
-	/**
 	 * The key used in the Cookie.
 	 *
 	 * @var string
@@ -59,25 +52,14 @@ class IlluminateCookie implements CookieInterface {
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function __construct($app, CookieJar $jar, $key = null)
+	public function __construct(CookieJar $jar, $key = null)
 	{
-		$this->app = $app;
 		$this->jar = $jar;
 
 		if (isset($key))
 		{
 			$this->key = $key;
 		}
-
-		// Set the cookie after the app runs
-		$me = $this;
-		$app->after(function($request, $response) use ($app, $me)
-		{
-			if ($cookie = $me->getCookie())
-			{
-				$response->headers->setCookie($cookie);
-			}
-		});
 	}
 
 	/**
