@@ -1,13 +1,13 @@
 <a id="checkResetPassword"></a>
-###checkResetPassword()
+###checkResetPasswordCode()
 
 ----------
 
-Checks if the provided reset password hash is valid.
+Checks if the provided reset password code is valid.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------------
-`$resetPasswordHash`         | string          | none          | Reset Password Hash
+`$resetCode`                 | string          | none          | Reset Password Hash
 
 `returns` bool
 
@@ -17,13 +17,13 @@ Parameters                   | Type            | Default       | Description
 	{
 		$user = Sentry::getUserProvider()->findById(1);
 
-		if ($user->checkResetPassword('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
+		if ($user->checkResetPasswordCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
 		{
-			// The provided Reset Password Hash is Valid
+			// The provided Reset Password Code is Valid
 		}
 		else
 		{
-			// The provided Reset Password Hash is Invalid
+			// The provided Reset Password Code is Invalid
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
