@@ -24,16 +24,6 @@ use Cartalyst\Sentry\Users\Eloquent\User;
 class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * Setup resources and dependencies.
-	 *
-	 * @return void
-	 */
-	public function setUp()
-	{
-		
-	}
-
-	/**
 	 * Close mockery.
 	 * 
 	 * @return void
@@ -419,16 +409,28 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->activated);
 	}
 
+	public function testCheckingResetPasswordCode()
+	{
+		$user = new User;
+		$user->setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
+
+		// Create a new hash
+		$hasher->shouldReceive('hash')->with('reset_code')->andReturn('hashed_reset_code');
+		$user->reset_password_hash = 'reset_code';
+
+		// Check the hash
+		$this->assertTrue($user->checkResetPasswordCode('hashed_reset_code'));
+		$this->assertFalse($user->checkResetPasswordCode('not_the_hashed_reset_code'));
+	}
+
 	public function testResettingPassword()
 	{
-		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
-		$hasher->shouldReceive('hash')->with('reset_code')->once()->andReturn('reset_code');
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkResetPasswordCode,save]');
+		$user->shouldReceive('checkResetPasswordCode')->with('reset_code')->andReturn(true);
+		$user->setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
+
 		$hasher->shouldReceive('hash')->with('new_password')->once()->andReturn('hashed_new_password');
 
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkHash,save]');
-		$user->setHasher($hasher);
-
-		$user->reset_password_hash = 'reset_code';
 		$user->shouldReceive('save')->once()->andReturn(true);
 
 		$this->assertTrue($user->attemptResetPassword('reset_code', 'new_password'));
