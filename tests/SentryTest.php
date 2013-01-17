@@ -94,65 +94,31 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->sentry->login($user);
 	}
 
-	public function testAuthenticatingUser()
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\LoginRequiredException
+	 */
+	public function testAuthenticatingUserWhenLoginIsNotProvided()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
-		$this->sentry->__construct(
-			$this->hasher,
-			$this->session,
-			$this->cookie,
-			$this->groupProvider,
-			$this->userProvider,
-			$this->throttleProvider
-		);
+		$credentials = array();
 
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$user->shouldReceive('clearResetPassword')->once();
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
 
-		$credentials = array(
-			'email'    => 'foo@bar.com',
-			'password' => 'baz_bat',
-		);
-
-		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
-
-		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user);
-
-		$this->sentry->shouldReceive('login')->with($user, false)->once();
 		$this->sentry->authenticate($credentials);
 	}
 
-	public function testAuthenticatingUserWithThrottling()
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\PasswordRequiredException
+	 */
+	public function testAuthenticatingUserWhenPasswordIsNotProvided()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
-		$this->sentry->__construct(
-			$this->hasher,
-			$this->session,
-			$this->cookie,
-			$this->groupProvider,
-			$this->userProvider,
-			$this->throttleProvider
-		);
-
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$user->shouldReceive('getUserId')->once()->andReturn(123);
-		$user->shouldReceive('clearResetPassword')->once();
-
 		$credentials = array(
-			'email'    => 'foo@bar.com',
-			'password' => 'baz_bat',
+			'email' => 'foo@bar.com',
 		);
 
-		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
-		$throttle->shouldReceive('check')->once();
-		$throttle->shouldReceive('clearLoginAttempts')->once();
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
 
-		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
-		$this->throttleProvider->shouldReceive('findByUserId')->with(123)->once()->andReturn($throttle);
-
-		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user);
-
-		$this->sentry->shouldReceive('login')->with($user, false)->once();
 		$this->sentry->authenticate($credentials);
 	}
 
@@ -168,7 +134,11 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
 
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
+
 		$this->sentry->authenticate($credentials);
 	}
 
@@ -193,6 +163,72 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser);
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
+		$this->sentry->authenticate($credentials);
+	}
+
+	public function testAuthenticatingUser()
+	{
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
+		$this->sentry->__construct(
+			$this->hasher,
+			$this->session,
+			$this->cookie,
+			$this->groupProvider,
+			$this->userProvider,
+			$this->throttleProvider
+		);
+
+		$credentials = array(
+			'email'    => 'foo@bar.com',
+			'password' => 'baz_bat',
+		);
+
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
+
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+
+		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+
+		$user->shouldReceive('clearResetPassword')->once();
+
+		$this->sentry->shouldReceive('login')->with($user, false)->once();
+		$this->sentry->authenticate($credentials);
+	}
+
+	public function testAuthenticatingUserWithThrottling()
+	{
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
+		$this->sentry->__construct(
+			$this->hasher,
+			$this->session,
+			$this->cookie,
+			$this->groupProvider,
+			$this->userProvider,
+			$this->throttleProvider
+		);
+
+		$credentials = array(
+			'email'    => 'foo@bar.com',
+			'password' => 'baz_bat',
+		);
+
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('check')->once();
+		$throttle->shouldReceive('clearLoginAttempts')->once();
+
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
+		$this->throttleProvider->shouldReceive('findByUserId')->with(123)->once()->andReturn($throttle);
+
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+
+		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+
+		$user->shouldReceive('getUserId')->once()->andReturn(123);
+		$user->shouldReceive('clearResetPassword')->once();
+
+		$this->sentry->shouldReceive('login')->with($user, false)->once();
 		$this->sentry->authenticate($credentials);
 	}
 
