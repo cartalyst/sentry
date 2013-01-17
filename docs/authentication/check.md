@@ -3,7 +3,7 @@
 
 ----------
 
-The check method returns a bool of whether the user is logged in or not. If it's logged in, the current User is set in Sentry so you can easily access it via `getUser()`.
+The check method returns a bool of whether the user is logged in or not, or if the user is not activated. If it's logged in, the current User is set in Sentry so you can easily access it via `getUser()`.
 
 A user must be activated to pass `check()`.
 
@@ -13,7 +13,7 @@ A user must be activated to pass `check()`.
 
 	if ( ! Sentry::check())
 	{
-		// No user is logged in (or activated), redirect or do whatever you want
+		// User is not logged in, or is not activated
 	}
 	else
 	{

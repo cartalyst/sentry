@@ -16,15 +16,17 @@ Parameters          | Type                | Default             | Required      
 
 	try
 	{
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
+		// Attempt user activation
 		if ($user->attemptActivation('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
 		{
-			echo 'Activated';
+			// User activation passed
 		}
 		else
 		{
-			echo 'Activation failed.';
+			// User activation failed
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)

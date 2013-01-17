@@ -5,27 +5,31 @@
 
 Remove a user from a group.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$group`                     | GroupInterface  | none          | GroupInterface instance
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$group`            | GroupInterface      | none                | true                | GroupInterface instance
 
 `returns` bool
-`throws`  UserNotFoundException
+`throws`  UserNotFoundException, GroupNotFoundException
 
 ####Example
 
 	try
 	{
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
+
+		// Find the group
 		$group = Sentry::getGroupProvider()->findByName('Admin');
 
+		// Check if the user was removed from the group
 		if ($user->removeGroup($admin))
 		{
-			echo 'User removed from Admin group.';
+			// User removed from Admin group
 		}
 		else
 		{
-			echo 'User not removed from Admin group.';
+			// User not removed from Admin group
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)

@@ -12,15 +12,17 @@ Checks if a user is activated.
 
 	try
 	{
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
+		// Check if the user is activated or not
 		if ($user->isActivated())
 		{
-			echo 'Activated.';
+			// User is Activated
 		}
 		else
 		{
-			echo 'Not activated.';
+			// User is Not Activated
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)

@@ -5,6 +5,10 @@
 
 Retrieves a throttle object based on the user login provided. Will always retrieve a throttle object.
 
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$login`            | string              | none                | true                | User's login ID
+
 `returns` ThrottleInterface
 `throws`  UserNotFoundException
 

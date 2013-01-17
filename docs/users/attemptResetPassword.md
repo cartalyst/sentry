@@ -17,15 +17,17 @@ Parameters          | Type                | Default             | Required      
 
 	try
 	{
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
+		// Attempt to reset the user password
 		if ($user->attemptResetPassword('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb', 'new_password'))
 		{
-			echo 'Password reset.';
+			// Password reset passed
 		}
 		else
 		{
-			echo 'Password not reset.';
+			// Password reset failed
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)

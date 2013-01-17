@@ -1,5 +1,5 @@
 <a id="getResetPasswordCode"></a>
-###resetPassword()
+###getResetPasswordCode()
 
 ----------
 

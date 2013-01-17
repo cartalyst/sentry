@@ -18,7 +18,7 @@ Deletes a group object.
 		// Delete
 		if ($group->delete())
 		{
-			// group deleted
+			// Group deleted
 		}
 		else
 		{

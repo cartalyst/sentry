@@ -1,4 +1,4 @@
-<a id="activeUser"></a>
+<a id="getUser"></a>
 ###getUser()
 
 ----------
@@ -10,9 +10,9 @@ Returns the user that's set with Sentry, does not check if a user is logged in o
 
 ####Example
 
-	// get the current active/logged in user
 	try
 	{
+		// Get the current active/logged in user
 		$user = Sentry::getUser();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
