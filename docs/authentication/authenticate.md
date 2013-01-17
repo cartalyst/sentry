@@ -48,7 +48,7 @@ Parameters                   | Type            | Default       | Description
 	catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
 	{
 		echo 'Password field is required.';
-	}	
+	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		// Sometimes a user is found however hashed credentials do

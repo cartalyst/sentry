@@ -23,12 +23,12 @@ use Cartalyst\Sentry\Groups\ProviderInterface as GroupProviderInterface;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Throttling\ProviderInterface as ThrottleProviderInterface;
+use Cartalyst\Sentry\Users\LoginRequiredException;
+use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
-use Cartalyst\Sentry\Users\LoginRequiredException;
-use Cartalyst\Sentry\Users\PasswordRequiredException;
 
 class Sentry {
 
@@ -139,35 +139,35 @@ class Sentry {
 	}
 
 
-    /**
-     * Attempts to authenticate the given user
-     * according to the passed credentials.
-     * 
-     * @param array $credentials
-     * @param bool $remember
-     * @return Cartalyst\Sentry\Users\UserInterface
-     * @throws Cartalyst\Sentry\Users\PasswordRequiredException
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
-     * @throws Cartalyst\Sentry\Users\LoginRequiredException
-     */
-    public function authenticate(array $credentials, $remember = false)
+	/**
+	 * Attempts to authenticate the given user
+	 * according to the passed credentials.
+	 * 
+	 * @param array $credentials
+	 * @param bool $remember
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
+	 */
+	public function authenticate(array $credentials, $remember = false)
 	{
-        // We'll default to the login name field, but fallback to a hard-coded
-        // 'login' key in the array that was passed.
-        $loginName = $this->userProvider->getEmptyUser()->getUserLoginName();
-        $loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+		// We'll default to the login name field, but fallback to a hard-coded
+		// 'login' key in the array that was passed.
+		$loginName = $this->userProvider->getEmptyUser()->getUserLoginName();
+		$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
 
-        $throttlingEnabled = $this->throttleProvider->isEnabled();
+		if ( ! isset($credentials[$loginName]))
+		{
+			throw new LoginRequiredException("The $loginName attribute is required.");
+		}
 
-        if (empty($credentials[$loginName]))
-        {
-            throw new LoginRequiredException('The '.$loginName.' field is required');
-        }
+		if ( ! isset($credentials['password']))
+		{
+			throw new PasswordRequiredException('The password attribute is required.');
+		}
 
-        if (empty($credentials['password']))
-        {
-            throw new PasswordRequiredException('The Password field is required');
-        }
+		$throttlingEnabled = $this->throttleProvider->isEnabled();
 
 		try
 		{
