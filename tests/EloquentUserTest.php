@@ -25,7 +25,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -127,12 +127,12 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->addGroup($group);
 	}
 
-	public function testRemovingFromGroupDetatchesRelationship()
+	public function testRemovingFromGroupDetachesRelationship()
 	{
 		$group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
 
 		$relationship = m::mock('StdClass');
-		$relationship->shouldReceive('detatch')->with($group)->once();
+		$relationship->shouldReceive('detach')->with($group)->once();
 
 		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[inGroup,groups]');
 		$user->shouldReceive('inGroup')->once()->andReturn(true);
@@ -471,7 +471,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 			'bar' => -1,
 			'baz' => 1,
 		);
-		
+
 		$expected = array(
 			'email' => 'foo@bar.com',
 			'permissions' => array(
