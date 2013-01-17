@@ -3,7 +3,7 @@
 
 ----------
 
-Assign a user to a group.
+Assign a group to a user.
 
 Parameters                   | Type            | Default       | Description
 :--------------------------- | :-------------: | :------------ | :--------------

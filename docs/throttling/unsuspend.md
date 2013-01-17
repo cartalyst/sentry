@@ -6,6 +6,7 @@
 Unsuspends a login. This also clears all previous attempts by the specified login if they were suspended.
 
 `returns` void
+`throws`  UserNotFoundException
 
 ####Example
 

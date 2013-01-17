@@ -6,6 +6,7 @@
 Suspends a user temporarily. Length of the suspension is set by the driver or setSuspensionTime($minutes).
 
 `returns` void
+`throws`  UserNotFoundException
 
 ####Example
 

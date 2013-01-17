@@ -1,3 +1,4 @@
+<a id="installation"></a>
 ###Installation
 
 ----------
@@ -6,7 +7,7 @@
 
 There are four simple steps to install Sentry into Laravel 4:
 
-1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
+1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*
 2. Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
 3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
 4. If you'd like to migrate tables, simply run `php artisan migrate --package=cartalyst/sentry` from the command line. Of course, feel free to write your own migrations which insert the correct tables if you'd like!
@@ -14,7 +15,7 @@ There are four simple steps to install Sentry into Laravel 4:
 
 #### Installing in FuelPHP 1.x (with Composer)
 
-Using Sentry with FuelPHP is easy. We begin by creating a file at `fuel/app/composer.json` with the following:
+Using Sentry with FuelPHP is easy. We begin by creating the `composer.json` file at `fuel/app/` with the following:
 
 ```json
 {
@@ -44,7 +45,7 @@ This will mean you can use the FuelPHP Sentry facade as the class `Sentry`. Vòi
 
 ##### A small note
 
-Sentry will always run off the default database connection, so ensure this is working. We may look at adding support for alternate connections in the future however it is not implemented at this stage. Pull reqeusts welcome.
+Sentry will always run off the default database connection, so ensure this is working. We may look at adding support for alternate connections in the future however it is not implemented at this stage. Pull requests are welcome.
 
 
 #### Installing in CodeIgniter 3.0-dev+ (with Composer)
@@ -137,7 +138,7 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 
 Now run `php composer.phar update` from the command line.
 
-Initializing Sentry requires you pass a number of dependencies to it. These dependencies are the following:
+Initializing Sentry requires you to pass a number of dependencies to it. These dependencies are the following:
 
 1. A hasher (must implement `Cartalyst\Sentry\Hashing\HasherInterface`).
 2. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).

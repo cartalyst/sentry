@@ -11,7 +11,7 @@ Throttling Provider Methods:
 
 Throttle Methods:
 
-* [addAttempt()](#addAttempt "/manuals/sentry/throttle/addAttempt")
+* [addLoginAttempt()](#addLoginAttempt "/manuals/sentry/throttle/addLoginAttempt")
 * [ban()](#ban "/manuals/sentry/throttle/ban")
 * [check()](#check "/manuals/sentry/throttle/check")
 * [clearAttempts()](#clearAttempts "/manuals/sentry/throttle/clearAttempts")

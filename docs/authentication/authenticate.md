@@ -3,12 +3,12 @@
 
 ----------
 
-Authenticate a user based on credentials. If successful, password reset fields and any invalid authentication attempts will be cleared.
+Authenticates a user based on credentials. If successful, password reset fields and any invalid authentication attempts will be cleared.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$credentials` (required)    | array           | none          | An array of user fields to validate and login a user by. The Login field is required, all other fields are optional.
-`$remember`                  | bool            | false         | Remember if the user is authenticated or not for auto logging in.
+Parameters                   | Type           | Default       | Description
+:--------------------------- | :------------- | :------------ | :--------------
+`$credentials` (required)    | array          | none          | An array of user fields to validate and login a user by. Both login and password fields are required, all other fields are optional.
+`$remember`                  | boolean        | false         | Remember if the user is authenticated or not for auto logging in.
 
 `returns` UserInterface
 `throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedException, UserBannedException
@@ -20,21 +20,12 @@ Parameters                   | Type            | Default       | Description
 		// Set login credentials
 		$credentials = array(
 			'email'    => 'testing@test.com',
-			'password' => 'test',
+			'password' => 'test'
 		);
 
 		if ($user = Sentry::authenticate($credentials))
 		{
 			echo 'Authenticated';
-
-			// Because the user activated, you can also access it through
-			// Sentry::getUser();. Additionally, any methods available on
-			// the Cartalyst\Sentry\Users\UserInterface are now available
-			// through the Sentry object. This means you can achieve the same
-			// thing three ways:
-			$groups = Sentry::getUserProvider()->findByLogin('testing@test.com')->getGroups();
-			$user->getGroups(); // If you have the $user object
-			Sentry::getGroups(); // Available when the $user property of Sentry is set.
 		}
 		else
 		{
@@ -51,9 +42,9 @@ Parameters                   | Type            | Default       | Description
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
-		// Sometimes a user is found however hashed credentials do
+		// Sometimes a user is found, however hashed credentials do
 		// not match. Therefore a user technically doesn't exist
-		// by these credentials. Check the error message returned
+		// by those credentials. Check the error message returned
 		// for more information
 		echo 'User not found.';
 	}

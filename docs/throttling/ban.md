@@ -6,6 +6,7 @@
 Bans the user associated with the throttle.
 
 `returns` void
+`throws`  UserNotFoundException
 
 ####Example
 

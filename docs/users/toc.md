@@ -7,6 +7,7 @@ User Provider Methods:
 * [findByCredentials()](#findByCredentials "/manuals/sentry/users/findByCredentials")
 * [findById()](#findById "/manuals/sentry/users/findById")
 * [findByLogin()](#findByLogin "/manuals/sentry/users/findByLogin")
+* [getUser()](#getUser "/manuals/sentry/users/getUser")
 * [getUserProvider()](#getUserProvider "/manuals/sentry/users/getUserProvider")
 * [register()](#register "/manuals/sentry/users/register")
 

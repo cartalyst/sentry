@@ -10,7 +10,7 @@ Parameters                   | Type            | Default       | Description
 `$mintues`                   | int             | none          | Length of the suspension in minutes. Default is set by driver (15).  This is used to override the driver default.
 
 `returns` void
-`throws` `throws` InvalidArgumentException
+`throws`  UserNotFoundException
 
 ####Example
 

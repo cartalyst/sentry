@@ -5,7 +5,8 @@
 
 Checks to see if the login is suspended.
 
-`returns` bool
+`returns` boolean
+`throws`  UserNotFoundException
 
 ####Example
 

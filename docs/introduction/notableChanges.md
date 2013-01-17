@@ -1,6 +1,7 @@
+<a id="notableChanges"></a>
 ### Download
 
-Sentry2 is a full rewrite of the the Sentry library. A new API, new methods, and some db changes ( no more user metadata table), and the use of eloquent for our models. With this rewrite we felt we should note some key changes that may cause issues if you are porting from the original Sentry library.
+Sentry2 is a full rewrite of the the Sentry library. A new API, new methods, and some db changes (no more user metadata table), and the use of eloquent for our models. With this rewrite we felt we should note some key changes that may cause issues if you are porting from the original Sentry library.
 
 #### Dependency Injection / Interfaces / PSR
 
@@ -8,7 +9,7 @@ We made Sentry2 to be PSR-0, PSR-1 and (mostly) PSR-2 compatible and take advant
 
 #### Exceptions
 
-Since we are making Sentry 2 composer-based and framework agnostic, we wanted to limit dependencies were we could. As a result, we made more descriptive exceptions which should allow you to catch and make your own error messages for them. There is not longer a `SentryException` catch all.
+Since we are making Sentry 2 composer-based and framework agnostic, we wanted to limit dependencies were we could. As a result, we made more descriptive exceptions which should allow you to catch and make your own error messages for them. There is no longer a `SentryException` catch all.
 
 #### Sentry::login() and Sentry::force_login()
 
