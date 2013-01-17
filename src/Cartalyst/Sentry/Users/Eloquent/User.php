@@ -356,6 +356,18 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Checks if the provided user reset password code is
+	 * valid without actually resetting the password.
+	 *
+	 * @param  string  $resetCode
+	 * @return bool
+	 */
+	public function checkResetPassword($resetCode)
+	{
+		return ($this->reset_password_hash == $resetCode);
+	}
+
+	/**
 	 * Attemps to reset a user's password by matching
 	 * the reset code generated with the user's.
 	 *
@@ -365,7 +377,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function attemptResetPassword($resetCode, $newPassword)
 	{
-		if ($resetCode == $this->reset_password_hash)
+		if ($this->checkResetPassword($resetCode))
 		{
 			$this->password = $newPassword;
 			$this->reset_password_hash = null;
@@ -486,22 +498,6 @@ class User extends Model implements UserInterface {
 		$permissions = $this->getMergedPermissions();
 
 		return (array_key_exists($permission, $permissions) and $permissions[$permission] == 1);
-	}
-
-	/**
-	 * Checks if the provided user reset password hash is valid.
-	 *
-	 * @param  string  $resetPasswordHash
-	 * @return bool
-	 */
-	public function checkResetPassword($resetPasswordHash)
-	{
-		if ($this->reset_password_hash === $resetPasswordHash)
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
