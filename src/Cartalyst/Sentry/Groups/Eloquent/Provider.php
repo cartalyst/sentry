@@ -84,6 +84,18 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Returns all groups.
+	 *
+	 * @return array  $groups
+	 */
+	public function findAll()
+	{
+		$model = $this->createModel();
+
+		return $model->newQuery()->get()->all();
+	}
+
+	/**
 	 * Creates a group.
 	 *
 	 * @param  array  $attributes

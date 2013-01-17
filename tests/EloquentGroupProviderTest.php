@@ -93,6 +93,22 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 		$provider->findByName('foo');
 	}
 
+	public function testFindingAll()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Groups\Eloquent\Provider[createModel]');
+
+		$provider->shouldReceive('createModel')->once()->andReturn($query = m::mock('StdClass'));
+
+		$query->shouldReceive('newQuery')->andReturn($query);
+		$query->shouldReceive('get')->andReturn($query);
+		$query->shouldReceive('all')->andReturn($groups = array(
+			$group1 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group'),
+			$group2 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group'),
+		));
+
+		$this->assertEquals($groups, $provider->findAll());
+	}
+
 	public function testCreatingGroup()
 	{
 		$attributes = array(

@@ -39,6 +39,13 @@ interface ProviderInterface {
 	public function findByName($name);
 
 	/**
+	 * Returns all groups.
+	 *
+	 * @return array  $groups
+	 */
+	public function findAll();
+
+	/**
 	 * Creates a group.
 	 *
 	 * @param  array  $attributes
