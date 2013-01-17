@@ -6,6 +6,7 @@
 Retrieves the number of attempts allowed by the throttle object.
 
 `returns` int
+`throws`  UserNotFoundException
 
 ####Example
 

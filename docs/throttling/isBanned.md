@@ -5,7 +5,8 @@
 
 Checks to see if the user is banned.
 
-`returns` bool
+`returns` boolean
+`throws`  UserNotFoundException
 
 ####Example
 

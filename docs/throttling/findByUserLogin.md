@@ -6,6 +6,7 @@
 Retrieves a throttle object based on the user login provided. Will always retrieve a throttle object.
 
 `returns` ThrottleInterface
+`throws`  UserNotFoundException
 
 ####Example
 

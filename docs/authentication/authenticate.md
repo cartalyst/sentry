@@ -7,7 +7,7 @@ Authenticates a user based on credentials. If successful, password reset fields 
 
 Parameters                   | Type           | Default       | Description
 :--------------------------- | :------------- | :------------ | :--------------
-`$credentials` (required)    | array          | none          | An array of user fields to validate and login a user by. The Login field is required, all other fields are optional.
+`$credentials` (required)    | array          | none          | An array of user fields to validate and login a user by. Both login and password fields are required, all other fields are optional.
 `$remember`                  | boolean        | false         | Remember if the user is authenticated or not for auto logging in.
 
 `returns` UserInterface

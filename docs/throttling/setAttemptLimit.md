@@ -10,7 +10,7 @@ Parameters                   | Type            | Default       | Description
 `$limit`                     | int             | none          | Number of attempts allowed. Default is set by driver (5).  This is used to override the driver default.
 
 `returns` void
-`throws` `throws` InvalidArgumentException
+`throws`  UserNotFoundException
 
 ####Example
 

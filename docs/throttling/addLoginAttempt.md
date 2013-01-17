@@ -3,16 +3,17 @@
 
 ----------
 
-Add an attempt to the throttle object
+Adds an attempt to the throttle object.
 
 `returns` void
+`throws`  UserNotFoundException
 
 ####Example
-	
+
 	try
 	{
 		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
-		$throttle->addAttempt();
+		$throttle->addLoginAttempt();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
