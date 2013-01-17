@@ -489,6 +489,22 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Checks if the provided user reset password hash is valid.
+	 *
+	 * @param  string  $resetPasswordHash
+	 * @return bool
+	 */
+	public function checkResetPassword($resetPasswordHash)
+	{
+		if ($this->reset_password_hash === $resetPasswordHash)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns the relationship between users and
 	 * groups.
 	 *

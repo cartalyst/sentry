@@ -187,4 +187,12 @@ interface UserInterface {
 	 */
 	public function hasAccess($permission);
 
+	/**
+	 * Checks if the provided user reset password hash is valid.
+	 *
+	 * @param  string  $resetPasswordHash
+	 * @return bool
+	 */
+	public function checkResetPassword($resetPasswordHash);
+
 }
