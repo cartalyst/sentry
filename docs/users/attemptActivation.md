@@ -3,7 +3,7 @@
 
 ----------
 
-Activate a user.
+Activates a user.
 
 Parameters          | Type                | Default             | Required            | Description
 :------------------ | :------------------ | :------------------ | :------------------ | :------------------

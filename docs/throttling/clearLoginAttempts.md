@@ -3,7 +3,7 @@
 
 ----------
 
-Clears all a logins attempts as well as unsuspending them. This does not unban a login.
+Clears all login attempts, it also unsuspends them. This does not unban a login.
 
 `returns` void
 `throws`  UserNotFoundException

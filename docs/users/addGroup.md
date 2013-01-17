@@ -3,7 +3,7 @@
 
 ----------
 
-Assign a group to a user.
+Assigns a group to a user.
 
 Parameters          | Type                | Default             | Required            | Description
 :------------------ | :------------------ | :------------------ | :------------------ | :------------------
@@ -17,7 +17,7 @@ Parameters          | Type                | Default             | Required      
 	try
 	{
 		// Find the user
-		$user  = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 
 		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);

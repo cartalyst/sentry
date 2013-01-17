@@ -23,6 +23,7 @@ Parameters          | Type                | Default             | Required      
 			'password' => 'test'
 		);
 
+		// Try to authenticate the user
 		if ($user = Sentry::authenticate($credentials))
 		{
 			// Passed authentication

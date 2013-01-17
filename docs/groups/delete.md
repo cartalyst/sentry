@@ -15,7 +15,7 @@ Deletes a group object.
 		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);
 
-		// Delete
+		// Try to delete the group
 		if ($group->delete())
 		{
 			// Group deleted

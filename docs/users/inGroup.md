@@ -17,7 +17,7 @@ Parameters          | Type                | Default             | Required      
 	try
 	{
 		// Find the user
-		$user  = Sentry::getUserProvider()->findById(1);
+		$user~= Sentry::getUserProvider()->findById(1);
 
 		// Find the group
 		$admin = Sentry::getGroupProvider()->findByName('Admin');

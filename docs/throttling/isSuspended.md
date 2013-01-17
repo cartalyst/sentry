@@ -3,7 +3,7 @@
 
 ----------
 
-Checks to see if the login is suspended.
+Checks to see if the user is suspended.
 
 `returns` bool
 `throws`  UserNotFoundException

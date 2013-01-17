@@ -3,7 +3,7 @@
 
 ----------
 
-Creates a group.
+Creates a new group.
 
 Parameters          | Type                | Default             | Required            | Description
 :------------------ | :------------------ | :------------------ | :------------------ | :------------------

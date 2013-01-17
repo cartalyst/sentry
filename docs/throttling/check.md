@@ -3,7 +3,7 @@
 
 ----------
 
-Checks a logins throttle status and throws a number of Exceptions upon failure
+Checks the login throttle status and throws a number of Exceptions upon failure.
 
 `returns` bool
 `throws`  UserNotFoundException, UserBannedException, UserSuspendedException

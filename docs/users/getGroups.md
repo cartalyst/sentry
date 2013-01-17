@@ -13,7 +13,7 @@ Retrieves the users' groups.
 	try
 	{
 		// Find the user
-		$user   = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::getUserProvider()->findById(1);
 
 		// Get the user groups
 		$groups = $user->getGroups();
