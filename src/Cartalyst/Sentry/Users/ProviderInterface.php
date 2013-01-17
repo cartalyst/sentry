@@ -26,7 +26,7 @@ interface ProviderInterface {
 	 * Finds a user by the given user ID.
 	 *
 	 * @param  mixed  $id
-	 * @return Cartalyst\Sentry\UserInterface
+	 * @return Cartalyst\Sentry\Users\UserInterface
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findById($id);
@@ -35,7 +35,7 @@ interface ProviderInterface {
 	 * Finds a user by the login value.
 	 *
 	 * @param  string  $login
-	 * @return Cartalyst\Sentry\UserInterface
+	 * @return Cartalyst\Sentry\Users\UserInterface
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByLogin($login);
@@ -44,8 +44,8 @@ interface ProviderInterface {
 	 * Finds a user by the given credentials.
 	 *
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\UserInterface
-	 * @throws Cartalyst\Sentry\UserNotFoundException
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByCredentials(array $credentials);
 

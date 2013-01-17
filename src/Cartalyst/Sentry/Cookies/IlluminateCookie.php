@@ -75,8 +75,8 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  mixed   $value
-	 * @param  int     $minutes
+	 * @param  mixed  $value
+	 * @param  int    $minutes
 	 * @return void
 	 */
 	public function put($value, $minutes)
@@ -87,7 +87,7 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function forever($value)
