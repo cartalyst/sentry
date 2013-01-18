@@ -206,10 +206,10 @@ class User extends Model implements UserInterface {
 		// Merge permissions
 		$permissions = array_merge($this->getUserPermissions(), $permissions);
 
-		// Loop through and adjsut permissions as needed
+		// Loop through and adjust permissions as needed
 		foreach ($permissions as $permission => $value)
 		{
-			// Lets make sure their is a valid permission value
+			// Lets make sure there is a valid permission value
 			if ( ! in_array($value, $this->allowedPermissionsValues, true))
 			{
 				throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
@@ -264,7 +264,7 @@ class User extends Model implements UserInterface {
 			throw new PasswordRequiredException("A password is required for user [$login], none given.");
 		}
 
-		// Check if user aleady exists
+		// Check if the user already exists
 		$query = $this->newQuery();
 		$persistedUser = $query->where($this->getLoginName(), '=', $login)->first();
 
@@ -277,7 +277,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Saves the group.
+	 * Saves the user.
 	 *
 	 * @return bool
 	 */
@@ -427,7 +427,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Returns an arrya of groups which the given
+	 * Returns an array of groups which the given
 	 * user belongs to.
 	 *
 	 * @return array
@@ -466,7 +466,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * See if user is in the given group.
+	 * See if the user is in the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
