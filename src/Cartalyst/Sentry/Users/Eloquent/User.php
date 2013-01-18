@@ -307,7 +307,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function createPersistCode()
 	{
-		return $this->hash($this->toJson());
+		return $this->hash(json_encode($this->getPersistArray()));
 	}
 
 	/**
@@ -318,7 +318,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function checkPersistCode($persistCode)
 	{
-		return $this->checkHash($this->toJson(), $persistCode);
+		return $this->checkHash(json_encode($this->getPersistArray()), $persistCode);
 	}
 
 	/**
@@ -601,6 +601,26 @@ class User extends Model implements UserInterface {
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 		return substr(str_shuffle(str_repeat($pool, 5)), 0, 40);
+	}
+
+	/**
+	 * Returns an array of attributes used
+	 * for persisting. These are used for
+	 * testing if a user is logged in so the
+	 * attributes should remain consistent
+	 * in that process, so choose carefully.
+	 *
+	 * @return array
+	 */
+	public function getPersistArray()
+	{
+		$lgoin = $this->getUserLoginName();
+
+		return array(
+			'id'                  => $this->id,
+			$login                => $this->getUserLogin(),
+			'reset_password_hash' => $this->reset_password_hash,
+		);
 	}
 
 	/**
