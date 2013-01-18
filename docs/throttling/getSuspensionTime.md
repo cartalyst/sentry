@@ -5,7 +5,7 @@
 
 Retrieves the length of the suspension time set by the throttling driver.
 
-`returns` integer
+`returns` int
 `throws`  UserNotFoundException
 
 ####Example

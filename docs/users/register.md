@@ -1,14 +1,14 @@
 <a id="register"></a>
-###register($credentials)
+###register($credentials, $activate = false)
 
 ----------
 
 Registers a user which requires activation.  If the user already exists but is not activated, it will create a new activation code.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$credentials`               | array           | none          | An array of user fields create a user with. The Login field is required, all other fields are optional.
-`$activate`                  | bool            | false         | Whether or not to activate the user when it's registered
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$credentials`      | array               | none                | true                | An array of user fields create a user with. The Login field is required, all other fields are optional.
+`$activate`         | bool                | false               | false               | Whether or not to activate the user when it's registered
 
 `returns` UserInterface
 `throws`  LoginRequiredException, UserExistsException
@@ -24,7 +24,7 @@ Parameters                   | Type            | Default       | Description
 			'password' => 'test'
 		));
 
-		// Let's get an activation code
+		// Let's get the activation code
 		$activationCode = $user->getActivationCode();
 
 		// Send activation code to user to activate their account

@@ -5,9 +5,9 @@
 
 Find a user by an array of credentials, which must include the login column. Hashed fields will be hashed and checked against their value in the database.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$credentials`               | array           | none          | Array of credentials to check against. Login field is required.
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$credentials`      | array               | none                | true                | Array of credentials to check against. Login field is required.
 
 `returns` UserInterface
 `throws`  UserNotFoundException

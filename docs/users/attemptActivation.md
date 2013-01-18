@@ -3,27 +3,30 @@
 
 ----------
 
-Activate a user.
+Activates a user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$activationCode`            | string          | none          | Activation Code
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$activationCode`   | string              | none                | true                | Activation Code
 
 `returns` bool
+`throws`  UserNotFoundException
 
 ####Example
 
 	try
 	{
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
+		// Attempt user activation
 		if ($user->attemptActivation('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))
 		{
-			echo 'Activated';
+			// User activation passed
 		}
 		else
 		{
-			echo 'Activation failed.';
+			// User activation failed
 		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)

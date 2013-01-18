@@ -5,9 +5,9 @@
 
 Find a user by their login ID.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$login`                     | string          | none          | User's login ID
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$login`            | string              | none                | true                | User's login ID
 
 `returns` UserInterface
 `throws`  UserNotFoundException

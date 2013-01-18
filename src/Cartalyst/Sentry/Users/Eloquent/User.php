@@ -92,6 +92,7 @@ class User extends Model implements UserInterface {
 	{
 		return $this->getKey();
 	}
+
 	/**
 	 * Returns the name for the user's login.
 	 *
@@ -138,7 +139,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Check if user is activated
+	 * Check if the user is activated.
 	 *
 	 * @return bool
 	 */
@@ -169,7 +170,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Get user specific permissions
+	 * Get user specific permissions.
 	 *
 	 * @param  string|array  $permissions
 	 * @return array
@@ -195,7 +196,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Set user specific permissions
+	 * Set user specific permissions.
 	 *
 	 * @param  array  $permissions
 	 * @return string
@@ -228,7 +229,7 @@ class User extends Model implements UserInterface {
 	 * Returns if the user is a super user - has
 	 * access to everything regardless of permissions.
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function isSuperUser()
 	{
@@ -460,7 +461,7 @@ class User extends Model implements UserInterface {
 	{
 		if ($this->inGroup($group))
 		{
-			$this->groups()->detatch($group);
+			$this->groups()->detach($group);
 		}
 	}
 

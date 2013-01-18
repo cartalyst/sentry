@@ -12,7 +12,7 @@ Delete a user object.
 
 	try
 	{
-		// Find existing user
+		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
 		// Delete

@@ -5,13 +5,13 @@
 
 Authenticates a user based on credentials. If successful, password reset fields and any invalid authentication attempts will be cleared.
 
-Parameters                   | Type           | Default       | Description
-:--------------------------- | :------------- | :------------ | :--------------
-`$credentials` (required)    | array          | none          | An array of user fields to validate and login a user by. Both login and password fields are required, all other fields are optional.
-`$remember`                  | boolean        | false         | Remember if the user is authenticated or not for auto logging in.
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$credentials`      | array               | none                | true                | An array of user fields to validate and login a user by. Both login and password fields are required, all other fields are optional.
+`$remember`         | bool                | false               | false               | Remembers if the user is authenticated or not for auto logging in.
 
 `returns` UserInterface
-`throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedException, UserBannedException
+`throws`  LoginRequiredException, PasswordRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedException, UserBannedException
 
 ####Example
 
@@ -23,13 +23,14 @@ Parameters                   | Type           | Default       | Description
 			'password' => 'test'
 		);
 
+		// Try to authenticate the user
 		if ($user = Sentry::authenticate($credentials))
 		{
-			echo 'Authenticated';
+			// Passed authentication
 		}
 		else
 		{
-			echo 'Failed authentication.';
+			// Failed authentication
 		}
 	}
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
@@ -45,7 +46,7 @@ Parameters                   | Type           | Default       | Description
 		// Sometimes a user is found, however hashed credentials do
 		// not match. Therefore a user technically doesn't exist
 		// by those credentials. Check the error message returned
-		// for more information
+		// for more information.
 		echo 'User not found.';
 	}
 	catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)

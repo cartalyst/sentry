@@ -5,9 +5,9 @@
 
 Find a user by their ID.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | int             | none          | User's ID
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$id`               | int                 | none                | true                | User's ID
 
 `returns` UserInterface
 `throws`  UserNotFoundException

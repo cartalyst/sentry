@@ -3,23 +3,34 @@
 
 ----------
 
-Assign a group to a user.
+Assigns a group to a user.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$group`                     | GroupInterface  | none          | GroupInterface instance
+Parameters          | Type                | Default             | Required            | Description
+:------------------ | :------------------ | :------------------ | :------------------ | :------------------
+`$group`            | GroupInterface      | none                | true                | GroupInterface instance
 
-`returns` void
-`throws` GroupNotFoundException
+`returns` bool
+`throws`  UserNotFoundException, GroupNotFoundException
 
 ####Example
 
 	try
 	{
-		$user  = Sentry::getUserProvider()->findById(1);
+		// Find the user
+		$user = Sentry::getUserProvider()->findById(1);
+
+		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);
 
-		$user->addGroup($group);
+		// Check if the user was assigned to the group
+		if ($user->addGroup($group))
+		{
+			// User assigned to the Admin group
+		}
+		else
+		{
+			// User was not assigned to the Admin group
+		}
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

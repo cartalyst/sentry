@@ -28,7 +28,7 @@ class NativeCookie implements CookieInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Default settings
+	 * Default settings.
 	 *
 	 * @var array
 	 */
@@ -37,8 +37,8 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @param  array  $config
-	 * @param  string $key
+	 * @param  array   $config
+	 * @param  string  $key
 	 * @return void
 	 */
 	public function __construct(array $config = array(), $key = null)
@@ -73,8 +73,8 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  mixed   $value
-	 * @param  int     $minutes
+	 * @param  mixed  $value
+	 * @param  int    $minutes
 	 * @return void
 	 */
 	public function put($value, $minutes)
@@ -85,7 +85,7 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function forever($value)

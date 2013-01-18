@@ -9,5 +9,5 @@ Returns a UserInterface object.
 
 ####Example
 
-	// retrieve a Sentry User Object
+	// Retrieve a Sentry User Object
 	$user = Sentry::getUserProvider();

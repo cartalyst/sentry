@@ -1,17 +1,18 @@
 <a id="getResetPasswordCode"></a>
-###resetPassword()
+###getResetPasswordCode()
 
 ----------
 
 Resets a user's password. This will generate a random string to send the user, which they will use to validate their password reset request.
 
 `returns` string
+`throws`  UserNotFoundException
 
 ####Example
 
 	try
 	{
-		$user      = Sentry::getUserProvider()->findByLogin('test@test.com'); 
+		$user      = Sentry::getUserProvider()->findByLogin('test@test.com');
 		$resetCode = $user->getResetPasswordCode();
 
 		// Email the reset code to the user

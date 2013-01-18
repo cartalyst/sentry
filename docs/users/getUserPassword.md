@@ -1,19 +1,22 @@
-<a id="getUser"></a>
-###getUser()
+<a id="getUserPassword"></a>
+###getUserPassword()
 
 ----------
 
-Returns the user that's set with Sentry, does not check if a user is logged in or not. To do that, use `check()` instead.
+Returns the user's password (hashed).
 
-`returns` UserInterface|null
+`returns` string
 `throws`  UserNotFoundException
 
 ####Example
 
 	try
 	{
-		// Get the current active/logged in user
-		$user = Sentry::getUser();
+		// Find the user
+		$user = Sentry::getUserProvider()->findById(1);
+
+		// Get the hashed user password
+		$userPassword = $user->getUserPassword();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

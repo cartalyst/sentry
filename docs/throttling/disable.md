@@ -5,6 +5,8 @@
 
 Disables throttling feature.
 
+`returns` void
+
 ####Example
 
 	$provider = Sentry::getThrottleProvider();

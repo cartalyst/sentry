@@ -11,7 +11,10 @@ Gets the group's permissions
 
 	try
 	{
+		// Find the group
 		$group = Sentry::getGroupProvider()->findById(1);
+
+		// Get the group permissions
 		$groupPermissions = $group->getGroupPermissions();
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)

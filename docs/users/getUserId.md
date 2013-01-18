@@ -1,19 +1,22 @@
-<a id="getUser"></a>
-###getUser()
+<a id="getUserId"></a>
+###getUserId()
 
 ----------
 
-Returns the user that's set with Sentry, does not check if a user is logged in or not. To do that, use `check()` instead.
+Returns the user's ID.
 
-`returns` UserInterface|null
+`returns` int
 `throws`  UserNotFoundException
 
 ####Example
 
 	try
 	{
-		// Get the current active/logged in user
-		$user = Sentry::getUser();
+		// Find the user
+		$user = Sentry::getUserProvider()->findById(1);
+
+		// Get the user id
+		$userId = $user->getUserId();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

@@ -123,7 +123,7 @@ class Sentry {
 	 * and an optional flag for whether to activate the user.
 	 *
 	 * @param  array  $credentials
-	 * @param  bool  $activate
+	 * @param  bool   $activate
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function register(array $credentials, $activate = false)
@@ -142,9 +142,9 @@ class Sentry {
 	/**
 	 * Attempts to authenticate the given user
 	 * according to the passed credentials.
-	 * 
-	 * @param array $credentials
-	 * @param bool $remember
+	 *
+	 * @param  array  $credentials
+	 * @param  bool   $remember
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException

@@ -25,7 +25,7 @@ interface UserInterface {
 	/**
 	 * Returns the user's ID.
 	 *
-	 * @return  mixed
+	 * @return mixed
 	 */
 	public function getUserId();
 
@@ -58,7 +58,7 @@ interface UserInterface {
 	public function getUserPermissions();
 
 	/**
-	 * Check if user is activated
+	 * Check if the user is activated.
 	 *
 	 * @return bool
 	 */
@@ -68,7 +68,7 @@ interface UserInterface {
 	 * Returns if the user is a super user - has
 	 * access to everything regardless of permissions.
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function isSuperUser();
 
@@ -164,7 +164,7 @@ interface UserInterface {
 	public function clearResetPassword();
 
 	/**
-	 * Returns an arrya of groups which the given
+	 * Returns an array of groups which the given
 	 * user belongs to.
 	 *
 	 * @return array
