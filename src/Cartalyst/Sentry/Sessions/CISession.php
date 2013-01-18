@@ -23,7 +23,7 @@ use CI_Session as Session;
 class CISession implements SessionInterface {
 
 	/**
-	 * The FuelPHP session driver.
+	 * The CodeIgniter session driver.
 	 *
 	 * @param  CI_Session
 	 */
@@ -37,8 +37,7 @@ class CISession implements SessionInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Creates a new FuelPHP Session driver
-	 * for Sentry.
+	 * Creates a new CodeIgniter Session driver for Sentry.
 	 *
 	 * @param  string  $store
 	 * @param  string  $key
@@ -67,7 +66,7 @@ class CISession implements SessionInterface {
 	/**
 	 * Put a value in the Sentry session.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function put($value)

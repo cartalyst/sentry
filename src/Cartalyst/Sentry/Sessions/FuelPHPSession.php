@@ -37,8 +37,7 @@ class FuelPHPSession implements SessionInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Creates a new FuelPHP Session driver
-	 * for Sentry.
+	 * Creates a new FuelPHP Session driver for Sentry.
 	 *
 	 * @param  string  $store
 	 * @param  string  $key
@@ -67,7 +66,7 @@ class FuelPHPSession implements SessionInterface {
 	/**
 	 * Put a value in the Sentry session.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function put($value)

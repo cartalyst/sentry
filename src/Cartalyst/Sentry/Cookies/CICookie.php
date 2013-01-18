@@ -44,7 +44,7 @@ class CICookie implements CookieInterface {
 	protected $defaults = array();
 
 	/**
-	 * Create a new FuelPHP cookie driver for Sentry.
+	 * Create a new CodeIgniter cookie driver for Sentry.
 	 *
 	 * @param  CI_Input  $input
 	 * @param  array     $config
@@ -59,7 +59,7 @@ class CICookie implements CookieInterface {
 			'domain' => '',
 			'path'   => '/',
 			'prefix' => '',
-			'secure' => false,
+			'secure' => false
 		);
 
 		// Merge settings
@@ -84,8 +84,8 @@ class CICookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  mixed   $value
-	 * @param  int     $minutes
+	 * @param  mixed  $value
+	 * @param  int    $minutes
 	 * @return void
 	 */
 	public function put($value, $minutes)
@@ -99,21 +99,20 @@ class CICookie implements CookieInterface {
 			'domain' => $domain,
 			'path'   => $path,
 			'prefix' => $prefix,
-			'secure' => $secure,
+			'secure' => $secure
 		));
 	}
 
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function forever($value)
 	{
-		// Forever can set a cookie
-		// for 5 years. This should
-		// suffice "forever".
+		// Forever can set a cookie for 5 years.
+		// This should suffice "forever".
 		$this->put($value, 2628000);
 	}
 
@@ -130,7 +129,6 @@ class CICookie implements CookieInterface {
 	/**
 	 * Remove the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @return void
 	 */
 	public function forget()

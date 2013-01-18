@@ -65,7 +65,7 @@ interface UserInterface {
 	public function isActivated();
 
 	/**
-	 * Returns if the user is a super user - has
+	 * Checks if the user is a super user - has
 	 * access to everything regardless of permissions.
 	 *
 	 * @return bool
@@ -73,7 +73,7 @@ interface UserInterface {
 	public function isSuperUser();
 
 	/**
-	 * Validates the users and throws a number of
+	 * Validates the user and throws a number of
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
@@ -83,7 +83,7 @@ interface UserInterface {
 	public function validate();
 
 	/**
-	 * Saves the user.
+	 * Save the user.
 	 *
 	 * @return bool
 	 */
@@ -180,7 +180,7 @@ interface UserInterface {
 	public function addGroup(GroupInterface $group);
 
 	/**
-	 * Remove user from the given group.
+	 * Removes the user from the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
@@ -188,7 +188,7 @@ interface UserInterface {
 	public function removeGroup(GroupInterface $group);
 
 	/**
-	 * See if user is in the given group.
+	 * See if the user is in the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool

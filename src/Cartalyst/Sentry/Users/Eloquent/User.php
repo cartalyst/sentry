@@ -226,7 +226,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Returns if the user is a super user - has
+	 * Checks if the user is a super user - has
 	 * access to everything regardless of permissions.
 	 *
 	 * @return bool
@@ -244,7 +244,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Validates the users and throws a number of
+	 * Validates the user and throws a number of
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
@@ -438,7 +438,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Adds the user to the given group
+	 * Adds the user to the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return void
@@ -452,7 +452,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Remove user from the given group.
+	 * Removes the user from the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
@@ -525,8 +525,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Returns the relationship between users and
-	 * groups.
+	 * Returns the relationship between users and groups.
 	 *
 	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */

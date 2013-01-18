@@ -106,10 +106,9 @@ class ConnectionResolver implements ConnectionResolverInterface {
 	}
 
 	/**
-	 * Returns the database connection. Note, we
-	 * are only supporting one database connection
-	 * currently in this resolver for FuelPHP, the
-	 * main database.
+	 * Returns the database connection.
+	 * Note, we are currently only supporting one database connection
+	 * in this resolver for FuelPHP, that is the main database.
 	 *
 	 * @return Illuminate\Database\Connection
 	 */
@@ -137,7 +136,7 @@ class ConnectionResolver implements ConnectionResolverInterface {
 				case 'sqlite':
 					$queryGrammar = 'Illuminate\Database\Query\Grammars\SQLiteGrammer';
 					break;
-				
+
 				default:
 					throw new \InvalidArgumentException("Cannot determine grammar to use based on {$this->driverName}.");
 					break;
