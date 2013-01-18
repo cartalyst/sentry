@@ -48,7 +48,7 @@ class CISession implements SessionInterface {
 	{
 		$this->store = $store;
 
-		if (isset($this->key))
+		if (isset($key))
 		{
 			$this->key = $key;
 		}
@@ -72,7 +72,7 @@ class CISession implements SessionInterface {
 	 */
 	public function put($value)
 	{
-		$this->store->set_userdata($this->getkey(), $value);
+		$this->store->set_userdata($this->getkey(), serialize($value));
 	}
 
 	/**
@@ -82,7 +82,7 @@ class CISession implements SessionInterface {
 	 */
 	public function get()
 	{
-		return $this->store->userdata($this->getKey());
+		return unserialize($this->store->userdata($this->getKey()));
 	}
 
 	/**

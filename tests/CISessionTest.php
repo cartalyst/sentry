@@ -54,7 +54,7 @@ class CISessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$session = new CISession($store = m::mock('CI_Session'), 'session_name_here');
 
-		$store->shouldReceive('set_userdata')->with('session_name_here', 'bar')->once();
+		$store->shouldReceive('set_userdata')->with('session_name_here', serialize('bar'))->once();
 
 		$session->put('bar');
 	}
@@ -63,7 +63,7 @@ class CISessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$session = new CISession($store = m::mock('CI_Session'), 'session_name_here');
 
-		$store->shouldReceive('userdata')->with('session_name_here')->once()->andReturn('bar');
+		$store->shouldReceive('userdata')->with('session_name_here')->once()->andReturn(serialize('bar'));
 
 		// Test with default "null" param as well
 		$this->assertEquals('bar', $session->get());

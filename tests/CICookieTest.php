@@ -92,7 +92,7 @@ class CICookieTest extends PHPUnit_Framework_TestCase {
 	{
 		$cookie = new CICookie($input = m::mock('CI_Input'), array(), 'foo');
 
-		$input->shouldReceive('cookie')->with('foo')->once()->andReturn('baz');
+		$input->shouldReceive('cookie')->with('foo')->once()->andReturn(serialize('baz'));
 
 		$this->assertEquals('baz', $cookie->get());
 	}

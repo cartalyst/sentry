@@ -124,7 +124,7 @@ class CICookie implements CookieInterface {
 	 */
 	public function get()
 	{
-		return $this->input->cookie($this->getKey());
+		return unserialize($this->input->cookie($this->getKey()));
 	}
 
 	/**
