@@ -88,8 +88,10 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
+		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+		$user->shouldReceive('createPersistCode')->once()->andReturn('persist_code');
 
-		$this->session->shouldReceive('put')->with($user)->once();
+		$this->session->shouldReceive('put')->with(array('foo', 'persist_code'))->once();
 
 		$this->sentry->login($user);
 	}
@@ -274,26 +276,42 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testCheckingUserChecksSessionFirst()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$user->shouldReceive('isActivated')->once()->andReturn(true);
-
-		$this->session->shouldReceive('get')->once()->andReturn($user);
-
+		$this->session->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 		$this->cookie->shouldReceive('get')->never();
+
+		$this->userProvider->shouldReceive('findByLogin')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+
+		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
 		$this->assertInstanceOf('Cartalyst\Sentry\Users\UserInterface', $this->sentry->check());
 	}
 
 	public function testCheckingUserChecksSessionFirstAndThenCookie()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$this->session->shouldReceive('get')->once();
+		$this->cookie->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
+
+		$this->userProvider->shouldReceive('findByLogin')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+
+		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->session->shouldReceive('get')->once()->andReturn(null);
-
-		$this->cookie->shouldReceive('get')->once()->andReturn($user);
-
 		$this->assertInstanceOf('Cartalyst\Sentry\Users\UserInterface', $this->sentry->check());
+	}
+
+	public function testCheckingUserReturnsFalseIfNoArrayIsReturned()
+	{
+		$this->session->shouldReceive('get')->once()->andReturn('we_should_never_return_a_string');
+
+		$this->assertFalse($this->sentry->check());
+	}
+
+	public function testCheckingUserReturnsFalseIfIncorrectArrayIsReturned()
+	{
+		$this->session->shouldReceive('get')->once()->andReturn(array('we', 'should', 'never', 'have', 'more', 'than', 'two'));
+
+		$this->assertFalse($this->sentry->check());
 	}
 
 	public function testCheckingUserWhenNothingIsFound()

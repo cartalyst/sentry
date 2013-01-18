@@ -298,6 +298,29 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Creates a code for when the user is
+	 * persisted to a cookie or session which
+	 * identifies the user.
+	 *
+	 * @return string
+	 */
+	public function createPersistCode()
+	{
+		return $this->hash($this->toJson());
+	}
+
+	/**
+	 * Checks the given persist code.
+	 *
+	 * @param  string  $persistCode
+	 * @return bool
+	 */
+	public function checkPersistCode($persistCode)
+	{
+		return $this->checkHash($this->toJson(), $persistCode);
+	}
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string

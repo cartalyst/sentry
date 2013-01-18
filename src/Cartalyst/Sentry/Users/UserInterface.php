@@ -97,6 +97,23 @@ interface UserInterface {
 	public function delete();
 
 	/**
+	 * Creates a code for when the user is
+	 * persisted to a cookie or session which
+	 * identifies the user.
+	 *
+	 * @return string
+	 */
+	public function createPersistCode();
+
+	/**
+	 * Checks the given persist code.
+	 *
+	 * @param  string  $persistCode
+	 * @return bool
+	 */
+	public function checkPersistCode($persistCode);
+
+	/**
 	 * Get an activation code for the given user.
 	 *
 	 * @return string

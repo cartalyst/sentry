@@ -223,19 +223,45 @@ class Sentry {
 	{
 		if ( ! $this->user)
 		{
-			// Check session
-			if ($user = $this->session->get() and $user instanceof UserInterface)
+			// Check session first, follow by cookie
+			if ( ! $userArray = $this->session->get() and ! $userArray = $this->cookie->get())
 			{
-				$this->user = $user;
+				return false;
 			}
 
-			// Check for cookie
-			if ( ! $this->user and $user = $this->cookie->get() and $user instanceof UserInterface)
+			// Now check our user is an array with two elements,
+			// the username followed by the persist code
+			if ( ! is_array($userArray) or count($userArray) !== 2)
 			{
-				$this->user = $user;
+				return false;
 			}
+
+			list($login, $persistCode) = $userArray;
+
+			// Let's find our user
+			try
+			{
+				$user = $this->getUserProvider()->findByLogin($login);
+			}
+			catch (UserNotFoundException $e)
+			{
+				return false;
+			}
+
+			// Great! Let's check the session's persist code
+			// against the user. If it fails, somebody has tampered
+			// with the cookie / session data and we're not allowing
+			// a login
+			if ( ! $user->checkPersistCode($persistCode))
+			{
+				return false;
+			}
+
+			// Now we'll set the user property on Sentry
+			$this->user = $user;
 		}
 
+		// Let's check our cached user is indeed activated
 		if ( ! $user = $this->getUser() or ! $user->isActivated())
 		{
 			return false;
@@ -263,12 +289,15 @@ class Sentry {
 
 		$this->user = $user;
 
+		// Create an array of data to persist to the session and / or cookie
+		$toPersist = array($user->getUserLogin(), $user->createPersistCode());
+
 		// Set sessions
-		$this->session->put($user);
+		$this->session->put($toPersist);
 
 		if ($remember)
 		{
-			$this->cookie->forever($user);
+			$this->cookie->forever($toPersist);
 		}
 	}
 
