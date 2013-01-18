@@ -346,9 +346,9 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	public function testCreatingPersistCode()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[toJson,hash]');
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPersistArray,hash]');
 
-		$user->shouldReceive('toJson')->once()->andReturn('{"key":"value"}');
+		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
 
 		$user->shouldReceive('hash')->with('{"key":"value"}')->once()->andReturn('hashed_user');
 
@@ -357,10 +357,10 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	public function testCheckPersistCode()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[toJson,checkHash]');
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPersistArray,checkHash]');
 		$user->setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 
-		$user->shouldReceive('toJson')->once()->andReturn('{"key":"value"}');
+		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
 
 		$user->shouldReceive('checkHash')->with('{"key":"value"}', 'persist_code')->andReturn(true);
 
