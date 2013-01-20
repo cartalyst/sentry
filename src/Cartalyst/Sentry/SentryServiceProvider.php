@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
-use Cartalyst\Sentry\Hashing\BcryptHasher;
+use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
@@ -58,7 +58,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
 		{
-			return new BcryptHasher;
+			return new NativeHasher;
 		});
 	}
 
