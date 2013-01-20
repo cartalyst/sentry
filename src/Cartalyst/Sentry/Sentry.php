@@ -97,9 +97,9 @@ class Sentry {
 	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $cookie
-	 * @param  Cartalyst\Sentry\Groups\ProviderInterface  $groupProvider
-	 * @param  Cartalyst\Sentry\Users\ProviderInterface  $userProvider
-	 * @param  Cartalyst\Sentry\Throttling\ProviderInterface  $throttleProvider
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $groupProvider
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
+	 * @param  Cartalyst\Sentry\Throttling\ThrottleInterface  $throttleProvider
 	 */
 	public function __construct(
 		HasherInterface $hasher,
@@ -146,9 +146,9 @@ class Sentry {
 	 * @param  array  $credentials
 	 * @param  bool   $remember
 	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
 	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
-	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
 	 */
 	public function authenticate(array $credentials, $remember = false)
 	{

@@ -46,7 +46,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Find group by ID.
+	 * Find the group by ID.
 	 *
 	 * @param  int  $id
 	 * @return Cartalyst\Sentry\GroupInterface  $group
@@ -65,7 +65,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Find group by name.
+	 * Find the group by name.
 	 *
 	 * @param  string  $name
 	 * @return Cartalyst\Sentry\GroupInterface  $group

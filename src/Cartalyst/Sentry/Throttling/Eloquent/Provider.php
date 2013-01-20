@@ -58,8 +58,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Finds a throttler by the
-	 * given user ID.
+	 * Finds a throttler by the given user ID.
 	 *
 	 * @param  mixed  $id
 	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
@@ -80,8 +79,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Finds a throttling interface by the
-	 * given user login.
+	 * Finds a throttling interface by the given user login.
 	 *
 	 * @param  string  $login
 	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface

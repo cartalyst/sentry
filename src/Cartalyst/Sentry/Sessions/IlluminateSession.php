@@ -37,8 +37,7 @@ class IlluminateSession implements SessionInterface {
 	protected $session;
 
 	/**
-	 * Creates a new Illuminate based Session driver
-	 * for Sentry.
+	 * Creates a new Illuminate based Session driver for Sentry.
 	 *
 	 * @param  Illuminate\Session\Store  $session
 	 * @param  string  $key
@@ -67,7 +66,7 @@ class IlluminateSession implements SessionInterface {
 	/**
 	 * Put a value in the Sentry session.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function put($value)

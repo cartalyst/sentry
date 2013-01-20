@@ -69,8 +69,7 @@ class Throttle extends Model implements ThrottleInterface {
 	protected $dates = array('last_attempt_at', 'suspended_at');
 
 	/**
-	 * Returns the associated user with the
-	 * throttler.
+	 * Returns the associated user with the throttler.
 	 *
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
@@ -100,7 +99,7 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Set suspensin time.
+	 * Set suspension time.
 	 *
 	 * @param  int  $minutes
 	 */
@@ -180,8 +179,7 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
-	 * Suspend the user associated with
-	 * the throttle
+	 * Suspend the user associated with the throttle
 	 *
 	 * @return void
 	 */

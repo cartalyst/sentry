@@ -28,8 +28,7 @@ class NativeSession implements SessionInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Creates a new native session driver
-	 * for Sentry.
+	 * Creates a new native session driver for Sentry.
 	 *
 	 * @param  string  $key
 	 * @return void
@@ -45,8 +44,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Called upon destruction of the
-	 * native session handler.
+	 * Called upon destruction of the native session handler.
 	 *
 	 * @return void
 	 */
@@ -68,7 +66,7 @@ class NativeSession implements SessionInterface {
 	/**
 	 * Put a value in the Sentry session.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function put($value)
@@ -97,8 +95,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Starts the session if it does
-	 * not exist.
+	 * Starts the session if it does not exist.
 	 *
 	 * @return void
 	 */
@@ -122,9 +119,8 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Interacts with the $_SESSION global
-	 * to set a property on it. The property
-	 * is serialized initially.
+	 * Interacts with the $_SESSION global to set a property on it.
+	 * The property is serialized initially.
 	 *
 	 * @param  mixed  $value
 	 * @return void
@@ -135,8 +131,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Unserializes a value from the session and
-	 * returns it.
+	 * Unserializes a value from the session and returns it.
 	 *
 	 * @return mixed.
 	 */
@@ -149,8 +144,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Forgets the Sentry session from the
-	 * global $_SESSION.
+	 * Forgets the Sentry session from the global $_SESSION.
 	 *
 	 * @return void
 	 */

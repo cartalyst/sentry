@@ -79,8 +79,7 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
-	 * Returns the relationship between groups and
-	 * users.
+	 * Returns the relationship between groups and users.
 	 *
 	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
@@ -114,7 +113,7 @@ class Group extends Model implements GroupInterface {
 	/**
 	 * Get user specific permissions
 	 *
-	 * @param  string|array  $permissions
+	 * @param  mixed  $permissions
 	 * @return array
 	 */
 	public function getPermissions($permissions)

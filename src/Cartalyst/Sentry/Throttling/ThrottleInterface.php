@@ -21,8 +21,7 @@
 interface ThrottleInterface {
 
 	/**
-	 * Returns the associated user with the
-	 * throttler.
+	 * Returns the associated user with the throttler.
 	 *
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
@@ -43,7 +42,7 @@ interface ThrottleInterface {
 	public function getAttemptLimit();
 
 	/**
-	 * Set suspensin time.
+	 * Set suspension time.
 	 *
 	 * @param  int  $minutes
 	 */
@@ -78,8 +77,7 @@ interface ThrottleInterface {
 	public function clearLoginAttempts();
 
 	/**
-	 * Suspend the user associated with
-	 * the throttle
+	 * Suspend the user associated with the throttle
 	 *
 	 * @return void
 	 */

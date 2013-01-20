@@ -53,8 +53,8 @@ class FuelPHPCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie.
 	 *
-	 * @param  mixed   $value
-	 * @param  int     $minutes
+	 * @param  mixed  $value
+	 * @param  int    $minutes
 	 * @return void
 	 */
 	public function put($value, $minutes)
@@ -65,14 +65,13 @@ class FuelPHPCookie implements CookieInterface {
 	/**
 	 * Put a value in the Sentry cookie forever.
 	 *
-	 * @param  mixed   $value
+	 * @param  mixed  $value
 	 * @return void
 	 */
 	public function forever($value)
 	{
-		// Forever can set a cookie
-		// for 5 years. This should
-		// suffice "forever".
+		// Forever can set a cookie for 5 years.
+		// This should suffice "forever".
 		$this->put($value, 2628000);
 	}
 
@@ -89,7 +88,6 @@ class FuelPHPCookie implements CookieInterface {
 	/**
 	 * Remove the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @return void
 	 */
 	public function forget()

@@ -108,7 +108,6 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * Remove the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @return void
 	 */
 	public function forget()
@@ -119,7 +118,7 @@ class IlluminateCookie implements CookieInterface {
 
 	/**
 	 * Returns the Symfony cookie object associated
-	 * with the illuminate cookie.
+	 * with the Illuminate cookie.
 	 *
 	 * @return Symfony\Component\HttpFoundation\Cookie
 	 */

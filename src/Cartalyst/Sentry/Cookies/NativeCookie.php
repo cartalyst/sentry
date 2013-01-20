@@ -48,7 +48,7 @@ class NativeCookie implements CookieInterface {
 			'domain'    => '',
 			'path'      => '/',
 			'secure'    => false,
-			'http_only' => false,
+			'http_only' => false
 		);
 
 		// Merge settings
@@ -90,8 +90,8 @@ class NativeCookie implements CookieInterface {
 	 */
 	public function forever($value)
 	{
-		// Time is 5 years, good enough as
-		// "forever".
+		// Forever can set a cookie for 5 years.
+		// This should suffice "forever".
 		$this->put($value, 2628000);
 	}
 
@@ -108,7 +108,6 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * Remove the Sentry cookie.
 	 *
-	 * @param  string  $key
 	 * @return void
 	 */
 	public function forget()
@@ -151,8 +150,7 @@ class NativeCookie implements CookieInterface {
 	}
 
 	/**
-	 * Returns the cookie from the $_COOKIE
-	 * array.
+	 * Returns the cookie from the $_COOKIE array.
 	 *
 	 * @return mixed
 	 */
