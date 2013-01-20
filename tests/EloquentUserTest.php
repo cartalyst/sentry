@@ -509,4 +509,15 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, (string) $user);
 	}
 
+	public function testDeletingUserDetachesAllGroupRelationships()
+	{
+		$relationship = m::mock('StdClass');
+		$relationship->shouldReceive('detach')->once();
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[groups]');
+		$user->shouldReceive('groups')->once()->andReturn($relationship);
+
+		$user->delete();
+	}
+
 }
