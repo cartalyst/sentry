@@ -157,12 +157,12 @@ class Sentry {
 		$loginName = $this->userProvider->getEmptyUser()->getUserLoginName();
 		$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
 
-		if ( ! isset($credentials[$loginName]))
+		if (empty($credentials[$loginCredentialKey]))
 		{
-			throw new LoginRequiredException("The $loginName attribute is required.");
+			throw new LoginRequiredException("The $loginCredentialKey attribute is required.");
 		}
 
-		if ( ! isset($credentials['password']))
+		if (empty($credentials['password']))
 		{
 			throw new PasswordRequiredException('The password attribute is required.');
 		}
