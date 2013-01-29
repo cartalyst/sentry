@@ -120,11 +120,15 @@ class Sentry {
 	 * @param  string $tablePrefix
 	 * @return void
 	 */
-	public static function setupDatabaseResolver(PDO $pdo, $driverName = 'mysql', $tablePrefix = '')
+	public static function setupDatabaseResolver(PDO $pdo, $driverName = null, $tablePrefix = '')
 	{
 		// If Eloquent doesn't exist, then we must assume they are using their own providers.
 		if (class_exists('Illuminate\Database\Eloquent\Model'))
 		{
+			if (is_null($driverName))
+			{
+				$driverName = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+			}
 			Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
 		}
 		static::$dbSetup = true;
