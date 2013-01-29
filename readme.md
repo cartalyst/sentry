@@ -24,7 +24,7 @@ It also provides additional features such as user groups and additional security
 
 ### A Quick Note With Installing
 
-You must ensure your minimum stability to either "alpha" or "dev" now:
+You must ensure your minimum stability to either "beta", "alpha" or "dev" now:
 
 ```json
 {
@@ -32,7 +32,7 @@ You must ensure your minimum stability to either "alpha" or "dev" now:
 }
 ```
 
-- "alpha" will get you all alpha / beta / RC releases
+- "beta" will get you all beta / RC releases
 - "dev" will keep you on top of the bleeding edge releases
 
 Once the package is released you can change this flag back to "stable" or remove it.
@@ -41,7 +41,7 @@ Once the package is released you can change this flag back to "stable" or remove
 
 There are four simple steps to install Sentry into Laravel 4:
 
-1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*  
+1. Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.json` *(requires you run `php composer.phar update` from the command line)*
 2. Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
 3. Add `'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry'` to the list of class aliases in `app/config/app.php` *(optional)*
 4. If you'd like to migrate tables, simply run `php artisan migrate --package=cartalyst/sentry` from the command line. Of course, feel free to write your own migrations which insert the correct tables if you'd like!
@@ -147,6 +147,18 @@ $db['default'] = array(
 
 ### Installing Using Composer
 
+Ensure you have the following in your `composer.json` file:
+
+```json
+{
+	"require": {
+		"cartalyst/sentry": "2.0.*",
+		"illuminate/database": "1.2.*",
+		"ircmaxell/password-compat": "1.0.*"
+	}
+}
+```
+
 ```php
 
 // Create an alias for our Facade
@@ -162,13 +174,13 @@ Sentry::setupDatabaseResolver(new PDO($dsn, $user, $password));
 
 // Create our first user!
 $user = Sentry::getUserProvider()->create(array(
-    'email'    => 'testing@test.com',
-    'password' => 'test',
-    'permissions' => array(
-        'test'  => 1,
-        'other' => -1,
-        'admin' => 1
-    )
+	'email'    => 'testing@test.com',
+	'password' => 'test',
+	'permissions' => array(
+		'test'  => 1,
+		'other' => -1,
+		'admin' => 1
+	)
 ));
 
 var_dump($user);
@@ -191,10 +203,8 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 {
 	"require": {
 		"cartalyst/sentry": "2.0.*",
-		"illuminate/cookie": "1.2.*",
-        "illuminate/database": "1.2.*",
-        "dhorrigan/capsule": "2.0.*",
-        "illuminate/session": "1.2.*"
+		"illuminate/database": "1.2.*",
+		"ircmaxell/password-compat": "1.0.*"
 	}
 }
 ```
