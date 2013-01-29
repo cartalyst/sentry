@@ -37,6 +37,8 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->package('cartalyst/sentry', 'cartalyst/sentry');
+
 		$this->registerHasher();
 
 		$this->registerSession();
@@ -82,7 +84,9 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.group'] = $this->app->share(function($app)
 		{
-			return new GroupProvider;
+			$class = $app['config']['cartalyst/sentry::sentry.groups.model'];
+
+			return new GroupProvider($class);
 		});
 	}
 
@@ -90,6 +94,8 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.user'] = $this->app->share(function($app)
 		{
+			$class = $app['config']['cartalyst/sentry::sentry.users.model'];
+
 			return new UserProvider($app['sentry.hasher']);
 		});
 	}
@@ -98,7 +104,16 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.throttle'] = $this->app->share(function($app)
 		{
-			return new ThrottleProvider($app['sentry.user']);
+			$class = $app['config']['cartalyst/sentry::sentry.throttling.model'];
+
+			$throttleProvider = new ThrottleProvider($app['sentry.user']);
+
+			if ($app['config']['cartalyst/sentry::sentry.throttling.enabled'] === false)
+			{
+				$throttleProvider->disable();
+			}
+
+			return $throttleProvider;
 		});
 	}
 
