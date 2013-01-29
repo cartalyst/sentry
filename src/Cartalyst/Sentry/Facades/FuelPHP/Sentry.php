@@ -77,6 +77,12 @@ class Sentry {
 
 	public static function createDatabaseResolver()
 	{
+		// If Eloquent doesn't exist, then we must assume they are using their own providers.
+		if ( ! class_exists('Illuminate\Database\Eloquent\Model'))
+		{
+			return;
+		}
+
 		// Retrieve what we need for our resolver
 		$database    = Database_Connection::instance();
 		$pdo         = $database->connection();
