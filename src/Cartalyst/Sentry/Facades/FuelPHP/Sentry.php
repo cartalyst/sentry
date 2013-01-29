@@ -25,7 +25,7 @@ use Cartalyst\Sentry\Sessions\FuelPHPSession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
-use Cartalyst\Sentry\Facades\Generic\ConnectionResolver;
+use Cartalyst\Sentry\Facades\Native\ConnectionResolver;
 use Database_Connection;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use PDO;

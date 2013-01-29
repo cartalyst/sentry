@@ -145,8 +145,37 @@ $db['default'] = array(
 );
 ```
 
-
 ### Installing Using Composer
+
+```php
+
+// Create an alias for our Facade
+class_alias('Cartalyst\Sentry\Facades\Native\Sentry', 'Sentry');
+
+// Setup our database
+$dsn      = 'mysql:dbname=my_database;host=localhost';
+$user     = 'root';
+$password = 'password';
+Sentry::setupDatabaseResolver(new PDO($dsn, $user, $password));
+
+// Done!
+
+// Create our first user!
+$user = Sentry::getUserProvider()->create(array(
+    'email'    => 'testing@test.com',
+    'password' => 'test',
+    'permissions' => array(
+        'test'  => 1,
+        'other' => -1,
+        'admin' => 1
+    )
+));
+
+var_dump($user);
+```
+
+
+### Installing Using Composer (Customization example)
 
 ```json
 {
@@ -188,9 +217,9 @@ Of course, we provide default implementations of all these for you. To setup our
 
 $hasher = new Cartalyst\Sentry\Hashing\NativeHasher; // There are other hashers available, take your pick
 
-$illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
-$session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
+$session = new Cartalyst\Sentry\Sessions\NativeSession;
 
+// Note, all of the options below are, optional!
 $options = array(
 	'name'     => null, // Default "cartalyst_sentry"
 	'time'     => null, // Default 300 seconds from now
@@ -221,8 +250,7 @@ We have plans to add more implementations for each interface which gives you mor
 
 We're looking at making:
 
-1. A native PHP session manager (that uses cookies or memcache?).
-2. Plain PDO based group, user and throttle providers.
+1. Plain PDO based group, user and throttle providers.
 
 ### Docs
 

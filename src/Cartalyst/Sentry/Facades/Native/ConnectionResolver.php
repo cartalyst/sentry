@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Facades\Generic;
+<?php namespace Cartalyst\Sentry\Facades\Native;
 /**
  * Part of the Sentry Package.
  *

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Facades\Generic;
+<?php namespace Cartalyst\Sentry\Facades\Native;
 /**
  * Part of the Sentry Package.
  *
@@ -92,7 +92,7 @@ class Sentry {
 
 		if ( ! static::$dbSetup)
 		{
-			throw new \RuntimeException('You must first setup the database connection by calling Cartalyst\Sentry\Facades\Generic\Sentry::setupDatabaseResolver.');
+			throw new \RuntimeException(sprintf('You must first setup the database connection by calling %s::setupDatabaseResolver().', __NAMESPACE__));
 		}
 
 		$hasher           = $hasher ?: new NativeHasher;

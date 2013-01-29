@@ -114,6 +114,36 @@ $db['default'] = array(
 
 #### Installing Using Composer
 
+```php
+
+// Create an alias for our Facade
+class_alias('Cartalyst\Sentry\Facades\Native\Sentry', 'Sentry');
+
+// Setup our database
+$dsn      = 'mysql:dbname=my_database;host=localhost';
+$user     = 'root';
+$password = 'password';
+Sentry::setupDatabaseResolver(new PDO($dsn, $user, $password));
+
+// Done!
+
+// Create our first user!
+$user = Sentry::getUserProvider()->create(array(
+    'email'    => 'testing@test.com',
+    'password' => 'test',
+    'permissions' => array(
+        'test'  => 1,
+        'other' => -1,
+        'admin' => 1
+    )
+));
+
+var_dump($user);
+```
+
+
+#### Installing Using Composer (Customization example)
+
 ```json
 {
 	"require": {
@@ -138,7 +168,7 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 
 Now run `php composer.phar update` from the command line.
 
-Initializing Sentry requires you to pass a number of dependencies to it. These dependencies are the following:
+Initializing Sentry requires you pass a number of dependencies to it. These dependencies are the following:
 
 1. A hasher (must implement `Cartalyst\Sentry\Hashing\HasherInterface`).
 2. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).
@@ -154,11 +184,18 @@ Of course, we provide default implementations of all these for you. To setup our
 
 $hasher = new Cartalyst\Sentry\Hashing\NativeHasher; // There are other hashers available, take your pick
 
-$illuminateSession = /* Get instance of Illuminate\Session\Store however pleases you */;
-$session = new Cartalyst\Sentry\Sessions\IlluminateSession($illuminateSession);
+$session = new Cartalyst\Sentry\Sessions\NativeSession;
 
-$illuminateCookie = /* Get instance of Illuminate\Cookie\CookieJar however pleases you */;
-$cookie = new Cartalyst\Sentry\Cookies\IlluminateCookie($illuminateCookie);
+// Note, all of the options below are, optional!
+$options = array(
+	'name'     => null, // Default "cartalyst_sentry"
+	'time'     => null, // Default 300 seconds from now
+	'domain'   => null, // Default ""
+	'path'     => null, // Default "/"
+	'secure'   => null, // Default "false"
+	'httpOnly' => null, // Default "false"
+);
+$cookie = new Cartalyst\Sentry\Cookies\NativeCookie($options);
 
 $groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
 
