@@ -25,6 +25,7 @@ use Cartalyst\Sentry\Sessions\CISession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Cartalyst\Sentry\Facades\Generic\ConnectionResolver;
 use Database_Connection;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use PDO;
@@ -102,13 +103,19 @@ class Sentry {
 			throw new \RuntimeException("Sentry will only work with PDO database connections.");
 		}
 
-		$driverName  = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-		$tablePrefix = substr($db->dbprefix('.'), 0, -1);
-
 		foreach (static::$pdoOptions as $key => $value)
 		{
 			$pdo->setAttribute($key, $value);
 		}
+
+		// If Eloquent doesn't exist, then we must assume they are using their own providers.
+		if ( ! class_exists('Illuminate\Database\Eloquent\Model'))
+		{
+			return;
+		}
+
+		$driverName  = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+		$tablePrefix = substr($db->dbprefix('.'), 0, -1);
 
 		Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
 	}
