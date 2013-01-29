@@ -25,6 +25,7 @@ use Cartalyst\Sentry\Sessions\FuelPHPSession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Cartalyst\Sentry\Facades\Generic\ConnectionResolver;
 use Database_Connection;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use PDO;
@@ -76,6 +77,12 @@ class Sentry {
 
 	public static function createDatabaseResolver()
 	{
+		// If Eloquent doesn't exist, then we must assume they are using their own providers.
+		if ( ! class_exists('Illuminate\Database\Eloquent\Model'))
+		{
+			return;
+		}
+
 		// Retrieve what we need for our resolver
 		$database    = Database_Connection::instance();
 		$pdo         = $database->connection();

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Facades\FuelPHP;
+<?php namespace Cartalyst\Sentry\Facades\Generic;
 /**
  * Part of the Sentry Package.
  *
@@ -25,7 +25,7 @@ use PDO;
 class ConnectionResolver implements ConnectionResolverInterface {
 
 	/**
-	 * The FuelPHP PDO instance.
+	 * The PDO instance.
 	 *
 	 * @var PDO
 	 */
@@ -60,7 +60,7 @@ class ConnectionResolver implements ConnectionResolverInterface {
 	protected $connection;
 
 	/**
-	 * Create a new FuelPHP connection resolver.
+	 * Create a new connection resolver.
 	 *
 	 * @param  PDO     $pdo
 	 * @param  string  $tablePrefix
@@ -107,8 +107,6 @@ class ConnectionResolver implements ConnectionResolverInterface {
 
 	/**
 	 * Returns the database connection.
-	 * Note, we are currently only supporting one database connection
-	 * in this resolver for FuelPHP, that is the main database.
 	 *
 	 * @return Illuminate\Database\Connection
 	 */
