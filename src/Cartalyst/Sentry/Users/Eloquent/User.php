@@ -307,7 +307,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function createPersistCode()
 	{
-		return $this->hash(json_encode($this->getPersistArray()));
+		return md5(json_encode($this->getPersistArray()));
 	}
 
 	/**
@@ -318,7 +318,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function checkPersistCode($persistCode)
 	{
-		return $this->checkHash(json_encode($this->getPersistArray()), $persistCode);
+		if ( ! $persistCode)
+		{
+			return false;
+		}
+
+		return md5(json_encode($this->getPersistArray())) == $persistCode;
 	}
 
 	/**

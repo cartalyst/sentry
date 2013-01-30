@@ -350,21 +350,16 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
 
-		$user->shouldReceive('hash')->with('{"key":"value"}')->once()->andReturn('hashed_user');
-
-		$this->assertEquals('hashed_user', $user->createPersistCode());
+		$this->assertEquals(md5(json_encode(array('key' => 'value'))), $user->createPersistCode());
 	}
 
 	public function testCheckPersistCode()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPersistArray,checkHash]');
-		$user->setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 
 		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
 
-		$user->shouldReceive('checkHash')->with('{"key":"value"}', 'persist_code')->andReturn(true);
-
-		$this->assertTrue($user->checkPersistCode('persist_code'));
+		$this->assertTrue($user->checkPersistCode(md5(json_encode(array('key' => 'value')))));
 	}
 
 	public function testGetActivationCode()
