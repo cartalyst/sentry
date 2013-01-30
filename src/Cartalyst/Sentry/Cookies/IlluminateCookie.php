@@ -112,8 +112,7 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function forget()
 	{
-		$this->jar->forget($this->getKey());
-		$this->cookie = null;
+		$this->cookie = $this->jar->forget($this->getKey());
 	}
 
 	/**
