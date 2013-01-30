@@ -175,7 +175,7 @@ interface UserInterface {
 	 * Adds the user to the given group
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @return void
+	 * @return bool
 	 */
 	public function addGroup(GroupInterface $group);
 

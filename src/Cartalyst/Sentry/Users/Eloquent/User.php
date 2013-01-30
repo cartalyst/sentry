@@ -446,7 +446,7 @@ class User extends Model implements UserInterface {
 	 * Adds the user to the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @return void
+	 * @return bool
 	 */
 	public function addGroup(GroupInterface $group)
 	{
@@ -454,6 +454,8 @@ class User extends Model implements UserInterface {
 		{
 			$this->groups()->attach($group);
 		}
+
+		return true;
 	}
 
 	/**
@@ -468,6 +470,8 @@ class User extends Model implements UserInterface {
 		{
 			$this->groups()->detach($group);
 		}
+
+		return true;
 	}
 
 	/**

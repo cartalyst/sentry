@@ -124,7 +124,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('inGroup')->once()->andReturn(false);
 		$user->shouldReceive('groups')->once()->andReturn($relationship);
 
-		$user->addGroup($group);
+		$this->assertTrue($user->addGroup($group));
 	}
 
 	public function testRemovingFromGroupDetachesRelationship()
@@ -138,7 +138,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('inGroup')->once()->andReturn(true);
 		$user->shouldReceive('groups')->once()->andReturn($relationship);
 
-		$user->removeGroup($group);
+		$this->assertTrue($user->removeGroup($group));
 	}
 
 	public function testMergedPermissions()
