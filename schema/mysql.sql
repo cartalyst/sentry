@@ -44,6 +44,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `reset_password_hash` varchar(255) DEFAULT NULL,
   `activation_hash` varchar(255) DEFAULT NULL,
+  `persist_hash` varchar(255) DEFAULT NULL,
   `activated` tinyint(4) NOT NULL DEFAULT '0',
   `permissions` text,
   `first_name` varchar(255) DEFAULT NULL,

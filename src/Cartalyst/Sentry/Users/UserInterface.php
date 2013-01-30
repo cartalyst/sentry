@@ -97,13 +97,13 @@ interface UserInterface {
 	public function delete();
 
 	/**
-	 * Creates a code for when the user is
+	 * Gets a code for when the user is
 	 * persisted to a cookie or session which
 	 * identifies the user.
 	 *
 	 * @return string
 	 */
-	public function createPersistCode();
+	public function getPersistCode();
 
 	/**
 	 * Checks the given persist code.

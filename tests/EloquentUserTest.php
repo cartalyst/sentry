@@ -344,22 +344,38 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 	}
 
-	public function testCreatingPersistCode()
+	public function testGetPersistCode()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPersistArray,hash]');
+		$randomString = 'random_string_here';
+		$hashedRandomString = 'hashed_random_string_here';
 
-		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('hash')->with($randomString)->once()->andReturn($hashedRandomString);
 
-		$this->assertEquals(md5(json_encode(array('key' => 'value'))), $user->createPersistCode());
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save,getRandomString]');
+		$user->setHasher($hasher);
+
+		$this->assertNull($user->persist_hash);
+		$user->shouldReceive('save')->once();
+		$user->shouldReceive('getRandomString')->once()->andReturn($randomString);
+
+		$persistCode = $user->getPersistCode();
+		$this->assertEquals($hashedRandomString, $persistCode);
+		$this->assertEquals($hashedRandomString, $user->persist_hash);
 	}
 
-	public function testCheckPersistCode()
+	public function testCheckingPersistCode()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPersistArray,checkHash]');
+		$user = new User;
+		$user->setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 
-		$user->shouldReceive('getPersistArray')->once()->andReturn(array('key' => 'value'));
+		// Create a new hash
+		$hasher->shouldReceive('hash')->with('reset_code')->andReturn('hashed_reset_code');
+		$user->persist_hash = 'reset_code';
 
-		$this->assertTrue($user->checkPersistCode(md5(json_encode(array('key' => 'value')))));
+		// Check the hash
+		$this->assertTrue($user->checkPersistCode('hashed_reset_code'));
+		$this->assertFalse($user->checkPersistCode('not_the_hashed_reset_code'));
 	}
 
 	public function testGetActivationCode()

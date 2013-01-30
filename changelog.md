@@ -1,3 +1,8 @@
+#v2.0.0-beta4
+
+ - Fixing security issue with latest persist code changes.
+ - Added new column to users table, `persist_hash` (schema identical to `reset_hash`) - need to re-run migrations or modify table manually.
+
 #v2.0.0-beta3
 
  - Added configuration for Laravel 4 users.
