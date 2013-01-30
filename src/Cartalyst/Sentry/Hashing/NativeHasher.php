@@ -21,6 +21,13 @@
 class NativeHasher implements HasherInterface {
 
 	/**
+	 * Salt length.
+	 *
+	 * @var int
+	 */
+	public $saltLength = 16;
+
+	/**
 	 * Hash string.
 	 *
 	 * @param  string  $string
