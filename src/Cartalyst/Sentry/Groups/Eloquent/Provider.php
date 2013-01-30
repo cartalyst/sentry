@@ -121,4 +121,15 @@ class Provider implements ProviderInterface {
 		return new $class;
 	}
 
+	/**
+	 * Sets a new model class name to be used at
+	 * runtime.
+	 *
+	 * @param  string  $model
+	 */
+	public function setModel($model)
+	{
+		$this->model = $model;
+	}
+
 }

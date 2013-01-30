@@ -59,7 +59,7 @@ class Provider implements ProviderInterface {
 		{
 			$this->model = $model;
 		}
-		
+
 	}
 
 	/**
@@ -144,6 +144,17 @@ class Provider implements ProviderInterface {
 		$class = '\\'.ltrim($this->model, '\\');
 
 		return new $class;
+	}
+
+	/**
+	 * Sets a new model class name to be used at
+	 * runtime.
+	 *
+	 * @param  string  $model
+	 */
+	public function setModel($model)
+	{
+		$this->model = $model;
 	}
 
 }

@@ -191,8 +191,18 @@ class Provider implements ProviderInterface {
 	{
 		$class = '\\'.ltrim($this->model, '\\');
 
-		$instance = new $class;
-		return $instance;
+		return new $class;
+	}
+
+	/**
+	 * Sets a new model class name to be used at
+	 * runtime.
+	 *
+	 * @param  string  $model
+	 */
+	public function setModel($model)
+	{
+		$this->model = $model;
 	}
 
 }

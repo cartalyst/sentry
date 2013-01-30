@@ -25,7 +25,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -223,5 +223,26 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($user, $provider->getEmptyUser());
 	}
+
+	public function testSettingModel()
+	{
+		$provider = new Provider(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'),
+			'UserModelStub1'
+		);
+
+		$this->assertInstanceOf('UserModelStub1', $provider->createModel());
+
+		$provider->setModel('UserModelStub2');
+		$this->assertInstanceOf('UserModelStub2', $provider->createModel());
+	}
+
+}
+
+class UserModelStub1 {
+
+}
+
+class UserModelStub2 {
 
 }

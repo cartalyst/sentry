@@ -25,7 +25,7 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -124,5 +124,23 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($group, $provider->create($attributes));
 	}
+
+	public function testSettingModel()
+	{
+		$provider = new Provider('GroupModelStub1');
+
+		$this->assertInstanceOf('GroupModelStub1', $provider->createModel());
+
+		$provider->setModel('GroupModelStub2');
+		$this->assertInstanceOf('GroupModelStub2', $provider->createModel());
+	}
+
+}
+
+class GroupModelStub1 {
+
+}
+
+class GroupModelStub2 {
 
 }
