@@ -18,5 +18,5 @@
  * @link       http://cartalyst.com
  */
 
-class UserSuspendedException extends \RuntimeException {}
 class UserBannedException extends \RuntimeException {}
+class UserSuspendedException extends \RuntimeException {}

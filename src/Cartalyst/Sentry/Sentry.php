@@ -146,6 +146,8 @@ class Sentry {
 	 * @param  array  $credentials
 	 * @param  bool   $remember
 	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
+	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
 	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
 	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
@@ -167,45 +169,49 @@ class Sentry {
 			throw new PasswordRequiredException('The password attribute is required.');
 		}
 
-		$throttlingEnabled = $this->throttleProvider->isEnabled();
+		// If the user did the fallback 'login' key for the login code which
+		// did not match the actual login name, we'll adjust the array so the
+		// actual login name is provided.
+		if ($loginCredentialKey !== $loginName)
+		{
+			$credentials[$loginName] = $credentials[$loginCredentialKey];
+			unset($credentials[$loginCredentialKey]);
+		}
+
+		// If throttling is enabled, we'll firstly check the throttle.
+		// This will tell us if the user is banned before we even attempt
+		// to authenticate them
+		if ($throttlingEnabled = $this->throttleProvider->isEnabled())
+		{
+			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName]))
+			{
+				$throttle->check();
+			}
+		}
 
 		try
 		{
-			// If the user did the fallback 'login' key for the login code which
-			// did not match the actual login name, we'll adjust the array so the
-			// actual login name is provided.
-			if ($loginCredentialKey !== $loginName)
-			{
-				$credentials[$loginName] = $credentials[$loginCredentialKey];
-				unset($credentials[$loginCredentialKey]);
-			}
-
 			$user = $this->userProvider->findByCredentials($credentials);
 		}
 		catch (UserNotFoundException $e)
 		{
-			if ($throttlingEnabled)
+			if ($throttlingEnabled and isset($throttle))
 			{
-				if (isset($credentials[$loginCredentialKey]))
-				{
-					$throttle = $this->throttleProvider->findByUserLogin($credentials[$loginCredentialKey]);
-					$throttle->addLoginAttempt();
-				}
+				$throttle->addLoginAttempt();
 			}
 
 			throw $e;
 		}
 
-		if ($throttlingEnabled)
+		if ($throttlingEnabled and isset($throttle))
 		{
-			$throttle = $this->throttleProvider->findByUserId($user->getUserId());
-			$throttle->check();
 			$throttle->clearLoginAttempts();
 		}
 
 		$user->clearResetPassword();
 
 		$this->login($user, $remember);
+
 		return $this->user;
 	}
 
