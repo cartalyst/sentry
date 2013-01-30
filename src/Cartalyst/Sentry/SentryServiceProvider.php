@@ -96,7 +96,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$class = $app['config']['cartalyst/sentry::sentry.users.model'];
 
-			return new UserProvider($app['sentry.hasher']);
+			return new UserProvider($app['sentry.hasher'], $class);
 		});
 	}
 
@@ -106,7 +106,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$class = $app['config']['cartalyst/sentry::sentry.throttling.model'];
 
-			$throttleProvider = new ThrottleProvider($app['sentry.user']);
+			$throttleProvider = new ThrottleProvider($app['sentry.user'], $class);
 
 			if ($app['config']['cartalyst/sentry::sentry.throttling.enabled'] === false)
 			{
