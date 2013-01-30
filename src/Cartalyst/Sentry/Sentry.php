@@ -171,6 +171,15 @@ class Sentry {
 
 		try
 		{
+			// If the user did the fallback 'login' key for the login code which
+			// did not match the actual login name, we'll adjust the array so the
+			// actual login name is provided.
+			if ($loginCredentialKey !== $loginName)
+			{
+				$credentials[$loginName] = $credentials[$loginCredentialKey];
+				unset($credentials[$loginCredentialKey]);
+			}
+
 			$user = $this->userProvider->findByCredentials($credentials);
 		}
 		catch (UserNotFoundException $e)
