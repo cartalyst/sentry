@@ -144,13 +144,40 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return array
 	 */
-	public function getPermissions($permissions = false)
+	public function getPermissions()
 	{
-		if ($permissions === false and isset($this->attributes['permissions']))
-		{
-			$permissions = $this->attributes['permissions'];
-		}
+		return $this->permissions;
+	}
 
+	/**
+	 * Check if the user is activated.
+	 *
+	 * @return bool
+	 */
+	public function isActivated()
+	{
+		return (bool) $this->activated;
+	}
+
+	/**
+	 * Get mutator for giving the activated property.
+	 *
+	 * @param  mixed  $activated
+	 * @return bool
+	 */
+	public function giveActivated($activated)
+	{
+		return (bool) $activated;
+	}
+
+	/**
+	 * Mutator for giving permissions.
+	 *
+	 * @param  mixed  $permissions
+	 * @return array  $_permissions
+	 */
+	public function givePermissions($permissions)
+	{
 		if ( ! $permissions)
 		{
 			return array();
@@ -170,33 +197,12 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Check if the user is activated.
-	 *
-	 * @return bool
-	 */
-	public function isActivated()
-	{
-		return (bool) $this->activated;
-	}
-
-	/**
-	 * Get mutator for the activated property.
-	 *
-	 * @param  mixed  $activated
-	 * @return bool
-	 */
-	public function getActivated($activated)
-	{
-		return (bool) $activated;
-	}
-
-	/**
-	 * Set user specific permissions.
+	 * Mutator for taking permissions.
 	 *
 	 * @param  array  $permissions
 	 * @return string
 	 */
-	public function setPermissions(array $permissions)
+	public function takePermissions(array $permissions)
 	{
 		// Merge permissions
 		$permissions = array_merge($this->getPermissions(), $permissions);

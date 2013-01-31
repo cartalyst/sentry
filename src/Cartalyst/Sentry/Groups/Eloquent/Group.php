@@ -78,29 +78,9 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return array
 	 */
-	public function getPermissions($permissions = false)
+	public function getPermissions()
 	{
-		if ($permissions === false and isset($this->attributes['permissions']))
-		{
-			$permissions = $this->attributes['permissions'];
-		}
-
-		if ( ! $permissions)
-		{
-			return array();
-		}
-
-		if (is_array($permissions))
-		{
-			return $permissions;
-		}
-
-		if ( ! $_permissions = json_decode($permissions, true))
-		{
-			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
-		}
-
-		return $_permissions;
+		return $this->permissions;
 	}
 
 	/**
@@ -136,12 +116,38 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
-	 * Set user specific permissions
+	 * Mutator for giving permissions.
+	 *
+	 * @param  mixed  $permissions
+	 * @return array  $_permissions
+	 */
+	public function givePermissions($permissions)
+	{
+		if ( ! $permissions)
+		{
+			return array();
+		}
+
+		if (is_array($permissions))
+		{
+			return $permissions;
+		}
+
+		if ( ! $_permissions = json_decode($permissions, true))
+		{
+			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
+		}
+
+		return $_permissions;
+	}
+
+	/**
+	 * Mutator for taking permissions.
 	 *
 	 * @param  array  $permissions
-	 * @return string
+	 * @return void
 	 */
-	public function setPermissions(array $permissions)
+	public function takePermissions(array $permissions)
 	{
 		// Merge permissions
 		$permissions = array_merge($this->getPermissions(), $permissions);
