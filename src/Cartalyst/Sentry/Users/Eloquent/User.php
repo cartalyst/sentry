@@ -63,7 +63,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var string
 	 */
-	protected $login = 'email';
+	protected $loginAttribute = 'email';
 
 	/**
 	 * Allowed permissions values.
@@ -89,9 +89,14 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return  mixed
 	 */
-	public function getUserId()
+	public function getId($id = false)
 	{
-		return $this->getKey();
+		if ($id === false and isset($this->attributes[$keyName = $this->getKeyName()]))
+		{
+			$id = $this->attributes[$keyName];
+		}
+
+		return $id;
 	}
 
 	/**
@@ -99,9 +104,9 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public function getUserLoginName()
+	public function getLoginName()
 	{
-		return $this->getLoginName();
+		return $this->loginAttribute;
 	}
 
 	/**
@@ -109,9 +114,14 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getUserLogin()
+	public function getLogin($login = false)
 	{
-		return $this->{$this->login};
+		if ($login === false and isset($this->attributes[$loginName = $this->getLoginName()]))
+		{
+			$login = $this->attributes[$loginName];
+		}
+
+		return $login;
 	}
 
 	/**
@@ -119,9 +129,14 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public function getUserPassword()
+	public function getPassword($password = false)
 	{
-		return $this->password;
+		if ($password === false and isset($this->attributes['password']))
+		{
+			$password = $this->attributes['password'];
+		}
+
+		return $password;
 	}
 
 	/**
@@ -129,14 +144,29 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return array
 	 */
-	public function getUserPermissions()
+	public function getPermissions($permissions = false)
 	{
-		if ( ! $permissions = $this->permissions)
+		if ($permissions === false and isset($this->attributes['permissions']))
+		{
+			$permissions = $this->attributes['permissions'];
+		}
+
+		if ( ! $permissions)
 		{
 			return array();
 		}
 
-		return $permissions;
+		if (is_array($permissions))
+		{
+			return $permissions;
+		}
+
+		if ( ! $_permissions = json_decode($permissions, true))
+		{
+			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
+		}
+
+		return $_permissions;
 	}
 
 	/**
@@ -161,42 +191,6 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Returns the login attribute name.
-	 *
-	 * @return string
-	 */
-	public function getLoginName()
-	{
-		return $this->login;
-	}
-
-	/**
-	 * Get user specific permissions.
-	 *
-	 * @param  string|array  $permissions
-	 * @return array
-	 */
-	public function getPermissions($permissions)
-	{
-		if (is_null($permissions))
-		{
-			return array();
-		}
-
-		if (is_array($permissions))
-		{
-			return $permissions;
-		}
-
-		if ( ! $_permissions = json_decode($permissions, true))
-		{
-			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
-		}
-
-		return $_permissions;
-	}
-
-	/**
 	 * Set user specific permissions.
 	 *
 	 * @param  array  $permissions
@@ -205,7 +199,7 @@ class User extends Model implements UserInterface {
 	public function setPermissions(array $permissions)
 	{
 		// Merge permissions
-		$permissions = array_merge($this->getUserPermissions(), $permissions);
+		$permissions = array_merge($this->getPermissions(), $permissions);
 
 		// Loop through and adjust permissions as needed
 		foreach ($permissions as $permission => $value)
@@ -234,7 +228,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function isSuperUser()
 	{
-		$permissions = $this->getUserPermissions();
+		$permissions = $this->getPermissions();
 
 		if ( ! array_key_exists('superuser', $permissions))
 		{
@@ -255,7 +249,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function validate()
 	{
-		if ( ! $login = $this->{$this->login})
+		if ( ! $login = $this->{$this->loginAttribute})
 		{
 			throw new LoginRequiredException("A login is required for a user, none given.");
 		}
@@ -269,7 +263,7 @@ class User extends Model implements UserInterface {
 		$query = $this->newQuery();
 		$persistedUser = $query->where($this->getLoginName(), '=', $login)->first();
 
-		if ($persistedUser and $persistedUser->getUserId() != $this->getUserId())
+		if ($persistedUser and $persistedUser->getId() != $this->getId())
 		{
 			throw new UserExistsException("A user already exists with login [$login], logins must be unique for users.");
 		}
@@ -492,7 +486,7 @@ class User extends Model implements UserInterface {
 	{
 		foreach ($this->getGroups() as $_group)
 		{
-			if ($_group->getGroupId() == $group->getGroupId())
+			if ($_group->getId() == $group->getId())
 			{
 				return true;
 			}
@@ -513,10 +507,10 @@ class User extends Model implements UserInterface {
 
 		foreach ($this->getGroups() as $group)
 		{
-			$permissions = array_merge($permissions, $group->getGroupPermissions());
+			$permissions = array_merge($permissions, $group->getPermissions());
 		}
 
-		$permissions = array_merge($permissions, $this->getUserPermissions());
+		$permissions = array_merge($permissions, $this->getPermissions());
 
 		return $permissions;
 	}

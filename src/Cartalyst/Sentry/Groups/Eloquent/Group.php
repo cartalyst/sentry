@@ -48,9 +48,14 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getGroupId()
+	public function getId($id = false)
 	{
-		return $this->getKey();
+		if ($id === false and isset($this->attributes[$keyName = $this->getKeyName()]))
+		{
+			$id = $this->attributes[$keyName];
+		}
+
+		return $id;
 	}
 
 	/**
@@ -58,9 +63,14 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return string
 	 */
-	public function getGroupName()
+	public function getName($name = false)
 	{
-		return $this->name;
+		if ($name === false and isset($this->attributes['name']))
+		{
+			$name = $this->attributes['name'];
+		}
+
+		return $name;
 	}
 
 	/**
@@ -68,14 +78,29 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return array
 	 */
-	public function getGroupPermissions()
+	public function getPermissions($permissions = false)
 	{
-		if ( ! $permissions = $this->permissions)
+		if ($permissions === false and isset($this->attributes['permissions']))
+		{
+			$permissions = $this->attributes['permissions'];
+		}
+
+		if ( ! $permissions)
 		{
 			return array();
 		}
 
-		return $permissions;
+		if (is_array($permissions))
+		{
+			return $permissions;
+		}
+
+		if ( ! $_permissions = json_decode($permissions, true))
+		{
+			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
+		}
+
+		return $_permissions;
 	}
 
 	/**
@@ -111,32 +136,6 @@ class Group extends Model implements GroupInterface {
 	}
 
 	/**
-	 * Get user specific permissions
-	 *
-	 * @param  mixed  $permissions
-	 * @return array
-	 */
-	public function getPermissions($permissions)
-	{
-		if (is_null($permissions))
-		{
-			return array();
-		}
-
-		if (is_array($permissions))
-		{
-			return $permissions;
-		}
-
-		if ( ! $_permissions = json_decode($permissions, true))
-		{
-			throw new \InvalidArgumentException("Cannot JSON decode permissions [$permissions].");
-		}
-
-		return $_permissions;
-	}
-
-	/**
 	 * Set user specific permissions
 	 *
 	 * @param  array  $permissions
@@ -145,7 +144,7 @@ class Group extends Model implements GroupInterface {
 	public function setPermissions(array $permissions)
 	{
 		// Merge permissions
-		$permissions = array_merge($this->getGroupPermissions(), $permissions);
+		$permissions = array_merge($this->getPermissions(), $permissions);
 
 		// Loop through and adjsut permissions as needed
 		foreach ($permissions as $permission => $value)
@@ -177,7 +176,7 @@ class Group extends Model implements GroupInterface {
 
 		if (isset($attributes['permissions']))
 		{
-			$attributes['permissions'] = $this->getPermissions($attributes['permissions']);
+			$attributes['permissions'] = $this->getPermissions();
 		}
 
 		return $attributes;
@@ -203,7 +202,7 @@ class Group extends Model implements GroupInterface {
 		$query = $this->newQuery();
 		$persistedGroup = $query->where('name', '=', $name)->first();
 
-		if ($persistedGroup and $persistedGroup->getGroupId() != $this->getGroupId())
+		if ($persistedGroup and $persistedGroup->getId() != $this->getId())
 		{
 			throw new GroupExistsException("A group already exists with name [$name], names must be unique for groups.");
 		}

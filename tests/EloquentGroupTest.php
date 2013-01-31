@@ -30,12 +30,12 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-		
+
 	}
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -48,7 +48,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$group = new Group;
 		$group->id = 123;
 
-		$this->assertEquals(123, $group->getGroupId());
+		$this->assertEquals(123, $group->getId());
 	}
 
 	public function testGroupName()
@@ -56,7 +56,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$group = new Group;
 		$group->name = 'foo';
 
-		$this->assertEquals('foo', $group->getGroupName());
+		$this->assertEquals('foo', $group->getName());
 	}
 
 	// public function testSettingPermissions()
@@ -176,7 +176,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 	public function testValidationThrowsExceptionForDuplicateNameOnNonExistent()
 	{
 		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+		$persistedGroup->shouldReceive('getId')->once()->andReturn(123);
 
 		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
 		$group->name = 'foo';
@@ -196,7 +196,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 	public function testValidationThrowsExceptionForDuplicateNameOnExistent()
 	{
 		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+		$persistedGroup->shouldReceive('getId')->once()->andReturn(123);
 
 		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
 		$group->id   = 124;
@@ -214,7 +214,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 	public function testValidationDoesNotThrowAnExceptionIfPersistedGroupIsThisGroup()
 	{
 		$persistedGroup = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$persistedGroup->shouldReceive('getGroupId')->once()->andReturn(123);
+		$persistedGroup->shouldReceive('getId')->once()->andReturn(123);
 
 		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');
 		$group->id   = 123;
@@ -238,7 +238,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 			'bar' => 0,
 			'baz' => 1,
 		);
-		
+
 		$expected = array(
 			'name'        => 'foo',
 			'permissions' => array(

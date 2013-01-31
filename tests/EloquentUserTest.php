@@ -36,9 +36,9 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	public function testUserIdCallsKey()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getKey]');
-		$user->shouldReceive('getKey')->once()->andReturn('foo');
+		$user->id = 'foo';
 
-		$this->assertEquals('foo', $user->getUserId());
+		$this->assertEquals('foo', $user->getId());
 	}
 
 	public function testUserLoginCallsLoginAttribute()
@@ -46,14 +46,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user = new User;
 		$user->email = 'foo@bar.com';
 
-		$this->assertEquals('foo@bar.com', $user->getUserLogin());
+		$this->assertEquals('foo@bar.com', $user->getLogin());
 	}
 
 	public function testUserLoginNameCallsLoginName()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getLoginName]');
 		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
-		$this->assertEquals('foo', $user->getUserLoginName());
+		$this->assertEquals('foo', $user->getLoginName());
 	}
 
 	public function testUserPassowrdCallsPasswordAttribute()
@@ -64,13 +64,13 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->setHasher($hasher);
 		$user->password = 'unhashed_password_here';
 
-		$this->assertEquals('hashed_password_here', $user->getUserPassword());
+		$this->assertEquals('hashed_password_here', $user->getPassword());
 	}
 
 	public function setSuperUserAccessToEverything()
 	{
-		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getUserPermissions]');
-		$user->shouldReceive('getUserPermissions')->andReturn(array(
+		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPermissions]');
+		$user->shouldReceive('getPermissions')->andReturn(array(
 			'superuser' => 1,
 			'foo'       => -1,
 		));
@@ -92,10 +92,10 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	public function testInGroup()
 	{
 		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$group1->shouldReceive('getGroupId')->once()->andReturn(123);
+		$group1->shouldReceive('getId')->once()->andReturn(123);
 
 		$group2 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$group2->shouldReceive('getGroupId')->once()->andReturn(124);
+		$group2->shouldReceive('getId')->once()->andReturn(124);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getGroups]');
 		$user->shouldReceive('getGroups')->once()->andReturn(array($group2));
@@ -144,20 +144,20 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	public function testMergedPermissions()
 	{
 		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$group1->shouldReceive('getGroupPermissions')->once()->andReturn(array(
+		$group1->shouldReceive('getPermissions')->once()->andReturn(array(
 			'foo' => 1,
 			'bar' => 1,
 			'baz' => 1,
 		));
 
 		$group2 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
-		$group2->shouldReceive('getGroupPermissions')->once()->andReturn(array(
+		$group2->shouldReceive('getPermissions')->once()->andReturn(array(
 			'qux' => 1,
 		));
 
-		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getGroups,getUserPermissions]');
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getGroups,getPermissions]');
 		$user->shouldReceive('getGroups')->once()->andReturn(array($group1, $group2));
-		$user->shouldReceive('getUserPermissions')->once()->andReturn(array(
+		$user->shouldReceive('getPermissions')->once()->andReturn(array(
 			'corge' => 1,
 			'foo'   => -1,
 			'baz'   => -1,
@@ -224,7 +224,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
 
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+		$persistedUser->shouldReceive('getId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
 		$user->setHasher($hasher);
@@ -249,7 +249,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
 
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+		$persistedUser->shouldReceive('getId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
 		$user->setHasher($hasher);
@@ -272,7 +272,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$hasher->shouldReceive('hash')->with('bazbat')->once()->andReturn('hashed_bazbat');
 
 		$persistedUser = m::mock('Cartalyst\Sentry\Users\UserInterface');
-		$persistedUser->shouldReceive('getUserId')->once()->andReturn(123);
+		$persistedUser->shouldReceive('getId')->once()->andReturn(123);
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[newQuery]');
 		$user->setHasher($hasher);
@@ -469,7 +469,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($user->attemptResetPassword('reset_code', 'new_password'));
 		$this->assertNull($user->reset_password_hash);
-		$this->assertEquals('hashed_new_password', $user->getUserPassword());
+		$this->assertEquals('hashed_new_password', $user->getPassword());
 	}
 
 	public function testPermissionsAreMergedAndRemovedProperly()

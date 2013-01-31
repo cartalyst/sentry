@@ -1,5 +1,5 @@
-<a id="getUserPassword"></a>
-###getUserPassword()
+<a id="getPassword"></a>
+###getPassword()
 
 ----------
 
@@ -16,7 +16,7 @@ Returns the user's password (hashed).
 		$user = Sentry::getUserProvider()->findById(1);
 
 		// Get the hashed user password
-		$userPassword = $user->getUserPassword();
+		$userPassword = $user->getPassword();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

@@ -1,5 +1,5 @@
-<a id="getGroupPermissions"></a>
-###getGroupPermissions()
+<a id="getPermissions"></a>
+###getPermissions()
 
 ----------
 
@@ -15,7 +15,7 @@ Gets the group's permissions
 		$group = Sentry::getGroupProvider()->findById(1);
 
 		// Get the group permissions
-		$groupPermissions = $group->getGroupPermissions();
+		$groupPermissions = $group->getPermissions();
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{

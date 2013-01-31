@@ -30,12 +30,12 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-		
+
 	}
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -178,7 +178,7 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	// 	$throttle->shouldReceive('save')->once();
 	// 	$throttle->suspended = true;
 
-		
+
 	// 	// Still suspended
 	// 	$throttle->setSuspensionTime(11);
 	// 	$suspendedAt = new DateTime;
@@ -227,7 +227,7 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	// public function testCheckingThrowsProperExceptionWhenUserIsBanned()
 	// {
 	// 	$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
-	// 	$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+	// 	$user->shouldReceive('getLogin')->once()->andReturn('foo');
 
 	// 	$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[isBanned,isSuspended,getUser]');
 	// 	$throttle->shouldReceive('isBanned')->once()->andReturn(true);
@@ -243,7 +243,7 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	// public function testCheckingThrowsProperExceptionWhenUserIsSuspended()
 	// {
 	// 	$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
-	// 	$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+	// 	$user->shouldReceive('getLogin')->once()->andReturn('foo');
 
 	// 	$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[isBanned,isSuspended,getUser]');
 	// 	$throttle->shouldReceive('isBanned')->once()->andReturn(false);

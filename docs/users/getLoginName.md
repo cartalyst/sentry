@@ -1,11 +1,11 @@
-<a id="getUserPermissions"></a>
-###getUserPermissions()
+<a id="getLoginName"></a>
+###getLoginName()
 
 ----------
 
-Returns the user permissions.
+Returns the used login column for the user.
 
-`returns` array
+`returns` string
 `throws`  UserNotFoundException
 
 ####Example
@@ -15,8 +15,8 @@ Returns the user permissions.
 		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
-		// Get the user permissions
-		$permissions = $user->getUserPermissions();
+		// Get the user login column name
+		$userLoginName = $user->getLoginName();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

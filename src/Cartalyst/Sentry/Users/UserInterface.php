@@ -27,35 +27,35 @@ interface UserInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getUserId();
+	public function getId();
 
 	/**
 	 * Returns the name for the user's login.
 	 *
 	 * @return string
 	 */
-	public function getUserLoginName();
+	public function getLoginName();
 
 	/**
 	 * Returns the user's login.
 	 *
 	 * @return string
 	 */
-	public function getUserLogin();
+	public function getLogin();
 
 	/**
 	 * Returns the user's password (hashed).
 	 *
 	 * @return string
 	 */
-	public function getUserPassword();
+	public function getPassword();
 
 	/**
 	 * Returns permissions for the user.
 	 *
 	 * @return array
 	 */
-	public function getUserPermissions();
+	public function getPermissions();
 
 	/**
 	 * Check if the user is activated.

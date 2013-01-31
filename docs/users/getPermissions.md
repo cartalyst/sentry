@@ -1,11 +1,11 @@
-<a id="getUserId"></a>
-###getUserId()
+<a id="getPermissions"></a>
+###getPermissions()
 
 ----------
 
-Returns the user's ID.
+Returns the user permissions.
 
-`returns` int
+`returns` array
 `throws`  UserNotFoundException
 
 ####Example
@@ -15,8 +15,8 @@ Returns the user's ID.
 		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
-		// Get the user id
-		$userId = $user->getUserId();
+		// Get the user permissions
+		$permissions = $user->getPermissions();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

@@ -25,21 +25,21 @@ interface GroupInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getGroupId();
+	public function getId();
 
 	/**
 	 * Returns the group's name.
 	 *
 	 * @return string
 	 */
-	public function getGroupName();
+	public function getName();
 
 	/**
 	 * Returns permissions for the group.
 	 *
 	 * @return array
 	 */
-	public function getGroupPermissions();
+	public function getPermissions();
 
 	/**
 	 * Saves the group.

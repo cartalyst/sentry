@@ -156,7 +156,7 @@ class Sentry {
 	{
 		// We'll default to the login name field, but fallback to a hard-coded
 		// 'login' key in the array that was passed.
-		$loginName = $this->userProvider->getEmptyUser()->getUserLoginName();
+		$loginName = $this->userProvider->getEmptyUser()->getLoginName();
 		$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
 
 		if (empty($credentials[$loginCredentialKey]))
@@ -298,14 +298,14 @@ class Sentry {
 	{
 		if ( ! $user->isActivated())
 		{
-			$login = $user->getUserLogin();
+			$login = $user->getLogin();
 			throw new UserNotActivatedException("Cannot login user [$login] as they are not activated.");
 		}
 
 		$this->user = $user;
 
 		// Create an array of data to persist to the session and / or cookie
-		$toPersist = array($user->getUserLogin(), $user->getPersistCode());
+		$toPersist = array($user->getLogin(), $user->getPersistCode());
 
 		// Set sessions
 		$this->session->put($toPersist);

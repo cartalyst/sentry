@@ -1,5 +1,5 @@
-<a id="getUserLogin"></a>
-###getUserLogin()
+<a id="getLogin"></a>
+###getLogin()
 
 ----------
 
@@ -16,7 +16,7 @@ Returns the user's login.
 		$user = Sentry::getUserProvider()->findById(1);
 
 		// Get the user login
-		$userLogin = $user->getUserLogin();
+		$userLogin = $user->getLogin();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

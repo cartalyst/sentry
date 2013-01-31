@@ -79,7 +79,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(false);
-		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+		$user->shouldReceive('getLogin')->once()->andReturn('foo');
 
 		$this->sentry->login($user);
 	}
@@ -88,7 +88,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getUserLogin')->once()->andReturn('foo');
+		$user->shouldReceive('getLogin')->once()->andReturn('foo');
 		$user->shouldReceive('getPersistCode')->once()->andReturn('persist_code');
 
 		$this->session->shouldReceive('put')->with(array('foo', 'persist_code'))->once();
@@ -104,7 +104,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$credentials = array();
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
-		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$user->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->sentry->authenticate($credentials);
 	}
@@ -119,7 +119,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
-		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$user->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->sentry->authenticate($credentials);
 	}
@@ -137,7 +137,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
-		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$user->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andThrow(new UserNotFoundException);
 
@@ -155,7 +155,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
-		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
@@ -176,7 +176,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
-		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
@@ -197,7 +197,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
-		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
@@ -233,7 +233,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(false);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
-		$user->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$user->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
@@ -266,7 +266,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
-		$emptyUser->shouldReceive('getUserLoginName')->once()->andReturn('email');
+		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));

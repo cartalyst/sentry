@@ -1,11 +1,11 @@
-<a id="getLoginName"></a>
-###getLoginName()
+<a id="getId"></a>
+###getId()
 
 ----------
 
-Returns the used login column for the user.
+Returns the user's ID.
 
-`returns` string
+`returns` int
 `throws`  UserNotFoundException
 
 ####Example
@@ -15,8 +15,8 @@ Returns the used login column for the user.
 		// Find the user
 		$user = Sentry::getUserProvider()->findById(1);
 
-		// Get the user login column name
-		$userLoginName = $user->getUserLoginName();
+		// Get the user id
+		$userId = $user->getId();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

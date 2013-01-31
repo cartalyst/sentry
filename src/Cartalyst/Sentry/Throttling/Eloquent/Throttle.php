@@ -277,7 +277,7 @@ class Throttle extends Model implements ThrottleInterface {
 		{
 			throw new UserBannedException(sprintf(
 				'User [%s] has been banned.',
-				$this->getUser()->getUserLogin()
+				$this->getUser()->getLogin()
 			));
 		}
 
@@ -285,7 +285,7 @@ class Throttle extends Model implements ThrottleInterface {
 		{
 			throw new UserSuspendedException(sprintf(
 				'User [%s] has been suspended.',
-				$this->getUser()->getUserLogin()
+				$this->getUser()->getLogin()
 			));
 		}
 
