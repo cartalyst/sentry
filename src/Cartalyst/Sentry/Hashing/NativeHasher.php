@@ -21,13 +21,6 @@
 class NativeHasher implements HasherInterface {
 
 	/**
-	 * Salt length.
-	 *
-	 * @var int
-	 */
-	public $saltLength = 16;
-
-	/**
 	 * Hash string.
 	 *
 	 * @param  string  $string
@@ -48,18 +41,6 @@ class NativeHasher implements HasherInterface {
 	public function checkhash($string, $hashedString)
 	{
 		return password_verify($string, $hashedString);
-	}
-
-	/**
-	 * Create a random string for a salt.
-	 *
-	 * @return string
-	 */
-	public function createSalt()
-	{
-		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
 	}
 
 }

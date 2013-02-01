@@ -37,11 +37,4 @@ interface HasherInterface {
 	 */
 	public function checkhash($string, $hashedString);
 
-	/**
-	 * Create a random string for a salt.
-	 *
-	 * @return string
-	 */
-	public function createSalt();
-
 }

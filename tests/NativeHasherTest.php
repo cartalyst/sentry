@@ -30,12 +30,12 @@ class NativeHasherTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
-		
+
 	}
 
 	/**
 	 * Close mockery.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function tearDown()
@@ -43,17 +43,9 @@ class NativeHasherTest extends PHPUnit_Framework_TestCase {
 		m::close();
 	}
 
-	public function testSaltMatchesLength()
-	{
-		$hasher = new Hasher;
-		$hasher->saltLength = 32;
-
-		$this->assertEquals(32, strlen($hasher->createSalt()));
-	}
-
 	public function testHashingIsAlwaysCorrect()
 	{
-		$hasher         = new Hasher;		
+		$hasher         = new Hasher;
 		$password       = 'f00b@rB@zb@T';
 		$hashedPassword = $hasher->hash($password);
 
