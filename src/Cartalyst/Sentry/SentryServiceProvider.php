@@ -20,7 +20,9 @@
 
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
+use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Hashing\NativeHasher;
+use Cartalyst\Sentry\Hashing\Sha256Hasher;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
@@ -60,7 +62,24 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
 		{
-			return new NativeHasher;
+			$hasher = $app['config']['cartalyst/sentry::sentry.hasher'];
+
+			switch ($hasher)
+			{
+				case 'native':
+					return new NativeHasher;
+					break;
+
+				case 'bcrypt':
+					return new BcryptHasher;
+					break;
+
+				case 'sha256':
+					return new Sha256Hasher;
+					break;
+			}
+
+			throw new \InvalidArgumentException("Invalid hasher [$hasher] chosen for Sentry.");
 		});
 	}
 
