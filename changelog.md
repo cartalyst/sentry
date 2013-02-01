@@ -1,3 +1,9 @@
+#v2.0.0-beta5
+
+ - Renamed a whole bunch of interface methods to simplify them. For example, `GroupInterface::getGroupPermissions()` is now `GroupInterface::getPermissions()`. Eloquent changes have occured which have allowed a clean implementation of this.
+ - Adding configuration to specify default hasher for Sentry out of "native", "bcrypt" or "sha256".
+ - Some older versions of PHP 5.3 (< 5.3.7) are most likely to be incompatible with the Native Hasher. Added Exception and suggestions for when this occurs. See [here](https://github.com/ircmaxell/password_compat/issues/10) and [here](https://github.com/cartalyst/sentry/issues/98#issuecomment-12974603).
+
 #v2.0.0-beta4
 
  - Fixing security issue with latest persist code changes.
