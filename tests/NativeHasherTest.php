@@ -53,4 +53,23 @@ class NativeHasherTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($hasher->checkHash($password.'$', $hashedPassword));
 	}
 
+	/**
+	 * Regresstion test for https://github.com/cartalyst/sentry/issues/98
+	 *
+	 * @runInSeparateProcess
+	 * @expectedException RuntimeException
+	 */
+	public function testExceptionIsThrownIfHasherFails()
+	{
+		// Override the password hash function
+		function password_hash()
+		{
+			return false;
+		}
+
+		$hasher = new Hasher;
+
+		$hasher->hash('foo');
+	}
+
 }
