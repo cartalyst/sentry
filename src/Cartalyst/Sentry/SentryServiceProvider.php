@@ -32,6 +32,16 @@ use Illuminate\Support\ServiceProvider;
 class SentryServiceProvider extends ServiceProvider {
 
 	/**
+	 * Boot the service provider.
+	 *
+	 * @return void
+	 */
+	public function boot()
+	{
+		$this->package('cartalyst/sentry', 'cartalyst/sentry');
+	}
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @return void
@@ -39,8 +49,6 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->package('cartalyst/sentry', 'cartalyst/sentry');
-
 		$this->registerHasher();
 
 		$this->registerSession();
