@@ -147,6 +147,24 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$group->givePermissions($json);
 	}
 
+	/**
+	 * Regression test for https://github.com/cartalyst/sentry/issues/103
+	 */
+	public function testSettingPermissionsWhenPermissionsAreStrings()
+	{
+		$group = new Group;
+		$group->permissions = array(
+			'admin'    => '1',
+			'foo'      => '0',
+		);
+
+		$expected = array(
+			'admin'     => 1,
+		);
+
+		$this->assertEquals($expected, $group->permissions);
+	}
+
 	public function testValidation()
 	{
 		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group[newQuery]');

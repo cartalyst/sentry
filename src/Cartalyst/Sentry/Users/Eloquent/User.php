@@ -208,10 +208,10 @@ class User extends Model implements UserInterface {
 		$permissions = array_merge($this->getPermissions(), $permissions);
 
 		// Loop through and adjust permissions as needed
-		foreach ($permissions as $permission => $value)
+		foreach ($permissions as $permission => &$value)
 		{
 			// Lets make sure there is a valid permission value
-			if ( ! in_array($value, $this->allowedPermissionsValues, true))
+			if ( ! in_array($value = (int) $value, $this->allowedPermissionsValues))
 			{
 				throw new \InvalidArgumentException("Invalid value [$value] for permission [$permission] given.");
 			}

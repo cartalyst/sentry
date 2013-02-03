@@ -197,6 +197,28 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Regression test for https://github.com/cartalyst/sentry/issues/103
+	 */
+	public function testSettingPermissionsWhenPermissionsAreStrings()
+	{
+		$user = new User;
+		$user->permissions = array(
+			'superuser' => '1',
+			'admin'    => '1',
+			'foo'      => '0',
+			'bar'      => '-1',
+		);
+
+		$expected = array(
+			'superuser' => 1,
+			'admin'     => 1,
+			'bar'       => -1,
+		);
+
+		$this->assertEquals($expected, $user->permissions);
+	}
+
+	/**
 	 * @expectedException Cartalyst\Sentry\Users\LoginRequiredException
 	 */
 	public function testValidationThrowsLoginExceptionIfNoneGiven()
