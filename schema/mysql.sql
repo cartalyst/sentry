@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `throttle`;
 
 CREATE TABLE `throttle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `attempts` int(11) NOT NULL,
   `suspended` tinyint(4) NOT NULL,
   `banned` tinyint(4) NOT NULL,
