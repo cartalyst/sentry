@@ -223,7 +223,7 @@ class User extends Model implements UserInterface {
 			}
 		}
 
-		$this->attributes['permissions'] = json_encode($permissions);
+		$this->attributes['permissions'] = ( ! empty($permissions)) ? json_encode($permissions) : '';
 	}
 
 	/**
