@@ -60,7 +60,7 @@ class FuelPHPCookieTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(isset($_SERVER['__cookie.set']));
 		$result = $_SERVER['__cookie.set'];
 		$this->assertEquals('foo', $result[0]);
-		$this->assertEquals('bar', $result[1]);
+		$this->assertEquals('s:3:"bar";', $result[1]);
 		$this->assertEquals(120, $result[2]);
 		unset($_SERVER['__cookie.set']);
 	}
