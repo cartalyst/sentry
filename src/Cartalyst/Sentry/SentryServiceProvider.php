@@ -32,6 +32,13 @@ use Illuminate\Support\ServiceProvider;
 class SentryServiceProvider extends ServiceProvider {
 
 	/**
+	 * Indicates if loading of the provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = true;
+
+	/**
 	 * Boot the service provider.
 	 *
 	 * @return void
@@ -39,6 +46,8 @@ class SentryServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('cartalyst/sentry', 'cartalyst/sentry');
+
+		$this->registerEvents();
 	}
 
 	/**
@@ -62,8 +71,6 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerThrottleProvider();
 
 		$this->registerSentry();
-
-		$this->registerEvents();
 	}
 
 	protected function registerHasher()
@@ -175,6 +182,16 @@ class SentryServiceProvider extends ServiceProvider {
 				$response->headers->setCookie($cookie);
 			}
 		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function provides()
+	{
+		return array('sentry.hasher', 'sentry.session', 'sentry.cookie', 'sentry.group', 'sentry.user', 'sentry.throttle', 'sentry');
 	}
 
 }
