@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS `groups`;
 
 CREATE TABLE `groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `permissions` text,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -21,8 +21,8 @@ CREATE TABLE `groups` (
 DROP TABLE IF EXISTS `throttle`;
 
 CREATE TABLE `throttle` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
   `attempts` int(11) NOT NULL,
   `suspended` tinyint(4) NOT NULL,
   `banned` tinyint(4) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE `throttle` (
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `reset_password_hash` varchar(255) DEFAULT NULL,
@@ -63,8 +63,8 @@ CREATE TABLE `users` (
 DROP TABLE IF EXISTS `users_groups`;
 
 CREATE TABLE `users_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `group_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
