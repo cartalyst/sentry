@@ -47,7 +47,7 @@ class FuelPHPSession implements SessionInterface {
 	{
 		$this->store = $store;
 
-		if (isset($this->key))
+		if (isset($key))
 		{
 			$this->key = $key;
 		}
@@ -71,7 +71,7 @@ class FuelPHPSession implements SessionInterface {
 	 */
 	public function put($value)
 	{
-		$this->store->set($this->getkey(), $value);
+		$this->store->set($this->getKey(), $value);
 	}
 
 	/**
