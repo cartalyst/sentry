@@ -32,13 +32,6 @@ use Illuminate\Support\ServiceProvider;
 class SentryServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = true;
-
-	/**
 	 * Boot the service provider.
 	 *
 	 * @return void
@@ -47,14 +40,13 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->package('cartalyst/sentry', 'cartalyst/sentry');
 
-		$this->registerEvents();
+		$this->observeEvents();
 	}
 
 	/**
 	 * Register the service provider.
 	 *
 	 * @return void
-	 *
 	 */
 	public function register()
 	{
@@ -73,6 +65,11 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerSentry();
 	}
 
+	/**
+	 * Register the hasher used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerHasher()
 	{
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
@@ -98,6 +95,11 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Register the session driver used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerSession()
 	{
 		$this->app['sentry.session'] = $this->app->share(function($app)
@@ -106,6 +108,11 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Register the cookie driver used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerCookie()
 	{
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
@@ -114,6 +121,11 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Register the group provider used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerGroupProvider()
 	{
 		$this->app['sentry.group'] = $this->app->share(function($app)
@@ -124,6 +136,11 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Register the user provider used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerUserProvider()
 	{
 		$this->app['sentry.user'] = $this->app->share(function($app)
@@ -134,6 +151,11 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Register the throttle provider used by Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerThrottleProvider()
 	{
 		$this->app['sentry.throttle'] = $this->app->share(function($app)
@@ -151,6 +173,12 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
+	/**
+	 * Takes all the components of Sentry and glues them
+	 * together to create Sentry.
+	 *
+	 * @return void
+	 */
 	protected function registerSentry()
 	{
 		$this->app['sentry'] = $this->app->share(function($app)
@@ -171,7 +199,12 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
-	protected function registerEvents()
+	/**
+	 * Sets up event observations required by Sentry.
+	 *
+	 * @return void
+	 */
+	protected function observeEvents()
 	{
 		// Set the cookie after the app runs
 		$app = $this->app;
@@ -182,16 +215,6 @@ class SentryServiceProvider extends ServiceProvider {
 				$response->headers->setCookie($cookie);
 			}
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array('sentry.hasher', 'sentry.session', 'sentry.cookie', 'sentry.group', 'sentry.user', 'sentry.throttle', 'sentry');
 	}
 
 }
