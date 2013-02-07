@@ -165,7 +165,7 @@ class User extends Model implements UserInterface {
 	 * @param  mixed  $activated
 	 * @return bool
 	 */
-	public function giveActivated($activated)
+	public function getActivatedAttribute($activated)
 	{
 		return (bool) $activated;
 	}
@@ -176,7 +176,7 @@ class User extends Model implements UserInterface {
 	 * @param  mixed  $permissions
 	 * @return array  $_permissions
 	 */
-	public function givePermissions($permissions)
+	public function getPermissionsAttribute($permissions)
 	{
 		if ( ! $permissions)
 		{
@@ -202,7 +202,7 @@ class User extends Model implements UserInterface {
 	 * @param  array  $permissions
 	 * @return string
 	 */
-	public function takePermissions(array $permissions)
+	public function setPermissionsAttribute(array $permissions)
 	{
 		// Merge permissions
 		$permissions = array_merge($this->getPermissions(), $permissions);

@@ -121,7 +121,7 @@ class Group extends Model implements GroupInterface {
 	 * @param  mixed  $permissions
 	 * @return array  $_permissions
 	 */
-	public function givePermissions($permissions)
+	public function getPermissionsAttribute($permissions)
 	{
 		if ( ! $permissions)
 		{
@@ -147,7 +147,7 @@ class Group extends Model implements GroupInterface {
 	 * @param  array  $permissions
 	 * @return void
 	 */
-	public function takePermissions(array $permissions)
+	public function setPermissionsAttribute(array $permissions)
 	{
 		// Merge permissions
 		$permissions = array_merge($this->getPermissions(), $permissions);

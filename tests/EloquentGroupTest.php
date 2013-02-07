@@ -144,7 +144,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 		$json = '{"foo":1,"bar:1';
 		$group = new Group;
 
-		$group->givePermissions($json);
+		$group->getPermissionsAttribute($json);
 	}
 
 	/**
