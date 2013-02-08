@@ -676,11 +676,11 @@ class User extends Model implements UserInterface {
 
 		if (isset($result['activated']))
 		{
-			$result['activated'] = $this->getActivated($result['activated']);
+			$result['activated'] = $this->getActivatedAttribute($result['activated']);
 		}
 		if (isset($result['permissions']))
 		{
-			$result['permissions'] = $this->getPermissions($result['permissions']);
+			$result['permissions'] = $this->getPermissionsAttribute($result['permissions']);
 		}
 		if (isset($result['suspended_at']))
 		{
