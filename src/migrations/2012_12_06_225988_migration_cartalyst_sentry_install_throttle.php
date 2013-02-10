@@ -13,7 +13,7 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 	{
 		Schema::create('throttle', function($table)
 		{
-			$table->increments('id')->unsigned();
+			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->integer('attempts');
 			$table->boolean('suspended');
