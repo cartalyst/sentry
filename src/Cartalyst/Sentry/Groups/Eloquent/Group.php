@@ -182,7 +182,7 @@ class Group extends Model implements GroupInterface {
 
 		if (isset($attributes['permissions']))
 		{
-			$attributes['permissions'] = $this->getPermissionsAttribute();
+			$attributes['permissions'] = $this->getPermissionsAttribute($attributes['permissions']);
 		}
 
 		return $attributes;
