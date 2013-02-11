@@ -69,7 +69,7 @@ interface ProviderInterface {
 	 *
 	 * @return array
 	 */
-	public function getAllUsers();
+	public function getAll();
 
 	/**
 	 * Returns an array of all users with access to
@@ -78,6 +78,6 @@ interface ProviderInterface {
 	 * @param  string|array  $permissions
 	 * @return array
 	 */
-	public function getAllUsersWithAccess($permissions);
+	public function getAllWithAccess($permissions);
 
 }
