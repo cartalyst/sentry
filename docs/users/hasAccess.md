@@ -21,7 +21,8 @@ Parameters          | Type                | Default             | Required      
 		// Find the user
 		$user = Sentry::getUserProvider()->findByLogin('test@test.com');
 
-		// Check if the user has the 'admin' permission
+		// Check if the user has the 'admin' permission. Also,
+		// multiple permissions may be used by passing an array
 		if ( ! $user->hasAccess('admin'))
 		{
 			// User does not have access, redirect them or whatever else you may want to do
