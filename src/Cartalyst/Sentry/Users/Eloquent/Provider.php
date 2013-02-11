@@ -183,6 +183,38 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Returns an array of all users.
+	 *
+	 * @return array
+	 */
+	public function getAllUsers()
+	{
+		$instance = $this->createModel();
+
+		$hasher = $this->hasher;
+		return array_map(function($user) use ($hasher)
+		{
+			$user->setHasher($hasher);
+			return $user;
+		}, $instance->newQuery()->all()->all());
+	}
+
+	/**
+	 * Returns an array of all users with access to
+	 * a permission(s).
+	 *
+	 * @param  string|array  $permissions
+	 * @return array
+	 */
+	public function getAllUsersWithAccess($permissions)
+	{
+		return array_filter($this->getAllUsers(), function($user) use ($permissions)
+		{
+			return $user->hasAccess($permissions);
+		});
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return Illuminate\Database\Eloquent\Model

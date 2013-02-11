@@ -237,6 +237,37 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('UserModelStub2', $provider->createModel());
 	}
 
+	public function testGettingAllUsers()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+
+		$provider->shouldReceive('createModel')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\Eloquent\User'));
+		$user->shouldReceive('newQuery')->once()->andReturn($query = m::mock('StdClass'));
+		$query->shouldReceive('all')->once()->andReturn($collection = m::mock('StdClass'));
+		$collection->shouldReceive('all')->once()->andReturn(array($user = m::mock('Cartalyst\Sentry\Users\User')));
+		$user->shouldReceive('setHasher')->with($hasher)->once();
+
+		$this->assertEquals(array($user), $provider->getAllUsers());
+	}
+
+	public function testGettingAllUsersWithAccess()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[getAllUsers]');
+
+		$provider->shouldReceive('getAllUsers')->once()->andReturn(array(
+			$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+			$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+		));
+
+		$user1->shouldReceive('hasAccess')->with($permissions = array('foo', 'bar'))->once()->andReturn(true);
+		$user2->shouldReceive('hasAccess')->with($permissions)->once()->andReturn(false);
+
+		$this->assertEquals(array($user1), $provider->getAllUsersWithAccess($permissions));
+	}
+
 }
 
 class UserModelStub1 {

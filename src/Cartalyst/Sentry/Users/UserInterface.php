@@ -204,13 +204,17 @@ interface UserInterface {
 	public function getMergedPermissions();
 
 	/**
-	 * See if a user has a required permission. Permissions
-	 * are merged from all groups the user belongs to
-	 * and then are checked against the passed permission.
+	 * See if a user has access to the passed permission(s).
+	 * Permissions are merged from all groups the user belongs to
+	 * and then are checked against the passed permission(s).
 	 *
-	 * @param  string  $permission
+	 * If multiple permissions are passed, the user must
+	 * have access to all permissions passed through. Super users
+	 * have access no matter what.
+	 *
+	 * @param  string|array  $permissions
 	 * @return bool
 	 */
-	public function hasAccess($permission);
+	public function hasAccess($permissions);
 
 }

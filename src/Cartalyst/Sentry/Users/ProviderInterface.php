@@ -64,4 +64,20 @@ interface ProviderInterface {
 	 */
 	public function getEmptyUser();
 
+	/**
+	 * Returns an array of all users.
+	 *
+	 * @return array
+	 */
+	public function getAllUsers();
+
+	/**
+	 * Returns an array of all users with access to
+	 * a permission(s).
+	 *
+	 * @param  string|array  $permissions
+	 * @return array
+	 */
+	public function getAllUsersWithAccess($permissions);
+
 }

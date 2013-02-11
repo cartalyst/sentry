@@ -522,23 +522,40 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * See if a user has a required permission. Permissions
-	 * are merged from all groups the user belongs to
-	 * and then are checked against the passed permission.
+	 * See if a user has access to the passed permission(s).
+	 * Permissions are merged from all groups the user belongs to
+	 * and then are checked against the passed permission(s).
 	 *
-	 * @param  string  $permission
+	 * If multiple permissions are passed, the user must
+	 * have access to all permissions passed through. Super users
+	 * have access no matter what.
+	 *
+	 * @param  string|array  $permissions
 	 * @return bool
 	 */
-	public function hasAccess($permission)
+	public function hasAccess($permissions)
 	{
 		if ($this->isSuperUser())
 		{
 			return true;
 		}
 
-		$permissions = $this->getMergedPermissions();
+		$mergedPermissions = $this->getMergedPermissions();
 
-		return (array_key_exists($permission, $permissions) and $permissions[$permission] == 1);
+		if ( ! is_array($permissions))
+		{
+			$permissions = (array) $permissions;
+		}
+
+		foreach ($permissions as $permission)
+		{
+			if ( ! array_key_exists($permission, $mergedPermissions) or $mergedPermissions[$permission] != 1)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

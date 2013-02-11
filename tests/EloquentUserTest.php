@@ -67,17 +67,6 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('hashed_password_here', $user->getPassword());
 	}
 
-	public function setSuperUserAccessToEverything()
-	{
-		$user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPermissions]');
-		$user->shouldReceive('getPermissions')->andReturn(array(
-			'superuser' => 1,
-			'foo'       => -1,
-		));
-
-		$this->assertTrue($user->isSuperUser());
-	}
-
 	public function testGettingGroups()
 	{
 		$pivot = m::mock('StdClass');
@@ -182,7 +171,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->hasAccess('bar'));
 	}
 
-	public function testNormalUserPermissions()
+	public function testHasAccess()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
 		$user->shouldReceive('isSuperUser')->twice()->andReturn(false);
@@ -194,6 +183,20 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($user->hasAccess('bar'));
 		$this->assertFalse($user->hasAccess('foo'));
+	}
+
+	public function testHasAccessWithMultipleProperties()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->twice()->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->twice()->andReturn(array(
+			'foo' => -1,
+			'bar' => 1,
+			'baz' => 1,
+		));
+
+		$this->assertTrue($user->hasAccess(array('bar', 'baz')));
+		$this->assertFalse($user->hasAccess(array('foo', 'bar', 'baz')));
 	}
 
 	/**
