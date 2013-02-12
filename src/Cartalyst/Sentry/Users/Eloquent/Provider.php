@@ -196,7 +196,7 @@ class Provider implements ProviderInterface {
 		{
 			$user->setHasher($hasher);
 			return $user;
-		}, $instance->newQuery()->all()->all());
+		}, $instance->newQuery()->get()->all());
 	}
 
 	/**

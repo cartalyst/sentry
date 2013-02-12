@@ -246,7 +246,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$provider->shouldReceive('createModel')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\Eloquent\User'));
 		$user->shouldReceive('newQuery')->once()->andReturn($query = m::mock('StdClass'));
-		$query->shouldReceive('all')->once()->andReturn($collection = m::mock('StdClass'));
+		$query->shouldReceive('get')->once()->andReturn($collection = m::mock('StdClass'));
 		$collection->shouldReceive('all')->once()->andReturn(array($user = m::mock('Cartalyst\Sentry\Users\User')));
 		$user->shouldReceive('setHasher')->with($hasher)->once();
 
