@@ -1,6 +1,6 @@
 <?php namespace Cartalyst\Sentry\Hashing;
 /**
- * Part of the Sentry Package.
+ * Part of the Sentry package.
  *
  * NOTICE OF LICENSE
  *
@@ -11,7 +11,7 @@
  * the following URL: http://www.opensource.org/licenses/BSD-3-Clause
  *
  * @package    Sentry
- * @version    2.0
+ * @version    2.0.0
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
  * @copyright  (c) 2011 - 2013, Cartalyst LLC
@@ -33,7 +33,7 @@ class NativeHasher implements HasherInterface {
 		// and https://github.com/ircmaxell/password_compat/issues/10
 		if (! function_exists('password_hash'))
 		{
-			throw new \RuntimeException('The function password_hash() does not exist, your PHP environment is probably incompatible. Try running [vendor/ircmaxell/password-compat/version-test.php] to check compatibility or use an alternative hashing strategy.');	
+			throw new \RuntimeException('The function password_hash() does not exist, your PHP environment is probably incompatible. Try running [vendor/ircmaxell/password-compat/version-test.php] to check compatibility or use an alternative hashing strategy.');
 		}
 
 		if (($hash = password_hash($string, PASSWORD_DEFAULT)) === false)
