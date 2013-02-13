@@ -1,3 +1,9 @@
+#v2.0.0-beta6
+
+ - Allow you to pass an array of permissions to `hasAccess()` to check the user has access to **all** of those permissions.
+ - Added method to find all users through `Sentry::getUserProvider()->findAll()`
+ - Added method to find all users with permissions, where permissions may be a single string or an array of permissions which the users must match all (driven by the changes to `hasAccess` listed above).
+
 #v2.0.0-beta5
 
  - Renamed a whole bunch of interface methods to simplify them. For example, `GroupInterface::getGroupPermissions()` is now `GroupInterface::getPermissions()`. Eloquent changes have occured which have allowed a clean implementation of this.
