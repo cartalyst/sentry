@@ -122,10 +122,12 @@ interface UserInterface {
 
 	/**
 	 * Attempts to activate the given user by checking
-	 * the activate code.
+	 * the activate code. If the user is activated already,
+	 * an Exception is thrown.
 	 *
 	 * @param  string  $activationCode
 	 * @return bool
+	 * @throws Cartalyst\Sentry\Users\UserAlreadyActivatedException
 	 */
 	public function attemptActivation($activationCode);
 

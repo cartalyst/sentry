@@ -6,6 +6,7 @@
  - Made the hasher on the default user model a static property for performance and boilerplate code improvements.
  - Made the login attribute name static.
  - Made a configuration item to edit the login attribute.
+ - Attempting to activate an already activated user will now throw a `UserAlreadyActivatedException`.
 
 #v2.0.0-beta5
 

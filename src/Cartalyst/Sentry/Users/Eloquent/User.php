@@ -23,6 +23,7 @@ use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
+use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
 
@@ -353,16 +354,18 @@ class User extends Model implements UserInterface {
 
 	/**
 	 * Attempts to activate the given user by checking
-	 * the activate code.
+	 * the activate code. If the user is activated already,
+	 * an Exception is thrown.
 	 *
 	 * @param  string  $activationCode
 	 * @return bool
+	 * @throws Cartalyst\Sentry\Users\UserAlreadyActivatedException
 	 */
 	public function attemptActivation($activationCode)
 	{
 		if ($this->activated)
 		{
-			return true;
+			throw new UserAlreadyActivatedException('Cannot attempt activation on an already activated user.');
 		}
 
 		if ($activationCode == $this->activation_hash)

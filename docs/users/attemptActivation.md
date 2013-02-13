@@ -10,7 +10,7 @@ Parameters          | Type                | Default             | Required      
 `$activationCode`   | string              | none                | true                | Activation Code
 
 `returns` bool
-`throws`  UserNotFoundException
+`throws`  UserAlreadyActivatedException
 
 ####Example
 
@@ -32,4 +32,8 @@ Parameters          | Type                | Default             | Required      
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		echo 'User does not exist.';
+	}
+	catch (Cartalyst\SEntry\Users\UserAlreadyActivatedException $e)
+	{
+		echo 'You have already activated.';
 	}

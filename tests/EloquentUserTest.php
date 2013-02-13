@@ -449,13 +449,16 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($hashedRandomString, $user->reset_password_hash);
 	}
 
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\UserAlreadyActivatedException
+	 */
 	public function testUserIsNotActivatedTwice()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[checkHash]');
 		$user->shouldReceive('checkHash')->never();
 		$user->activated = true;
 
-		$this->assertTrue($user->attemptActivation('not_needed'));
+		$user->attemptActivation('not_needed');
 	}
 
 	public function testUserActivation()
