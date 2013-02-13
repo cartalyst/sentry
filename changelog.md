@@ -3,6 +3,9 @@
  - Allow you to pass an array of permissions to `hasAccess()` to check the user has access to **all** of those permissions.
  - Added method to find all users through `Sentry::getUserProvider()->findAll()`
  - Added method to find all users with permissions, where permissions may be a single string or an array of permissions which the users must match all (driven by the changes to `hasAccess` listed above).
+ - Made the hasher on the default user model a static property for performance and boilerplate code improvements.
+ - Made the login attribute name static.
+ - Made a configuration item to edit the login attribute.
 
 #v2.0.0-beta5
 

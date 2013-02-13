@@ -63,7 +63,7 @@ return array(
 		| Model
 		|--------------------------------------------------------------------------
 		|
-		| When using the "Eloquent" driver, we need to know which
+		| When using the "eloquent" driver, we need to know which
 		| Eloquent models should be used throughout Sentry.
 		|
 		*/
@@ -87,12 +87,25 @@ return array(
 		| Model
 		|--------------------------------------------------------------------------
 		|
-		| When using the "Eloquent" driver, we need to know which
+		| When using the "eloquent" driver, we need to know which
 		| Eloquent models should be used throughout Sentry.
 		|
 		*/
 
 		'model' => 'Cartalyst\Sentry\Users\Eloquent\User',
+
+		/*
+		|--------------------------------------------------------------------------
+		| Login Attribute
+		|--------------------------------------------------------------------------
+		|
+		| If you're the "eloquent" driver and extending the base Eloquent model,
+		| we allow you to globally override the login attribute without even
+		| subclassing the model, simply by specifying the attribute below.
+		|
+		*/
+
+		'login_attribute' => 'email',
 
 	),
 
@@ -125,7 +138,7 @@ return array(
 		| Model
 		|--------------------------------------------------------------------------
 		|
-		| When using the "Eloquent" driver, we need to know which
+		| When using the "eloquent" driver, we need to know which
 		| Eloquent models should be used throughout Sentry.
 		|
 		*/

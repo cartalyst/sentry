@@ -59,13 +59,6 @@ class User extends Model implements UserInterface {
 	);
 
 	/**
-	 * The login attribute.
-	 *
-	 * @var string
-	 */
-	protected $loginAttribute = 'email';
-
-	/**
 	 * Allowed permissions values.
 	 *
 	 * Possible options:
@@ -76,6 +69,13 @@ class User extends Model implements UserInterface {
 	 * @var array
 	 */
 	protected $allowedPermissionsValues = array(-1, 0, 1);
+
+	/**
+	 * The login attribute.
+	 *
+	 * @var string
+	 */
+	protected static $loginAttribute = 'email';
 
 	/**
 	 * The hasher the model uses.
@@ -106,7 +106,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getLoginName()
 	{
-		return $this->loginAttribute;
+		return static::$loginAttribute;
 	}
 
 	/**
@@ -255,7 +255,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function validate()
 	{
-		if ( ! $login = $this->{$this->loginAttribute})
+		if ( ! $login = $this->{static::$loginAttribute})
 		{
 			throw new LoginRequiredException("A login is required for a user, none given.");
 		}
@@ -718,11 +718,24 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Override the login
+	 * Override the login attribute for all models instances.
+	 *
+	 * @param  string  $loginAttribute
+	 * @return void
 	 */
-	public function setLoginAttribute()
+	public static function setLoginAttribute($loginAttribute)
 	{
+		static::$loginAttribute = $loginAttribute;
+	}
 
+	/**
+	 * Get the current login attribute for all model instances.
+	 *
+	 * @return string
+	 */
+	public static function getLoginAttribute()
+	{
+		return static::$loginAttribute;
 	}
 
 }

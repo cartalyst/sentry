@@ -561,4 +561,12 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$user->delete();
 	}
 
+	public function testSettingLoginAttribute()
+	{
+		$originalAttribute = User::getLoginAttribute();
+		User::setLoginAttribute('foo');
+		$this->assertEquals('foo', User::getLoginAttribute());
+		user::setLoginAttribute($originalAttribute);
+	}
+
 }
