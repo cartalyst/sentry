@@ -56,6 +56,8 @@ class Provider implements ProviderInterface {
 		{
 			$this->model = $model;
 		}
+
+		$this->setupHasherWithModel();
 	}
 
 	/**
@@ -73,8 +75,6 @@ class Provider implements ProviderInterface {
 		{
 			throw new UserNotFoundException("A user could not be found with ID [$id].");
 		}
-
-		$user->setHasher($this->hasher);
 
 		return $user;
 	}
@@ -94,8 +94,6 @@ class Provider implements ProviderInterface {
 		{
 			throw new UserNotFoundException("A user could not be found with a login value of [$login].");
 		}
-
-		$user->setHasher($this->hasher);
 
 		return $user;
 	}
@@ -149,37 +147,7 @@ class Provider implements ProviderInterface {
 			}
 		}
 
-		$user->setHasher($this->hasher);
-
 		return $user;
-	}
-
-	/**
-	 * Creates a user.
-	 *
-	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function create(array $credentials)
-	{
-		$user = $this->createModel();
-		$user->setHasher($this->hasher);
-		$user->fill($credentials);
-		$user->save();
-
-		return $user;
-	}
-
-	/**
-	 * Returns an empty user object.
-	 *
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function getEmptyUser()
-	{
-		$instance = $this->createModel();
-		$instance->setHasher($this->hasher);
-		return $instance;
 	}
 
 	/**
@@ -189,14 +157,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findAll()
 	{
-		$instance = $this->createModel();
-
-		$hasher = $this->hasher;
-		return array_map(function($user) use ($hasher)
-		{
-			$user->setHasher($hasher);
-			return $user;
-		}, $instance->newQuery()->get()->all());
+		return $this->createModel()->newQuery()->get()->all();
 	}
 
 	/**
@@ -212,6 +173,31 @@ class Provider implements ProviderInterface {
 		{
 			return $user->hasAccess($permissions);
 		});
+	}
+
+	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function create(array $credentials)
+	{
+		$user = $this->createModel();
+		$user->fill($credentials);
+		$user->save();
+
+		return $user;
+	}
+
+	/**
+	 * Returns an empty user object.
+	 *
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getEmptyUser()
+	{
+		return $this->createModel();
 	}
 
 	/**
@@ -235,6 +221,20 @@ class Provider implements ProviderInterface {
 	public function setModel($model)
 	{
 		$this->model = $model;
+		$this->setupHasherWithModel();
+	}
+
+	/**
+	 * Statically sets the hasher with the model.
+	 *
+	 * @return void
+	 */
+	public function setupHasherWithModel()
+	{
+		if (method_exists($this->model, 'setHasher'))
+		{
+			forward_static_call_array(array($this->model, 'setHasher'), array($this->hasher));
+		}
 	}
 
 }

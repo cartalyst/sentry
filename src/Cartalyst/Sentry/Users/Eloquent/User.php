@@ -82,7 +82,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var Cartalyst\Sentry\Hashing\HasherInterface
 	 */
-	protected $hasher;
+	protected static $hasher;
 
 	/**
 	 * Returns the user's ID.
@@ -569,27 +569,6 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Sets the hasher for the user.
-	 *
-	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
-	 * @return void
-	 */
-	public function setHasher(HasherInterface $hasher)
-	{
-		$this->hasher = $hasher;
-	}
-
-	/**
-	 * Returns the hasher for the user.
-	 *
-	 * @return Cartalyst\Sentry\Hashing\HasherInterface
-	 */
-	public function getHasher()
-	{
-		return $this->hasher;
-	}
-
-	/**
 	 * Check string against hashed string.
 	 *
 	 * @param  string  $string
@@ -599,12 +578,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function checkHash($string, $hashedString)
 	{
-		if ( ! $this->hasher)
+		if ( ! static::$hasher)
 		{
 			throw new \RuntimeException("A hasher has not been provided for the user.");
 		}
 
-		return $this->hasher->checkHash($string, $hashedString);
+		return static::$hasher->checkHash($string, $hashedString);
 	}
 
 	/**
@@ -616,12 +595,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function hash($string)
 	{
-		if ( ! $this->hasher)
+		if ( ! static::$hasher)
 		{
 			throw new \RuntimeException("A hasher has not been provided for the user.");
 		}
 
-		return $this->hasher->hash($string);
+		return static::$hasher->hash($string);
 	}
 
 	/**
@@ -705,6 +684,45 @@ class User extends Model implements UserInterface {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Sets the hasher for the user.
+	 *
+	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
+	 * @return void
+	 */
+	public static function setHasher(HasherInterface $hasher)
+	{
+		static::$hasher = $hasher;
+	}
+
+	/**
+	 * Returns the hasher for the user.
+	 *
+	 * @return Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	public static function getHasher()
+	{
+		return static::$hasher;
+	}
+
+	/**
+	 * Unset the hasher used by the user.
+	 *
+	 * @return void
+	 */
+	public static function unsetHasher()
+	{
+		static::$hasher = null;
+	}
+
+	/**
+	 * Override the login
+	 */
+	public function setLoginAttribute()
+	{
+
 	}
 
 }
