@@ -250,14 +250,14 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$collection->shouldReceive('all')->once()->andReturn(array($user = m::mock('Cartalyst\Sentry\Users\User')));
 		$user->shouldReceive('setHasher')->with($hasher)->once();
 
-		$this->assertEquals(array($user), $provider->getAll());
+		$this->assertEquals(array($user), $provider->findAll());
 	}
 
 	public function testGettingAllUsersWithAccess()
 	{
-		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[getAll]');
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[findAll]');
 
-		$provider->shouldReceive('getAll')->once()->andReturn(array(
+		$provider->shouldReceive('findAll')->once()->andReturn(array(
 			$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
 			$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
 		));
@@ -265,7 +265,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$user1->shouldReceive('hasAccess')->with($permissions = array('foo', 'bar'))->once()->andReturn(true);
 		$user2->shouldReceive('hasAccess')->with($permissions)->once()->andReturn(false);
 
-		$this->assertEquals(array($user1), $provider->getAllWithAccess($permissions));
+		$this->assertEquals(array($user1), $provider->findAllWithAccess($permissions));
 	}
 
 }

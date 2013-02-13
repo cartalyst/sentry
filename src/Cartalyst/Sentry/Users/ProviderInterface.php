@@ -50,6 +50,22 @@ interface ProviderInterface {
 	public function findByCredentials(array $credentials);
 
 	/**
+	 * Returns an all users.
+	 *
+	 * @return array
+	 */
+	public function findAll();
+
+	/**
+	 * Returns all users with access to
+	 * a permission(s).
+	 *
+	 * @param  string|array  $permissions
+	 * @return array
+	 */
+	public function findAllWithAccess($permissions);
+
+	/**
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials
@@ -63,21 +79,5 @@ interface ProviderInterface {
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function getEmptyUser();
-
-	/**
-	 * Returns an array of all users.
-	 *
-	 * @return array
-	 */
-	public function getAll();
-
-	/**
-	 * Returns an array of all users with access to
-	 * a permission(s).
-	 *
-	 * @param  string|array  $permissions
-	 * @return array
-	 */
-	public function getAllWithAccess($permissions);
 
 }

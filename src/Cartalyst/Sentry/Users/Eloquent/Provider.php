@@ -183,11 +183,11 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Returns an array of all users.
+	 * Returns an all users.
 	 *
 	 * @return array
 	 */
-	public function getAll()
+	public function findAll()
 	{
 		$instance = $this->createModel();
 
@@ -200,15 +200,15 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Returns an array of all users with access to
+	 * Returns all users with access to
 	 * a permission(s).
 	 *
 	 * @param  string|array  $permissions
 	 * @return array
 	 */
-	public function getAllWithAccess($permissions)
+	public function findAllWithAccess($permissions)
 	{
-		return array_filter($this->getAll(), function($user) use ($permissions)
+		return array_filter($this->findAll(), function($user) use ($permissions)
 		{
 			return $user->hasAccess($permissions);
 		});
