@@ -4,10 +4,10 @@
 User Provider Methods:
 
 * [create()](#create "/manuals/sentry/users/create")
+* [findAll()](#findAll "/manuals/sentry/users/findAll")
 * [findByCredentials()](#findByCredentials "/manuals/sentry/users/findByCredentials")
 * [findById()](#findById "/manuals/sentry/users/findById")
 * [findByLogin()](#findByLogin "/manuals/sentry/users/findByLogin")
-* [getAll()](#getAll "/manuals/sentry/users/getAll")
 * [getAllWithAccess()](#getAllWithAccess "/manuals/sentry/users/getAllWithAccess")
 * [getUser()](#getUser "/manuals/sentry/users/getUser")
 * [getUserProvider()](#getUserProvider "/manuals/sentry/users/getUserProvider")
