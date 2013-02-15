@@ -24,14 +24,7 @@ Parameters          | Type                | Default             | Required      
 		);
 
 		// Try to authenticate the user
-		if ($user = Sentry::authenticate($credentials))
-		{
-			// Passed authentication
-		}
-		else
-		{
-			// Failed authentication
-		}
+		$user = Sentry::authenticate($credentials);
 	}
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
