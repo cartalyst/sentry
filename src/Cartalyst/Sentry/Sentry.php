@@ -400,3 +400,4 @@ class Sentry {
 	}
 
 }
+
