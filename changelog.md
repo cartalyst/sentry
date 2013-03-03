@@ -1,12 +1,14 @@
 #v2.0.0-beta6
 
  - Allow you to pass an array of permissions to `hasAccess()` to check the user has access to **all** of those permissions.
- - Added method to find all users through `Sentry::getUserProvider()->findAll()`
+ - Added method to find all users through `Sentry::getUserProvider()->findAll()` and `entry::getUserProvider()->findAllWithAccess()`.
  - Added method to find all users with permissions, where permissions may be a single string or an array of permissions which the users must match all (driven by the changes to `hasAccess` listed above).
  - Made the hasher on the default user model a static property for performance and boilerplate code improvements.
  - Made the login attribute name static.
  - Made a configuration item to edit the login attribute.
  - Attempting to activate an already activated user will now throw a `UserAlreadyActivatedException`.
+ - Wildcard permissions. `Sentry::hasAccess('users.*')` will match `users.edit`, `users.create` etc. It will check that at least one of the permissions represented by the wildcard exists. Good for overall blcoking of sections in your website.
+ - "Match any permissions". Previously, `Sentry::hasAccess(array('foo', 'bar'))` would have checked for access to **both** `foo` and `bar`. Now, `Sentry::hasAnyAccess(array('foo', 'bar'))` will check for access to either `foo` or `bar`. Added `Sentry::getUserProvider()->findAllWithAnyAccess()`.
 
 #v2.0.0-beta5
 
