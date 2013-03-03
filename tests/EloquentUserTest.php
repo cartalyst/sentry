@@ -200,6 +200,22 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Feature test for https://github.com/cartalyst/sentry/issues/123
+	 */
+	public function testWildcardPermissions()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->atLeast(1)->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->atLeast(1)->andReturn(array(
+			'users.edit' => 1,
+			'users.delete' => 1,
+		));
+
+		$this->assertFalse($user->hasAccess('users'));
+		$this->assertTrue($user->hasAccess('users.*'));
+	}
+
+	/**
 	 * Regression test for https://github.com/cartalyst/sentry/issues/103
 	 */
 	public function testSettingPermissionsWhenPermissionsAreStrings()
