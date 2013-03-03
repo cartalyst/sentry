@@ -215,6 +215,26 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->hasAccess('users.*'));
 	}
 
+	public function testAnyPermissions()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->once()->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->once()->andReturn(array(
+			'foo' => -1,
+			'baz' => 1,
+		));
+
+		$this->assertTrue($user->hasAccess(array('foo', 'baz'), false));
+	}
+
+	public function testHasAnyAccess()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[hasAccess]');
+		$user->shouldReceive('hasAccess')->with(array('foo', 'bar'), false)->once()->andReturn(true);
+
+		$this->assertTrue($user->hasAnyAccess(array('foo', 'bar')));
+	}
+
 	/**
 	 * Regression test for https://github.com/cartalyst/sentry/issues/103
 	 */

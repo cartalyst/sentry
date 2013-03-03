@@ -176,6 +176,21 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Returns all users with access to
+	 * any given permission(s).
+	 *
+	 * @param  array  $permissions
+	 * @return array
+	 */
+	public function findAllWithAnyAccess(array $permissions)
+	{
+		return array_filter($this->findAll(), function($user) use ($permissions)
+		{
+			return $user->hasAnyAccess($permissions);
+		});
+	}
+
+	/**
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials

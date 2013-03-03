@@ -530,13 +530,16 @@ class User extends Model implements UserInterface {
 	 * and then are checked against the passed permission(s).
 	 *
 	 * If multiple permissions are passed, the user must
-	 * have access to all permissions passed through. Super users
-	 * have access no matter what.
+	 * have access to all permissions passed through, unless the
+	 * "all" flag is set to false.
+	 *
+	 * Super users have access no matter what.
 	 *
 	 * @param  string|array  $permissions
+	 * @param  bool  $all
 	 * @return bool
 	 */
-	public function hasAccess($permissions)
+	public function hasAccess($permissions, $all = true)
 	{
 		if ($this->isSuperUser())
 		{
@@ -552,6 +555,10 @@ class User extends Model implements UserInterface {
 
 		foreach ($permissions as $permission)
 		{
+			// We will set a flag now for whether this permission was
+			// matched at all.
+			$matched = true;
+
 			// Now, let's check if the permission ends in a wildcard "*" symbol.
 			// If it does, we'll check through all the merged permissions to see
 			// if a permission exists which matches the wildcard.
@@ -572,8 +579,6 @@ class User extends Model implements UserInterface {
 						break;
 					}
 				}
-
-				if ($matched === false) return false;
 			}
 
 			// Otherwise, we'll fallback to standard permissions checking where
@@ -582,12 +587,36 @@ class User extends Model implements UserInterface {
 			{
 				if ( ! array_key_exists($permission, $mergedPermissions) or $mergedPermissions[$permission] != 1)
 				{
-					return false;
+					$matched = false;
 				}
+			}
+
+			// Now, we will check if we have to match all
+			// permissions or any permission and return
+			// accordingly.
+			if ($all === true and $matched === false)
+			{
+				return false;
+			}
+			elseif ($all === false and $matched === true)
+			{
+				return true;
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns if the user has access to any of the
+	 * given permissions.
+	 *
+	 * @param  array  $permissions
+	 * @return bool
+	 */
+	public function hasAnyAccess(array $permissions)
+	{
+		return $this->hasAccess($permissions, false);
 	}
 
 	/**

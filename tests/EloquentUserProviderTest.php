@@ -261,6 +261,21 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array($user1), $provider->findAllWithAccess($permissions));
 	}
 
+	public function testFindingAllUsersWithAnyAccess()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[findAll]');
+
+		$provider->shouldReceive('findAll')->once()->andReturn(array(
+			$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+			$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+		));
+
+		$user1->shouldReceive('hasAnyAccess')->with($permissions = array('foo', 'bar'))->once()->andReturn(true);
+		$user2->shouldReceive('hasAnyAccess')->with($permissions)->once()->andReturn(false);
+
+		$this->assertEquals(array($user1), $provider->findAllWithAnyAccess($permissions));
+	}
+
 }
 
 class UserModelStub1 {
