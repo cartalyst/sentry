@@ -45,6 +45,7 @@ class User extends Model implements UserInterface {
 		'password',
 		'reset_password_hash',
 		'activation_hash',
+		'persist_hash',
 	);
 
 	/**
