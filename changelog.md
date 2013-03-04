@@ -1,6 +1,7 @@
 #v2.0.0-beta7
 
  - User's activation codes and reset password codes are now URL friendly. We've had a number of issues regarding this.
+ - `activation_hash`, `persist_hash` and `reset_password_hash` have now changed to `activation_code`, `persist_code` and `reset_password_code` to be consistent with the Sentry API. You will need to re-run migrations or adjust your tables accordingly. Migrations will not be altered after a stable release, however; new ones will be added.
 
 #v2.0.0-beta6
 

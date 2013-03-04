@@ -43,9 +43,9 @@ class User extends Model implements UserInterface {
 	 */
 	protected $hidden = array(
 		'password',
-		'reset_password_hash',
-		'activation_hash',
-		'persist_hash',
+		'reset_password_code',
+		'activation_code',
+		'persist_code',
 	);
 
 	/**
@@ -55,7 +55,7 @@ class User extends Model implements UserInterface {
 	 */
 	protected $hashableAttributes = array(
 		'password',
-		'persist_hash',
+		'persist_code',
 	);
 
 	/**
@@ -308,10 +308,10 @@ class User extends Model implements UserInterface {
 	 */
 	public function getPersistCode()
 	{
-		$this->persist_hash = $this->getRandomString();
+		$this->persist_code = $this->getRandomString();
 
 		// Our code got hashed
-		$persistCode = $this->persist_hash;
+		$persistCode = $this->persist_code;
 
 		$this->save();
 
@@ -331,7 +331,7 @@ class User extends Model implements UserInterface {
 			return false;
 		}
 
-		return $persistCode == $this->persist_hash;
+		return $persistCode == $this->persist_code;
 	}
 
 	/**
@@ -341,7 +341,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getActivationCode()
 	{
-		$this->activation_hash = $activationCode = $this->getRandomString();
+		$this->activation_code = $activationCode = $this->getRandomString();
 
 		$this->save();
 
@@ -364,9 +364,9 @@ class User extends Model implements UserInterface {
 			throw new UserAlreadyActivatedException('Cannot attempt activation on an already activated user.');
 		}
 
-		if ($activationCode == $this->activation_hash)
+		if ($activationCode == $this->activation_code)
 		{
-			$this->activation_hash = null;
+			$this->activation_code = null;
 			$this->activated = true;
 			return $this->save();
 		}
@@ -381,7 +381,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getResetPasswordCode()
 	{
-		$this->reset_password_hash = $resetCode = $this->getRandomString();
+		$this->reset_password_code = $resetCode = $this->getRandomString();
 
 		$this->save();
 
@@ -397,7 +397,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function checkResetPasswordCode($resetCode)
 	{
-		return ($this->reset_password_hash == $resetCode);
+		return ($this->reset_password_code == $resetCode);
 	}
 
 	/**
@@ -413,7 +413,7 @@ class User extends Model implements UserInterface {
 		if ($this->checkResetPasswordCode($resetCode))
 		{
 			$this->password = $newPassword;
-			$this->reset_password_hash = null;
+			$this->reset_password_code = null;
 			return $this->save();
 		}
 
@@ -428,9 +428,9 @@ class User extends Model implements UserInterface {
 	 */
 	public function clearResetPassword()
 	{
-		if ($this->reset_password_hash)
+		if ($this->reset_password_code)
 		{
-			$this->reset_password_hash = null;
+			$this->reset_password_code = null;
 			$this->save();
 		}
 	}
