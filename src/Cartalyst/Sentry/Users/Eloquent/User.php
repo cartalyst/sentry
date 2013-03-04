@@ -64,9 +64,9 @@ class User extends Model implements UserInterface {
 	 * Allowed permissions values.
 	 *
 	 * Possible options:
-	 *   -1 => deny
-	 *    0 => delete
-	 *    1 => add
+	 *   -1 => Deny (adds to array, but denies regardless of user's group).
+	 *    0 => Remove
+	 *    1 => Add
 	 *
 	 * @var array
 	 */

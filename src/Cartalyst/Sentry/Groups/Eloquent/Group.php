@@ -36,8 +36,8 @@ class Group extends Model implements GroupInterface {
 	 * Allowed permissions values.
 	 *
 	 * Possible options:
-	 *    0 => Delete permissions
-	 *    1 => Add permissions
+	 *    0 => Remove.
+	 *    1 => Add.
 	 *
 	 * @var array
 	 */
