@@ -55,8 +55,6 @@ class User extends Model implements UserInterface {
 	 */
 	protected $hashableAttributes = array(
 		'password',
-		'reset_password_hash',
-		'activation_hash',
 		'persist_hash',
 	);
 
@@ -65,8 +63,8 @@ class User extends Model implements UserInterface {
 	 *
 	 * Possible options:
 	 *   -1 => Deny (adds to array, but denies regardless of user's group).
-	 *    0 => Remove
-	 *    1 => Add
+	 *    0 => Remove.
+	 *    1 => Add.
 	 *
 	 * @var array
 	 */
@@ -343,10 +341,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getActivationCode()
 	{
-		$this->activation_hash = $this->getRandomString();
-
-		// Our code got hashed
-		$activationCode = $this->activation_hash;
+		$this->activation_hash = $activationCode = $this->getRandomString();
 
 		$this->save();
 
@@ -386,10 +381,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getResetPasswordCode()
 	{
-		$this->reset_password_hash = $this->getRandomString();
-
-		// Our code got hashed
-		$resetCode = $this->reset_password_hash;
+		$this->reset_password_hash = $resetCode = $this->getRandomString();
 
 		$this->save();
 
@@ -679,12 +671,12 @@ class User extends Model implements UserInterface {
 			// We generate twice as many bytes here because we want to ensure we have
 			// enough after we base64 encode it to get the length we need because we
 			// take out the "/", "+", and "=" characters.
-			$bytes = openssl_random_pseudo_bytes($length * 2, $strong);
+			$bytes = openssl_random_pseudo_bytes($length * 2);
 
 			// We want to stop execution if the key fails because, well, that is bad.
 			if ($bytes === false)
 			{
-				throw new \RuntimeException('Error generating random string.');
+				throw new \RuntimeException('Unable to generate random string.');
 			}
 
 			return substr(str_replace(array('/', '+', '='), '', base64_encode($bytes)), 0, $length);
