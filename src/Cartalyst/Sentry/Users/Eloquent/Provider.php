@@ -151,10 +151,11 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Finds a user by the user activation code.
+	 * Finds a user by the given activation code.
 	 *
 	 * @param  string  $code
 	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByActivationCode($code)
@@ -165,7 +166,7 @@ class Provider implements ProviderInterface {
 
 		if (($count = $result->count()) > 1)
 		{
-			throw new \RuntimeException('Found ['.$count.'] users with the same activation code.');
+			throw new \RuntimeException("Found [$count] users with the same activation code.");
 		}
 
 		if ( ! $user = $result->first())
@@ -177,10 +178,11 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Finds a user by the user reset password code.
+	 * Finds a user by the give reset password code.
 	 *
 	 * @param  string  $code
 	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByResetPasswordCode($code)
@@ -191,7 +193,7 @@ class Provider implements ProviderInterface {
 
 		if (($count = $result->count()) > 1)
 		{
-			throw new \RuntimeException('Found ['.$count.'] users with the same reset password code.');
+			throw new \RuntimeException("Found [$count] users with the same reset password code.");
 		}
 
 		if ( ! $user = $result->first())
