@@ -178,7 +178,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Finds a user by the give reset password code.
+	 * Finds a user by the given reset password code.
 	 *
 	 * @param  string  $code
 	 * @return Cartalyst\Sentry\Users\UserInterface
