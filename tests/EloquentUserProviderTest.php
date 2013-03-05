@@ -187,6 +187,100 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($actualUser, $result);
 	}
 
+	public function testFindByActivationCode()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+
+		$query = m::mock('StdClass');
+
+		$query->shouldReceive('newQuery')->andReturn($query);
+		$query->shouldReceive('where')->with('activation_code', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('get')->andReturn($result = m::mock('StdClass'));
+
+		$result->shouldReceive('count')->once()->andReturn(1);
+
+		$result->shouldReceive('first')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\Eloquent\User'));
+
+		$provider->shouldReceive('createModel')->once()->andReturn($query);
+
+		$this->assertEquals($user, $provider->findByActivationCode('foo'));
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function testFailedFindByActivationCode()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+
+		$query = m::mock('StdClass');
+
+		$query->shouldReceive('newQuery')->andReturn($query);
+		$query->shouldReceive('where')->with('activation_code', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('get')->andReturn($result = m::mock('StdClass'));
+
+		$result->shouldReceive('count')->once()->andReturn(1);
+
+		$result->shouldReceive('first')->once()->andReturn(null);
+
+		$provider->shouldReceive('createModel')->once()->andReturn($query);
+
+		$provider->findByActivationCode('foo');
+	}
+
+	public function testFindByResetPasswordCode()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+
+		$query = m::mock('StdClass');
+
+		$query->shouldReceive('newQuery')->andReturn($query);
+		$query->shouldReceive('where')->with('reset_password_code', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('get')->andReturn($result = m::mock('StdClass'));
+
+		$result->shouldReceive('count')->once()->andReturn(1);
+
+		$result->shouldReceive('first')->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\Eloquent\User'));
+
+		$provider->shouldReceive('createModel')->once()->andReturn($query);
+
+		$this->assertEquals($user, $provider->findByResetPasswordCode('foo'));
+	}
+
+	/**
+	 * @expectedException Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function testFailedFindByResetPasswordCode()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');
+		$provider->__construct(
+			$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface')
+		);
+
+		$query = m::mock('StdClass');
+
+		$query->shouldReceive('newQuery')->andReturn($query);
+		$query->shouldReceive('where')->with('reset_password_code', '=', 'foo')->once()->andReturn($query);
+		$query->shouldReceive('get')->andReturn($result = m::mock('StdClass'));
+
+		$result->shouldReceive('count')->once()->andReturn(1);
+
+		$result->shouldReceive('first')->once()->andReturn(null);
+
+		$provider->shouldReceive('createModel')->once()->andReturn($query);
+
+		$provider->findByResetPasswordCode('foo');
+	}
+
 	public function testCreatingUser()
 	{
 		$attributes = array(
