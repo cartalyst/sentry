@@ -151,6 +151,60 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
+	 * Finds a user by the given activation code.
+	 *
+	 * @param  string  $code
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByActivationCode($code)
+	{
+		$model = $this->createModel();
+
+		$result = $model->newQuery()->where('activation_code', '=', $code)->get();
+
+		if (($count = $result->count()) > 1)
+		{
+			throw new \RuntimeException("Found [$count] users with the same activation code.");
+		}
+
+		if ( ! $user = $result->first())
+		{
+			throw new UserNotFoundException("A user was not found with the given activation code.");
+		}
+
+		return $user;
+	}
+
+	/**
+	 * Finds a user by the given reset password code.
+	 *
+	 * @param  string  $code
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByResetPasswordCode($code)
+	{
+		$model = $this->createModel();
+
+		$result = $model->newQuery()->where('reset_password_code', '=', $code)->get();
+
+		if (($count = $result->count()) > 1)
+		{
+			throw new \RuntimeException("Found [$count] users with the same reset password code.");
+		}
+
+		if ( ! $user = $result->first())
+		{
+			throw new UserNotFoundException("A user was not found with the given reset password code.");
+		}
+
+		return $user;
+	}
+
+	/**
 	 * Returns an all users.
 	 *
 	 * @return array
