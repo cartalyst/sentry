@@ -60,8 +60,6 @@ class BcryptHasher implements HasherInterface {
 	 */
 	public function checkhash($string, $hashedString)
 	{
-		$strength = substr($hashedString, 4, 2);
-
 		return crypt($string, $hashedString) === $hashedString;
 	}
 
