@@ -50,6 +50,26 @@ interface ProviderInterface {
 	public function findByCredentials(array $credentials);
 
 	/**
+	 * Finds a user by the given activation code.
+	 *
+	 * @param  string  $code
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByActivationCode($code);
+
+	/**
+	 * Finds a user by the given reset password code.
+	 *
+	 * @param  string  $code
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByResetPasswordCode($code);
+
+	/**
 	 * Returns an all users.
 	 *
 	 * @return array
