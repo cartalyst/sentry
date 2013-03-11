@@ -1,23 +1,38 @@
-<a id="login"></a>
-###login($user, $remember = false)
-
-----------
+### Logs a User In
 
 Logs a user in.
 
-Parameters          | Type                | Default             | Required            | Description
-:------------------ | :------------------ | :------------------ | :------------------ | :------------------
-`$user`             | UserInterface       | none                | true                | UserInterface Object to log in with.
-`$remember`         | bool                | false               | false               | Remembers if the user is authenticated or not for auto logging in.
+----------
 
-`returns` bool
-`throws`  LoginRequiredException, UserNotFoundException, UserNotActivatedException, UserSuspendedExceptions, UserBannedException
+#### Exceptions
 
-####Example
+##### Cartalyst\Sentry\Users\LoginRequiredException
+
+When you don't provide the required `login` field, this exception will be thrown.
+
+##### Cartalyst\Sentry\Users\UserNotFoundException
+
+If the provided user was not found, this exception will be thrown.
+
+##### Cartalyst\Sentry\Users\UserNotActivatedException
+
+When the provided user is not activated, this exception will be thrown.
+
+##### Cartalyst\Sentry\Throttling\UserSuspendedException
+
+When the provided user is suspended, this exception will be thrown.
+
+##### Cartalyst\Sentry\Throttling\UserBannedException
+
+When the provided user is banned, this exception will be thrown.
+
+----------
+
+#### Example
 
 	try
 	{
-		// Select a user
+		// Find the user using the user id
 		$user = Sentry::getUserProvider()->findById(1);
 
 		// Log the user in
@@ -39,9 +54,11 @@ Parameters          | Type                | Default             | Required      
 	// Following is only needed if throttle is enabled
 	catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
 	{
-		echo 'User suspended.';
+		$time = $throttle->getSuspensionTime();
+
+		echo "User is suspended for [$time] minutes.";
 	}
 	catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
 	{
-		echo 'User banned.';
+		echo 'User is banned.';
 	}

@@ -1,8 +1,5 @@
-##Introduction
+## Introduction
 
-----------
-
-* [Features](#features "/manuals/sentry/introduction/features")
-* [Notable Changes](#notableChanges "/manuals/sentry/introduction/notableChanges")
-* [Download](#download "/manuals/sentry/introduction/download")
-* [Installation](#installation "/manuals/sentry/introduction/installation")
+* [Overview](/sentry2/introduction)
+* [Notable Changes](/sentry2/introduction/notable-changes)
+* [Download](/sentry2/introduction/download)

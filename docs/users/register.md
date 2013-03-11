@@ -1,40 +1,48 @@
-<a id="register"></a>
-###register($credentials, $activate = false)
+### Register a User
+
+Registering a user will require the user to be manually activated but you can
+bypass this passing a boolean of `true` as a second parameter.
+
+If the user already exists but is not activated, it will create a new activation code.
 
 ----------
 
-Registers a user which requires activation.  If the user already exists but is not activated, it will create a new activation code.
+#### Exceptions
 
-Parameters          | Type                | Default             | Required            | Description
-:------------------ | :------------------ | :------------------ | :------------------ | :------------------
-`$credentials`      | array               | none                | true                | An array of user fields create a user with. The Login field is required, all other fields are optional.
-`$activate`         | bool                | false               | false               | Whether or not to activate the user when it's registered
+##### Cartalyst\Sentry\Users\LoginRequiredException
 
-`returns` UserInterface
-`throws`  LoginRequiredException, UserExistsException
+When you don't provide the required `login` field, this exception will be thrown.
 
-####Example
+##### Cartalyst\Sentry\Users\UserExistsException
+
+This exception will be thrown when the user you are trying to create already
+exists on your database.
+
+What this means is, if your `login` field is `email` and that email address is
+already registerd on your database, you can't use this email for this user.
+
+----------
+
+#### Example
 
 	try
 	{
-		// Let's register a user. We won't activate them right now though
-		// (we'd set the second parameter to 'true' to activate them)
+		// Let's register a user.
 		$user = Sentry::register(array(
-			'email'    => 'testing@test.com',
-			'password' => 'test'
+			'email'    => 'john.doe@example.com',
+			'password' => 'test',
 		));
 
 		// Let's get the activation code
 		$activationCode = $user->getActivationCode();
 
-		// Send activation code to user to activate their account
-		...
+		// Send activation code to the user so he can activate the account
 	}
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
-		echo 'Login field required.';
+		echo 'Login field is required.';
 	}
 	catch (Cartalyst\Sentry\Users\UserExistsException $e)
 	{
-		echo 'User already exists.';
+		echo 'User with this login already exists.';
 	}

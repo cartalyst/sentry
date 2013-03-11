@@ -1,6 +1,6 @@
-## User
+### Users
 
-* [Overview](/sentry2/users)
+----------
 
 ### Managing Users
 
@@ -11,17 +11,13 @@
 * [Activate a User](/sentry2/users/activate)
 * [Reset a User Password](/sentry2/users/reset-password)
 
-### Find User(s)
+### Find Users
 
 * [Get the Logged in User](/sentry2/users/find#get-the-current-logged-in-user)
-* [All Users](/sentry2/users/find#find-all-the-users)
-* [All with Access](/sentry2/users/find#find-all-the-users-with-access-to-a-permissionss)
-* [All in Group](/sentry2/users/find#find-all-the-users-in-a-group)
-* [by Credentials](/sentry2/users/find#find-a-user-by-their-credentials)
-* [by User Id](/sentry2/users/find#find-a-user-by-their-id)
-* [by Login](/sentry2/users/find#find-a-user-by-their-login-id)
-* [by Activation Code](/sentry2/find#find-a-user-by-their-activation-code)
-* [by Reset Password Code](/sentry2/find#find-a-user-by-their-reset-password-code)
+* [Find All Users](/sentry2/users/find#find-all-the-users)
+* [Find a User by Credentials](/sentry2/users/find#find-a-user-by-their-credentials)
+* [Find a User by Id](/sentry2/users/find#find-a-user-by-their-id)
+* [Find a User by Login](/sentry2/users/find#find-a-user-by-their-login-id)
 
 ### Helpers
 

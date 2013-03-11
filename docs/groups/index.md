@@ -1,6 +1,6 @@
-## Group
+### Groups
 
-* [Overview](/sentry2/groups)
+----------
 
 ### Managing Groups
 

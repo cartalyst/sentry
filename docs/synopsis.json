@@ -1,0 +1,8 @@
+{
+	"name" : "Sentry 2",
+	"type" : "Package",
+	"public" : true,
+	"branch" : "master",
+	"github" : "cartalyst/sentry",
+	"apigen" : "#"
+}

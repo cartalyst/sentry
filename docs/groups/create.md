@@ -1,32 +1,39 @@
-<a id="create"></a>
-###create($attributes)
+### Create a new Group
+
+Creating new Groups is very easy and in this section you will learn how to
+create one.
 
 ----------
 
-Creates a new group.
+#### Exceptions
 
-Parameters          | Type                | Default             | Required            | Description
-:------------------ | :------------------ | :------------------ | :------------------ | :------------------
-`$attributes`       | array               | none                | true                | An array of group fields to create a group with. The Name field is required, all other fields are optional.
+##### Cartalyst\Sentry\Groups\NameRequiredException
 
-`returns` GroupInterface
-`throws`  NameRequiredException, GroupExistsException
+If you don't provide the group name, this exception will be thrown.
 
-####Example
+##### Cartalyst\Sentry\Groups\GroupExistsException
+
+This exception will be thrown when the group you are trying to create already
+exists on your database.
+
+----------
+
+#### Example
 
 	try
 	{
+		// Create the group
 		$group = Sentry::getGroupProvider()->create(array(
 			'name'        => 'Users',
 			'permissions' => array(
 				'admin' => 1,
-				'users' => 1
-			)
+				'users' => 1,
+			),
 		));
 	}
 	catch (Cartalyst\Sentry\Groups\NameRequiredException $e)
 	{
-		echo 'Name field required';
+		echo 'Name field is required';
 	}
 	catch (Cartalyst\Sentry\Groups\GroupExistsException $e)
 	{
