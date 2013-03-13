@@ -1,12 +1,17 @@
 {
 	"name": "cartalyst/sentry",
-	"description": "PHP 5.3+ fully-featured authentication & authorization system",
-	"keywords": ["auth", "authentication", "security", "laravel 3", "laravel 4", "codeigniter 3", "fuelphp 1"],
+	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
+	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp"],
 	"license": "BSD License (3-clause)",
 	"authors": [
 		{
 			"name": "Cartalyst LLC",
 			"email": "help@cartalyst.com"
+		},
+		{
+			"name": "Dan Syme",
+			"email": "dan.syme@cartalyst.com",
+			"role": "Creator & Designer"
 		},
 		{
 			"name": "Ben Corlett",
@@ -22,11 +27,6 @@
 			"name": "Bruno Gaspar",
 			"email": "bruno.gaspar@cartalyst.com",
 			"role": "Developer"
-		},
-		{
-			"name": "Dan Syme",
-			"email": "dan.syme@cartalyst.com",
-			"role": "Creator & Designer"
 		}
 	],
 	"require": {
