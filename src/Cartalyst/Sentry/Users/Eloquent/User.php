@@ -576,6 +576,8 @@ class User extends Model implements UserInterface {
 
 			else
 			{
+				$matched = false;
+
 				foreach ($mergedPermissions as $mergedPermission => $value)
 				{
 					// This time check if the mergedPermission ends in wildcard "*" symbol.
