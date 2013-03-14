@@ -599,7 +599,8 @@ class User extends Model implements UserInterface {
 					// we match that permissions explicitly exist.
 					elseif ($permission == $mergedPermission and $mergedPermissions[$permission] == 1)
 					{
-						$matches = true;
+						$matched = true;
+						break;
 					}
 				}
 			}
