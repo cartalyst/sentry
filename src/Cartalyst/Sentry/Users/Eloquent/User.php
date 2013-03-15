@@ -574,13 +574,36 @@ class User extends Model implements UserInterface {
 				}
 			}
 
-			// Otherwise, we'll fallback to standard permissions checking where
-			// we match that permissions explicitly exist.
 			else
 			{
-				if ( ! array_key_exists($permission, $mergedPermissions) or $mergedPermissions[$permission] != 1)
+				$matched = false;
+
+				foreach ($mergedPermissions as $mergedPermission => $value)
 				{
-					$matched = false;
+					// This time check if the mergedPermission ends in wildcard "*" symbol.
+					if ((strlen($mergedPermission) > 1) and ends_with($mergedPermission, '*'))
+					{
+						$matched = false;
+
+						// Strip the '*' off the end of the permission.
+						$checkMergedPermission = substr($mergedPermission, 0, -1);
+
+						// We will make sure that the merged permission does not
+						// exactly match our permission, but starts wtih it.
+						if ($checkMergedPermission != $permission and starts_with($permission, $checkMergedPermission) and $value == 1)
+						{
+							$matched = true;
+							break;
+						}
+					}
+
+					// Otherwise, we'll fallback to standard permissions checking where
+					// we match that permissions explicitly exist.
+					elseif ($permission == $mergedPermission and $mergedPermissions[$permission] == 1)
+					{
+						$matched = true;
+						break;
+					}
 				}
 			}
 
