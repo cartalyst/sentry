@@ -4,5 +4,6 @@
 	"public" : true,
 	"branch" : "master",
 	"github" : "cartalyst/sentry",
-	"apigen" : "#"
+	"travis" : true,
+	"demo" : false
 }
