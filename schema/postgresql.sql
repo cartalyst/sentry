@@ -24,8 +24,8 @@ CREATE TABLE throttle (
   attempts integer NOT NULL,
   suspended smallint NOT NULL,
   banned smallint NOT NULL,
-  last_attempt_at timestamp NOT NULL DEFAULT '1969-12-31 00:00:00',
-  suspended_at timestamp NOT NULL DEFAULT '1969-12-31 00:00:00',
+  last_attempt_at timestamp,
+  suspended_at timestamp,
 );
 
 

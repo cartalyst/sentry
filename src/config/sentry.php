@@ -75,8 +75,7 @@ return array(
 		| Groups Table
 		|--------------------------------------------------------------------------
 		|
-		| Override the default table for user storage. This will not affect 
-		| migrations.
+		| Override the default table for group storage. 
 		|
 		*/
 
@@ -87,8 +86,7 @@ return array(
 		| Group Join Table
 		|--------------------------------------------------------------------------
 		|
-		| Override the default table for group join storage. This will not affect 
-		| migrations.
+		| Override the default table for group joins. 
 		|
 		*/
 
@@ -136,8 +134,7 @@ return array(
 		| Users Table 
 		|--------------------------------------------------------------------------
 		|
-		| Override the default table for user storage. This will not affect 
-		| migrations.
+		| Override the default table for user storage. 
 		|
 		*/
 
@@ -186,8 +183,7 @@ return array(
 		| Throttle Table 
 		|--------------------------------------------------------------------------
 		|
-		| Override the default table for user storage. This will not affect 
-		| migrations.
+		| Override the default table for user throttling. 
 		|
 		*/
 
