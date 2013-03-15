@@ -62,8 +62,14 @@
 		"component": "package",
 		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1"],
 		"versions": {
-			"1": "1.1/master",
-			"2": "master"
+			"1": {
+				"download" : "1.1/master",
+				"manual" : "sentry-1"
+			},
+			"2": {
+				"download" : "master",
+				"manual" : "sentry-2"
+			}
 		},
 		"branch-alias": {
 			"dev-master": "2.0-dev"
