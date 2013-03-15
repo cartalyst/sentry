@@ -202,7 +202,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Feature test for https://github.com/cartalyst/sentry/issues/123
 	 */
-	public function testWildcardPermissions()
+	public function testWildcardPermissionsCheck()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
 		$user->shouldReceive('isSuperUser')->atLeast(1)->andReturn(false);
@@ -214,6 +214,23 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($user->hasAccess('users'));
 		$this->assertTrue($user->hasAccess('users.*'));
 	}
+
+	/**
+	 * Feature test for https://github.com/cartalyst/sentry/pull/131
+	 */
+	public function testWildcardPermissionsSetting()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->atLeast(1)->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->atLeast(1)->andReturn(array(
+			'users.*' => 1,
+		));
+
+		$this->assertFalse($user->hasAccess('users'));
+		$this->assertTrue($user->hasAccess('users.edit'));
+		$this->assertTrue($user->hasAccess('users.delete'));
+	}
+
 
 	public function testAnyPermissions()
 	{
