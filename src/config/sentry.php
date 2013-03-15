@@ -70,6 +70,30 @@ return array(
 
 		'model' => 'Cartalyst\Sentry\Groups\Eloquent\Group',
 
+		/*
+		|--------------------------------------------------------------------------
+		| Groups Table
+		|--------------------------------------------------------------------------
+		|
+		| Override the default table for user storage. This will not affect 
+		| migrations.
+		|
+		*/
+
+		'table' => 'user_groups',
+
+		/*
+		|--------------------------------------------------------------------------
+		| Group Join Table
+		|--------------------------------------------------------------------------
+		|
+		| Override the default table for group join storage. This will not affect 
+		| migrations.
+		|
+		*/
+
+		'join_table' => 'users_groups',
+
 	),
 
 	/*
@@ -106,6 +130,18 @@ return array(
 		*/
 
 		'login_attribute' => 'email',
+
+		/*
+		|--------------------------------------------------------------------------
+		| Users Table 
+		|--------------------------------------------------------------------------
+		|
+		| Override the default table for user storage. This will not affect 
+		| migrations.
+		|
+		*/
+
+		'table' => 'users',
 
 	),
 
@@ -144,6 +180,18 @@ return array(
 		*/
 
 		'model' => 'Cartalyst\Sentry\Throttling\Eloquent\Throttle',
+
+		/*
+		|--------------------------------------------------------------------------
+		| Throttle Table 
+		|--------------------------------------------------------------------------
+		|
+		| Override the default table for user storage. This will not affect 
+		| migrations.
+		|
+		*/
+
+		'table' => 'throttle',
 
 
 	),

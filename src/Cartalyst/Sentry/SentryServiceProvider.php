@@ -161,6 +161,7 @@ class SentryServiceProvider extends ServiceProvider {
 					array($loginAttribute)
 				);
 			}
+			
 
 			return new UserProvider($app['sentry.hasher'], $model);
 		});

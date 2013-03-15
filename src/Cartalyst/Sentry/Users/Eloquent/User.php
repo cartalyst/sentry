@@ -26,6 +26,7 @@ use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
+use Illuminate\Support\Facades\Config;
 
 class User extends Model implements UserInterface {
 
@@ -83,6 +84,16 @@ class User extends Model implements UserInterface {
 	 * @var Cartalyst\Sentry\Hashing\HasherInterface
 	 */
 	protected static $hasher;
+
+	/**
+	 * __construct used to set table variable.
+	 * 
+	 * @return void returns nothing.
+	 */
+	public function __construct() {
+
+		$this->table = Config::get('cartalyst/sentry::sentry.users.table');
+	}
 
 	/**
 	 * Returns the user's ID.

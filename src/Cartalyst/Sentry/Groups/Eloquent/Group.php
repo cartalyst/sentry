@@ -22,6 +22,7 @@ use Cartalyst\Sentry\Groups\NameRequiredException;
 use Cartalyst\Sentry\Groups\GroupExistsException;
 use Cartalyst\Sentry\Groups\GroupInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class Group extends Model implements GroupInterface {
 
@@ -31,6 +32,13 @@ class Group extends Model implements GroupInterface {
 	 * @var string
 	 */
 	protected $table = 'groups';
+
+	/**
+	 * The table for joining users to their groups.
+	 *
+	 * @var string
+	 */
+	protected $join_table = 'users_groups';
 
 	/**
 	 * Allowed permissions values.
@@ -43,6 +51,17 @@ class Group extends Model implements GroupInterface {
 	 */
 	protected $allowedPermissionsValues = array(0, 1);
 
+	/**
+	 * __construct used to set table variable.
+	 * 
+	 * @return void returns nothing.
+	 */
+	public function __construct() {
+
+		$this->table = Config::get('cartalyst/sentry::sentry.groups.table');
+		$this->join_table = Config::get('cartalyst/sentry::sentry.groups.join_table');
+	}
+	
 	/**
 	 * Returns the group's ID.
 	 *
@@ -90,7 +109,7 @@ class Group extends Model implements GroupInterface {
 	 */
 	public function users()
 	{
-		return $this->belongsToMany('Cartalyst\Sentry\Users\Eloquent\User', 'users_groups');
+		return $this->belongsToMany('Cartalyst\Sentry\Users\Eloquent\User', $this->join_table);
 	}
 
 	/**
