@@ -38,8 +38,8 @@ CREATE TABLE `throttle` (
   `attempts` int(11) NOT NULL DEFAULT '0',
   `suspended` tinyint(4) NOT NULL DEFAULT '0',
   `banned` tinyint(4) NOT NULL DEFAULT '0',
-  `last_attempt_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `suspended_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_attempt_at` timestamp NULL DEFAULT NULL,
+  `suspended_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
