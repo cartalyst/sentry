@@ -32,5 +32,5 @@
 ### Find User(s)
 
 * [Find a user by Id](/sentry2/throttling/find#find-a-user-by-their-id)
-* [Find a user by Login](/sentry2/throttling/find#find-a-user-by-their-login-id)
+* [Find a user by Login](/sentry2/throttling/find#find-a-user-by-their-login)
 
