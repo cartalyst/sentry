@@ -1,7 +1,7 @@
 ### Users
 #### Sentry User Methods
 
-* [create()](#create "/manuals/sentry/users/create")
+* [create()](#create "/manuals/sentry/users/index")
 * [register()](#register "/manuals/sentry/users/register")
 * [update()](#update "/manuals/sentry/users/update")
 * [delete()](#delete "/manuals/sentry/users/delete")

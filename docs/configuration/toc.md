@@ -1,7 +1,7 @@
 ### Chapter I
 #### How to configure Sentry
 
-* [Database Instance](#database-instance "/manuals/sentry/configuration/database")
+* [Database Instance](#database-instance "/manuals/sentry/configuration/index")
 * [Login Column](#login-column "/manuals/sentry/configuration/login")
 * [Remember Me](#remember-me "/manuals/sentry/configuration/remember")
 * [Session](#session "/manuals/sentry/configuration/session")
