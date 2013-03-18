@@ -1,11 +1,11 @@
 ### Authentication
 #### Sentry Authentication Methods
 
-* [user()](#user "/manuals/sentry/authentication/index")
-* [login()](#login "/manuals/sentry/authentication/login")
-* [force_login()](#force-login "/manuals/sentry/authentication/force-login")
-* [logout()](#logout "/manuals/sentry/authentication/logout")
-* [check()](#check "/manuals/sentry/authentication/check")
-* [activate_user()](#activate-user "/manuals/sentry/authentication/activate-user")
-* [reset_passsword()](#reset-password "/manuals/sentry/authentication/reset-password")
-* [reset_password_confirm()](#reset-password-confirm "/manuals/sentry/authentication/reset-password-confirm")
+* [user()]("/sentry-1/authentication/index")
+* [login()]("/sentry-1/authentication/login")
+* [force_login()]("/sentry-1/authentication/force-login")
+* [logout()]("/sentry-1/authentication/logout")
+* [check()]("/sentry-1/authentication/check")
+* [activate_user()]("/sentry-1/authentication/activate-user")
+* [reset_passsword()]("/sentry-1/authentication/reset-password")
+* [reset_password_confirm()]("/sentry-1/authentication/reset-password-confirm")
