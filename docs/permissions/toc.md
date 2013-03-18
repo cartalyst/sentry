@@ -1,3 +1,3 @@
 ## Permissions
 
-* [Overview](/sentry2/permissions)
+* [Overview](/sentry-2/permissions)
