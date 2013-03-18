@@ -153,7 +153,7 @@ Ensure you have the following in your `composer.json` file:
 {
 	"require": {
 		"cartalyst/sentry": "2.0.*",
-		"illuminate/database": "1.2.*",
+		"illuminate/database": "4.0.*",
 		"ircmaxell/password-compat": "1.0.*"
 	}
 }
@@ -203,7 +203,7 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 {
 	"require": {
 		"cartalyst/sentry": "2.0.*",
-		"illuminate/database": "1.2.*",
+		"illuminate/database": "4.0.*",
 		"ircmaxell/password-compat": "1.0.*"
 	}
 }
