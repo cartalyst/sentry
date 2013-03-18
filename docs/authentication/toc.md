@@ -1,5 +1,4 @@
 ### Authentication
-#### Sentry Authentication Methods
 
 * [user()]("/sentry-1/authentication/index")
 * [login()]("/sentry-1/authentication/login")

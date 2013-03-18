@@ -1,5 +1,4 @@
 ### Attempts / Suspend
-#### Sentry Security Methods
 
 * [attempts()]("/sentry-1/suspension/index")
 * [get_limit()]("/sentry-1/suspension/get_limit")
