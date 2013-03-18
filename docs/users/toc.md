@@ -1,0 +1,21 @@
+### Users
+#### Sentry User Methods
+
+* [create()](#create "/manuals/sentry/users/create")
+* [register()](#register "/manuals/sentry/users/register")
+* [update()](#update "/manuals/sentry/users/update")
+* [delete()](#delete "/manuals/sentry/users/delete")
+* [enable()](#enable "/manuals/sentry/users/enable")
+* [disable()](#disable "/manuals/sentry/users/disable")
+* [user_exists()](#user-exists "/manuals/sentry/users/user_exists")
+* [get()](#get "/manuals/sentry/users/get")
+* [all()](#all "/manuals/sentry/users/all")
+* [change_password()](#change-password "/manuals/sentry/users/change_password")
+* [check_password()](#check-password "/manuals/sentry/users/check_password")
+* [groups()](#groups "/manuals/sentry/users/groups")
+* [add_to_group()](#add-to-group "/manuals/sentry/users/add_to_group")
+* [remove_from_group()](#remove-from-group "/manuals/sentry/users/remove_from_group")
+* [in_group()](#in-group "/manuals/sentry/users/in_group")
+* [permissions()](#permissions "/manuals/sentry/users/permissions")
+* [update_permissions()](#update-permissions "/manuals/sentry/users/update_permissions")
+* [has_access()](#has-access "/manuals/sentry/users/has_access")
