@@ -1,9 +1,9 @@
 ### Attempts / Suspend
 #### Sentry Security Methods
 
-* [attempts()](#attempts "/manuals/sentry/suspension/index")
-* [get_limit()](#get-limit "/manuals/sentry/suspension/get_limit")
-* [get()](#get "/manuals/sentry/suspension/get")
-* [add()](#add "/manuals/sentry/suspension/add")
-* [clear()](#clear "/manuals/sentry/suspension/clear")
-* [suspend()](#suspend "/manuals/sentry/suspension/suspend")
+* [attempts()]("/sentry-1/suspension/index")
+* [get_limit()]("/sentry-1/suspension/get_limit")
+* [get()]("/sentry-1/suspension/get")
+* [add()]("/sentry-1/suspension/add")
+* [clear()]("/sentry-1/suspension/clear")
+* [suspend()]("/sentry-1/suspension/suspend")

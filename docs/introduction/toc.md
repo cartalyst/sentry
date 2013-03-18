@@ -2,6 +2,6 @@
 
 ----------
 
-* [Features](#features "/manuals/sentry/introduction/index")
-* [Download](#download "/manuals/sentry/introduction/download")
-* [Installation](#installation "/manuals/sentry/introduction/installation")
+* [Features]("/sentry-1/introduction/index")
+* [Download]("/sentry-1/introduction/download")
+* [Installation]("/sentry-1/introduction/installation")
