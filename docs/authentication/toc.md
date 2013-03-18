@@ -1,7 +1,7 @@
 ### Authentication
 #### Sentry Authentication Methods
 
-* [user()](#user "/manuals/sentry/authentication/user")
+* [user()](#user "/manuals/sentry/authentication/index")
 * [login()](#login "/manuals/sentry/authentication/login")
 * [force_login()](#force-login "/manuals/sentry/authentication/force-login")
 * [logout()](#logout "/manuals/sentry/authentication/logout")

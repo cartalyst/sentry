@@ -1,7 +1,7 @@
 ### Groups
 #### Sentry Group Methods
 
-* [group()](#group "/manuals/sentry/groups/group")
+* [group()](#group "/manuals/sentry/groups/index")
 * [create()](#create "/manuals/sentry/groups/create")
 * [update()](#update "/manuals/sentry/groups/update")
 * [delete()](#delete "/manuals/sentry/groups/delete")
