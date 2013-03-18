@@ -1,5 +1,4 @@
 ### Users
-#### Sentry User Methods
 
 * [create()]("/sentry-1/users/index")
 * [register()]("/sentry-1/users/register")

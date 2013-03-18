@@ -1,5 +1,4 @@
 ### Groups
-#### Sentry Group Methods
 
 * [group()]("/sentry-1/groups/index")
 * [create()]("/sentry-1/groups/create")
