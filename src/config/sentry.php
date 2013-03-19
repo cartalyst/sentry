@@ -145,7 +145,6 @@ return array(
 
 		'model' => 'Cartalyst\Sentry\Throttling\Eloquent\Throttle',
 
-
 	),
 
 );
