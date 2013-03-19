@@ -37,6 +37,11 @@ class Sentry_Rules
 
 	protected static $source = null;
 
+	/**
+	 * @var  string  Database instance
+	 */
+	protected static $db_instance = null;
+
 
 	protected static function generate_rules()
 	{
@@ -51,8 +56,7 @@ class Sentry_Rules
 			static::$source = 'database';
 			$db_rules_container = array();
 
-			$db_rules = 
-				DB::table(Config::get('sentry::sentry.table.rules'))->get(array('rule'));
+			$db_rules = DB::connection(static::$db_instance)->table(Config::get('sentry::sentry.table.rules'))->get(array('rule'));
 
 			// if there was a result - populate the rules
 			if ($db_rules !== null)
@@ -167,6 +171,11 @@ class Sentry_Rules
 		}
 
 		return static::$bundle_rules;
+	}
+
+	public static function set_db_instance($db_instance)
+	{
+		static::$db_instance = $db_instance;
 	}
 
 }
