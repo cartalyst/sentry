@@ -36,8 +36,8 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 			$table->integer('attempts')->default(0);
 			$table->boolean('suspended')->default(0);
 			$table->boolean('banned')->default(0);
-			$table->timestamp('last_attempt_at')->nullable()->default(DB::raw('NULL'));
-			$table->timestamp('suspended_at')->nullable()->default(DB::raw('NULL'));
+			$table->timestamp('last_attempt_at')->nullable()->default(DB::raw('0000-00-00 00:00:00'));
+			$table->timestamp('suspended_at')->nullable()->default(DB::raw('0000-00-00 00:00:00'));
 		});
 	}
 
