@@ -88,6 +88,7 @@ class Sentry
 		if ( ! empty($db_instance) )
 		{
 			static::$db_instance = $db_instance;
+			Sentry_Rules::set_db_instance($db_instance);
 		}
 
 		// login_column check
@@ -569,7 +570,7 @@ class Sentry
 			}
 
 			$user = static::validate_user($login_column, $hash, 'remember_me');
-			
+
 			// if user is validated
 			if ($user)
 			{
