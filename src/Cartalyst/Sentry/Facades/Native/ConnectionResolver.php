@@ -120,7 +120,7 @@ class ConnectionResolver implements ConnectionResolverInterface {
 			switch ($this->driverName)
 			{
 				case 'mysql':
-					$queryGrammar = 'Illuminate\Database\Query\Grammars\MysqlGrammar';
+					$queryGrammar = 'Illuminate\Database\Query\Grammars\MySqlGrammar';
 					break;
 
 				case 'pgsql':
