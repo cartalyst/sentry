@@ -22,6 +22,7 @@ use Cartalyst\Sentry\Throttling\ThrottleInterface;
 use Cartalyst\Sentry\Throttling\UserSuspendedException;
 use Cartalyst\Sentry\Throttling\UserBannedException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use DateTime;
 
 class Throttle extends Model implements ThrottleInterface {
@@ -68,6 +69,16 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	protected $dates = array('last_attempt_at', 'suspended_at');
 
+	/**
+	 * __construct used to set table variable.
+	 * 
+	 * @return void returns nothing.
+	 */
+	public function __construct() {
+
+		$this->table = Config::get('cartalyst/sentry::sentry.throttling.table');
+	}
+	
 	/**
 	 * Returns the associated user with the throttler.
 	 *
