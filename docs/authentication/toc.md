@@ -1,6 +1,6 @@
 ## Authentication
 
-* [Overview](/sentry-2/authentication)
+* [Authenticate a User](/sentry-2/authentication)
 * [Logs a User In](/sentry-2/authentication/login)
 * [Logs a User Out](/sentry-2/authentication/logout)
 

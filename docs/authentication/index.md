@@ -1,4 +1,9 @@
-### Authentication
+### Authenticate
+
+Authenticates a user based on the provided credentials.
+
+If the authentication is successful, password reset fields and any invalid
+authentication attempts will be cleared.
 
 ----------
 
@@ -30,14 +35,7 @@ When the provided user is banned, this exception will be thrown.
 
 ----------
 
-### Authenticate
-
-Authenticates a user based on the provided credentials.
-
-If the authentication is successful, password reset fields and any invalid
-authentication attempts will be cleared.
-
-##### Example
+#### Example
 
 	try
 	{
