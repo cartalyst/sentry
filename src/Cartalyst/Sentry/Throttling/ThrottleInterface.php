@@ -28,34 +28,6 @@ interface ThrottleInterface {
 	public function getUser();
 
 	/**
-	 * Set attempt limit.
-	 *
-	 * @param  int  $limit
-	 */
-	public function setAttemptLimit($limit);
-
-	/**
-	 * Get attempt limit.
-	 *
-	 * @return  int
-	 */
-	public function getAttemptLimit();
-
-	/**
-	 * Set suspension time.
-	 *
-	 * @param  int  $minutes
-	 */
-	public function setSuspensionTime($minutes);
-
-	/**
-	 * Get suspension time.
-	 *
-	 * @param  int
-	 */
-	public function getSuspensionTime();
-
-	/**
 	 * Get the current amount of attempts.
 	 *
 	 * @return int

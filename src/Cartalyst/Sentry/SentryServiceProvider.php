@@ -184,6 +184,25 @@ class SentryServiceProvider extends ServiceProvider {
 				$throttleProvider->disable();
 			}
 
+			if (method_exists($model, 'setAttemptLimit'))
+			{
+				$attemptLimit = $app['config']['cartalyst/sentry::sentry.throttling.attempt_limit'];
+
+				forward_static_call_array(
+					array($model, 'setAttemptLimit'),
+					array($attemptLimit)
+				);
+			}
+			if (method_exists($model, 'setSuspensionTime'))
+			{
+				$suspensionTime = $app['config']['cartalyst/sentry::sentry.throttling.suspension_time'];
+
+				forward_static_call_array(
+					array($model, 'setSuspensionTime'),
+					array($suspensionTime)
+				);
+			}
+
 			return $throttleProvider;
 		});
 	}
