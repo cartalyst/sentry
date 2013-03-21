@@ -77,6 +77,15 @@ interface ProviderInterface {
 	public function findAll();
 
 	/**
+	 * Returns all users who belong to
+	 * a group.
+	 *
+	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return array
+	 */
+	public function findAllInGroup($group);
+
+	/**
 	 * Returns all users with access to
 	 * a permission(s).
 	 *
