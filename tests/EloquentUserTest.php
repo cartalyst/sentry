@@ -37,7 +37,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	public function testUserIdCallsKey()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getKey]');
-		$user->id = 'foo';
+		$user->shouldReceive('getKey')->once()->andReturn('foo');
 
 		$this->assertEquals('foo', $user->getId());
 	}
