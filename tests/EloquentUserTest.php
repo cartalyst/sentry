@@ -57,7 +57,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo', $user->getLoginName());
 	}
 
-	public function testUserPassowrdCallsPasswordAttribute()
+	public function testUserPasswordCallsPasswordAttribute()
 	{
 		User::setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
 		$hasher->shouldReceive('hash')->with('unhashed_password_here')->once()->andReturn('hashed_password_here');
@@ -509,6 +509,15 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->attemptActivation('activation_code'));
 		$this->assertNull($user->activation_code);
 		$this->assertTrue($user->activated);
+	}
+
+	public function testCheckingPassword()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getPassword,checkHash]');
+		$user->shouldReceive('getPassword')->once()->andReturn('hashed_password');
+		$user->shouldReceive('checkHash')->with('password', 'hashed_password')->once()->andReturn(true);
+
+		$this->assertTrue($user->checkPassword('password'));
 	}
 
 	public function testCheckingResetPasswordCode()

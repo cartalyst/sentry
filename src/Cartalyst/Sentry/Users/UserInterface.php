@@ -132,6 +132,14 @@ interface UserInterface {
 	public function attemptActivation($activationCode);
 
 	/**
+	 * Checks the password passed matches the user's password.
+	 *
+	 * @param  string  $password
+	 * @return bool
+	 */
+	public function checkPassword($password);
+
+	/**
 	 * Get a reset password code for the given user.
 	 *
 	 * @return string
