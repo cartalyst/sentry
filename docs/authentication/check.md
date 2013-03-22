@@ -1,26 +1,16 @@
-<a id="check" href="#"></a>
-###check()
+#### Check if User is Logged In
 
-----------
+The check method returns a bool of whether the user is logged in or not.
 
-The check methods returns a bool of whether the user is logged in or not.
+returns `bool`
 
-`returns` bool
+##### Example
 
-####Example
-
-	// basic login check example
 	if (Sentry::check())
 	{
-	    // the user is logged in
+		// User is logged in
 	}
 	else
 	{
-	    // the user is not logged in
-	}
-
-	// user needs to be logged in to view page example
-	if ( ! Sentry::check())
-	{
-	    // redirect to login
+		// User is not logged in
 	}
