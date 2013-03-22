@@ -4,6 +4,7 @@
  - `activation_hash`, `persist_hash` and `reset_password_hash` have now changed to `activation_code`, `persist_code` and `reset_password_code` to be consistent with the Sentry API. You will need to re-run migrations or adjust your tables accordingly. Migrations will not be altered after a stable release, however; new ones will be added.
  - Added `Sentry::getUserProvider()->findAllInGroup($group)`.
  - Tracking throttling by IP address to prevent a potential DoS attack.
+ - Refactored dependencies & Facades to simplify initialization of Sentry.
 
 #v2.0.0-beta6
 
