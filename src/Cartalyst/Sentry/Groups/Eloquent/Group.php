@@ -48,14 +48,9 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getId($id = false)
+	public function getId()
 	{
-		if ($id === false and isset($this->attributes[$keyName = $this->getKeyName()]))
-		{
-			$id = $this->attributes[$keyName];
-		}
-
-		return $id;
+		return $this->getKey();
 	}
 
 	/**
@@ -63,14 +58,9 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @return string
 	 */
-	public function getName($name = false)
+	public function getName()
 	{
-		if ($name === false and isset($this->attributes['name']))
-		{
-			$name = $this->attributes['name'];
-		}
-
-		return $name;
+		return $this->name;
 	}
 
 	/**

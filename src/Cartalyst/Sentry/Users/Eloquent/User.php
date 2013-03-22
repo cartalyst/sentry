@@ -89,14 +89,9 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return  mixed
 	 */
-	public function getId($id = false)
+	public function getId()
 	{
-		if ($id === false and isset($this->attributes[$keyName = $this->getKeyName()]))
-		{
-			$id = $this->attributes[$keyName];
-		}
-
-		return $id;
+		return $this->getKey();
 	}
 
 	/**
@@ -114,14 +109,9 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return mixed
 	 */
-	public function getLogin($login = false)
+	public function getLogin()
 	{
-		if ($login === false and isset($this->attributes[$loginName = $this->getLoginName()]))
-		{
-			$login = $this->attributes[$loginName];
-		}
-
-		return $login;
+		return $this->{$this->getLoginName()};
 	}
 
 	/**
@@ -129,14 +119,9 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public function getPassword($password = false)
+	public function getPassword()
 	{
-		if ($password === false and isset($this->attributes['password']))
-		{
-			$password = $this->attributes['password'];
-		}
-
-		return $password;
+		return $this->password;
 	}
 
 	/**
@@ -260,7 +245,7 @@ class User extends Model implements UserInterface {
 			throw new LoginRequiredException("A login is required for a user, none given.");
 		}
 
-		if ( ! $password = $this->password)
+		if ( ! $password = $this->getPassword())
 		{
 			throw new PasswordRequiredException("A password is required for user [$login], none given.");
 		}
@@ -372,6 +357,17 @@ class User extends Model implements UserInterface {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks the password passed matches the user's password.
+	 *
+	 * @param  string  $password
+	 * @return bool
+	 */
+	public function checkPassword($password)
+	{
+		return $this->checkHash($password, $this->getPassword());
 	}
 
 	/**

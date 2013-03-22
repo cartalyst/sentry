@@ -340,6 +340,21 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array($user), $provider->findAll());
 	}
 
+	public function testFindingAllUsersInGroup()
+	{
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[findAll]');
+
+		$provider->shouldReceive('findAll')->once()->andReturn(array(
+			$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+			$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
+		));
+
+		$user1->shouldReceive('inGroup')->with($group = m::mock('Cartalyst\Sentry\Groups\GroupInterface'))->once()->andReturn(true);
+		$user2->shouldReceive('inGroup')->with($group)->once()->andReturn(false);
+
+		$this->assertEquals(array($user1), $provider->findAllInGroup($group));
+	}
+
 	public function testFindingAllUsersWithAccess()
 	{
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[findAll]');

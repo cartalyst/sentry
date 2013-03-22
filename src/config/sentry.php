@@ -145,6 +145,34 @@ return array(
 
 		'model' => 'Cartalyst\Sentry\Throttling\Eloquent\Throttle',
 
+		/*
+		|--------------------------------------------------------------------------
+		| Attempts Limit
+		|--------------------------------------------------------------------------
+		|
+		| When using the "eloquent" driver and extending the base Eloquent model,
+		| you have the option to globally set the login attempts.
+		|
+		| Supported: int
+		|
+		*/
+
+		'attempt_limit' => 5,
+
+		/*
+		|--------------------------------------------------------------------------
+		| Suspension Time
+		|--------------------------------------------------------------------------
+		|
+		| When using the "eloquent" driver and extending the base Eloquent model,
+		| you have the option to globally set the suspension time, in minutes.
+		|
+		| Supported: int
+		|
+		*/
+
+		'suspension_time' => 15,
+
 	),
 
 );

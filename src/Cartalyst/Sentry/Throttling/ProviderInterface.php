@@ -23,18 +23,20 @@ interface ProviderInterface {
 	/**
 	 * Finds a throttler by the given user ID.
 	 *
-	 * @param  mixed  $id
+	 * @param  mixed   $id
+	 * @param  string  $ipAddress
 	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByUserId($id);
+	public function findByUserId($id, $ipAddress = null);
 
 	/**
 	 * Finds a throttling interface by the given user login.
 	 *
 	 * @param  string  $login
+	 * @param  string  $ipAddress
 	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByUserLogin($login);
+	public function findByUserLogin($login, $ipAddress = null);
 
 	/**
 	 * Enable throttling.

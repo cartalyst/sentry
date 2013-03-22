@@ -1,6 +1,6 @@
 {
 	"name" : "Sentry 2",
-	"type" : "Package",
+	"type" : "package",
 	"public" : true,
 	"branch" : "master",
 	"github" : "cartalyst/sentry",

@@ -19,26 +19,26 @@
  */
 
 use Cartalyst\Sentry\Cookies\CICookie;
+use Cartalyst\Sentry\Facades\ConnectionResolver;
+use Cartalyst\Sentry\Facades\Facade;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Sessions\CISession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
-use Cartalyst\Sentry\Facades\Native\ConnectionResolver;
-use Database_Connection;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use PDO;
 
 class Sentry {
 
 	/**
-	 * Sentry instance.
+	 * Array of PDO options suitable for making the
+	 * CodeIgniter connection play nicely with
+	 * illuminate/database.
 	 *
-	 * @var Cartalyst\Sentry\Sentry
+	 * @var array
 	 */
-	protected static $instance;
-
 	protected static $pdoOptions = array(
 		PDO::ATTR_CASE              => PDO::CASE_LOWER,
 		PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION,
@@ -47,18 +47,8 @@ class Sentry {
 		PDO::ATTR_EMULATE_PREPARES  => false,
 	);
 
-	public static function instance()
-	{
-		if (static::$instance === null)
-		{
-			static::$instance = static::createSentry();
-		}
-
-		return static::$instance;
-	}
-
 	/**
-	 * Creates an instance of Sentry.
+	 * Creates a new instance of Sentry.
 	 *
 	 * @return Cartalyst\Sentry\Sentry
 	 */
@@ -68,89 +58,40 @@ class Sentry {
 		$ci =& get_instance();
 		$ci->load->driver('session');
 
-		$hasher           = new NativeHasher;
-		$session          = new CISession($ci->session);
-		$cookie           = new CICookie($ci->input);
-		$groupProvider    = new GroupProvider;
-		$userProvider     = new UserProvider($hasher);
-		$throttleProvider = new ThrottleProvider($userProvider);
+		// If Eloquent doesn't exist, then we must assume they are using their own providers.
+		if (class_exists('Illuminate\Database\Eloquent\Model'))
+		{
+			$ci->load->database();
 
-		static::createDatabaseResolver();
+			// Let's connect and get the PDO instance
+			$pdo = $ci->db->db_pconnect();
+
+			// Validate PDO
+			if ( ! $pdo instanceof PDO)
+			{
+				throw new \RuntimeException("Sentry will only work with PDO database connections.");
+			}
+
+			// Setup PDO
+			foreach (static::$pdoOptions as $key => $value)
+			{
+				$pdo->setAttribute($key, $value);
+			}
+
+			$driverName  = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+			$tablePrefix = substr($ci->db->dbprefix('.'), 0, -1);
+
+			Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
+		}
 
 		return new BaseSentry(
-			$hasher,
-			$session,
-			$cookie,
-			$groupProvider,
-			$userProvider,
-			$throttleProvider
+			new UserProvider(new NativeHasher),
+			new GroupProvider,
+			new ThrottleProvider($userProvider),
+			new CISession($ci->session),
+			new CICookie($ci->input),
+			$ci->input->ip_address()
 		);
-	}
-
-	public static function createDatabaseResolver()
-	{
-		// Get some resources
-		$ci =& get_instance();
-		$ci->load->database();
-		$db = $ci->db;
-
-		// Let's connect and get the PDO instance
-		$pdo = $db->db_pconnect();
-
-		// Validate PDO
-		if ( ! $pdo instanceof PDO)
-		{
-			throw new \RuntimeException("Sentry will only work with PDO database connections.");
-		}
-
-		foreach (static::$pdoOptions as $key => $value)
-		{
-			$pdo->setAttribute($key, $value);
-		}
-
-		// If Eloquent doesn't exist, then we must assume they are using their own providers.
-		if ( ! class_exists('Illuminate\Database\Eloquent\Model'))
-		{
-			return;
-		}
-
-		$driverName  = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-		$tablePrefix = substr($db->dbprefix('.'), 0, -1);
-
-		Eloquent::setConnectionResolver(new ConnectionResolver($pdo, $driverName, $tablePrefix));
-	}
-
-	/**
-	 * Handle dynamic, static calls to the object.
-	 *
-	 * @param  string  $method
-	 * @param  array   $args
-	 * @return mixed
-	 */
-	public static function __callStatic($method, $args)
-	{
-		$instance = static::instance();
-
-		switch (count($args))
-		{
-			case 0:
-				return $instance->$method();
-
-			case 1:
-				return $instance->$method($args[0]);
-
-			case 2:
-				return $instance->$method($args[0], $args[1]);
-
-			case 3:
-				return $instance->$method($args[0], $args[1], $args[2]);
-
-			case 4:
-				return $instance->$method($args[0], $args[1], $args[2], $args[3]);
-
-			default:
-				return call_user_func_array(array($instance, $method), $args);
-		}
 	}
 
 }
