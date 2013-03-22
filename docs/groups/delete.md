@@ -1,26 +1,28 @@
-<a id="delete" href="#"></a>
-###delete()
-
-----------
+### Delete a Group
 
 The delete method deletes the current group and all associations to it.
 
-`returns` bool `throws` Sentry\SentryException
+returns `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+----------
+
+#### Example
 
 	try
 	{
-	    if (Sentry::group(4)->delete())
-	    {
-	        // group was deleted
-	    }
-	    else
-	    {
-	        // group was not deleted
-	    }
+		// Delete the group
+		if (Sentry::group(4)->delete())
+		{
+			// Group was deleted
+		}
+		else
+		{
+			// Group was not deleted
+		}
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage();
+		$errors = $e->getMessage();
 	}
