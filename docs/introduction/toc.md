@@ -1,6 +1,4 @@
-##Introduction
-
-----------
+## Introduction
 
 * [Features](/sentry-1/introduction/index)
 * [Download](/sentry-1/introduction/download)

@@ -1,8 +1,7 @@
-###Features
+### Features
 
-----------
-
-It also provides additional features such as user groups and additional security features.
+It also provides additional features such as user groups and additional security
+features.
 
 * Authentication (via username or email)
 * Groups
