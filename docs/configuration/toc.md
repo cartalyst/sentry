@@ -1,4 +1,5 @@
-### How to configure Sentry
+## Configuration
+
 * [Database Instance](/sentry-1/configuration/index)
 * [Login Column](/sentry-1/configuration/login)
 * [Remember Me](/sentry-1/configuration/remember)
