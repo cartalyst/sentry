@@ -4,10 +4,10 @@
 
 The user method returns a Sentry_User object.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$id`                     	 | int, string     | null          | The users id (int) or login column value (string).<br>If null, the current logged in user is selected.<br>If there is no user logged in, a blank user object is returned.
-`$recache`                   | bool            | false         | Recache the selected user object.
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$id`                     	 | int, string     | null            | The users id (int) or login column value (string).<br>If null, the current logged in user is selected.<br>If there is no user logged in, a blank user object is returned.
+`$recache`                   | bool            | false           | Recache the selected user object.
 
 `returns` bool
 
