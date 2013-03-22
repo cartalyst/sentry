@@ -404,4 +404,12 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($registeredUser->isActivated());
 	}
 
+	public function testGetUserWithCheck()
+	{
+		$sentry = m::mock('Cartalyst\Sentry\Sentry[check]');
+		$sentry->shouldReceive('check')->once();
+		$sentry->getUser();
+		$sentry->getUser(true);
+	}
+
 }

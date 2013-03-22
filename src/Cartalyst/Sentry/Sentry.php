@@ -354,10 +354,17 @@ class Sentry {
 	 * Returns the current user being
 	 * used by Sentry, if any.
 	 *
+	 * @param  bool  $check
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function getUser()
+	public function getUser($check = false)
 	{
+		// We will lazily attempt to load our user
+		if ($check === true and $this->user === null)
+		{
+			$this->check();
+		}
+
 		return $this->user;
 	}
 
