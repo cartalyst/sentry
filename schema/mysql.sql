@@ -35,6 +35,7 @@ DROP TABLE IF EXISTS `throttle`;
 CREATE TABLE `throttle` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
+  `ip_address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `attempts` int(11) NOT NULL DEFAULT '0',
   `suspended` tinyint(4) NOT NULL DEFAULT '0',
   `banned` tinyint(4) NOT NULL DEFAULT '0',

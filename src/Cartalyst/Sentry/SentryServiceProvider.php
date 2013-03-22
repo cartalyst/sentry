@@ -228,7 +228,8 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.cookie'],
 				$app['sentry.group'],
 				$app['sentry.user'],
-				$app['sentry.throttle']
+				$app['sentry.throttle'],
+				$app['request']->getClientIp(),
 			);
 		});
 	}

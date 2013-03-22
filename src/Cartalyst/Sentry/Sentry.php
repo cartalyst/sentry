@@ -92,6 +92,13 @@ class Sentry {
 	protected $throttleProvider;
 
 	/**
+	 * The client's IP address associated with Sentry.
+	 *
+	 * @var string
+	 */
+	protected $ipAddress = '0.0.0.0';
+
+	/**
 	 * Create a new Sentry object.
 	 *
 	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
@@ -100,6 +107,8 @@ class Sentry {
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $groupProvider
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
 	 * @param  Cartalyst\Sentry\Throttling\ThrottleInterface  $throttleProvider
+	 * @param  string  $ipAddress
+	 * @return void
 	 */
 	public function __construct(
 		HasherInterface $hasher,
@@ -107,7 +116,8 @@ class Sentry {
 		CookieInterface $cookie,
 		GroupProviderInterface $groupProvider,
 		UserProviderInterface $userProvider,
-		ThrottleProviderInterface $throttleProvider
+		ThrottleProviderInterface $throttleProvider,
+		$ipAddress = null
 	)
 	{
 		$this->hasher           = $hasher;
@@ -116,6 +126,11 @@ class Sentry {
 		$this->groupProvider    = $groupProvider;
 		$this->userProvider     = $userProvider;
 		$this->throttleProvider = $throttleProvider;
+
+		if (isset($ipAddress))
+		{
+			$this->ipAddress = $ipAddress;
+		}
 	}
 
 	/**
@@ -183,7 +198,7 @@ class Sentry {
 		// to authenticate them
 		if ($throttlingEnabled = $this->throttleProvider->isEnabled())
 		{
-			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName]))
+			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName], $this->ipAddress))
 			{
 				$throttle->check();
 			}
