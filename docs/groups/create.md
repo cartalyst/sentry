@@ -2,9 +2,9 @@
 
 The create method creates a new group.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------- | :------------ | :--------------
-`$group`                     | array           | null          | An array of consisting of the groups 'name'. Optional fields are 'permissions'. The group name must be unique.
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$group`                     | array           | null            | An array of consisting of the groups 'name'. Optional fields are 'permissions'. The group name must be unique.
 
 returns `bool` or `group id`
 

@@ -2,9 +2,9 @@
 
 The update method updates the current group.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------- | :------------ | :--------------
-`$fields`                    | array           | null          | Array of fields to update for the group.
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$fields`                    | array           | null            | Array of fields to update for the group.
 
 returns `bool`
 

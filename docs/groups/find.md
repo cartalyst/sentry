@@ -23,9 +23,9 @@ throws `Sentry\SentryException`
 
 Find a group by it's Id or by it's Name.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | int, string     | null          | The group id or name.
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$id`                        | int, string     | null            | The group id or name.
 
 returns `array`
 

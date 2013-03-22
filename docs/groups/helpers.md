@@ -2,9 +2,9 @@
 
 This method checks if the provided group exists.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$name`                      | int, string     | null          | The group id or name.
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$name`                      | int, string     | null            | The group id or name.
 
 returns `bool`
 
