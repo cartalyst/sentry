@@ -239,14 +239,11 @@ class Sentry {
 	/**
 	 * Check to see if the user is logged in and activated.
 	 *
-	 * Upon success, the logged in user is returned. Upon
-	 * failure, "false" is returned.
-	 *
-	 * @return mixed
+	 * @return bool
 	 */
 	public function check()
 	{
-		if ( ! $this->user)
+		if (is_null($this->user))
 		{
 			// Check session first, follow by cookie
 			if ( ! $userArray = $this->session->get() and ! $userArray = $this->cookie->get())
@@ -292,7 +289,7 @@ class Sentry {
 			return false;
 		}
 
-		return $user;
+		return true;
 	}
 
 	/**
@@ -351,16 +348,14 @@ class Sentry {
 	}
 
 	/**
-	 * Returns the current user being
-	 * used by Sentry, if any.
+	 * Returns the current user being used by Sentry, if any.
 	 *
-	 * @param  bool  $check
 	 * @return Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function getUser($check = false)
+	public function getUser()
 	{
 		// We will lazily attempt to load our user
-		if ($check === true and $this->user === null)
+		if (is_null($this->user))
 		{
 			$this->check();
 		}

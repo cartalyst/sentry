@@ -295,8 +295,11 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	public function testCheckLoggingOut()
 	{
 		$this->sentry->setUser(m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->session->shouldReceive('get')->once();
 		$this->session->shouldReceive('forget')->once();
+		$this->cookie->shouldReceive('get')->once();
 		$this->cookie->shouldReceive('forget')->once();
+
 		$this->sentry->logout();
 		$this->assertNull($this->sentry->getUser());
 	}
@@ -307,7 +310,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
 		$this->sentry->setUser($user);
-		$this->assertInstanceOf('Cartalyst\Sentry\Users\UserInterface', $this->sentry->check());
+		$this->assertTrue($this->sentry->check());
 	}
 
 	public function testCheckingUserWhenUserIsSetAndNotActivated()
@@ -329,7 +332,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->assertInstanceOf('Cartalyst\Sentry\Users\UserInterface', $this->sentry->check());
+		$this->assertTrue($this->sentry->check());
 	}
 
 	public function testCheckingUserChecksSessionFirstAndThenCookie()
@@ -342,7 +345,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
-		$this->assertInstanceOf('Cartalyst\Sentry\Users\UserInterface', $this->sentry->check());
+		$this->assertTrue($this->sentry->check());
 	}
 
 	public function testCheckingUserReturnsFalseIfNoArrayIsReturned()
@@ -409,7 +412,6 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$sentry = m::mock('Cartalyst\Sentry\Sentry[check]');
 		$sentry->shouldReceive('check')->once();
 		$sentry->getUser();
-		$sentry->getUser(true);
 	}
 
 }
