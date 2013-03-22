@@ -34,7 +34,7 @@ Find a group by it's ID.
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
-		echo 'Group not found.';
+		echo 'Group was not found.';
 	}
 
 ----------
@@ -51,5 +51,5 @@ Find a group by it's name.
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
-		echo 'Group not found.';
+		echo 'Group was not found.';
 	}
