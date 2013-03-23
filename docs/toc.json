@@ -1,11 +1,10 @@
 {
-    "sections" : [
-        "introduction",
-        "configuration",
-        "authentication",
-        "users",
-        "groups",
-        "suspension",
-        "social"
-    ]
+	"sections" : [
+		"introduction",
+		"configuration",
+		"authentication",
+		"users",
+		"groups",
+		"suspension"
+	]
 }
