@@ -297,9 +297,10 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function removeSuspensionIfAllowed()
 	{
-		$suspended   = clone($this->suspended_at);
-		$unsuspendAt = $suspended->modify("+{static::$suspensionTime} minutes");
-		$now         = new DateTime;
+		$suspended      = clone($this->suspended_at);
+		$suspensionTime = static::$suspensionTime;
+		$unsuspendAt    = $suspended->modify("+{$suspensionTime} minutes");
+		$now            = new DateTime;
 
 		if ($unsuspendAt <= $now)
 		{
