@@ -84,6 +84,7 @@ class Provider implements ProviderInterface {
 		{
 			$throttle = $this->createModel();
 			$throttle->user_id = $userId;
+			if ($ipAddress) $throttle->ip_address = $ipAddress;
 			$throttle->save();
 		}
 
@@ -112,6 +113,7 @@ class Provider implements ProviderInterface {
 		{
 			$throttle = $this->createModel();
 			$throttle->user_id = $userId;
+			if ($ipAddress) $throttle->ip_address = $ipAddress;
 			$throttle->save();
 		}
 
