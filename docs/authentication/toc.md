@@ -6,4 +6,4 @@
 
 ### Helpers
 
-* [check()](/sentry-1/authentication/check)
+* [check()](/sentry-1/authentication/helpers#check-if-a-user-is-logged-in)
