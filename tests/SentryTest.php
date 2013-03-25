@@ -88,6 +88,13 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->sentry->login($user);
 	}
 
+	public function testLoggingInAndRemembering()
+	{
+		$sentry = m::mock('Cartalyst\Sentry\Sentry[login]');
+		$sentry->shouldReceive('login')->with($user = m::mock('Cartalyst\Sentry\Users\UserInterface'), true)->once();
+		$sentry->loginAndRemember($user);
+	}
+
 	/**
 	 * @expectedException Cartalyst\Sentry\Users\LoginRequiredException
 	 */

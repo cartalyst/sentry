@@ -324,6 +324,16 @@ class Sentry {
 	}
 
 	/**
+	 * Alias for logging in and remembering.
+	 *
+	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 */
+	public function loginAndRemember(UserInterface $user)
+	{
+		$this->login($user, true);
+	}
+
+	/**
 	 * Logs the current user out.
 	 *
 	 * @return void
