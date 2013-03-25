@@ -33,7 +33,7 @@ class Group extends Model implements GroupInterface {
 	protected $table = 'groups';
 
 	/**
-	 * The attribute that aren't mass assignable.
+	 * The attributes that aren't mass assignable.
 	 *
 	 * @var array
 	 */

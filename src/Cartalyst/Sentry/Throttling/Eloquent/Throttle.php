@@ -48,7 +48,7 @@ class Throttle extends Model implements ThrottleInterface {
 	public $timestamps = false;
 
 	/**
-	 * The attribute that aren't mass assignable.
+	 * The attributes that aren't mass assignable.
 	 *
 	 * @var array
 	 */

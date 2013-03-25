@@ -49,7 +49,7 @@ class User extends Model implements UserInterface {
 	);
 
 	/**
-	 * The attribute that aren't mass assignable.
+	 * The attributes that aren't mass assignable.
 	 *
 	 * @var array
 	 */
