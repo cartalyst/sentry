@@ -6,7 +6,7 @@
 Checks to see if the user is in a group
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :-------------- | :--------------
 `$name`                      | int, string     |               | The groups id or name
 
 `returns` bool

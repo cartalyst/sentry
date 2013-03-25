@@ -6,7 +6,7 @@
 Checks users permissions to see if they contain a certain rule.
 
 Parameters                   | Type                | Default       | Description
-:--------------------------- | :-----------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :-------------- | :--------------
 `$resource`                  | null, string, array |               | rules that should be checked for access
 
 `returns` bool
