@@ -49,6 +49,18 @@ class User extends Model implements UserInterface {
 	);
 
 	/**
+	 * The attribute that aren't mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $guarded = array(
+		'password',
+		'reset_password_code',
+		'activation_code',
+		'persist_code',
+	);
+
+	/**
 	 * Attributes that should be hashed.
 	 *
 	 * @var array

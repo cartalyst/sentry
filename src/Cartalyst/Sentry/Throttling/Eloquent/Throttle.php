@@ -27,6 +27,13 @@ use DateTime;
 class Throttle extends Model implements ThrottleInterface {
 
 	/**
+	 * Throttling status.
+	 *
+	 * @var bool
+	 */
+	protected $enabled = true;
+
+	/**
 	 * The table associated with the model.
 	 *
 	 * @var string
@@ -41,11 +48,11 @@ class Throttle extends Model implements ThrottleInterface {
 	public $timestamps = false;
 
 	/**
-	 * Throttling status.
+	 * The attribute that aren't mass assignable.
 	 *
-	 * @var bool
+	 * @var array
 	 */
-	protected $enabled = true;
+	protected $guarded = array();
 
 	/**
 	 * The date fields for the model.
