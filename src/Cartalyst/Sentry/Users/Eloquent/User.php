@@ -54,7 +54,6 @@ class User extends Model implements UserInterface {
 	 * @var array
 	 */
 	protected $guarded = array(
-		'password',
 		'reset_password_code',
 		'activation_code',
 		'persist_code',
