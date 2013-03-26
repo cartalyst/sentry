@@ -1,22 +1,17 @@
-<a id="add" href="#"></a>
-###add()
-
-----------
+#### Add Attempt
 
 The add method adds an attempt to a certain login/ip combo.
 
-`throws` Sentry\SentryException
+throws `Sentry\SentryException`
 
-####Example
+##### Example
 
-	// add an attempt
 	try
 	{
-	    Sentry::attempts('john.doe@domain.com', '123.432.2.1')->add(); // works fine
-
-	    Sentry::attempts()->add(); // this or any other combo will throw an exception - login/ip required
+		// Add an attempt using the email and ip address
+		Sentry::attempts('john.doe@example.com', '123.432.2.1')->add();
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $error = $e->getMessage();
+		$error = $e->getMessage();
 	}
