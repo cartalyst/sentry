@@ -56,7 +56,7 @@ already registerd on your database, you can't use this email for this user.
 	}
 	catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
 	{
-		echo 'Password field is required.'
+		echo 'Password field is required.';
 	}
 	catch (Cartalyst\Sentry\Users\UserExistsException $e)
 	{
