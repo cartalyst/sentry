@@ -21,6 +21,11 @@ Checks if the provided password matches the user's current password.
 		{
 			echo 'Password does not match.';
 		}
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User was not found.';
+	}
 
 ----------
 

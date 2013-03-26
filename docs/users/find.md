@@ -57,7 +57,7 @@ Finds all users with access to a permission(s).
 
 #### Find all the Users in a Group
 
-Finds all users assigned to a group
+Finds all users assigned to a group(s).
 
 #### Example
 

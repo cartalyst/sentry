@@ -1,6 +1,9 @@
 ### Logs a User In
 
-Logs a user in.
+Logs in the provided user and sets properties in the session.
+
+If the login is successful, password reset fields and any invalid
+authentication attempts will be cleared.
 
 ----------
 
@@ -74,4 +77,4 @@ used to see on web sites.
 
 ##### Example
 
-	Sentry::loginAndRemember($credentials);
+	Sentry::loginAndRemember($user);
