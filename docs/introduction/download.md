@@ -1,13 +1,11 @@
 ### Download
 
-You have three options to download Sentry 2:
+You have two options to download Sentry 2:
 
 * Download with [Composer](http://getcomposer.org)
 * Download from GitHub
 	* Download the `.zip` file
 	* Clone the repository
-
-<p></p>
 
 ----------
 

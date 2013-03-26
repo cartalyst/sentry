@@ -51,7 +51,7 @@ Finds all users with access to a permission(s).
 #### Example
 
 	// Feel free to pass a string for just one permission instead
-	$users = Sentry::getUserProvider()->getAllWithAccess(array('admin', 'other'));
+	$users = Sentry::getUserProvider()->findAllWithAccess(array('admin', 'other'));
 
 ----------
 
@@ -61,7 +61,7 @@ Finds all users assigned to a group
 
 #### Example
 
-	$users = Sentry::getUserProvider()->getAllInGroup('administrator');
+	$users = Sentry::getUserProvider()->findAllInGroup(array('administrator', 'users'));
 
 ----------
 
