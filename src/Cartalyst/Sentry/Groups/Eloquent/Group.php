@@ -93,9 +93,10 @@ class Group extends Model implements GroupInterface {
 	/**
 	 * Saves the group.
 	 *
+	 * @param  array  $options
 	 * @return bool
 	 */
-	public function save()
+	public function save(array $options = array())
 	{
 		$this->validate();
 		return parent::save();
