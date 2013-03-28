@@ -243,6 +243,18 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($user->hasAccess(array('foo', 'baz'), false));
 	}
+	
+	public function testAnyPermissionsWithInvalidPermissions()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
+		$user->shouldReceive('isSuperUser')->once()->andReturn(false);
+		$user->shouldReceive('getMergedPermissions')->once()->andReturn(array(
+			'foo' => -1,
+			'baz' => 1,
+		));
+		
+		$this->assertFalse($user->hasAccess(array('foo', 'bar'), false));
+	}
 
 	public function testHasAnyAccess()
 	{
