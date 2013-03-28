@@ -29,6 +29,7 @@
 * [getGroups()](/sentry-2/users/helpers#getgroups)
 * [getPermissions()](/sentry-2/users/helpers#getpermissions)
 * [hasAccess()](/sentry-2/users/helpers#hasaccesspermission)
+* [hasAnyAccess()](/sentry-2/users/helpers#hasanyaccesspermissions)
 * [isActivated()](/sentry-2/users/helpers#isactivated)
 * [isSuperUser()](/sentry-2/users/helpers#issuperuser)
 * [inGroup()](/sentry-2/users/helpers#ingroupgroup)

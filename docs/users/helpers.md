@@ -73,8 +73,8 @@ Returns the user permissions.
 
 #### hasAccess($permission)
 
-Checks to see if a user been granted a certain permission.  This includes any
-permissions given to them by an groups they may be apart of as well. Users may
+Checks to see if a user been granted a certain permission. This includes any
+permissions given to them by groups they may be apart of as well. Users may
 also have permissions with a value of '-1'. This value is used to deny users of
 permissions that may have been assigned to them from a group.
 
@@ -97,6 +97,38 @@ regardless of the user permissions and group permissions.
 		else
 		{
 			// User does not have access to the given permission
+		}
+	}
+	catch (Cartalyst\Sentry\UserNotFoundException $e)
+	{
+		echo 'User was not found.';
+	}
+
+----------
+
+#### hasAnyAccess($permissions)
+
+This method calls the `hasAccess()` method, and it is used to check if an user
+has access to any of the provided permissions.
+
+If one of the provided permissions is found it will return `true` even though the
+user may not have access to the other provided permissions.
+
+##### Example
+
+	try
+	{
+		// Find the user using the user id
+		$user = Sentry::getUserProvider()->findById(1);
+
+		// Check if the user has the 'admin' and 'foo' permission.
+		if ($user->hasAnyAccess(array('admin', 'foo')))
+		{
+			// User has access to one of given permissions
+		}
+		else
+		{
+			// User does not have access to any of the given permissions
 		}
 	}
 	catch (Cartalyst\Sentry\UserNotFoundException $e)
