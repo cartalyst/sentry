@@ -25,6 +25,7 @@
 
 ### Helpers
 
+* [checkPassword()](/sentry-2/users/helpers#checkpassword)
 * [getGroups()](/sentry-2/users/helpers#getgroups)
 * [getPermissions()](/sentry-2/users/helpers#getpermissions)
 * [hasAccess()](/sentry-2/users/helpers#hasaccesspermission)

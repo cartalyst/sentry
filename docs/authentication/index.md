@@ -46,7 +46,7 @@ When the provided user is banned, this exception will be thrown.
 		);
 
 		// Try to authenticate the user
-		$user = Sentry::authenticate($credentials);
+		$user = Sentry::authenticate($credentials, false);
 	}
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
@@ -86,4 +86,4 @@ used to see on web sites.
 
 ##### Example
 
-		Sentry::authenticateAndRemember($credentials);
+	Sentry::authenticateAndRemember($credentials);

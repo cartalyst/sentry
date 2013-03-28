@@ -2,6 +2,33 @@
 
 ----------
 
+#### checkPassword()
+
+Checks if the provided password matches the user's current password.
+
+##### Example
+
+	try
+	{
+		// Find the user using the user id
+		$user = Sentry::getUserProvider()->findById(1);
+
+		if($user->checkPassword('mypassword'))
+		{
+			echo 'Password matches.';
+		}
+		else
+		{
+			echo 'Password does not match.';
+		}
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User was not found.';
+	}
+
+----------
+
 #### getGroups()
 
 Returns the user groups.

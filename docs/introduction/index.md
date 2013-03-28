@@ -16,10 +16,10 @@ such as username or email)
 * User Activation *(optional)*
 * Groups and group permissions
 * User Permissions
-* "Remember me"
+* Remember me feature
 * Login Throttling *(optional)*
 * User Suspension
 * User Banning
-* Password resetting
+* Password Resetting
 * User data
 * Interface driven (switch out your own implementations at will)
