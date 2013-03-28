@@ -276,12 +276,14 @@ class User extends Model implements UserInterface {
 	/**
 	 * Saves the user.
 	 *
+	 * @param  array  $options
 	 * @return bool
 	 */
-	public function save()
+	public function save(array $options = array())
 	{
 		$this->validate();
-		return parent::save();
+
+		return parent::save($options);
 	}
 
 	/**
