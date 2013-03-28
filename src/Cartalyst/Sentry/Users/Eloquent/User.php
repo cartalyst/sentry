@@ -628,6 +628,11 @@ class User extends Model implements UserInterface {
 				return true;
 			}
 		}
+		
+		if ($all === false)
+		{
+			return false;
+		}
 
 		return true;
 	}
