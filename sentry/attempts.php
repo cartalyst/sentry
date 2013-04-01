@@ -76,7 +76,7 @@ class Sentry_Attempts
 		$_db_instance = trim(Config::get('sentry::sentry.db_instance'));
 
 		// db_instance check
-		if ( ! empty($_db_instance) )
+		if ( ! empty($_db_instance))
 		{
 			static::$db_instance = $_db_instance;
 		}
@@ -136,17 +136,26 @@ class Sentry_Attempts
 
 		if (count($result) > 1)
 		{
-			$this->attempts = $result;
+			$this->attempts = count($result);
 		}
 		elseif ($result)
 		{
-			$this->attempts = $result[0]['attempts'];
+			$attempts = $result[0]['attempts'];
+
+			if ($attempts === 0)
+			{
+				if($result[0]['unsuspend_at'] != '0000-00-00 00:00:00' and $result[0]['unsuspend_at'] > static::sql_timestamp())
+				{
+					$attempts = static::$limit['attempts'];
+				}
+			}
+
+			$this->attempts = $attempts;
 		}
 		else
 		{
 			$this->attempts = 0;
 		}
-
 	}
 
 	/**
@@ -302,6 +311,5 @@ class Sentry_Attempts
 
 		return date(DB::connection(static::$db_instance)->grammar()->grammar->datetime, $time);
 	}
-
 
 }
