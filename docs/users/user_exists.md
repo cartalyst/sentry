@@ -6,7 +6,7 @@
 The user_exists methods returns a bool of whether the user exists or not.
 
 Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
+:--------------------------- | :-------------- | :-------------- | :--------------
 `$login_column_value`        | int, string     |               | The user_id or users login.
 
 `returns` bool

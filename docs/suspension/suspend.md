@@ -1,22 +1,17 @@
-<a id="suspend" href="#"></a>
-###suspend()
-
-----------
+#### Suspend a User
 
 The suspend method suspends a login/ip combo for a set amount of time.
 
-`throws` Sentry\SentryException
+throws `Sentry\SentryException`
 
-####Example
+##### Example
 
-	// suspend a user
 	try
 	{
-	    Sentry::attempts('john.doe@domain.com', '123.432.2.1')->suspend(); // works fine
-
-	    Sentry::attempts()->suspend(); // this or any other combo will throw an exception - login/ip required
+		// Suspend the user using the email and ip address
+		Sentry::attempts('john.doe@example.com', '123.432.2.1')->suspend();
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $error = $e->getMessage();
+		$error = $e->getMessage();
 	}

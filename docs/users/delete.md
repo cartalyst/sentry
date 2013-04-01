@@ -1,30 +1,29 @@
-<a id="delete" href="#"></a>
-###delete()
-
-----------
+#### Delete a User
 
 The delete method deletes a user.
 
-`returns` bool `throws` Sentry\SentryException
+return `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+##### Example
 
 	try
 	{
-	    // update the user
-	    $user = Sentry::user(25);
-	    $delete = $user->delete();
+		// Find the user using the user id
+		$user = Sentry::user(25);
 
-	    if ($delete)
-	    {
-	        // the user was deleted
-	    }
-	    else
-	    {
-	        // something went wrong
-	    }
+		// Delete the user
+		if ($user->delete())
+		{
+			// User was successfully deleted
+		}
+		else
+		{
+			// There was a problem deleting the user
+		}
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage(); // catch errors such as user not existing
+		$errors = $e->getMessage();
 	}

@@ -1,27 +1,29 @@
-<a id="enable" href="#"></a>
-###enable()
-
-----------
+##### Enable a User
 
 Enables a user.
 
-`returns` bool `throws` Sentry\SentryException
+returns `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+##### Example
 
 	try
 	{
-	    $enabled = Sentry::user(25)->enable();
-	    if ($enabled)
-	    {
-	        // user was enabled
-	    }
-	    else
-	    {
-	        // something went wrong
-	    }
+		// Find the user using the user id
+		$user = Sentry::user(25);
+
+		// Enable the user
+		if ($user->enable())
+		{
+			// User was successfully enabled
+		}
+		else
+		{
+			// There was a problem enabling the user
+		}
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage();
+		$errors = $e->getMessage();
 	}

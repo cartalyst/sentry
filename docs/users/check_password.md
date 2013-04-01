@@ -1,34 +1,35 @@
-<a id="check-password" href="#"></a>
-###check_password($password, $field = 'password')
-
-----------
+#### Check the User Password
 
 The check_password method checks to make sure a given password matches the password stored in the database.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$password`                  | string          |               | The password to check
-`$field`                     | string          | 'password'    | The column to check against
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$password`                  | string          | null            | The password to check
+`$field`                     | string          | password        | The column to check against
 
-`returns` bool `throws` Sentry\SentryException
+returns `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+##### Example
 
 	try
 	{
-	    // find the user
-	    $user = Sentry::user(25);
+		// Find the user using the user id
+		$user = Sentry::user(25);
 
-	    if ($user->check_password('mypassword'))
-	    {
-	        // password matches
-	    }
-	    else
-	    {
-	        // something went wrong
-	    }
+		// Check if the provided password matches
+		// the current password.
+		if ($user->check_password('mypassword'))
+		{
+			// The provided password matches
+		}
+		else
+		{
+			// No, the provided password doesn't match
+		}
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage(); // catch errors
+		$errors = $e->getMessage();
 	}

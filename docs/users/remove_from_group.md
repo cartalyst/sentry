@@ -1,30 +1,29 @@
-<a id="remove-from-group" href="#"></a>
-###remove_from_group($id)
-
-----------
+#### Remove a User from a Group
 
 Removes a user from a group.
 
-Parameters                   | Type            | Default       | Description
-:--------------------------- | :-------------: | :------------ | :--------------
-`$id`                        | int, string     |               | The groups id or name
+Parameters                   | Type            | Default         | Description
+:--------------------------- | :-------------- | :-------------- | :--------------
+`$id`                        | int, string     | null            | The groups id or name
 
-`returns` bool `throws` Sentry\SentryException
+returns `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+##### Example
 
 	try
 	{
-	    // find the user
-	    $user = Sentry::user(25);
+		// Find the user using the user id
+		$user = Sentry::user(25);
 
-	    // option 1
-	    $user->remove_from_group(2);
+		// Option 1
+		$user->remove_from_group(2);
 
-	    // option 2
-	    $user->remove_from_group('editor');
+		// Option 2
+		$user->remove_from_group('editor');
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage(); // catch errors such as user already not in group.
+		$errors = $e->getMessage();
 	}

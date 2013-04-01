@@ -1,16 +1,23 @@
-###Features
+### Why Sentry?
 
-----------
+Sentry is a simple, powerful and easy to use authorization and authentication
+bundle.
 
-It also provides additional features such as user groups and additional security features.
+It provides additional features such as groups, permissions, custom hashing
+algorithms and additional security features.
+
+-----------
+
+### Features
 
 * Authentication (via username or email)
+* Authorization
 * Groups
 * Permissions
-* Authorization
-* Remember Me
-* User Suspension / Login Attempt Limiter
-* Password Reset
+* Remember me feature
+* User Suspension
+* Login Attempt Limiter
+* Password Resetting
 * User Activation
 * User Metadata
-* OAuth or OAuth2 (via Sentry Social Add-on - coming soon)
+* OAuth or OAuth2 (via [Sentry Social](http://docs.cartalyst.com/sentrysocial) Add-on)

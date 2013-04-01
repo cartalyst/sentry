@@ -1,27 +1,29 @@
-<a id="disable" href="#"></a>
-###disable()
-
-----------
+#### Disable a User
 
 Disables a user.
 
-`returns` bool `throws` Sentry\SentryException
+returns `bool`
 
-####Example
+throws `Sentry\SentryException`
+
+##### Example
 
 	try
 	{
-	    $disabled = Sentry::user(25)->disable();
-	    if ($disabled)
-	    {
-	        // user was disabled
-	    }
-	    else
-	    {
-	        // something went wrong
-	    }
+		// Find the user using the user id
+		$user = Sentry::user(25);
+
+		// Disable the user
+		if ($user->disable())
+		{
+			// User was successfully disabled
+		}
+		else
+		{
+			// There was a problem disabling the user
+		}
 	}
 	catch (Sentry\SentryException $e)
 	{
-	    $errors = $e->getMessage();
+		$errors = $e->getMessage();
 	}

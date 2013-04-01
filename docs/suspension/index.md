@@ -1,7 +1,4 @@
-<a id="attempts" href="#"></a>
-###attempts($login_id = null, $ip_address = null)
-
-----------
+#### Get Attempts
 
 The attempts method sets and returns a Sentry_Attempts object.
 
@@ -10,21 +7,24 @@ Parameters                   | Type            | Default       | Description
 `$login_id`                  | string          | null          | The users login.
 `$ip_address`                | string          | null          | The users ip address.
 
-`returns` Sentry_Attempts `throws` Sentry\SentryException
+returns `Sentry_Attempts`
 
-> **Note:** The exceptions with this method are only thrown if there are bad config settings. You should only have to worry about them during the inital setup of Sentry.
+throws `Sentry\SentryException`
 
-####Example
+> **Note:** The exceptions with this method are only thrown if there are bad
+config settings. You should only have to worry about them during the inital
+setup of Sentry.
 
-	// get the Sentry_Attempts object
-	// sets attempts data for all users
+##### Example
+
+	// Get all attempts
 	$attempts = Sentry::attempts();
 
-	// sets attempts data for a user
-	$attempts = Sentry::attempts('john.doe@domain.com');
+	// Get attempts of a user
+	$attempts = Sentry::attempts('john.doe@example.com');
 
-	// set attempts data for an ip address
+	// Get attempts an ip address
 	$attempts = Sentry::attempts(null, '123.432.2.1');
 
-	// set attempts for a single user/ip combo
-	$attempts = Sentry::attempts('john.doe@domain.com', '123.432.2.1');
+	// Get attempts of a single user/ip combo
+	$attempts = Sentry::attempts('john.doe@example.com', '123.432.2.1');
