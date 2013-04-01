@@ -254,18 +254,33 @@ class Sentry_Attempts
 		$unsuspend_at = new \DateTime(static::sql_timestamp());
 		$unsuspend_at->modify('+'.static::$limit['time'].' minutes');
 
-		// only updates table if unsuspended at has no value
-		$result = DB::connection(static::$db_instance)
-            ->table(static::$table_suspend)
-            ->where('login_id', '=', $this->login_id)
-            ->where('ip', '=', $this->ip_address) //\Input::real_ip()
-            ->where('unsuspend_at', '=', null)
-            ->or_where('unsuspend_at', '=', 0)
-            ->or_where('unsuspend_at','=','0000-00-00 00:00:00')
-            ->update(array(
-                'suspended_at' => static::sql_timestamp(),
-                'unsuspend_at' => static::sql_timestamp($unsuspend_at->getTimestamp()),
-            ));
+		if ($this->attempts)
+		{
+			// only updates table if unsuspended at has no value
+			$result = DB::connection(static::$db_instance)
+				->table(static::$table_suspend)
+				->where('login_id', '=', $this->login_id)
+				->where('ip', '=', $this->ip_address) //\Input::real_ip()
+				->where('unsuspend_at', '=', null)
+				->or_where('unsuspend_at', '=', 0)
+				->or_where('unsuspend_at','=','0000-00-00 00:00:00')
+				->update(array(
+					'suspended_at' => static::sql_timestamp(),
+					'unsuspend_at' => static::sql_timestamp($unsuspend_at->getTimestamp())
+				));
+		}
+		else
+		{
+			// only updates table if unsuspended at has no value
+			$result = DB::connection(static::$db_instance)
+				->table(static::$table_suspend)
+				->insert(array(
+					'login_id'     => $this->login_id,
+					'ip'           => $this->ip_address,
+					'suspended_at' => static::sql_timestamp(),
+					'unsuspend_at' => static::sql_timestamp($unsuspend_at->getTimestamp())
+				));
+		}
 
 		throw new SentryUserSuspendedException(
 			__('sentry::sentry.user_suspended', array('account' => $this->login_id, 'time' => static::$limit['time']))
