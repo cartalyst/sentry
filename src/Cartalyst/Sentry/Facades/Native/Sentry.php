@@ -19,6 +19,7 @@
  */
 
 use Cartalyst\Sentry\Cookies\NativeCookie;
+use Cartalyst\Sentry\Facades\ConnectionResolver;
 use Cartalyst\Sentry\Facades\Facade;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Groups\ProviderInterface as GroupProviderInterface;
