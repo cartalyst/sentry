@@ -47,7 +47,7 @@ abstract class Facade {
 	 *
 	 * @return Cartalyst\Sentry\Sentry
 	 */
-	abstract public static function createSentry();
+	public static function createSentry();
 
 	/**
 	 * Handle dynamic, static calls to the object.
