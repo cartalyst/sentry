@@ -1,11 +1,11 @@
 {
-    "sections" : [
-        "introduction",
-        "installation",
-        "permissions",
-        "authentication",
-        "users",
-        "groups",
-        "throttling"
-    ]
+	"sections" : [
+		"introduction",
+		"installation",
+		"permissions",
+		"authentication",
+		"users",
+		"groups",
+		"throttling"
+	]
 }
