@@ -7,7 +7,8 @@ Ensure you have the following in your `composer.json` file:
 			"cartalyst/sentry": "2.0.*",
 			"illuminate/database": "4.0.*",
 			"ircmaxell/password-compat": "1.0.*"
-		}
+		},
+		"minimum-stability": "dev"
 	}
 
 
@@ -44,7 +45,8 @@ Example usage
 	{
 		"require": {
 			"cartalyst/sentry": "2.0.*"
-		}
+		},
+    	"minimum-stability": "dev"
 	}
 
 You heard us say how Sentry is completely interface driven? We have a number of implementations already built in for using Sentry which require the following `composer.json` file:
@@ -54,7 +56,8 @@ You heard us say how Sentry is completely interface driven? We have a number of 
 			"cartalyst/sentry": "2.0.*",
 			"illuminate/database": "4.0.*",
 			"ircmaxell/password-compat": "1.0.*"
-		}
+		},
+    	"minimum-stability": "dev"
 	}
 
 Now run `php composer.phar update` from the command line.
@@ -62,16 +65,22 @@ Now run `php composer.phar update` from the command line.
 Initializing Sentry requires you pass a number of dependencies to it. These dependencies are the following:
 
 1. A hasher (must implement `Cartalyst\Sentry\Hashing\HasherInterface`).
-2. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).
-3. A cookie manager (must implement `Cartalyst\Sentry\Cookies\CookieInterface`).
-4. A group provider (must implement `Cartalyst\Sentry\Groups\ProviderInterface`).
-5. A user provider (must implement `Cartalyst\Sentry\Users\ProviderInterface`).
-6. A throtte provider (must implement `Cartalyst\Sentry\Throttling\ProviderInterface`).
+2. A user provider, taking a hasher (must implement `Cartalyst\Sentry\Users\ProviderInterface`).
+3. A group provider (must implement `Cartalyst\Sentry\Groups\ProviderInterface`).
+4. A throtte provider, taking a user provider (must implement `Cartalyst\Sentry\Throttling\ProviderInterface`).
+5. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).
+6. A cookie manager (must implement `Cartalyst\Sentry\Cookies\CookieInterface`).
 
 Of course, we provide default implementations of all these for you. To setup our default implementations, the following should suffice:
 
 	$hasher = new Cartalyst\Sentry\Hashing\NativeHasher; // There are other hashers available, take your pick
-
+	
+	$userProvider = new Cartalyst\Sentry\Users\Eloquent\Provider($hasher);
+	
+	$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
+	
+	$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\Provider($userProvider);
+	
 	$session = new Cartalyst\Sentry\Sessions\NativeSession;
 
 	// Note, all of the options below are, optional!
@@ -83,19 +92,13 @@ Of course, we provide default implementations of all these for you. To setup our
 		'secure'   => null, // Default "false"
 		'httpOnly' => null, // Default "false"
 	);
+	
 	$cookie = new Cartalyst\Sentry\Cookies\NativeCookie($options);
-
-	$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
-
-	$userProvider = new Cartalyst\Sentry\Users\Eloquent\Provider($hasher);
-
-	$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\Provider($userProvider);
-
+	
 	$sentry = new Sentry(
-		$hasher,
+		$userProvider,
+		$groupProvider,
+		$throttleProvider
 		$session,
 		$cookie,
-		$groupProvider,
-		$userProvider,
-		$throttleProvider
 	);
