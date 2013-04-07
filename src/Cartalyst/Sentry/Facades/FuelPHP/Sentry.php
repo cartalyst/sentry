@@ -61,7 +61,7 @@ class Sentry extends Facade {
 		}
 
 		return new BaseSentry(
-			new UserProvider(new NativeHasher),
+			$userProvider = new UserProvider(new NativeHasher),
 			new GroupProvider,
 			new ThrottleProvider($userProvider),
 			new FuelPHPSession(Session::instance()),

@@ -46,13 +46,6 @@ abstract class Facade {
 	}
 
 	/**
-	 * Creates a new instance of Sentry.
-	 *
-	 * @return Cartalyst\Sentry\Sentry
-	 */
-	public static function createSentry();
-
-	/**
 	 * Handle dynamic, static calls to the object.
 	 *
 	 * @param  string  $method
@@ -62,6 +55,8 @@ abstract class Facade {
 	public static function __callStatic($method, $args)
 	{
 		$instance = static::instance();
+
+		var_dump($instance);
 
 		switch (count($args))
 		{

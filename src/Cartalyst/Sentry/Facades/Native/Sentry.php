@@ -35,7 +35,7 @@ use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use PDO;
 
-class Sentry {
+class Sentry extends Facade {
 
 	/**
 	 * Creates a Sentry instance.
@@ -56,8 +56,10 @@ class Sentry {
 		$ipAddress = null
 	)
 	{
+		$userProvider = $userProvider ?: new UserProvider(new NativeHasher);
+
 		return new BaseSentry(
-			$userProvider     ?: new UserProvider(new NativeHasher),
+			$userProvider,
 			$groupProvider    ?: new GroupProvider,
 			$throttleProvider ?: new ThrottleProvider($userProvider),
 			$session          ?: new NativeSession,
