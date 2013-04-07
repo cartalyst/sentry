@@ -18,6 +18,7 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Cookies\NativeCookie;
 use Cartalyst\Sentry\Facades\ConnectionResolver;
 use Cartalyst\Sentry\Facades\Facade;
@@ -25,6 +26,7 @@ use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Groups\ProviderInterface as GroupProviderInterface;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Sessions\NativeSession;
+use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Sentry as BaseSentry;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Throttling\ProviderInterface as ThrottleProviderInterface;
