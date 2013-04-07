@@ -56,8 +56,6 @@ abstract class Facade {
 	{
 		$instance = static::instance();
 
-		var_dump($instance);
-
 		switch (count($args))
 		{
 			case 0:
