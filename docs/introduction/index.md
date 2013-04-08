@@ -20,4 +20,4 @@ algorithms and additional security features.
 * Password Resetting
 * User Activation
 * User Metadata
-* OAuth or OAuth2 (via [Sentry Social](http://docs.cartalyst.com/sentrysocial) Add-on)
+* OAuth or OAuth2 (via [Sentry Social](http://docs.cartalyst.com/sentry-social-1) Add-on)
