@@ -124,7 +124,7 @@ user may not have access to the other provided permissions.
 		// Check if the user has the 'admin' and 'foo' permission.
 		if ($user->hasAnyAccess(array('admin', 'foo')))
 		{
-			// User has access to one of given permissions
+			// User has access to one of the given permissions
 		}
 		else
 		{

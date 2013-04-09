@@ -36,18 +36,14 @@ abstract class Facade {
 	{
 		if (static::$instance === null)
 		{
-			static::$instance = call_user_func_array(array($this, 'createSentry'), func_get_args());
+			static::$instance = forward_static_call_array(
+				array(get_called_class(), 'createSentry'),
+				func_get_args()
+			);
 		}
 
 		return static::$instance;
 	}
-
-	/**
-	 * Creates a new instance of Sentry.
-	 *
-	 * @return Cartalyst\Sentry\Sentry
-	 */
-	abstract public static function createSentry();
 
 	/**
 	 * Handle dynamic, static calls to the object.

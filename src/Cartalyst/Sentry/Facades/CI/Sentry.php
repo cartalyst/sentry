@@ -85,7 +85,7 @@ class Sentry {
 		}
 
 		return new BaseSentry(
-			new UserProvider(new NativeHasher),
+			$userProvider = new UserProvider(new NativeHasher),
 			new GroupProvider,
 			new ThrottleProvider($userProvider),
 			new CISession($ci->session),
