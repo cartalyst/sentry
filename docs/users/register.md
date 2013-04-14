@@ -13,6 +13,10 @@ If the user already exists but is not activated, it will create a new activation
 
 When you don't provide the required `login` field, this exception will be thrown.
 
+##### Cartalyst\Sentry\Users\PasswordRequiredException
+
+When you don't provide the required `password` field, this exception will be thrown.
+
 ##### Cartalyst\Sentry\Users\UserExistsException
 
 This exception will be thrown when the user you are trying to create already
@@ -41,6 +45,10 @@ already registerd on your database, you can't use this email for this user.
 	catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 	{
 		echo 'Login field is required.';
+	}
+	catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
+	{
+		echo 'Password field is required.';
 	}
 	catch (Cartalyst\Sentry\Users\UserExistsException $e)
 	{
