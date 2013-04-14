@@ -9,7 +9,7 @@ Add `"cartalyst/sentry": "2.0.*"` to the `require` attribute of your `composer.j
 
 ##### Step 2
 
-Add `Cartalyst\Sentry\SentryServiceProvider` to the list of service providers in `app/config/app.php`
+Add `'Cartalyst\Sentry\SentryServiceProvider'` to the list of service providers in `app/config/app.php`
 
 ##### Step 3  *(optional)*
 
