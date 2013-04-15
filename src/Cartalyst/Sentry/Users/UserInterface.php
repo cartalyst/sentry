@@ -263,4 +263,11 @@ interface UserInterface {
 	 */
 	public function hasAnyAccess(array $permissions);
 
+	/**
+	 * Records a login for the user.
+	 *
+	 * @return void
+	 */
+	public function recordLogin();
+
 }

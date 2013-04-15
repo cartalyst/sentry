@@ -629,6 +629,17 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		user::setLoginAttribute($originalAttribute);
 	}
 
+	public function testRecordingLogin()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[save]');
+		$this->addMockConnection($user);
+		$user->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+
+		$user->shouldReceive('save')->once();
+		$user->recordLogin();
+		$this->assertInstanceOf('DateTime', $user->last_login);
+	}
+
 	protected function addMockConnection($model)
 	{
 		$model->setConnectionResolver($resolver = m::mock('Illuminate\Database\ConnectionResolverInterface'));

@@ -321,6 +321,10 @@ class Sentry {
 		{
 			$this->cookie->forever($toPersist);
 		}
+
+		// The user model can attach any handlers
+		// to the "recordLogin" event.
+		$user->recordLogin();
 	}
 
 	/**

@@ -82,6 +82,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 		$user->shouldReceive('getLogin')->once()->andReturn('foo');
 		$user->shouldReceive('getPersistCode')->once()->andReturn('persist_code');
+		$user->shouldReceive('recordLogin')->once();
 
 		$this->session->shouldReceive('put')->with(array('foo', 'persist_code'))->once();
 

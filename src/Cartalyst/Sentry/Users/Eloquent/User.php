@@ -689,6 +689,17 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Records a login for the user.
+	 *
+	 * @return void
+	 */
+	public function recordLogin()
+	{
+		$this->last_login = new DateTime;
+		$this->save();
+	}
+
+	/**
 	 * Returns the relationship between users and groups.
 	 *
 	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
