@@ -26,6 +26,7 @@ use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
+use DateTime;
 
 class User extends Model implements UserInterface {
 
@@ -94,6 +95,13 @@ class User extends Model implements UserInterface {
 	 * @var Cartalyst\Sentry\Hashing\HasherInterface
 	 */
 	protected static $hasher;
+
+	/**
+	 * The date fields for the model.clear
+	 *
+	 * @var array
+	 */
+	protected $dates = array('activated_at');
 
 	/**
 	 * Returns the user's ID.
@@ -375,7 +383,8 @@ class User extends Model implements UserInterface {
 		if ($activationCode == $this->activation_code)
 		{
 			$this->activation_code = null;
-			$this->activated = true;
+			$this->activated       = true;
+			$this->activated_at    = new DateTime;
 			return $this->save();
 		}
 

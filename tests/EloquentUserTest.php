@@ -243,7 +243,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($user->hasAccess(array('foo', 'baz'), false));
 	}
-	
+
 	public function testAnyPermissionsWithInvalidPermissions()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[isSuperUser,getMergedPermissions]');
@@ -252,7 +252,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 			'foo' => -1,
 			'baz' => 1,
 		));
-		
+
 		$this->assertFalse($user->hasAccess(array('foo', 'bar'), false));
 	}
 
@@ -514,13 +514,17 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 	public function testUserActivation()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User[getActivationCode,checkHash,save]');
+		$this->addMockConnection($user);
+		$user->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
 
 		$user->activation_code = 'activation_code';
 		$user->shouldReceive('save')->once()->andReturn(true);
 
+		$this->assertNull($user->activated_at);
 		$this->assertTrue($user->attemptActivation('activation_code'));
 		$this->assertNull($user->activation_code);
 		$this->assertTrue($user->activated);
+		$this->assertInstanceOf('DateTime', $user->activated_at);
 	}
 
 	public function testCheckingPassword()
@@ -623,6 +627,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		User::setLoginAttribute('foo');
 		$this->assertEquals('foo', User::getLoginAttribute());
 		user::setLoginAttribute($originalAttribute);
+	}
+
+	protected function addMockConnection($model)
+	{
+		$model->setConnectionResolver($resolver = m::mock('Illuminate\Database\ConnectionResolverInterface'));
+		$resolver->shouldReceive('connection')->andReturn(m::mock('Illuminate\Database\Connection'));
+		$model->getConnection()->shouldReceive('getQueryGrammar')->andReturn(m::mock('Illuminate\Database\Query\Grammars\Grammar'));
+		$model->getConnection()->shouldReceive('getPostProcessor')->andReturn(m::mock('Illuminate\Database\Query\Processors\Processor'));
 	}
 
 }
