@@ -32,7 +32,7 @@ class BcryptHasher implements HasherInterface {
 	 *
 	 * @var int
 	 */
-	public $saltLength = 16;
+	public $saltLength = 22;
 
 	/**
 	 * Hash string.
