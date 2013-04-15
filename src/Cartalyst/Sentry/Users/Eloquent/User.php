@@ -548,6 +548,26 @@ class User extends Model implements UserInterface {
 			return true;
 		}
 
+		return $this->hasPermission($permissions, $all);
+	}
+
+	/**
+	 * See if a user has access to the passed permission(s).
+	 * Permissions are merged from all groups the user belongs to
+	 * and then are checked against the passed permission(s).
+	 *
+	 * If multiple permissions are passed, the user must
+	 * have access to all permissions passed through, unless the
+	 * "all" flag is set to false.
+	 *
+	 * Super users DON'T have access no matter what.
+	 *
+	 * @param  string|array  $permissions
+	 * @param  bool  $all
+	 * @return bool
+	 */
+	public function hasPermission($permissions, $all = true)
+	{
 		$mergedPermissions = $this->getMergedPermissions();
 
 		if ( ! is_array($permissions))
