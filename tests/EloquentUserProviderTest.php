@@ -187,6 +187,28 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($actualUser, $result);
 	}
 
+	/**
+	 * Regression test for https://github.com/cartalyst/sentry/issues/157
+	 *
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFindByNullActivationCode()
+	{
+		$provider = new Provider($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
+		$provider->findByActivationCode(null);
+	}
+
+	/**
+	 * Regression test for https://github.com/cartalyst/sentry/issues/157
+	 *
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFindByEmptyActivationCode()
+	{
+		$provider = new Provider($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
+		$provider->findByActivationCode('');
+	}
+
 	public function testFindByActivationCode()
 	{
 		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel]');

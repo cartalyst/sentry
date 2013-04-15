@@ -54,8 +54,9 @@ interface ProviderInterface {
 	 *
 	 * @param  string  $code
 	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws RuntimeException
 	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @throws InvalidArgumentException
+	 * @throws RuntimeException
 	 */
 	public function findByActivationCode($code);
 
