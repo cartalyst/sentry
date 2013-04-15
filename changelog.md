@@ -5,6 +5,7 @@
  - Added `Sentry::getUserProvider()->findAllInGroup($group)`.
  - Tracking throttling by IP address to prevent a potential DoS attack.
  - Refactored dependencies & Facades to simplify initialization of Sentry.
+ - Added an optional `Cartalyst\Sentry\Users\WrongPasswordException` to allow you to catch wrong passwords specifically when authenticating a user. This should be [used with knowledge and caution](https://github.com/cartalyst/sentry/issues/148).
 
 #v2.0.0-beta6
 

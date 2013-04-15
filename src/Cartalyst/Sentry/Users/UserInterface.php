@@ -44,6 +44,13 @@ interface UserInterface {
 	public function getLogin();
 
 	/**
+	 * Returns the name for the user's password.
+	 *
+	 * @return string
+	 */
+	public function getPasswordName();
+
+	/**
 	 * Returns the user's password (hashed).
 	 *
 	 * @return string
@@ -229,7 +236,7 @@ interface UserInterface {
 	 * @return bool
 	 */
 	public function hasAccess($permissions, $all = true);
-	
+
 	/**
 	 * See if a user has access to the passed permission(s).
 	 * Permissions are merged from all groups the user belongs to
@@ -240,7 +247,7 @@ interface UserInterface {
 	 * "all" flag is set to false.
 	 *
 	 * Super users DON'T have access no matter what.
-	 * 
+	 *
 	 * @param  string|array  $permissions
 	 * @param  bool $all
 	 * @return bool

@@ -24,6 +24,7 @@ use Cartalyst\Sentry\Users\ProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
 use Cartalyst\Sentry\Users\UserNotFoundException;
+use Cartalyst\Sentry\Users\WrongPasswordException;
 
 class Provider implements ProviderInterface {
 
@@ -107,12 +108,15 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByCredentials(array $credentials)
 	{
-		$model = $this->createModel();
+		$model     = $this->createModel();
+		$loginName = $model->getLoginName();
 
-		if ( ! array_key_exists(($attribute = $model->getLoginName()), $credentials))
+		if ( ! array_key_exists($loginName, $credentials))
 		{
-			throw new \InvalidArgumentException("Login attribute [$attribute] was not provided.");
+			throw new \InvalidArgumentException("Login attribute [$loginName] was not provided.");
 		}
+
+		$passwordName = $model->getPasswordName();
 
 		$query              = $model->newQuery();
 		$hashableAttributes = $model->getHashableAttributes();
@@ -143,7 +147,14 @@ class Provider implements ProviderInterface {
 		{
 			if ( ! $this->hasher->checkHash($value, $user->{$credential}))
 			{
-				throw new UserNotFoundException("A user was found to match all plain text credentials however hashed credential [$credential] did not match.");
+				$message = "A user was found to match all plain text credentials however hashed credential [$credential] did not match.";
+
+				if ($credential == $passwordName)
+				{
+					throw new WrongPasswordException($message);
+				}
+
+				throw new UserNotFoundException($message);
 			}
 		}
 

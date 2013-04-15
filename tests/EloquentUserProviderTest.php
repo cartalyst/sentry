@@ -137,6 +137,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
+		$user->shouldReceive('getPasswordName')->once()->andReturn('password');
 		$user->shouldReceive('newQuery')->andReturn($query);
 		$user->shouldReceive('getHashableAttributes')->once()->andReturn(array('baz', 'bat'));
 
@@ -149,6 +150,43 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 			'baz' => 'unhashed_baz',
 			'bat' => 'unhashed_bat',
 		));
+	}
+
+	/**
+	 * Regression test for https://github.com/cartalyst/sentry/issues/148
+	 *
+	 * @expectedException Cartalyst\Sentry\Users\WrongPasswordException
+	 */
+	public function testFindingByCredentialsFailsForBadPassword()
+	{
+		$actualUser = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$actualUser->shouldReceive('getAttribute')->with('password')->andReturn('hashed_passwordval');
+
+		$hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface');
+		$hasher->shouldReceive('checkhash')->with('unhashed_passwordval', 'hashed_passwordval')->
+		once()->andReturn(false);
+
+		$query = m::mock('StdClass');
+		$query->shouldReceive('where')->with('foo', '=', 'fooval')->once()->andReturn($query);
+		$query->shouldReceive('first')->andReturn($actualUser);
+
+		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
+		$user->shouldReceive('getPasswordName')->once()->andReturn('password');
+		$user->shouldReceive('newQuery')->andReturn($query);
+		$user->shouldReceive('getHashableAttributes')->once()->andReturn(array('password'));
+
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[createModel,getHashableCredentials]');
+		$provider->__construct($hasher);
+
+		$provider->shouldReceive('createModel')->once()->andReturn($user);
+
+		$result = $provider->findByCredentials(array(
+			'foo'      => 'fooval',
+			'password' => 'unhashed_passwordval',
+		));
+
+		$this->assertEquals($actualUser, $result);
 	}
 
 	public function testFindingByCredentials()
@@ -169,6 +207,7 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$user = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user->shouldReceive('getLoginName')->once()->andReturn('foo');
+		$user->shouldReceive('getPasswordName')->once()->andReturn('password');
 		$user->shouldReceive('newQuery')->andReturn($query);
 		$user->shouldReceive('getHashableAttributes')->once()->andReturn(array('baz', 'bat'));
 

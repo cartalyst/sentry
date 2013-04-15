@@ -79,10 +79,22 @@ Find a user by an array of credentials, which must include the login column. Has
 			'first_name' => 'John',
 		));
 	}
+
+	// The following Exception is a subclass of UserNotFoundException
+	// and must be put first if you choose to use it. There may be
+	// security consequences by telling the user their password is wrong
+	// but the username is correct, however the choice is there. See
+	// https://github.com/cartalyst/sentry/issues/148
+	catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
+	{
+		echo 'User was found however the password you provided did not match.';
+	}
+
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
 		echo 'User was not found.';
 	}
+
 
 ----------
 

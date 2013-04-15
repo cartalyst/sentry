@@ -126,6 +126,16 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Returns the name for the user's password.
+	 *
+	 * @return string
+	 */
+	public function getPasswordName()
+	{
+		return 'password';
+	}
+
+	/**
 	 * Returns the user's password (hashed).
 	 *
 	 * @return string
@@ -648,7 +658,7 @@ class User extends Model implements UserInterface {
 				return true;
 			}
 		}
-		
+
 		if ($all === false)
 		{
 			return false;
