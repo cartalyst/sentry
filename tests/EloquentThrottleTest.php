@@ -67,12 +67,10 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 		$actualDate = '2013-01-01 00:00:00';
 		$dateTime = new DateTime($actualDate);
 
-		$connection = m::mock('StdClass');
-		$connection->shouldReceive('getQueryGrammar')->atLeast(1)->andReturn($connection);
-		$connection->shouldReceive('getDateFormat')->atLeast(1)->andReturn('Y-m-d H:i:s');
+		$throttle = new Throttle;
+		$this->addMockConnection($throttle);
+		$throttle->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
 
-		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[getConnection]');
-		$throttle->shouldReceive('getConnection')->atLeast(1)->andReturn($connection);
 		$throttle->last_attempt_at = $dateTime;
 
 		$this->assertEquals($dateTime, $throttle->last_attempt_at);
@@ -98,12 +96,9 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 
 	public function testGettingLoginAttemptsResetsIfSuspensionTimeHasPassedSinceLastAttempt()
 	{
-		$connection = m::mock('StdClass');
-		$connection->shouldReceive('getQueryGrammar')->atLeast(1)->andReturn($connection);
-		$connection->shouldReceive('getDateFormat')->atLeast(1)->andReturn('Y-m-d H:i:s');
-
-		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save,getConnection]');;
-		$throttle->shouldReceive('getConnection')->atLeast(1)->andReturn($connection);
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[save]');
+		$this->addMockConnection($throttle);
+		$throttle->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
 
 		// Let's simulate that the suspension time
 		// is 11 minutes however the last attempt was
@@ -271,5 +266,13 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	// 	$throttle->disable();
 	// 	$this->assertFalse($throttle->isEnabled());
 	// }
+
+	protected function addMockConnection($model)
+	{
+		$model->setConnectionResolver($resolver = m::mock('Illuminate\Database\ConnectionResolverInterface'));
+		$resolver->shouldReceive('connection')->andReturn(m::mock('Illuminate\Database\Connection'));
+		$model->getConnection()->shouldReceive('getQueryGrammar')->andReturn(m::mock('Illuminate\Database\Query\Grammars\Grammar'));
+		$model->getConnection()->shouldReceive('getPostProcessor')->andReturn(m::mock('Illuminate\Database\Query\Processors\Processor'));
+	}
 
 }
