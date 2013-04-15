@@ -58,6 +58,8 @@ CREATE TABLE `users` (
   `permissions` text COLLATE utf8_unicode_ci,
   `activated` tinyint(4) NOT NULL DEFAULT '0',
   `activation_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `activated_at` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_login` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `persist_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `reset_password_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
