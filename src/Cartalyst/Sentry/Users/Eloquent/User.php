@@ -248,14 +248,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function isSuperUser()
 	{
-		$permissions = $this->getPermissions();
-
-		if ( ! array_key_exists('superuser', $permissions))
-		{
-			return false;
-		}
-
-		return $permissions['superuser'] == 1;
+		return $this->hasPermission('superuser');
 	}
 
 	/**
