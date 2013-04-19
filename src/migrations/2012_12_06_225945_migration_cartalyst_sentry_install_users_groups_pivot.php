@@ -31,9 +31,9 @@ class MigrationCartalystSentryInstallUsersGroupsPivot extends Migration {
 	{
 		Schema::create('users_groups', function($table)
 		{
-			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->integer('group_id')->unsigned();
+			$table->primary(array('user_id', 'group_id'));
 		});
 	}
 
