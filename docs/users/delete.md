@@ -20,14 +20,7 @@ If the provided user was not found, this exception will be thrown.
 		$user = Sentry::getUserProvider()->findById(1);
 
 		// Delete the user
-		if ($user->delete())
-		{
-			// User was successfully deleted
-		}
-		else
-		{
-			// There was a problem deleting the user
-		}
+		$user->delete();
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

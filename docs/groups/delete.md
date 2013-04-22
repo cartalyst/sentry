@@ -20,14 +20,7 @@ If the provided group was not found, this exception will be thrown.
 		$group = Sentry::getGroupProvider()->findById(1);
 
 		// Delete the group
-		if ($group->delete())
-		{
-			// Group was successfully deleted
-		}
-		else
-		{
-			// There was a problem deleting the group
-		}
+		$group->delete();
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
