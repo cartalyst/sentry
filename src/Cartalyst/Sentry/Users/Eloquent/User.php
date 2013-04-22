@@ -101,7 +101,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var array
 	 */
-	protected $dates = array('activated_at');
+	protected $dates = array('activated_at', 'last_login', 'created_at', 'updated_at');
 
 	/**
 	 * Returns the user's ID.

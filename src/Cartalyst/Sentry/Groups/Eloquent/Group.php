@@ -40,6 +40,13 @@ class Group extends Model implements GroupInterface {
 	protected $guarded = array();
 
 	/**
+	 * The date fields for the model.clear
+	 *
+	 * @var array
+	 */
+	protected $dates = array('created_at', 'updated_at');
+
+	/**
 	 * Allowed permissions values.
 	 *
 	 * Possible options:
@@ -173,7 +180,7 @@ class Group extends Model implements GroupInterface {
 				return true;
 			}
 		}
-		
+
 		if ($all === false)
 		{
 			return false;

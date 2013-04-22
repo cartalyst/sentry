@@ -62,28 +62,6 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(15, Throttle::getAttemptLimit());
 	}
 
-	public function testDateTimeObjectIsUsedForLastAttemptAt()
-	{
-		$actualDate = '2013-01-01 00:00:00';
-		$dateTime = new DateTime($actualDate);
-
-		$throttle = new Throttle;
-		$this->addMockConnection($throttle);
-		$throttle->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-
-		$throttle->last_attempt_at = $dateTime;
-
-		$this->assertEquals($dateTime, $throttle->last_attempt_at);
-
-		$expected = array(
-			'last_attempt_at' => $actualDate,
-		);
-		$this->assertEquals($expected, $throttle->toArray());
-
-		$expected = "{\"last_attempt_at\":\"$actualDate\"}";
-		$this->assertEquals($expected, (string) $throttle);
-	}
-
 	public function testGettingLoginAttemptsWhenNoAttemptHasBeenMadeBefore()
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\Eloquent\Throttle[clearLoginAttemptsIfAllowed]');
