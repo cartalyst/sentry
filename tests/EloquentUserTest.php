@@ -524,7 +524,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->attemptActivation('activation_code'));
 		$this->assertNull($user->activation_code);
 		$this->assertTrue($user->activated);
-		$this->assertInstanceOf('DateTime', $user->activated_at);
+		$this->assertInstanceOf('Carbon\Carbon', $user->activated_at);
 	}
 
 	public function testCheckingPassword()
@@ -637,7 +637,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 
 		$user->shouldReceive('save')->once();
 		$user->recordLogin();
-		$this->assertInstanceOf('DateTime', $user->last_login);
+		$this->assertInstanceOf('Carbon\Carbon', $user->last_login);
 	}
 
 	protected function addMockConnection($model)
