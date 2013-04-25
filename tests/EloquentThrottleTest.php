@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,6 +20,8 @@
 
 use Mockery as m;
 use Cartalyst\Sentry\Throttling\Eloquent\Throttle;
+use DateTime;
+use PHPUnit_Framework_TestCase;
 
 class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 

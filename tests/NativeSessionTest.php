@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,6 +20,8 @@
 
 use Cartalyst\Sentry\Sessions\NativeSession;
 use Mockery as m;
+use PHPUnit_Framework_TestCase;
+use stdClass;
 
 class NativeSessionTest extends PHPUnit_Framework_TestCase {
 
@@ -57,7 +59,7 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 		$session->shouldReceive('writeSession');
 		$session->__construct('foo');
 
-		$class = new StdClass;
+		$class = new stdClass;
 		$class->foo = 'bar';
 
 		$session->put($class);
@@ -79,7 +81,7 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 		$session->shouldReceive('writeSession');
 		$session->__construct('foo');
 
-		$class = new StdClass;
+		$class = new stdClass;
 		$class->foo = 'bar';
 		$_SESSION['foo'] = serialize($class);
 

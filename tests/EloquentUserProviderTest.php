@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -21,8 +21,21 @@
 use Mockery as m;
 use Cartalyst\Sentry\Users\Eloquent\Provider;
 use Cartalyst\Sentry\Users\Eloquent\User;
+use UserModelStub1;
+use UserModelStub2;
+use PHPUnit_Framework_TestCase;
 
 class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
+
+	/**
+	 * Setup resources and dependencies.
+	 *
+	 * @return void
+	 */
+	public static function setUpBeforeClass()
+	{
+		require_once __DIR__.'/stubs/users/UserModelStubs.php';
+	}
 
 	/**
 	 * Close mockery.
@@ -445,13 +458,5 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(array($user1), $provider->findAllWithAnyAccess($permissions));
 	}
-
-}
-
-class UserModelStub1 {
-
-}
-
-class UserModelStub2 {
 
 }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,7 +20,10 @@
 
 use Mockery as m;
 use Cartalyst\Sentry\Sentry;
+use Cartalyst\Sentry\Throttling\UserBannedException;
+use Cartalyst\Sentry\Throttling\UserSuspendedException;
 use Cartalyst\Sentry\Users\UserNotFoundException;
+use PHPUnit_Framework_TestCase;
 
 class SentryTest extends PHPUnit_Framework_TestCase {
 
@@ -160,7 +163,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
-		$throttle->shouldReceive('check')->once()->andThrow(new Cartalyst\Sentry\Throttling\UserBannedException);
+		$throttle->shouldReceive('check')->once()->andThrow(new UserBannedException);
 
 		$this->sentry->authenticate($credentials);
 	}
@@ -181,7 +184,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
-		$throttle->shouldReceive('check')->once()->andThrow(new Cartalyst\Sentry\Throttling\UserSuspendedException);
+		$throttle->shouldReceive('check')->once()->andThrow(new UserSuspendedException);
 
 		$this->sentry->authenticate($credentials);
 	}

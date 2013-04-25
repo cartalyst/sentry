@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,6 +20,7 @@
 
 use Mockery as m;
 use Cartalyst\Sentry\Sessions\CISession;
+use PHPUnit_Framework_TestCase;
 
 class CISessionTest extends PHPUnit_Framework_TestCase {
 

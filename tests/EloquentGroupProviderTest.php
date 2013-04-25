@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,8 +20,21 @@
 
 use Mockery as m;
 use Cartalyst\Sentry\Groups\Eloquent\Provider;
+use GroupModelStub1;
+use GroupModelStub2;
+use PHPUnit_Framework_TestCase;
 
 class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
+
+	/**
+	 * Setup resources and dependencies.
+	 *
+	 * @return void
+	 */
+	public static function setUpBeforeClass()
+	{
+		require_once __DIR__.'/stubs/groups/GroupModelStubs.php';
+	}
 
 	/**
 	 * Close mockery.
@@ -134,13 +147,5 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 		$provider->setModel('GroupModelStub2');
 		$this->assertInstanceOf('GroupModelStub2', $provider->createModel());
 	}
-
-}
-
-class GroupModelStub1 {
-
-}
-
-class GroupModelStub2 {
 
 }

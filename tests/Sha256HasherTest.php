@@ -1,4 +1,4 @@
-<?php
+<?php namespace Cartalyst\Sentry\Tests;
 /**
  * Part of the Sentry package.
  *
@@ -20,6 +20,7 @@
 
 use Mockery as m;
 use Cartalyst\Sentry\Hashing\Sha256Hasher as Hasher;
+use PHPUnit_Framework_TestCase;
 
 class Sha256HasherTest extends PHPUnit_Framework_TestCase {
 
