@@ -52,14 +52,14 @@ class Provider implements ProviderInterface {
 	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
 	 * @return void
 	 */
-	public function __construct(UserProviderInterface $userProvider, $model=null)
+	public function __construct(UserProviderInterface $userProvider, $model = null)
 	{
 		$this->userProvider = $userProvider;
+
 		if (isset($model))
 		{
 			$this->model = $model;
 		}
-
 	}
 
 	/**
