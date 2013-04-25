@@ -74,7 +74,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
 		{
-			$hasher = $app['config']['cartalyst/sentry::sentry.hasher'];
+			$hasher = $app['config']['cartalyst/sentry::hasher'];
 
 			switch ($hasher)
 			{
@@ -104,7 +104,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.user'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::sentry.users.model'];
+			$model = $app['config']['cartalyst/sentry::users.model'];
 
 			// We will never be accessing a user in Sentry without accessing
 			// the user provider first. So, we can lazily setup our user
@@ -113,7 +113,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// overriding at runtime.
 			if (method_exists($model, 'setLoginAttribute'))
 			{
-				$loginAttribute = $app['config']['cartalyst/sentry::sentry.users.login_attribute'];
+				$loginAttribute = $app['config']['cartalyst/sentry::users.login_attribute'];
 
 				forward_static_call_array(
 					array($model, 'setLoginAttribute'),
@@ -134,7 +134,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.group'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::sentry.groups.model'];
+			$model = $app['config']['cartalyst/sentry::groups.model'];
 
 			return new GroupProvider($model);
 		});
@@ -149,18 +149,18 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.throttle'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::sentry.throttling.model'];
+			$model = $app['config']['cartalyst/sentry::throttling.model'];
 
 			$throttleProvider = new ThrottleProvider($app['sentry.user'], $model);
 
-			if ($app['config']['cartalyst/sentry::sentry.throttling.enabled'] === false)
+			if ($app['config']['cartalyst/sentry::throttling.enabled'] === false)
 			{
 				$throttleProvider->disable();
 			}
 
 			if (method_exists($model, 'setAttemptLimit'))
 			{
-				$attemptLimit = $app['config']['cartalyst/sentry::sentry.throttling.attempt_limit'];
+				$attemptLimit = $app['config']['cartalyst/sentry::throttling.attempt_limit'];
 
 				forward_static_call_array(
 					array($model, 'setAttemptLimit'),
@@ -169,7 +169,7 @@ class SentryServiceProvider extends ServiceProvider {
 			}
 			if (method_exists($model, 'setSuspensionTime'))
 			{
-				$suspensionTime = $app['config']['cartalyst/sentry::sentry.throttling.suspension_time'];
+				$suspensionTime = $app['config']['cartalyst/sentry::throttling.suspension_time'];
 
 				forward_static_call_array(
 					array($model, 'setSuspensionTime'),

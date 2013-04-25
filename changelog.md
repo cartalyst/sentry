@@ -8,6 +8,7 @@
  - Added an optional `Cartalyst\Sentry\Users\WrongPasswordException` to allow you to catch wrong passwords specifically when authenticating a user. This should be [used with knowledge and caution](https://github.com/cartalyst/sentry/issues/148).
  - Added an `activated_at` column to the `user` table, which will record the time which a user was activated.
  - Added a 'last_login' column to the `user` table.
+ - Renaming configuration files to simplify configuration.
 
 #v2.0.0-beta6
 
