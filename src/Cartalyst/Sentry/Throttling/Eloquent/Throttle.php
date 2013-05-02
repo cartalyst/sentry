@@ -203,7 +203,7 @@ class Throttle extends Model implements ThrottleInterface {
 		if ( ! $this->banned)
 		{
 			$this->banned = true;
-			$this->suspended_at = $this->freshTimeStamp();
+			$this->banned_at = $this->freshTimeStamp();
 			$this->save();
 		}
 	}
