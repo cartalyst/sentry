@@ -59,7 +59,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 *
 	 * @var array
 	 */
-	protected $dates = array('last_attempt_at', 'suspended_at');
+	protected $dates = array('last_attempt_at', 'suspended_at', 'banned_at');
 
 	/**
 	 * Attempt limit.
@@ -203,6 +203,7 @@ class Throttle extends Model implements ThrottleInterface {
 		if ( ! $this->banned)
 		{
 			$this->banned = true;
+			$this->suspended_at = $this->freshTimeStamp();
 			$this->save();
 		}
 	}
@@ -217,6 +218,7 @@ class Throttle extends Model implements ThrottleInterface {
 		if ($this->banned)
 		{
 			$this->banned = false;
+			$this->banned_at = null;
 			$this->save();
 		}
 	}
@@ -325,7 +327,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 * @param  mixed  $suspended
 	 * @return bool
 	 */
-	public function getSuspended($suspended)
+	public function getSuspendedAttribute($suspended)
 	{
 		return (bool) $suspended;
 	}
@@ -336,7 +338,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 * @param  mixed  $banned
 	 * @return bool
 	 */
-	public function getBanned($banned)
+	public function getBannedAttribute($banned)
 	{
 		return (bool) $banned;
 	}

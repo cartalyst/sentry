@@ -39,6 +39,7 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 			$table->boolean('banned')->default(0);
 			$table->timestamp('last_attempt_at')->nullable();
 			$table->timestamp('suspended_at')->nullable();
+			$table->timestamp('banned_at')->nullable();
 		});
 	}
 

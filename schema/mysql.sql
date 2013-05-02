@@ -41,6 +41,7 @@ CREATE TABLE `throttle` (
   `banned` tinyint(4) NOT NULL DEFAULT '0',
   `last_attempt_at` timestamp NULL DEFAULT NULL,
   `suspended_at` timestamp NULL DEFAULT NULL,
+  `banned_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

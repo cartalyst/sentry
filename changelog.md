@@ -9,6 +9,7 @@
  - Added an `activated_at` column to the `user` table, which will record the time which a user was activated.
  - Added a 'last_login' column to the `user` table.
  - Renaming configuration files to simplify configuration.
+ - Added a `suspended_at` column to the `throttle` table.
 
 #v2.0.0-beta6
 
