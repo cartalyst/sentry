@@ -25,6 +25,10 @@ If the provided user was not found, this exception will be thrown.
 
 When the provided user is not activated, this exception will be thrown.
 
+##### Cartalyst\Sentry\Users\WrongPasswordException
+
+When the provided passoword is wrong, this exception will be thrown.
+
 ##### Cartalyst\Sentry\Throttling\UserSuspendedException
 
 When the provided user is suspended, this exception will be thrown.
@@ -64,6 +68,10 @@ When the provided user is banned, this exception will be thrown.
 	{
 		echo 'User is not activated.';
 	}
+	catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
+	{
+		echo 'Wrong password, try again.';
+	}	
 
 	// The following is only required if throttle is enabled
 	catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
