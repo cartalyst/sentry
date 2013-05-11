@@ -132,7 +132,7 @@ class ConnectionResolver implements ConnectionResolverInterface {
 					break;
 
 				case 'sqlite':
-					$queryGrammar = 'Illuminate\Database\Query\Grammars\SQLiteGrammer';
+					$queryGrammar = 'Illuminate\Database\Query\Grammars\SQLiteGrammar';
 					break;
 
 				default:
