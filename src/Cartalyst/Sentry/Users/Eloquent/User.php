@@ -104,6 +104,13 @@ class User extends Model implements UserInterface {
 	protected $dates = array('activated_at', 'last_login', 'created_at', 'updated_at');
 
 	/**
+	 * The user's groups
+	 *
+	 * @var null
+	 */
+	protected static $userGroups = null;
+
+	/**
 	 * Returns the user's ID.
 	 *
 	 * @return  mixed
@@ -464,7 +471,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function getGroups()
 	{
-		return $this->groups()->get();
+		if (static::$userGroups === null)
+		{
+			static::$userGroups = $this->groups()->get();
+		}
+
+		return static::$userGroups;
 	}
 
 	/**
