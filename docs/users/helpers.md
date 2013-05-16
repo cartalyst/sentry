@@ -71,6 +71,27 @@ Returns the user permissions.
 
 ----------
 
+#### getMergedPermissions()
+
+Returns an array of merged permissions from groups and the user permissions.
+
+##### Example
+
+	try
+	{
+		// Find the user using the user id
+		$user = Sentry::getUserProvider()->findById(1);
+
+		// Get the user permissions
+		$permissions = $user->getMergedPermissions();
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User was not found.';
+	}
+
+----------
+
 #### hasAccess($permission)
 
 Checks to see if a user been granted a certain permission. This includes any
