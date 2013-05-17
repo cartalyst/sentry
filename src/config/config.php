@@ -56,6 +56,7 @@ return array(
 	| Configuration specific to the group management component of Sentry.
 	|
 	*/
+
 	'groups' => array(
 
 		/*
@@ -80,6 +81,7 @@ return array(
 	| Configuration specific to the user management component of Sentry.
 	|
 	*/
+
 	'users' => array(
 
 		/*
@@ -118,6 +120,7 @@ return array(
 	| enables limiting of login attempts and the suspension & banning of users.
 	|
 	*/
+
 	'throttling' => array(
 
 		/*
