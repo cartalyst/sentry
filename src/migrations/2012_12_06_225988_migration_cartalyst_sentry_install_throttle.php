@@ -31,6 +31,7 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 	{
 		Schema::create('throttle', function($table)
 		{
+			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->string('ip_address')->nullable();
