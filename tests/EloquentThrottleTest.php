@@ -87,7 +87,7 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 		$lastAttemptAt = new DateTime;
 		$lastAttemptAt->modify('-10 minutes');
 
-		$throttle->last_attempt_at = $lastAttemptAt;
+		$throttle->last_attempt_at = $lastAttemptAt->format('Y-m-d H:i:s');
 		$throttle->attempts = 3;
 		$this->assertEquals(3, $throttle->getLoginAttempts());
 
