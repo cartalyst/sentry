@@ -281,7 +281,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function clearLoginAttemptsIfAllowed()
 	{
-		$lastAttempt     = clone($this->last_attempt_at);
+		$lastAttempt     = new DateTime($this->last_attempt_at);
 		$suspensionTime  = static::$suspensionTime;
 		$clearAttemptsAt = $lastAttempt->modify("+{$suspensionTime} minutes");
 		$now             = new DateTime;
@@ -306,7 +306,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function removeSuspensionIfAllowed()
 	{
-		$suspended      = clone($this->suspended_at);
+		$suspended      = new DateTime($this->suspended_at);
 		$suspensionTime = static::$suspensionTime;
 		$unsuspendAt    = $suspended->modify("+{$suspensionTime} minutes");
 		$now            = new DateTime;
