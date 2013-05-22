@@ -31,7 +31,6 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 	{
 		Schema::create('throttle', function($table)
 		{
-			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->string('ip_address')->nullable();
@@ -41,6 +40,10 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 			$table->timestamp('last_attempt_at')->nullable();
 			$table->timestamp('suspended_at')->nullable();
 			$table->timestamp('banned_at')->nullable();
+
+			// We'll need to ensure that MySQL uses the InnoDB engine to
+			// support the indexes, other engines aren't affected.
+			$table->engine = 'InnoDB';
 		});
 	}
 

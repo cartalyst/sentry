@@ -31,7 +31,6 @@ class MigrationCartalystSentryInstallUsers extends Migration {
 	{
 		Schema::create('users', function($table)
 		{
-			$table->engine = 'InnoDB';
 			$table->increments('id');
 			$table->string('email');
 			$table->string('password');
@@ -46,6 +45,9 @@ class MigrationCartalystSentryInstallUsers extends Migration {
 			$table->string('last_name')->nullable();
 			$table->timestamps();
 
+			// We'll need to ensure that MySQL uses the InnoDB engine to
+			// support the indexes, other engines aren't affected.
+			$table->engine = 'InnoDB';
 			$table->unique('email');
 		});
 	}
