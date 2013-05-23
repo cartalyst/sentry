@@ -104,6 +104,20 @@ class User extends Model implements UserInterface {
 	protected $dates = array('activated_at', 'last_login', 'created_at', 'updated_at');
 
 	/**
+	 * The user's groups
+	 *
+	 * @var null
+	 */
+	protected static $userGroups = null;
+	
+	/**
+	 * The user's merged permissions
+	 *
+	 * @var null
+	 */
+	protected static $mergedPermissions = null;
+	
+	/**
 	 * Returns the user's ID.
 	 *
 	 * @return  mixed
@@ -464,7 +478,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function getGroups()
 	{
-		return $this->groups()->get();
+		if (static::$userGroups === null)
+		{
+			static::$userGroups = $this->groups()->get();
+		}
+
+		return static::$userGroups;
 	}
 
 	/**
@@ -526,16 +545,19 @@ class User extends Model implements UserInterface {
 	 */
 	public function getMergedPermissions()
 	{
-		$permissions = array();
-
-		foreach ($this->getGroups() as $group)
+		if (static::$mergedPermissions === null)
 		{
-			$permissions = array_merge($permissions, $group->getPermissions());
+			$permissions = array();
+
+			foreach ($this->getGroups() as $group)
+			{
+				$permissions = array_merge($permissions, $group->getPermissions());
+			}
+
+			static::$mergedPermissions = array_merge($permissions, $this->getPermissions());
 		}
 
-		$permissions = array_merge($permissions, $this->getPermissions());
-
-		return $permissions;
+		return static::$mergedPermissions;
 	}
 
 	/**
