@@ -104,6 +104,20 @@ class User extends Model implements UserInterface {
 	protected $dates = array('activated_at', 'last_login', 'created_at', 'updated_at');
 
 	/**
+	 * The user groups.
+	 *
+	 * @var array
+	 */
+	protected $userGroups;
+
+	/**
+	 * The user merged permissions.
+	 *
+	 * @var array
+	 */
+	protected $mergedPermissions;
+
+	/**
 	 * Returns the user's ID.
 	 *
 	 * @return  mixed
@@ -464,7 +478,12 @@ class User extends Model implements UserInterface {
 	 */
 	public function getGroups()
 	{
-		return $this->groups()->get();
+		if ( ! $this->userGroups)
+		{
+			$this->userGroups = $this->groups()->get();
+		}
+
+		return $this->userGroups;
 	}
 
 	/**
@@ -526,16 +545,19 @@ class User extends Model implements UserInterface {
 	 */
 	public function getMergedPermissions()
 	{
-		$permissions = array();
-
-		foreach ($this->getGroups() as $group)
+		if ( ! $this->mergedPermissions)
 		{
-			$permissions = array_merge($permissions, $group->getPermissions());
+			$permissions = array();
+
+			foreach ($this->getGroups() as $group)
+			{
+				$permissions = array_merge($permissions, $group->getPermissions());
+			}
+
+			$this->mergedPermissions = array_merge($permissions, $this->getPermissions());
 		}
 
-		$permissions = array_merge($permissions, $this->getPermissions());
-
-		return $permissions;
+		return $this->mergedPermissions;
 	}
 
 	/**
