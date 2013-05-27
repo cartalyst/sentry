@@ -41,11 +41,8 @@
 		"ircmaxell/password-compat": "1.0.*"
 	},
 	"suggest": {
-		"illuminate/cookie": "Sentry provides an Illuminate cookie driver for cookie integration.",
-		"illuminate/database": "Sentry provides Eloquent models for User, Group and Throttle providers.",
-		"dhorrigan/capsule": "Capsule is a small utility for managing database connections given to illuminate/database outside of Laravel 4.",
-		"illuminate/session": "Sentry provides an Illuminate session driver for storage integration.",
-		"ircmaxell/password-compat": "A forward-compatible PHP 5.5 password package for password_* functions can be used as a hasher (NativeHasher) in Sentry."
+		"illuminate/database": "Default sentry user, group and throttling implementations.",
+		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support."
 	},
 	"autoload": {
 		"classmap": [
