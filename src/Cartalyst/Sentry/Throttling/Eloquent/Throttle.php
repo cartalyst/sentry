@@ -55,13 +55,6 @@ class Throttle extends Model implements ThrottleInterface {
 	protected $guarded = array();
 
 	/**
-	 * The date fields for the model.
-	 *
-	 * @var array
-	 */
-	protected $dates = array('last_attempt_at', 'suspended_at', 'banned_at');
-
-	/**
 	 * Attempt limit.
 	 *
 	 * @var int
@@ -281,12 +274,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function clearLoginAttemptsIfAllowed()
 	{
-		$lastAttempt = $this->last_attempt_at;
-
-		if ( ! $lastAttempt instanceof DateTime)
-		{
-			$lastAttempt = new DateTime($lastAttempt);
-		}
+		$lastAttempt = clone $this->last_attempt_at;
 
 		$suspensionTime  = static::$suspensionTime;
 		$clearAttemptsAt = $lastAttempt->modify("+{$suspensionTime} minutes");
@@ -312,12 +300,7 @@ class Throttle extends Model implements ThrottleInterface {
 	 */
 	public function removeSuspensionIfAllowed()
 	{
-		$suspended = $this->suspended_at;
-
-		if ( ! $suspended instanceof DateTime)
-		{
-			$suspended = new DateTime($suspended);
-		}
+		$suspended = clone $this->suspended_at;
 
 		$suspensionTime = static::$suspensionTime;
 		$unsuspendAt    = $suspended->modify("+{$suspensionTime} minutes");
@@ -353,6 +336,16 @@ class Throttle extends Model implements ThrottleInterface {
 	public function getBannedAttribute($banned)
 	{
 		return (bool) $banned;
+	}
+
+	/**
+	 * Get the attributes that should be converted to dates.
+	 *
+	 * @return array
+	 */
+	public function getDates()
+	{
+		return array_merge(parent::getDates(), array('last_attempt_at', 'suspended_at', 'banned_at'));
 	}
 
 	/**

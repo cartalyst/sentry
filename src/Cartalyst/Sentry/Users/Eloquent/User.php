@@ -97,13 +97,6 @@ class User extends Model implements UserInterface {
 	protected static $hasher;
 
 	/**
-	 * The date fields for the model.clear
-	 *
-	 * @var array
-	 */
-	protected $dates = array('activated_at', 'last_login', 'created_at', 'updated_at');
-
-	/**
 	 * The user groups.
 	 *
 	 * @var array
@@ -815,6 +808,16 @@ class User extends Model implements UserInterface {
 		}
 
 		return parent::setAttribute($key, $value);
+	}
+
+	/**
+	 * Get the attributes that should be converted to dates.
+	 *
+	 * @return array
+	 */
+	public function getDates()
+	{
+		return array_merge(parent::getDates(), array('activated_at', 'last_login'));
 	}
 
 	/**
