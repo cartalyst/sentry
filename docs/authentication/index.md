@@ -17,13 +17,13 @@ When you don't provide the required `login` field, this exception will be thrown
 
 When you don't provide the `password` field, this exception will be thrown.
 
-##### Cartalyst\Sentry\Users\UserNotFoundException
-
-If the provided user was not found, this exception will be thrown.
-
 ##### Cartalyst\Sentry\Users\UserNotActivatedException
 
 When the provided user is not activated, this exception will be thrown.
+
+##### Cartalyst\Sentry\Users\UserNotFoundException
+
+If the provided user was not found, this exception will be thrown.
 
 ##### Cartalyst\Sentry\Users\WrongPasswordException
 
@@ -60,13 +60,13 @@ When the provided user is banned, this exception will be thrown.
 	{
 		echo 'Password field is required.';
 	}
-	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
-	{
-		echo 'User was not found.';
-	}
 	catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
 	{
 		echo 'Wrong password, try again.';
+	}
+	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+	{
+		echo 'User was not found.';
 	}
 	catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
 	{
