@@ -16,7 +16,7 @@ If the provided user was not found, this exception will be thrown.
 #### Get the Current Logged in User
 
 Returns the user that's set with Sentry, does not check if a user is logged in
-or not. To do that, use [`check()`](/sentry-2/authentication/check) instead.
+or not. To do that, use [`check()`](/sentry-2/authentication/helpers#check-if-the-user-is-logged-in) instead.
 
 ##### Example
 
