@@ -83,7 +83,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getLogin')->once()->andReturn('foo');
+		$user->shouldReceive('getId')->once()->andReturn('foo');
 		$user->shouldReceive('getPersistCode')->once()->andReturn('persist_code');
 		$user->shouldReceive('recordLogin')->once();
 
@@ -338,7 +338,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 		$this->cookie->shouldReceive('get')->never();
 
-		$this->userProvider->shouldReceive('findByLogin')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
@@ -351,7 +351,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('get')->once();
 		$this->cookie->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 
-		$this->userProvider->shouldReceive('findByLogin')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
