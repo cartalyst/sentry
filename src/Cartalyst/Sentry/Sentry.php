@@ -312,7 +312,7 @@ class Sentry {
 		$this->user = $user;
 
 		// Create an array of data to persist to the session and / or cookie
-		$toPersist = array($user->id, $user->getPersistCode());
+		$toPersist = array($user->getId(), $user->getPersistCode());
 
 		// Set sessions
 		$this->session->put($toPersist);
