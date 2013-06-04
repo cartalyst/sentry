@@ -338,7 +338,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 		$this->cookie->shouldReceive('get')->never();
 
-		$this->userProvider->shouldReceive('findByLogin')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
