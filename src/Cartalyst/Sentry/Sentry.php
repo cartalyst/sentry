@@ -258,12 +258,12 @@ class Sentry {
 				return false;
 			}
 
-			list($login, $persistCode) = $userArray;
+			list($id, $persistCode) = $userArray;
 
 			// Let's find our user
 			try
 			{
-				$user = $this->getUserProvider()->findByLogin($login);
+				$user = $this->getUserProvider()->findById($id);
 			}
 			catch (UserNotFoundException $e)
 			{
@@ -312,7 +312,7 @@ class Sentry {
 		$this->user = $user;
 
 		// Create an array of data to persist to the session and / or cookie
-		$toPersist = array($user->getLogin(), $user->getPersistCode());
+		$toPersist = array($user->id, $user->getPersistCode());
 
 		// Set sessions
 		$this->session->put($toPersist);
