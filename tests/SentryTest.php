@@ -83,7 +83,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getLogin')->once()->andReturn('foo');
+		$user->shouldReceive('getId')->once()->andReturn('foo');
 		$user->shouldReceive('getPersistCode')->once()->andReturn('persist_code');
 		$user->shouldReceive('recordLogin')->once();
 
