@@ -489,6 +489,8 @@ class User extends Model implements UserInterface {
 	{
 		if ( ! $this->inGroup($group))
 		{
+			$this->userGroups = null;
+			$this->mergedPermissions = null;
 			$this->groups()->attach($group);
 		}
 
@@ -505,6 +507,8 @@ class User extends Model implements UserInterface {
 	{
 		if ($this->inGroup($group))
 		{
+			$this->userGroups = null;
+			$this->mergedPermissions = null;
 			$this->groups()->detach($group);
 		}
 
