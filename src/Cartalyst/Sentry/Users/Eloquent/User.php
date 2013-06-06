@@ -512,6 +512,22 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * Removed the user from all groups.
+	 *
+	 * @return bool
+	 */
+	public function removeAllGroups()
+	{
+		foreach ($this->getGroups() as $group)
+		{
+			$this->removeGroup($group);
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * See if the user is in the given group.
 	 *
 	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
