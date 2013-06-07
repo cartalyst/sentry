@@ -190,9 +190,9 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.session'] = $this->app->share(function($app)
 		{
-			$key = $app['config']['cartalyst/sentry::cookie.key'];
+			$cookie_key = $app['config']['cartalyst/sentry::cookie.key'];
       
-			return new IlluminateSession($app['session'], $key);
+			return new IlluminateSession($app['session'], $cookie_key);
 		});
 	}
 
@@ -205,9 +205,9 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
 		{
-			$key = $app['config']['cartalyst/sentry::cookie.key'];
+			$cookie_key = $app['config']['cartalyst/sentry::cookie.key'];
       
-			return new IlluminateCookie($app['cookie'], $key);
+			return new IlluminateCookie($app['cookie'], $cookie_key);
 		});
 	}
 

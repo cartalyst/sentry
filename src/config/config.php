@@ -64,7 +64,7 @@ return array(
 		| Default Cookie Key
 		|--------------------------------------------------------------------------
 		|
-		| This option allows you to specify the default cookie key used by Sentry.
+		| This option allows you to specify the default cookie key used by Sentry
 		|
 		| Supported: string
 		|
