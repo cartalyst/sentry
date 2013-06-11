@@ -609,7 +609,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		);
 		$this->assertEquals($expected, $user->toArray());
 
-		$expected = '{"email":"foo@bar.com","permissions":{"foo":1,"bar":-1,"baz":1}}';
+		$expected = json_encode($expected);
 		$this->assertEquals($expected, (string) $user);
 	}
 
