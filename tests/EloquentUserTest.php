@@ -604,8 +604,8 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 				'bar' => -1,
 				'baz' => 1,
 			),
-			'activated' => false,
-			'login' => 'email'
+			//'activated' => false,
+			//'login' => 'email'
 		);
 		$this->assertEquals($expected, $user->toArray());
 
