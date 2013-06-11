@@ -282,7 +282,7 @@ class EloquentGroupTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($expected, $group->toArray());
 
-		$expected = '{"name":"foo","permissions":{"foo":1,"baz":1}}';
+		$expected = json_encode($expected);
 		$this->assertEquals($expected, (string) $group);
 	}
 
