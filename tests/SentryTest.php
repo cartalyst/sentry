@@ -161,7 +161,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
-		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
+		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
 		$throttle->shouldReceive('check')->once()->andThrow(new UserBannedException);
 
@@ -182,7 +182,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
-		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
+		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
 		$throttle->shouldReceive('check')->once()->andThrow(new UserSuspendedException);
 
@@ -203,7 +203,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
-		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
+		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
 		$throttle->shouldReceive('check')->once();
 
@@ -270,7 +270,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
-		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com', '0.0.0.0')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
+		$this->throttleProvider->shouldReceive('findByUserLogin')->with('foo@bar.com')->once()->andReturn($throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface'));
 
 		$throttle->shouldReceive('check')->once();
 
