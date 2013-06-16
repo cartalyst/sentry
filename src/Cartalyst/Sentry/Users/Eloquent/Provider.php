@@ -43,15 +43,22 @@ class Provider implements ProviderInterface {
 	protected $hasher;
 
 	/**
+	 * The ldap setting from config
+	 *
+	 */
+	protected $ldap;
+
+	/**
 	 * Create a new Eloquent User provider.
 	 *
 	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
 	 * @return void
 	 */
-	public function __construct(HasherInterface $hasher, $model = null)
+	public function __construct(HasherInterface $hasher, $model = null,$ldap)
 	{
 		$this->hasher = $hasher;
+		$this->ldap = $ldap;
 
 		if (isset($model))
 		{
@@ -192,6 +199,55 @@ class Provider implements ProviderInterface {
 		}
 
 		return $user;
+	}
+
+		/**
+	 * Finds a user by the given credentials.
+	 *
+	 * @param  array  $credentials
+	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByLdapCredentials(array $credentials)
+	{
+    	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port']);
+        if (!($result = @ldap_bind($ldapConnection, "userid=".$credentials['userid'].",ou=ogrenci,dc=konya,dc=edu,dc=tr", $credentials['password'])))
+        {
+        	//Password is incorrect or user not found!
+        	throw new \RuntimeException(ldap_error($ldapConnection));
+        }
+        else
+        {
+			//Authentication Succesfull
+			$model     = $this->createModel();
+			$loginName = $model->getLoginName();
+
+			if ( ! array_key_exists($loginName, $credentials))
+			{
+				throw new \InvalidArgumentException("Login attribute [$loginName] was not provided.");
+			}
+
+			$passwordName = $model->getPasswordName();
+
+			$query              = $model->newQuery();
+
+			$query = $query->where("userid", '=', $credentials['userid']);
+
+			if ( ! $user = $query->first())
+			{
+				// First time login
+				$user = array(
+					'userid' => $credentials['userid'],
+					'activated' => 1
+				);
+
+				$query->insert($user);
+
+				$query = $query->where("userid", '=', $credentials['userid']);
+				$user = $query->first();
+			}
+			return $user;
+		}
 	}
 
 	/**

@@ -274,10 +274,12 @@ class User extends Model implements UserInterface {
 			throw new LoginRequiredException("A login is required for a user, none given.");
 		}
 
-		if ( ! $password = $this->getPassword())
+		// This is commented because password is checked from ldap and i wont save it on database anymore
+
+		/*if ( ! $password = $this->getPassword())
 		{
 			throw new PasswordRequiredException("A password is required for user [$login], none given.");
-		}
+		}*/
 
 		// Check if the user already exists
 		$query = $this->newQuery();
