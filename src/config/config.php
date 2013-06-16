@@ -26,15 +26,19 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	| This option says to sentry your ldap settings
-	|
+	| Searchdn is added for choose user group automaticly.
+	| if user found in dn1, he will add group1
 	|
 	*/
 
 	'ldap' => array(
 		'server'	=> 'ldapserver',
-		'port'		=> 'ldapport'
+		'port'		=> 'ldapport',
+		'searchdn'	=>	array(
+							'groupname' => 'search dn',
+							'groupname2' => 'searchdn2'
+						),
 	),
-
 	/*
 	|--------------------------------------------------------------------------
 	| Default Authentication Driver

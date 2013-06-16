@@ -26,6 +26,7 @@ use Cartalyst\Sentry\Users\UserNotActivatedException;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\WrongPasswordException;
 
+
 class Provider implements ProviderInterface {
 
 	/**
@@ -211,43 +212,76 @@ class Provider implements ProviderInterface {
 	public function findByLdapCredentials(array $credentials)
 	{
     	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port']);
-        if (!($result = @ldap_bind($ldapConnection, "userid=".$credentials['userid'].",ou=ogrenci,dc=konya,dc=edu,dc=tr", $credentials['password'])))
-        {
-        	//Password is incorrect or user not found!
-        	throw new \RuntimeException(ldap_error($ldapConnection));
-        }
-        else
-        {
-			//Authentication Succesfull
-			$model     = $this->createModel();
-			$loginName = $model->getLoginName();
 
-			if ( ! array_key_exists($loginName, $credentials))
-			{
-				throw new \InvalidArgumentException("Login attribute [$loginName] was not provided.");
-			}
+    	foreach ($this->ldap['searchdn'] as $groupname => $dn)
+    	{
+	        if (($result = @ldap_bind($ldapConnection, "userid=".$credentials['userid'].",".$dn, $credentials['password'])))
+	        {
+	        	//Authentication Succesfull
+				$model     = $this->createModel();
+				$loginName = $model->getLoginName();
 
-			$passwordName = $model->getPasswordName();
+				if ( ! array_key_exists($loginName, $credentials))
+				{
+					throw new \InvalidArgumentException("Login attribute [$loginName] was not provided.");
+				}
 
-			$query              = $model->newQuery();
+				$passwordName = $model->getPasswordName();
 
-			$query = $query->where("userid", '=', $credentials['userid']);
-
-			if ( ! $user = $query->first())
-			{
-				// First time login
-				$user = array(
-					'userid' => $credentials['userid'],
-					'activated' => 1
-				);
-
-				$query->insert($user);
+				$query              = $model->newQuery();
 
 				$query = $query->where("userid", '=', $credentials['userid']);
-				$user = $query->first();
-			}
-			return $user;
+
+				if ( ! $user = $query->first())
+				{
+					// First time login Create user
+					$data = ldap_search($ldapConnection, "userid=".$credentials['userid'].",".$dn,"(uid=".$credentials['userid'].")");
+					$data = ldap_get_entries($ldapConnection, $data);
+
+					try
+					{
+					    // Create the user
+					   $user = $this->create(
+					    	array(
+							'userid' => $credentials['userid'],
+							'email' => $data[0]['mail'][0],
+							'activated' => 1
+					    ));
+
+					    // Find the group which specified at config file
+						$groupProvider = new \Cartalyst\Sentry\Groups\Eloquent\Provider;
+						$configGroup = $groupProvider->findByName($groupname);
+					    // Assign the group to the user
+					    $user->addGroup($configGroup);
+					}
+					catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+					{
+					    echo 'Login field is required.';
+					}
+					catch (Cartalyst\Sentry\Users\UserExistsException $e)
+					{
+					    echo 'User with this login already exists.';
+					}
+					catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+					{
+					    echo 'Group was not found.';
+					}
+				}
+				return $user;
+	        }
 		}
+		
+		// If user not found in any dn, password is incorrect or user not found!
+		if(ldap_errno($ldapConnection)==49)
+		{
+			// Password wrong or user not found
+			throw new WrongPasswordException(ldap_error($ldapConnection));
+		}
+		else
+	    {	
+	    	//Other Error
+	    	throw new \RuntimeException(ldap_error($ldapConnection));
+	    }
 	}
 
 	/**
