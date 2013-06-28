@@ -120,8 +120,11 @@ class SentryServiceProvider extends ServiceProvider {
 					array($loginAttribute)
 				);
 			}
-
-			return new UserProvider($app['sentry.hasher'], $model);
+			if(!isset($app['config']['cartalyst/sentry::ldap']))
+				$ldap = null;
+			else
+				$ldap = $app['config']['cartalyst/sentry::ldap'];
+			return new UserProvider($app['sentry.hasher'], $model,$ldap);
 		});
 	}
 
