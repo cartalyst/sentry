@@ -326,6 +326,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('getId')->once()->andReturn(1);
 
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setUser($user);
 		$this->assertTrue($this->sentry->check());
@@ -342,6 +343,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('getId')->once()->andReturn(1);
 
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setUser($user);
 		$this->assertFalse($this->sentry->check());
@@ -357,6 +359,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$user->shouldReceive('getId')->once()->andReturn(1);
 
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setUser($user);
 		$this->assertFalse($this->sentry->check());
@@ -381,6 +384,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
 
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
@@ -402,6 +406,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$user->shouldReceive('getId')->once()->andReturn(1);
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
