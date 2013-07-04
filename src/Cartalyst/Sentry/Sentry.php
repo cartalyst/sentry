@@ -289,8 +289,8 @@ class Sentry {
 			return false;
 		}
 		// Check the throttle status
-		$throttle = $this->getThrottleProvider()->findByUserId($user->id);
-		if( $throttle->isBanned() or $throttle->isSuspended() )
+		$throttle = $this->getThrottleProvider()->findByUserId( $user->getId() );
+		if( $throttle->isBanned() or $throttle->isSuspended())
 		{
 			return false;
 		}
