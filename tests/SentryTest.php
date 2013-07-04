@@ -318,10 +318,48 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 	public function testCheckingUserWhenUserIsSetAndActivated()
 	{
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
+
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
+		$user->shouldReceive('getId')->once()->andReturn(1);
+
+		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
 
 		$this->sentry->setUser($user);
 		$this->assertTrue($this->sentry->check());
+	}
+
+	public function testCheckingUserWhenUserIsSetAndSuspended()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(true);
+
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+		$user->shouldReceive('getId')->once()->andReturn(1);
+
+		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+
+		$this->sentry->setUser($user);
+		$this->assertFalse($this->sentry->check());
+	}
+
+	public function testCheckingUserWhenUserIsSetAndBanned()
+	{
+		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(true);
+
+		$user->shouldReceive('isActivated')->once()->andReturn(true);
+		$user->shouldReceive('getId')->once()->andReturn(1);
+
+		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+
+		$this->sentry->setUser($user);
+		$this->assertFalse($this->sentry->check());
 	}
 
 	public function testCheckingUserWhenUserIsSetAndNotActivated()
@@ -338,8 +376,15 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 		$this->cookie->shouldReceive('get')->never();
 
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
+
+		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
+		$user->shouldReceive('getId')->once()->andReturn(1);
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
@@ -351,8 +396,14 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->session->shouldReceive('get')->once();
 		$this->cookie->shouldReceive('get')->once()->andReturn(array('foo', 'persist_code'));
 
-		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
+		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
 
+		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
+		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+
+		$user->shouldReceive('getId')->once()->andReturn(1);
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
