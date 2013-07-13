@@ -882,7 +882,7 @@ class User extends Model implements UserInterface {
 	 * @param  string  $loginAttribute
 	 * @return void
 	 */
-	public static function setLoginAttribute($loginAttribute)
+	public static function setLoginAttributeName($loginAttribute)
 	{
 		static::$loginAttribute = $loginAttribute;
 	}
@@ -892,7 +892,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @return string
 	 */
-	public static function getLoginAttribute()
+	public static function getLoginAttributeName()
 	{
 		return static::$loginAttribute;
 	}
