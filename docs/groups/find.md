@@ -18,7 +18,7 @@ This will return all the groups.
 
 ##### Example
 
-	$groups = Sentry::getGroupProvider()->findAll();
+	$groups = Sentry::findAllGroups();
 
 ----------
 
@@ -30,7 +30,7 @@ Find a group by it's ID.
 
 	try
 	{
-		$group = Sentry::getGroupProvider()->findById(1);
+		$group = Sentry::findGroupById(1);
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{
@@ -47,7 +47,7 @@ Find a group by it's name.
 
 	try
 	{
-		$group = Sentry::getGroupProvider()->findByName('admin');
+		$group = Sentry::findGroupByName('admin');
 	}
 	catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
 	{

@@ -27,7 +27,7 @@ If the provided user was not found, this exception will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Attempt to activate the user
 		if ($user->attemptActivation('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))

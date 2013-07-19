@@ -17,7 +17,7 @@ If the provided group was not found, this exception will be thrown.
 	try
 	{
 		// Find the group using the group id
-		$group = Sentry::getGroupProvider()->findById(1);
+		$group = Sentry::findGroupById(1);
 
 		// Delete the group
 		if ($group->delete())

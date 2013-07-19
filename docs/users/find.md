@@ -40,7 +40,7 @@ This will return all the users.
 
 ##### Example
 
-	$users = Sentry::getUserProvider()->findAll();
+	$users = Sentry::findAllUsers();
 
 ----------
 
@@ -51,7 +51,7 @@ Finds all users with access to a permission(s).
 #### Example
 
 	// Feel free to pass a string for just one permission instead
-	$users = Sentry::getUserProvider()->findAllWithAccess(array('admin', 'other'));
+	$users = Sentry::findAllUsersWithAccess(array('admin', 'other'));
 
 ----------
 
@@ -61,7 +61,7 @@ Finds all users assigned to a group(s).
 
 #### Example
 
-	$users = Sentry::getUserProvider()->findAllInGroup(array('administrator', 'users'));
+	$users = Sentry::findAllUsersInGroup(array('administrator', 'users'));
 
 ----------
 
@@ -73,7 +73,7 @@ Find a user by an array of credentials, which must include the login column. Has
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findByCredentials(array(
+		$user = Sentry::findUserByCredentials(array(
 			'email'      => 'john.doe@example.com',
 			'password'   => 'test',
 			'first_name' => 'John',
@@ -94,7 +94,7 @@ Find a user by their ID.
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
@@ -111,7 +111,7 @@ Find a user by their login ID.
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findByLogin('john.doe@example.com');
+		$user = Sentry::findUserByLogin('john.doe@example.com');
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
@@ -128,7 +128,7 @@ Find a user by their registration activation code.
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findByActivationCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb');
+		$user = Sentry::findUserByActivationCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb');
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
@@ -145,7 +145,7 @@ Find a user by their reset password code.
 
 	try
 	{
-		$user = Sentry::getUserProvider()->findByResetPasswordCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb');
+		$user = Sentry::findUserByResetPasswordCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb');
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

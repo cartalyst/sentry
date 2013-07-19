@@ -25,7 +25,7 @@ Example usage
 	// Done!
 
 	// Create our first user!
-	$user = Sentry::getUserProvider()->create(array(
+	$user = Sentry::createUser(array(
 		'email'    => 'testing@test.com',
 		'password' => 'test',
 		'permissions' => array(

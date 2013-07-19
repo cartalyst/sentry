@@ -421,4 +421,105 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$sentry->getUser();
 	}
 
+    public function testFindGroupById()
+    {
+        $this->groupProvider->shouldReceive('findById')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findGroupByID(1));
+    }
+
+    public function testFindGroupByName()
+    {
+        $this->groupProvider->shouldReceive('findByName')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findGroupByName("name"));
+    }
+
+    public function testFindAllGroups()
+    {
+        $this->groupProvider->shouldReceive('findAll')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findAllGroups());
+    }
+
+    public function testCreateGroup()
+    {
+        $this->groupProvider->shouldReceive('create')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->createGroup(array()));
+    }
+
+    public function testFindUserByID()
+    {
+        $this->userProvider->shouldReceive('findById')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findUserById(1));
+    }
+    public function testFindUserByLogin()
+    {
+        $this->userProvider->shouldReceive('findByLogin')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findUserByLogin("login"));
+    }
+
+    public function testFindUserByCredentials()
+    {
+        $this->userProvider->shouldReceive('findByCredentials')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findUserByCredentials(array()));
+    }
+
+    public function testFindUserByActivationCode()
+    {
+        $this->userProvider->shouldReceive('findByActivationCode')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findUserByActivationCode("x"));
+    }
+
+    public function testFindUserByResetPasswordCode()
+    {
+        $this->userProvider->shouldReceive('findByResetPasswordCode')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findUserByResetPasswordCode("x"));
+    }
+
+    public function testFindAllUsers()
+    {
+        $this->userProvider->shouldReceive('findAll')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findAllUsers());
+    }
+
+    public function testFindAllUsersInGroup()
+    {
+        $this->userProvider->shouldReceive('findAllInGroup')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findAllUsersInGroup(""));
+    }
+
+    public function testFindAllUsersWithAccess()
+    {
+        $this->userProvider->shouldReceive('findAllWithAccess')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findAllUsersWithAccess(""));
+    }
+
+    public function testFindAllUsersWithAnyAccess()
+    {
+        $this->userProvider->shouldReceive('findAllWithAnyAccess')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findAllUsersWithAnyAccess(array()));
+    }
+
+    public function testCreateUser()
+    {
+        $this->userProvider->shouldReceive('create')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->createUser(array()));
+    }
+
+    public function testGetEmptyUser()
+    {
+        $this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->getEmptyUser());
+    }
+
+    public function testFindThrottlerByUserID()
+    {
+        $this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findThrottlerByUserId(1));
+    }
+
+    public function testFindThrottlerByUserLogin()
+    {
+        $this->throttleProvider->shouldReceive('findByUserLogin')->once()->andReturn(true);
+        $this->assertTrue($this->sentry->findThrottlerByUserLogin("X"));
+    }
+
 }

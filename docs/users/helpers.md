@@ -11,7 +11,7 @@ Checks if the provided password matches the user's current password.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		if($user->checkPassword('mypassword'))
 		{
@@ -38,7 +38,7 @@ Returns the user groups.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserByID(1);
 
 		// Get the user groups
 		$groups = $user->getGroups();
@@ -59,7 +59,7 @@ Returns the user permissions.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserByID(1);
 
 		// Get the user permissions
 		$permissions = $user->getPermissions();
@@ -86,7 +86,7 @@ regardless of the user permissions and group permissions.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserByID(1);
 
 		// Check if the user has the 'admin' permission. Also,
 		// multiple permissions may be used by passing an array
@@ -115,7 +115,7 @@ Checks if a user is activated.
 	try
 	{
 		// Find the user
-		$user = Sentry::getUserProvider()->findByLogin('jonh.doe@example.com');
+		$user = Sentry::findUserByLogin('jonh.doe@example.com');
 
 		// Check if the user is activated or not
 		if ($user->isActivated())
@@ -143,7 +143,7 @@ Returns if the user is a super user, it means, that has access to everything reg
 	try
 	{
 		// Find the user
-		$user = Sentry::getUserProvider()->findByLogin('jonh.doe@example.com');
+		$user = Sentry::findUserByLogin('jonh.doe@example.com');
 
 		// Check if this user is a super user
 		if ($user->isSuperUser())
@@ -171,10 +171,10 @@ Checks if a user is in a certain group.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserByID(1);
 
 		// Find the Administrator group
-		$admin = Sentry::getGroupProvider()->findByName('Administrator');
+		$admin = Sentry::findGroupByName('Administrator');
 
 		// Check if the user is in the administrator group
 		if ($user->inGroup($admin))
