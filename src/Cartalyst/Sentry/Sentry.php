@@ -193,7 +193,7 @@ class Sentry {
 		// to authenticate them
 		if ($throttlingEnabled = $this->throttleProvider->isEnabled())
 		{
-			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName], $this->ipAddress))
+			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName]))
 			{
 				$throttle->check();
 			}
