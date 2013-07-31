@@ -128,6 +128,28 @@ class Group extends Model implements GroupInterface {
 				}
 			}
 
+			// Now, let's check if the permission starts in a wildcard "*" symbol.
+			// If it does, we'll check through all the merged permissions to see
+			// if a permission exists which matches the wildcard.
+			elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
+			{
+				$matched = false;
+
+				foreach ($groupPermissions as $groupPermission => $value)
+				{
+					// Strip the '*' off the start of the permission.
+					$checkPermission = substr($permission, 1);
+
+					// We will make sure that the merged permission does not
+					// exactly match our permission, but ends wtih it.
+					if ($checkPermission != $groupPermission and ends_with($groupPermission, $checkPermission) and $value == 1)
+					{
+						$matched = true;
+						break;
+					}
+				}
+			}
+
 			else
 			{
 				$matched = false;

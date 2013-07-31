@@ -629,6 +629,25 @@ class User extends Model implements UserInterface {
 					}
 				}
 			}
+			
+			elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
+			{
+				$matched = false;
+
+				foreach ($mergedPermissions as $mergedPermission => $value)
+				{
+					// Strip the '*' off the beginning of the permission.
+					$checkPermission = substr($permission, 1);
+
+					// We will make sure that the merged permission does not
+					// exactly match our permission, but ends with it.
+					if ($checkPermission != $mergedPermission and ends_with($mergedPermission, $checkPermission) and $value == 1)
+					{
+						$matched = true;
+						break;
+					}
+				}
+			}
 
 			else
 			{
