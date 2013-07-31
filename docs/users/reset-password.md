@@ -22,7 +22,7 @@ The first step is to get a password reset code, to do this we use the
 	try
 	{
 		// Find the user using the user email address
-		$user = Sentry::getUserProvider()->findByLogin('john.doe@example.com');
+		$user = Sentry::findUserByLogin('john.doe@example.com');
 
 		// Get the password reset code
 		$resetCode = $user->getResetPasswordCode();
@@ -46,7 +46,7 @@ All the logic part on how you pass the reset password code is all up to you.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Check if the reset password code is valid
 		if ($user->checkResetPasswordCode('8f1Z7wA4uVt7VemBpGSfaoI9mcjdEwtK8elCnQOb'))

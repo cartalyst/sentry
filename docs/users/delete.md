@@ -17,7 +17,7 @@ If the provided user was not found, this exception will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Delete the user
 		$user->delete();

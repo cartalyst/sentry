@@ -19,7 +19,7 @@ a throttle object.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{
@@ -37,7 +37,7 @@ retrieve a throttle object.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserLogin('john.doe@example.com');
+		$throttle = Sentry::findThrottlerByUserLogin('john.doe@example.com');
 	}
 	catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
 	{

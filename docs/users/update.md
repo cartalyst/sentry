@@ -33,7 +33,7 @@ If the provided user was not found, this exception will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Update the user details
 		$user->email = 'john.doe@example.com';
@@ -69,10 +69,10 @@ Exception `Cartalyst\Sentry\Users\UserExistsException` will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Find the group using the group id
-		$adminGroup = Sentry::getGroupProvider()->findById(1);
+		$adminGroup = Sentry::findGroupById(1);
 
 		// Assign the group to the user
 		if ($user->addGroup($adminGroup))
@@ -105,10 +105,10 @@ will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Find the group using the group id
-		$adminGroup = Sentry::getGroupProvider()->findById(1);
+		$adminGroup = Sentry::findGroupById(1);
 
 		// Assign the group to the user
 		if ($user->removeGroup($adminGroup))
@@ -141,10 +141,10 @@ will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Find the group using the group id
-		$adminGroup = Sentry::getGroupProvider()->findById(1);
+		$adminGroup = Sentry::findGroupById(1);
 
 		// Assign the group to the user
 		if ($user->addGroup($adminGroup))

@@ -36,7 +36,7 @@ When the provided user is banned, this exception will be thrown.
 	try
 	{
 		// Find the user using the user id
-		$user = Sentry::getUserProvider()->findById(1);
+		$user = Sentry::findUserById(1);
 
 		// Log the user in
 		Sentry::login($user, false);

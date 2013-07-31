@@ -23,7 +23,7 @@ exists on your database.
 	try
 	{
 		// Create the group
-		$group = Sentry::getGroupProvider()->create(array(
+		$group = Sentry::createGroup(array(
 			'name'        => 'Users',
 			'permissions' => array(
 				'admin' => 1,

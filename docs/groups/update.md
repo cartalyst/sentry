@@ -26,7 +26,7 @@ If the provided group was not found, this exception will be thrown.
 	try
 	{
 		// Find the group using the group id
-		$group = Sentry::getGroupProvider()->findById(1);
+		$group = Sentry::findGroupById(1);
 
 		// Update the group details
 		$group->name = 'Users';

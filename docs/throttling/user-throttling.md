@@ -29,7 +29,7 @@ Bans the user associated with the throttle.
 	try
 	{
 		// Find the user using the user id
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		// Ban the user
 		$throttle->ban();
@@ -50,7 +50,7 @@ Unbans the user associated with the throttle.
 	try
 	{
 		// Find the user using the user id
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		// Unban the user
 		$throttle->unBan();
@@ -71,7 +71,7 @@ Checks to see if the user is banned.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		if($banned = $throttle->isBanned())
 		{
@@ -99,7 +99,7 @@ setSuspensionTime($minutes).
 	try
 	{
 		// Find the user using the user id
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		// Suspend the user
 		$throttle->suspend();
@@ -121,7 +121,7 @@ login if they were suspended.
 	try
 	{
 		// Find the user using the user id
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		// Unsuspend the user
 		$throttle->unsuspend();
@@ -141,7 +141,7 @@ Checks to see if the user is suspended.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		if($suspended = $throttle->isSuspended())
 		{
@@ -167,7 +167,7 @@ Sets the length of the suspension.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$throttle->setSuspensionTime(10);
 	}
@@ -186,7 +186,7 @@ Retrieves the length of the suspension time set by the throttling driver.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$suspensionTime = $throttle->getSuspensionTime();
 	}
@@ -207,7 +207,7 @@ Adds an attempt to the throttle object.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$throttle->addLoginAttempt();
 	}
@@ -229,7 +229,7 @@ attempts will be reset to 0.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$attempts = $throttle->getLoginAttempts();
 	}
@@ -248,7 +248,7 @@ Clears all login attempts, it also unsuspends them. This does not unban a login.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$throttle->clearLoginAttempts();
 	}
@@ -267,7 +267,7 @@ Checks the login throttle status and throws a number of Exceptions upon failure.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		if ($throttle->check())
 		{
@@ -299,7 +299,7 @@ Sets the number of attempts allowed before suspension.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$throttle->setAttemptLimit(3);
 	}
@@ -318,7 +318,7 @@ Retrieves the number of attempts allowed by the throttle object.
 
 	try
 	{
-		$throttle = Sentry::getThrottleProvider()->findByUserId(1);
+		$throttle = Sentry::findThrottlerByUserId(1);
 
 		$attemptLimit = $throttle->getAttemptLimit();
 	}

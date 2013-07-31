@@ -39,13 +39,13 @@ already registerd on your database, you can't use this email for this user.
 	try
 	{
 		// Create the user
-		$user = Sentry::getUserProvider()->create(array(
+		$user = Sentry::createUser(array(
 			'email'    => 'john.doe@example.com',
 			'password' => 'test',
 		));
 
 		// Find the group using the group id
-		$adminGroup = Sentry::getGroupProvider()->findById(1);
+		$adminGroup = Sentry::findGroupById(1);
 
 		// Assign the group to the user
 		$user->addGroup($adminGroup);
@@ -81,7 +81,7 @@ will be thrown.
 	try
 	{
 		// Create the user
-		$user = Sentry::getUserProvider()->create(array(
+		$user = Sentry::createUser(array(
 			'email'       => 'john.doe@example.com',
 			'password'    => 'test',
 			'permissions' => array(
