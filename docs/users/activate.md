@@ -43,7 +43,7 @@ If the provided user was not found, this exception will be thrown.
 	{
 		echo 'User was not found.';
 	}
-	catch (Cartalyst\SEntry\Users\UserAlreadyActivatedException $e)
+	catch (Cartalyst\Sentry\Users\UserAlreadyActivatedException $e)
 	{
 		echo 'User is already activated.';
 	}
