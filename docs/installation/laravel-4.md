@@ -18,3 +18,19 @@ Add `'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry'` to the list of class
 ##### Step 4
 
 If you'd like to migrate tables, simply run `php artisan migrate --package=cartalyst/sentry` from the command line. Of course, feel free to write your own migrations which insert the correct tables if you'd like!
+
+##### Step 5  *(optional)*
+
+If you'd like to inject Sentry as a dependency you need to register Sentry manually inside the IoC container. Add `$app['Cartalyst\Sentry\Sentry'] = $app['sentry'];` to `app/start/global.php`. 
+
+Example usage:
+
+```
+class UserRepository{
+
+	function __construct(Sentry $sentry)
+	{
+		$this->sentry = $sentry;
+	}
+}
+```
