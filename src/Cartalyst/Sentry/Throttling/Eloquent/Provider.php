@@ -77,7 +77,10 @@ class Provider implements ProviderInterface {
 
 		if ($ipAddress)
 		{
-			$query->where('ip_address', '=', $ipAddress);
+			$query->where(function($query) use ($ipAddress) {
+				$query->where('ip_address', '=', $ipAddress);
+				$query->orWhere('ip_address', '=', NULL);
+			});
 		}
 
 		if ( ! $throttle = $query->first())
@@ -106,7 +109,10 @@ class Provider implements ProviderInterface {
 
 		if ($ipAddress)
 		{
-			$query->where('ip_address', '=', $ipAddress);
+			$query->where(function($query) use ($ipAddress) {
+				$query->where('ip_address', '=', $ipAddress);
+				$query->orWhere('ip_address', '=', NULL);
+			});
 		}
 
 		if ( ! $throttle = $query->first())
