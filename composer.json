@@ -1,7 +1,7 @@
 {
 	"name": "cartalyst/sentry",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
-	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp"],
+	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
 	"authors": [
 		{
@@ -27,6 +27,11 @@
 			"name": "Bruno Gaspar",
 			"email": "bruno.gaspar@cartalyst.com",
 			"role": "Developer"
+		},
+		{
+			"name"    :"Maxim Kerstens",
+			"email"   :"admin@happydemon.org",
+			"role"    :"Developer"
 		}
 	],
 	"require": {
@@ -57,7 +62,7 @@
 	},
 	"extra": {
 		"component": "package",
-		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1"],
+		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1", "Kohana"],
 		"versions": {
 			"1": "1.1/master",
 			"2": "master"
