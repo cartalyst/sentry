@@ -32,7 +32,7 @@ Installation of SentryLdap is very easy. Add:
     {
         "type":"git",
         "url":"https://github.com/anndro/SentryLdap.git"
-    }
+    }]
 
 to your composer.json file then follow one of the following guides to get SentryLdap working with your favorite framework or on it's own:
 
