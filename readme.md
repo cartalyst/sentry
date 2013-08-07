@@ -26,7 +26,15 @@ Sentry features
 
 ### Installation
 
-Installation of Sentry is very easy. We've got a number of guides to get Sentry working with your favorite framework or on it's own:
+Installation of SentryLdap is very easy. Add:
+
+    "repositories": [
+    {
+        "type":"git",
+        "url":"https://github.com/anndro/SentryLdap.git"
+    }]
+
+to your composer.json file then follow one of the following guides to get SentryLdap working with your favorite framework or on it's own:
 
 1. Install in [Laravel 4](http://docs.cartalyst.com/sentry-2/installation/laravel-4)
 2. Install in [FuelPHP 1](http://docs.cartalyst.com/sentry-2/installation/fuelphp-1)
