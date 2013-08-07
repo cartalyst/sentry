@@ -27,11 +27,6 @@
 			"name": "Bruno Gaspar",
 			"email": "bruno.gaspar@cartalyst.com",
 			"role": "Developer"
-		},
-		{
-			"name"    :"Maxim Kerstens",
-			"email"   :"admin@happydemon.org",
-			"role"    :"Developer"
 		}
 	],
 	"require": {
@@ -47,7 +42,8 @@
 	},
 	"suggest": {
 		"illuminate/database": "Default sentry user, group and throttling implementations.",
-		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support."
+		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support.",
+		"happydemon/txt": "Required Text helpers when using the Kohana implementation"
 	},
 	"autoload": {
 		"classmap": [

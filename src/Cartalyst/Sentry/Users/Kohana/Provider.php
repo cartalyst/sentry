@@ -29,7 +29,7 @@ use Cartalyst\Sentry\Users\WrongPasswordException;
 class Provider implements ProviderInterface {
 
 	/**
-	 * The Eloquent user model.
+	 * The ORM user model.
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class Provider implements ProviderInterface {
 	protected $hasher;
 
 	/**
-	 * Create a new Eloquent User provider.
+	 * Create a new ORM User provider.
 	 *
 	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
@@ -74,7 +74,7 @@ class Provider implements ProviderInterface {
 
 		$user = $model->where('id', '=', $id)->find();
 
-		if ( ! $user->loaded())
+		if ( ! $user->loaded() )
 		{
 			throw new UserNotFoundException("A user could not be found with ID [$id].");
 		}
@@ -95,7 +95,7 @@ class Provider implements ProviderInterface {
 
 		$user = $model->where($model->getLoginName(), '=', $login)->find();
 
-		if ( ! $user->loaded())
+		if ( ! $user->loaded() )
 		{
 			throw new UserNotFoundException("A user could not be found with a login value of [$login].");
 		}
@@ -193,7 +193,7 @@ class Provider implements ProviderInterface {
 
 		 $user = $result->find();
 
-		if ( !$user->loaded())
+		if ( !$user->loaded() )
 		{
 			throw new UserNotFoundException("A user was not found with the given activation code.");
 		}
@@ -222,7 +222,7 @@ class Provider implements ProviderInterface {
 
 		$user = $result->find();
 
-		if ( ! $user->loaded())
+		if ( ! $user->loaded() )
 		{
 			throw new UserNotFoundException("A user was not found with the given reset password code.");
 		}

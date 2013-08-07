@@ -58,7 +58,7 @@ class Provider implements ProviderInterface {
 
 		$group = $model->where('id', '=', $id)->find();
 
-		if ( ! $group->loaded())
+		if ( ! $group->loaded() )
 		{
 			throw new GroupNotFoundException("A group could not be found with ID [$id].");
 		}
@@ -79,7 +79,7 @@ class Provider implements ProviderInterface {
 
 		$group = $model->where('name', '=', $name)->find();
 
-		if ( ! $group->loaded())
+		if ( ! $group->loaded() )
 		{
 			throw new GroupNotFoundException("A group could not be found with the name [$name].");
 		}

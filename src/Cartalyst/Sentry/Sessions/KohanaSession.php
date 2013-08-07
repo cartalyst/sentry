@@ -45,7 +45,7 @@ class KohanaSession implements SessionInterface {
 	{
 		$this->store = $store;
 
-		if (isset($key))
+		if ( isset($key) )
 		{
 			$this->key = $key;
 		}

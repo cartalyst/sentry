@@ -25,7 +25,7 @@ use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 class Provider implements ProviderInterface {
 
 	/**
-	 * The Eloquent throttle model.
+	 * The ORM throttle model.
 	 *
 	 * @var string
 	 */
@@ -84,7 +84,7 @@ class Provider implements ProviderInterface {
 
 		$throttle = $query->find();
 
-		if ( ! $throttle->loaded())
+		if ( ! $throttle->loaded() )
 		{
 
 			$throttle = $this->createModel();

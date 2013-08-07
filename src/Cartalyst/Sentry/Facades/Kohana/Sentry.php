@@ -37,8 +37,9 @@ class Sentry extends Facade {
 	{
 		$config = \Kohana::$config->load('sentry')->as_array();
 
-		//if the user hasn't defined a config file offer defaults
-		if(count($config) == 0) {
+		//If the user hasn't defined a config file offer defaults
+		if ( count($config) == 0 )
+		{
 			$config = array(
 				'session_driver' => 'native',
 				'session_key' => 'cartalyst_sentry',
@@ -47,8 +48,9 @@ class Sentry extends Facade {
 			);
 		}
 
-		//choose the hasher
-		switch($config['hasher']) {
+		//Choose the hasher
+		switch ( $config['hasher'] )
+		{
 			default:
 			case 'Bcrypt':
 				$hasher = new \Cartalyst\Sentry\Hashing\BcryptHasher;

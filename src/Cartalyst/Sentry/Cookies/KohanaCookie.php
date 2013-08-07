@@ -29,7 +29,7 @@ class KohanaCookie implements CookieInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Create a new CodeIgniter cookie driver for Sentry.
+	 * Create a new Kohana cookie instance for Sentry.
 	 *
 	 * @param  string    $key
 	 */

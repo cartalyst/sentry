@@ -31,6 +31,10 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	protected $_table_name = 'groups';
 
+	/**
+	 * This model belongs to a user
+	 * @var array
+	 */
 	protected $_belongs_to = array('user' => array('model' => 'User'));
 
 	/**
@@ -101,7 +105,7 @@ class Group extends \ORM implements GroupInterface {
 	{
 		$groupPermissions = $this->getPermissions();
 
-		if ( ! is_array($permissions))
+		if ( ! is_array($permissions) )
 		{
 			$permissions = (array) $permissions;
 		}
@@ -231,6 +235,7 @@ class Group extends \ORM implements GroupInterface {
 	public function save(Validation $validation = NULL)
 	{
 		$this->validate();
+
 		return parent::save($validation);
 	}
 
@@ -242,6 +247,7 @@ class Group extends \ORM implements GroupInterface {
 	public function delete()
 	{
 		$this->remove('users');
+
 		return parent::delete();
 	}
 

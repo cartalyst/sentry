@@ -43,34 +43,35 @@ class User extends \ORM implements UserInterface {
 	 * auto-set the updated_at column
 	 * @var array
 	 */
-	protected $_updated_column = array('column' => 'updated_at', 'format' => 'Y-m-d H:i:s');
+	protected $_updated_column = array ('column' => 'updated_at', 'format' => 'Y-m-d H:i:s');
 
 	/**
 	 * Auto-set the created_at column
 	 * @var array
 	 */
-	protected $_created_column = array('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
+	protected $_created_column = array ('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
 
 	/**
 	 * Define the has many relations
 	 * @var array
 	 */
-	protected $_has_many = array(
-		'groups'    => array('model' => 'Group', 'through' => 'users_groups')
+	protected $_has_many = array (
+		'groups'    => array ('model' => 'Group', 'through' => 'users_groups')
 	);
 
-	protected $_has_one = array(
-		'throttle' => array('model' => 'Throttle')
+	protected $_has_one = array (
+		'throttle' => array ('model' => 'Throttle')
 	);
 
-	public function rules() {
+	public function rules()
+	{
 		return array(
-			'email' => array(
-				array('not_empty'),
-				array('email'),
-				array(array($this, 'unique_key_exists'), array(':value', 'email'))
+			'email' => array (
+				array ('not_empty'),
+				array ('email'),
+				array (array ($this, 'unique_key_exists'), array (':value', 'email'))
 			),
-			'password' => array(
+			'password' => array (
 				array('not_empty')
 			)
 		);
@@ -298,11 +299,14 @@ class User extends \ORM implements UserInterface {
 		return parent::save($validation);
 	}
 
-	public function set($column, $value) {
+	public function set($column, $value)
+	{
 		$dates = array('activated_at', 'last_login');
 
-		if(in_array($column, $dates) && $value != null)
+		if (in_array($column, $dates) && $value != null)
+		{
 			$value = $value->format('Y-m-d H:i:s');
+		}
 
 		// Hash required fields when necessary
 		if (in_array($column, $this->hashableAttributes) and ! empty($value))

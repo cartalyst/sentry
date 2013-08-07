@@ -328,11 +328,14 @@ class Throttle extends \ORM implements ThrottleInterface {
 		return (bool) $banned;
 	}
 
-	public function set($column, $value) {
+	public function set($column, $value)
+	{
 		$dates = array('last_attempt_at', 'suspended_at', 'banned_at');
 
-		if(in_array($column, $dates) && $value != null)
+		if (in_array($column, $dates) && $value != null)
+		{
 			$value = $value->format('Y-m-d H:i:s');
+		}
 
 		return parent::set($column, $value);
 	}
