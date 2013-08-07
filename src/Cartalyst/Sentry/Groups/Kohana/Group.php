@@ -32,6 +32,21 @@ class Group extends \ORM implements GroupInterface {
 	protected $_table_name = 'groups';
 
 	/**
+	 * @var string for referencing the table
+	 */
+	protected $_object_name = 'group';
+
+	/**
+	 * @var string for referencing relations
+	 */
+	protected $_object_plural = 'groups';
+
+	/**
+	 * @var string name of the error file to load
+	 */
+	protected $_errors_filename = 'group';
+
+	/**
 	 * This model belongs to a user
 	 * @var array
 	 */
@@ -49,6 +64,19 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	protected $_created_column = array('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
 
+
+	/*
+	 * Support Kohana's validation
+	 */
+	public function rules()
+	{
+		return array (
+			'name' => array (
+				array ('not_empty'),
+				array (array (\Cartalyst\Sentry\Users\Kohana\User, 'unique_key_exists'), array (':value', 'name', $this->_table_name))
+			)
+		);
+	}
 	/**
 	 * Allowed permissions values.
 	 *

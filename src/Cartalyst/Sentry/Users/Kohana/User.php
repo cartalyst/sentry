@@ -31,12 +31,16 @@ class User extends \ORM implements UserInterface {
 
 	/**
 	 * The table associated with the model.
-	 *
 	 * @var string
 	 */
 	protected $_table_name = 'users';
+
 	protected $_object_name = 'user';
 	protected $_object_plural = 'users';
+
+	/**
+	 * @var string name of the error file to load
+	 */
 	protected $_errors_filename = 'user';
 
 	/**
@@ -52,20 +56,27 @@ class User extends \ORM implements UserInterface {
 	protected $_created_column = array ('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
 
 	/**
-	 * Define the has many relations
+	 * Define the has many relation(s)
 	 * @var array
 	 */
 	protected $_has_many = array (
-		'groups'    => array ('model' => 'Group', 'through' => 'users_groups')
+		'groups' => array ('model' => 'Group', 'through' => 'users_groups')
 	);
 
+	/**
+	 * Define has one relation(s)
+	 * @var array
+	 */
 	protected $_has_one = array (
 		'throttle' => array ('model' => 'Throttle')
 	);
 
+	/*
+	 * Support Kohana's validation
+	 */
 	public function rules()
 	{
-		return array(
+		return array (
 			'email' => array (
 				array ('not_empty'),
 				array ('email'),
@@ -76,6 +87,7 @@ class User extends \ORM implements UserInterface {
 			)
 		);
 	}
+
 	/**
 	 * Attributes that should be hashed.
 	 *
@@ -303,7 +315,7 @@ class User extends \ORM implements UserInterface {
 	{
 		$dates = array('activated_at', 'last_login');
 
-		if (in_array($column, $dates) && $value != null)
+		if (in_array($column, $dates) AND $value != null)
 		{
 			$value = $value->format('Y-m-d H:i:s');
 		}
@@ -862,9 +874,10 @@ class User extends \ORM implements UserInterface {
 	 *
 	 * @param   mixed    the value to test
 	 * @param   string   field name
+	 * @param   string   table name
 	 * @return  boolean
 	 */
-	public function unique_key_exists($value, $field = NULL)
+	public function unique_key_exists($value, $field = NULL, $table = NULL)
 	{
 		if ($field === NULL)
 		{
@@ -872,8 +885,13 @@ class User extends \ORM implements UserInterface {
 			$field = $this->unique_key($value);
 		}
 
+		if( $table == NULL )
+		{
+			$table = $this->_table_name;
+		}
+
 		$total = \DB::select(array(\DB::expr('COUNT(*)'), 'total_count'))
-			->from($this->_table_name)
+			->from($table)
 			->where($field, '=', $value)
 			->where($this->_primary_key, '!=', $this->pk())
 			->execute($this->_db)
