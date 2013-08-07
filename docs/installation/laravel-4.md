@@ -34,3 +34,9 @@ class UserRepository{
 	}
 }
 ```
+
+##### Step 6  *(optional)*
+
+If you want to change Sentry's settings (hashing type, User/Group model etc.), you need to publish its config file(s).
+
+Run `php artisan config:publish cartalyst/sentry` from the command line and you should find the files in `app/config/packages/cartalyst/sentry`.
