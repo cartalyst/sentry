@@ -35,6 +35,12 @@ class User extends \ORM implements UserInterface {
 	 * @var string
 	 */
 	protected $_table_name = 'users';
+
+	/**
+	 * @var array Make sure permissions are serialized when storing them
+	 */
+	protected $_serialize_columns = array('permissions');
+	
 	protected $_object_name = 'user';
 	protected $_object_plural = 'users';
 

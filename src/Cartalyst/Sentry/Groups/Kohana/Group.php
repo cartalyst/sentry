@@ -32,6 +32,11 @@ class Group extends \ORM implements GroupInterface {
 	protected $_table_name = 'groups';
 
 	/**
+	 * @var array Make sure permissions are serialized when storing them
+	 */
+	protected $_serialize_columns = array('permissions');
+
+	/**
 	 * @var string for referencing the table
 	 */
 	protected $_object_name = 'group';
@@ -114,7 +119,7 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	public function getPermissions()
 	{
-		return $this->permissions;
+		return json_decode($this->permissions);
 	}
 
 	/**
