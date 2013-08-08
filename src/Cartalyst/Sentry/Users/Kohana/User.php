@@ -31,10 +31,10 @@ class User extends \ORM implements UserInterface {
 
 	/**
 	 * The table associated with the model.
+	 *
 	 * @var string
 	 */
 	protected $_table_name = 'users';
-
 	protected $_object_name = 'user';
 	protected $_object_plural = 'users';
 
@@ -60,7 +60,7 @@ class User extends \ORM implements UserInterface {
 	 * @var array
 	 */
 	protected $_has_many = array (
-		'groups' => array ('model' => 'Group', 'through' => 'users_groups')
+		'groups'    => array ('model' => 'Group', 'through' => 'users_groups')
 	);
 
 	/**
@@ -877,7 +877,7 @@ class User extends \ORM implements UserInterface {
 	 * @param   string   table name
 	 * @return  boolean
 	 */
-	public function unique_key_exists($value, $field = NULL, $table = NULL)
+	public function unique_key_exists($value, $field = NULL)
 	{
 		if ($field === NULL)
 		{
@@ -885,16 +885,11 @@ class User extends \ORM implements UserInterface {
 			$field = $this->unique_key($value);
 		}
 
-		if( $table == NULL )
-		{
-			$table = $this->_table_name;
-		}
-
 		$total = \DB::select(array(\DB::expr('COUNT(*)'), 'total_count'))
-			->from($table)
+			->from($this->_table_name)
 			->where($field, '=', $value)
 			->where($this->_primary_key, '!=', $this->pk())
-			->execute($this->_db)
+			->execute()
 			->get('total_count');
 
 		return ($total == 0);

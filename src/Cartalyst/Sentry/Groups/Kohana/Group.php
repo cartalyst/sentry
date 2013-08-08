@@ -21,7 +21,6 @@
 use Cartalyst\Sentry\Groups\NameRequiredException;
 use Cartalyst\Sentry\Groups\GroupExistsException;
 use Cartalyst\Sentry\Groups\GroupInterface;
-use Cartalyst\Sentry\Users\Kohana\User;
 
 class Group extends \ORM implements GroupInterface {
 
@@ -65,7 +64,6 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	protected $_created_column = array('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
 
-
 	/*
 	 * Support Kohana's validation
 	 */
@@ -74,7 +72,7 @@ class Group extends \ORM implements GroupInterface {
 		return array (
 			'name' => array (
 				array ('not_empty'),
-				array ('User::unique_key_exists', array (':value', 'name', $this->_table_name))
+				array (array($this, 'unique_key_exists'), array (':value', 'name'))
 			)
 		);
 	}
@@ -348,13 +346,15 @@ class Group extends \ORM implements GroupInterface {
 	public function validate()
 	{
 		// Check if name field was passed
-		if ( ! $name = $this->name)
+		$name = $this->name;
+
+		if ( empty($name) )
 		{
 			throw new NameRequiredException("A name is required for a group, none given.");
 		}
 
 		// Check if group already exists
-		$persistedGroup = $this->where('name', '=', $name)->find();
+		$persistedGroup = $this->unique_key_exists($name, 'name');
 
 		if ($persistedGroup and $persistedGroup->getId() != $this->getId())
 		{
@@ -364,4 +364,23 @@ class Group extends \ORM implements GroupInterface {
 		return true;
 	}
 
+	/**
+	 * Tests if a unique key value exists in the database.
+	 *
+	 * @param   mixed    the value to test
+	 * @param   string   field name
+	 * @param   string   table name
+	 * @return  boolean
+	 */
+	public function unique_key_exists($value, $field)
+	{
+		$total = \DB::select(array(\DB::expr('COUNT(*)'), 'total_count'))
+			->from($this->_table_name)
+			->where($field, '=', $value)
+			->where($this->_primary_key, '!=', $this->pk())
+			->execute()
+			->get('total_count');
+
+		return ($total == 0);
+	}
 }
