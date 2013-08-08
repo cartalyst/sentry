@@ -32,11 +32,6 @@ class Group extends \ORM implements GroupInterface {
 	protected $_table_name = 'groups';
 
 	/**
-	 * @var array Make sure permissions are serialized when storing them
-	 */
-	protected $_serialize_columns = array('permissions');
-
-	/**
 	 * @var string for referencing the table
 	 */
 	protected $_object_name = 'group';
@@ -69,6 +64,11 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	protected $_created_column = array('column' => 'created_at', 'format' => 'Y-m-d H:i:s');
 
+	/**
+	 * @var array Make sure permissions are serialized when storing them
+	 */
+	protected $_serialize_columns = array('permissions');
+	
 	/*
 	 * Support Kohana's validation
 	 */
@@ -361,7 +361,7 @@ class Group extends \ORM implements GroupInterface {
 		// Check if group already exists
 		$persistedGroup = $this->unique_key_exists($name, 'name');
 
-		if ($persistedGroup and $persistedGroup->getId() != $this->getId())
+		if (! $persistedGroup)
 		{
 			throw new GroupExistsException("A group already exists with name [$name], names must be unique for groups.");
 		}
