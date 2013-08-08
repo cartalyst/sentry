@@ -39,6 +39,9 @@ class Throttle extends \ORM implements ThrottleInterface {
 	 */
 	protected $_table_name = 'throttle';
 
+	/**
+	 * @var array Define belogst to relation
+	 */
 	protected $_belongs_to = array('user' => array('model' => 'User'));
 
 	/**

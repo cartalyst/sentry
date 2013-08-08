@@ -32,21 +32,6 @@ class Group extends \ORM implements GroupInterface {
 	protected $_table_name = 'groups';
 
 	/**
-	 * @var string for referencing the table
-	 */
-	protected $_object_name = 'group';
-
-	/**
-	 * @var string for referencing relations
-	 */
-	protected $_object_plural = 'groups';
-
-	/**
-	 * @var string name of the error file to load
-	 */
-	protected $_errors_filename = 'group';
-
-	/**
 	 * This model belongs to a user
 	 * @var array
 	 */
@@ -68,7 +53,7 @@ class Group extends \ORM implements GroupInterface {
 	 * @var array Make sure permissions are serialized when storing them
 	 */
 	protected $_serialize_columns = array('permissions');
-	
+
 	/*
 	 * Support Kohana's validation
 	 */
@@ -119,7 +104,7 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	public function getPermissions()
 	{
-		return json_decode($this->permissions);
+		return $this->permissions;
 	}
 
 	/**
@@ -336,7 +321,7 @@ class Group extends \ORM implements GroupInterface {
 			}
 		}
 
-		$this->attributes['permissions'] = ( ! empty($permissions)) ? json_encode($permissions) : '';
+		$this->attributes['permissions'] = ( ! empty($permissions)) ? $permissions : '';
 	}
 
 	/**

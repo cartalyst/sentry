@@ -41,9 +41,6 @@ class User extends \ORM implements UserInterface {
 	 */
 	protected $_serialize_columns = array('permissions');
 
-	protected $_object_name = 'user';
-	protected $_object_plural = 'users';
-
 	/**
 	 * @var string name of the error file to load
 	 */
