@@ -263,7 +263,9 @@ class Group extends \ORM implements GroupInterface {
 	 */
 	public function delete()
 	{
-		$this->remove('users');
+		\DB::delete('users_groups')
+			->where('group_id', '=', $this->pk())
+			->execute($this->_db);
 
 		return parent::delete();
 	}

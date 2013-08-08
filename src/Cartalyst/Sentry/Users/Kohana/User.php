@@ -338,7 +338,14 @@ class User extends \ORM implements UserInterface {
 	 */
 	public function delete()
 	{
+		//remove all related groups
 		$this->remove('groups');
+
+		//remove the throttle
+		\DB::delete('throttle')
+			->where('user_id', '=', $this->pk())
+			->execute($this->_db);
+
 		return parent::delete();
 	}
 
