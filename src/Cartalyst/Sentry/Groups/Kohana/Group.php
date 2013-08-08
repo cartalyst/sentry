@@ -21,6 +21,7 @@
 use Cartalyst\Sentry\Groups\NameRequiredException;
 use Cartalyst\Sentry\Groups\GroupExistsException;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Users\Kohana\User;
 
 class Group extends \ORM implements GroupInterface {
 
@@ -73,7 +74,7 @@ class Group extends \ORM implements GroupInterface {
 		return array (
 			'name' => array (
 				array ('not_empty'),
-				array (array (\Cartalyst\Sentry\Users\Kohana\User, 'unique_key_exists'), array (':value', 'name', $this->_table_name))
+				array ('User::unique_key_exists', array (':value', 'name', $this->_table_name))
 			)
 		);
 	}
