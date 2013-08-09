@@ -42,11 +42,6 @@ class User extends \ORM implements UserInterface {
 	protected $_serialize_columns = array('permissions');
 
 	/**
-	 * @var string name of the error file to load
-	 */
-	protected $_errors_filename = 'user';
-
-	/**
 	 * auto-set the updated_at column
 	 * @var array
 	 */
@@ -63,7 +58,7 @@ class User extends \ORM implements UserInterface {
 	 * @var array
 	 */
 	protected $_has_many = array (
-		'groups'    => array ('model' => 'Group', 'through' => 'users_groups')
+		'groups' => array ('model' => 'Group', 'through' => 'users_groups')
 	);
 
 	/**
@@ -318,16 +313,16 @@ class User extends \ORM implements UserInterface {
 	{
 		$dates = array('activated_at', 'last_login');
 
-		if (in_array($column, $dates) AND $value != null)
+		if (in_array($column, $dates) and is_a($value, 'DateTime'))
 		{
 			$value = $value->format('Y-m-d H:i:s');
 		}
-
 		// Hash required fields when necessary
-		if (in_array($column, $this->hashableAttributes) and ! empty($value))
+		else if (in_array($column, $this->hashableAttributes) and ! empty($value))
 		{
 			$value = $this->hash($value);
 		}
+
 		parent::set($column, $value);
 	}
 

@@ -335,7 +335,7 @@ class Throttle extends \ORM implements ThrottleInterface {
 	{
 		$dates = array('last_attempt_at', 'suspended_at', 'banned_at');
 
-		if (in_array($column, $dates) && $value != null)
+		if (in_array($column, $dates) and is_a($value, 'DateTime'))
 		{
 			$value = $value->format('Y-m-d H:i:s');
 		}
