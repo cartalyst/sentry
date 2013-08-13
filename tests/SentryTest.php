@@ -334,10 +334,16 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testCheckingUserWhenUserIsSetAndSuspended()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user     = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$session  = m::mock('Cartalyst\Sentry\Sessions\SessionInterface');
+		$cookie   = m::mock('Cartalyst\Sentry\Cookies\CookieInterface');
+
 		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
 		$throttle->shouldReceive('isSuspended')->once()->andReturn(true);
+
+		$session->shouldReceive('forget')->once();
+		$cookie->shouldReceive('forget')->once();
 
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 		$user->shouldReceive('getId')->once()->andReturn(1);
@@ -345,15 +351,23 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
+		$this->sentry->setSession($session);
+		$this->sentry->setCookie($cookie);
 		$this->sentry->setUser($user);
 		$this->assertFalse($this->sentry->check());
 	}
 
 	public function testCheckingUserWhenUserIsSetAndBanned()
 	{
-		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
+		$user     = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\ThrottleInterface');
+		$session  = m::mock('Cartalyst\Sentry\Sessions\SessionInterface');
+		$cookie   = m::mock('Cartalyst\Sentry\Cookies\CookieInterface');
+
 		$throttle->shouldReceive('isBanned')->once()->andReturn(true);
+
+		$session->shouldReceive('forget')->once();
+		$cookie->shouldReceive('forget')->once();
 
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 		$user->shouldReceive('getId')->once()->andReturn(1);
@@ -361,6 +375,8 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
+		$this->sentry->setSession($session);
+		$this->sentry->setCookie($cookie);
 		$this->sentry->setUser($user);
 		$this->assertFalse($this->sentry->check());
 	}
