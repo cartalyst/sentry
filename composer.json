@@ -1,7 +1,7 @@
 {
 	"name": "cartalyst/sentry",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
-	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp"],
+	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
 	"authors": [
 		{
@@ -42,7 +42,8 @@
 	},
 	"suggest": {
 		"illuminate/database": "Default sentry user, group and throttling implementations.",
-		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support."
+		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support.",
+		"happydemon/txt": "Required Text helpers when using the Kohana implementation"
 	},
 	"autoload": {
 		"classmap": [
@@ -57,7 +58,7 @@
 	},
 	"extra": {
 		"component": "package",
-		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1"],
+		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1", "Kohana"],
 		"versions": {
 			"1": "1.1/master",
 			"2": "master"
