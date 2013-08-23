@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling\Eloquent;
+<?php namespace Cartalyst\Sentry\Throttling\Kohana;
 /**
  * Part of the Sentry package.
  *
@@ -25,11 +25,11 @@ use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 class Provider implements ProviderInterface {
 
 	/**
-	 * The Eloquent throttle model.
+	 * The ORM throttle model.
 	 *
 	 * @var string
 	 */
-	protected $model = 'Cartalyst\Sentry\Throttling\Eloquent\Throttle';
+	protected $model = 'Throttle';
 
 	/**
 	 * The user provider used for finding users
@@ -71,22 +71,28 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
+		$user  = $this->userProvider->findById($id);
+		$user_id = $user->id;
+
 		$model = $this->createModel();
-		$query = $model->where('user_id', '=', ($userId = $id));
+		$query = $model->where('user_id', '=', $user_id);
 
 		if ($ipAddress)
 		{
-			$query->where(function($query) use ($ipAddress) {
-				$query->where('ip_address', '=', $ipAddress);
-				$query->orWhere('ip_address', '=', NULL);
-			});
+			$query->where('ip_address', '=', $ipAddress);
 		}
 
-		if ( ! $throttle = $query->first())
+		$throttle = $query->find();
+
+		if ( ! $throttle->loaded() )
 		{
+
 			$throttle = $this->createModel();
-			$throttle->user_id = $userId;
-			if ($ipAddress) $throttle->ip_address = $ipAddress;
+			$values = array(
+				'user_id' => $user->id
+			);
+			if ($ipAddress) $values['ip_address'] = $ipAddress;
+			$throttle->values($values);
 			$throttle->save();
 		}
 
@@ -103,21 +109,22 @@ class Provider implements ProviderInterface {
 	public function findByUserLogin($login, $ipAddress = null)
 	{
 		$user  = $this->userProvider->findByLogin($login);
+		$user_id = $user->id;
+
 		$model = $this->createModel();
-		$query = $model->where('user_id', '=', ($userId = $user->getId()));
+		$query = $model->where('user_id', '=', $user_id);
 
 		if ($ipAddress)
 		{
-			$query->where(function($query) use ($ipAddress) {
-				$query->where('ip_address', '=', $ipAddress);
-				$query->orWhere('ip_address', '=', NULL);
-			});
+			$query->where('ip_address', '=', $ipAddress);
 		}
 
-		if ( ! $throttle = $query->first())
+		$throttle = $query->find();
+
+		if ( ! $throttle->loaded() )
 		{
 			$throttle = $this->createModel();
-			$throttle->user_id = $userId;
+			$throttle->user_id = $user_id;
 			if ($ipAddress) $throttle->ip_address = $ipAddress;
 			$throttle->save();
 		}
@@ -158,13 +165,11 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return Kohana_ORM
 	 */
 	public function createModel()
 	{
-		$class = '\\'.ltrim($this->model, '\\');
-
-		return new $class;
+		return \ORM::factory($this->model);
 	}
 
 	/**
