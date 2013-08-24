@@ -31,7 +31,7 @@ class KohanaCookie implements CookieInterface {
 	/**
 	 * Create a new Kohana cookie instance for Sentry.
 	 *
-	 * @param  string    $key
+	 * @param  string  $key
 	 */
 	public function __construct($key = null)
 	{

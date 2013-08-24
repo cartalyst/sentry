@@ -39,7 +39,7 @@ class FuelPHPSession implements SessionInterface {
 	/**
 	 * Creates a new FuelPHP Session driver for Sentry.
 	 *
-	 * @param  string  $store
+	 * @param  Fuel\Core\Session_Driver  $store
 	 * @param  string  $key
 	 * @return void
 	 */
