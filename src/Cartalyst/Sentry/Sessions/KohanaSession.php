@@ -18,6 +18,8 @@
  * @link       http://cartalyst.com
  */
 
+use Session;
+
 class KohanaSession implements SessionInterface {
 
 	/**
@@ -37,11 +39,11 @@ class KohanaSession implements SessionInterface {
 	/**
 	 * Creates a new Kohana Session driver for Sentry.
 	 *
-	 * @param  string  $store
+	 * @param  Session  $store
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function __construct(\Session $store, $key = null)
+	public function __construct(Session $store, $key = null)
 	{
 		$this->store = $store;
 
