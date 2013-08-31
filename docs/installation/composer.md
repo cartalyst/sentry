@@ -102,3 +102,9 @@ Of course, we provide default implementations of all these for you. To setup our
 		$session,
 		$cookie,
 	);
+	
+----------
+
+### Setup the database
+
+Don't forget to setup database tables for Sentry. In the schema folder you will find a [mysql file](https://github.com/cartalyst/sentry/blob/master/schema/mysql.sql) that will setup the tables for you.
