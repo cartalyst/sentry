@@ -23,8 +23,9 @@ class NativeHasher implements HasherInterface {
 	/**
 	 * Hash string.
 	 *
-	 * @param  string  $string
+	 * @param  string $string
 	 * @return string
+	 * @throws \RuntimeException
 	 */
 	public function hash($string)
 	{

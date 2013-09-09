@@ -49,8 +49,8 @@ class Provider implements ProviderInterface {
 	 * Find the group by ID.
 	 *
 	 * @param  int  $id
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\Groups\GroupNotFoundException
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findById($id)
 	{
@@ -70,8 +70,8 @@ class Provider implements ProviderInterface {
 	 * Find the group by name.
 	 *
 	 * @param  string  $name
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\Groups\GroupNotFoundException
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findByName($name)
 	{
@@ -103,7 +103,7 @@ class Provider implements ProviderInterface {
 	 * Creates a group.
 	 *
 	 * @param  array  $attributes
-	 * @return Cartalyst\Sentry\Groups\GroupInterface
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface
 	 */
 	public function create(array $attributes)
 	{
@@ -117,7 +117,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Kohana_ORM
+	 * @return \ORM
 	 */
 	public function createModel()
 	{

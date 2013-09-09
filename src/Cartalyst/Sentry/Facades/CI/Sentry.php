@@ -50,7 +50,8 @@ class Sentry {
 	/**
 	 * Creates a new instance of Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Sentry
+	 * @return \Cartalyst\Sentry\Sentry
+	 * @throws \RuntimeException
 	 */
 	public static function createSentry()
 	{

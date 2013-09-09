@@ -23,14 +23,14 @@ abstract class Facade {
 	/**
 	 * Sentry instance.
 	 *
-	 * @var Cartalyst\Sentry\Sentry
+	 * @var \Cartalyst\Sentry\Sentry
 	 */
 	protected static $instance;
 
 	/**
 	 * Returns the Sentry instance registered with the Facade.
 	 *
-	 * @return Cartalyst\Sentry\Sentry
+	 * @return \Cartalyst\Sentry\Sentry
 	 */
 	public static function instance()
 	{

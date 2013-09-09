@@ -38,14 +38,14 @@ class Provider implements ProviderInterface {
 	/**
 	 * The hasher for the model.
 	 *
-	 * @var Cartalyst\Sentry\Hashing\HasherInterface
+	 * @var \Cartalyst\Sentry\Hashing\HasherInterface
 	 */
 	protected $hasher;
 
 	/**
 	 * Create a new Eloquent User provider.
 	 *
-	 * @param  Cartalyst\Sentry\Hashing\HasherInterface  $hasher
+	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
 	 * @return void
 	 */
@@ -65,8 +65,8 @@ class Provider implements ProviderInterface {
 	 * Finds a user by the given user ID.
 	 *
 	 * @param  mixed  $id
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findById($id)
 	{
@@ -84,8 +84,8 @@ class Provider implements ProviderInterface {
 	 * Finds a user by the login value.
 	 *
 	 * @param  string  $login
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByLogin($login)
 	{
@@ -103,8 +103,8 @@ class Provider implements ProviderInterface {
 	 * Finds a user by the given credentials.
 	 *
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByCredentials(array $credentials)
 	{
@@ -165,8 +165,8 @@ class Provider implements ProviderInterface {
 	 * Finds a user by the given activation code.
 	 *
 	 * @param  string  $code
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 * @throws InvalidArgumentException
 	 * @throws RuntimeException
 	 */
@@ -198,9 +198,9 @@ class Provider implements ProviderInterface {
 	 * Finds a user by the given reset password code.
 	 *
 	 * @param  string  $code
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 * @throws RuntimeException
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function findByResetPasswordCode($code)
 	{
@@ -235,7 +235,7 @@ class Provider implements ProviderInterface {
 	 * Returns all users who belong to
 	 * a group.
 	 *
-	 * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return array
 	 */
 	public function findAllInGroup($group)
@@ -280,7 +280,7 @@ class Provider implements ProviderInterface {
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function create(array $credentials)
 	{
@@ -294,7 +294,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Returns an empty user object.
 	 *
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function getEmptyUser()
 	{
