@@ -35,7 +35,7 @@ class Provider implements ProviderInterface {
 	 * The user provider used for finding users
 	 * to attach throttles to.
 	 *
-	 * @var \Cartalyst\Sentry\Users\UserInterface
+	 * @var \Cartalyst\Sentry\Users\ProviderInterface
 	 */
 	protected $userProvider;
 
@@ -49,7 +49,8 @@ class Provider implements ProviderInterface {
 	/**
 	 * Creates a new throttle provider.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $userProvider
+	 * @param  \Cartalyst\Sentry\Users\ProviderInterface $userProvider
+	 * @param  string $model
 	 * @return void
 	 */
 	public function __construct(UserProviderInterface $userProvider, $model = null)
@@ -165,7 +166,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Kohana_ORM
+	 * @return \ORM
 	 */
 	public function createModel()
 	{

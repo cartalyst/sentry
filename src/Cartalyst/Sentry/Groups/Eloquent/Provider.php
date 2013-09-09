@@ -49,7 +49,7 @@ class Provider implements ProviderInterface {
 	 * Find the group by ID.
 	 *
 	 * @param  int  $id
-	 * @return \Cartalyst\Sentry\GroupInterface  $group
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findById($id)
@@ -68,7 +68,7 @@ class Provider implements ProviderInterface {
 	 * Find the group by name.
 	 *
 	 * @param  string  $name
-	 * @return \Cartalyst\Sentry\GroupInterface  $group
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findByName($name)
@@ -112,7 +112,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function createModel()
 	{

@@ -49,7 +49,8 @@ class Provider implements ProviderInterface {
 	/**
 	 * Creates a new throttle provider.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $userProvider
+	 * @param \Cartalyst\Sentry\Users\ProviderInterface $userProvider
+	 * @param  string $model
 	 * @return void
 	 */
 	public function __construct(UserProviderInterface $userProvider, $model = null)
@@ -158,7 +159,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function createModel()
 	{

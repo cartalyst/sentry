@@ -39,7 +39,7 @@ class CISession implements SessionInterface {
 	/**
 	 * Creates a new CodeIgniter Session driver for Sentry.
 	 *
-	 * @param  CI_Session  $store
+	 * @param  \CI_Session  $store
 	 * @param  string  $key
 	 * @return void
 	 */

@@ -98,12 +98,12 @@ class Sentry {
 	/**
 	 * Create a new Sentry object.
 	 *
-	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
-	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface  $cookie
-	 * @param  \Cartalyst\Sentry\Users\UserProviderInterface  $userProvider
-	 * @param  \Cartalyst\Sentry\Groups\GroupProviderInterface  $groupProvider
-	 * @param  \Cartalyst\Sentry\Throttling\ThrottleProviderInterface  $throttleProvider
-	 * @param  string  $ipAddress
+	 * @param  \Cartalyst\Sentry\Users\ProviderInterface $userProvider
+	 * @param  \Cartalyst\Sentry\Groups\ProviderInterface $groupProvider
+	 * @param  \Cartalyst\Sentry\Throttling\ProviderInterface $throttleProvider
+	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface $session
+	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface $cookie
+	 * @param  string $ipAddress
 	 * @return void
 	 */
 	public function __construct(
@@ -519,8 +519,8 @@ class Sentry {
      * Find the group by ID.
      *
      * @param  int  $id
-     * @return \Cartalyst\Sentry\GroupInterface  $group
-     * @throws \Cartalyst\Sentry\GroupNotFoundException
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
      */
     public function findGroupById($id)
     {
@@ -531,8 +531,8 @@ class Sentry {
      * Find the group by name.
      *
      * @param  string  $name
-     * @return \Cartalyst\Sentry\GroupInterface  $group
-     * @throws \Cartalyst\Sentry\GroupNotFoundException
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
      */
     public function findGroupByName($name)
     {
@@ -601,7 +601,7 @@ class Sentry {
      *
      * @param  string  $code
      * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByActivationCode($code)
@@ -614,7 +614,7 @@ class Sentry {
      *
      * @param  string  $code
      * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByResetPasswordCode($code)
@@ -719,7 +719,7 @@ class Sentry {
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return mixed
-	 * @throws BadMethodCallException
+	 * @throws \BadMethodCallException
 	 */
 	public function __call($method, $parameters)
 	{

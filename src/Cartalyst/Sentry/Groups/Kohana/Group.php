@@ -246,7 +246,7 @@ class Group extends \ORM implements GroupInterface {
 	/**
 	 * Saves the group.
 	 *
-	 * @param  array  $options
+	 * @param Validation $validation
 	 * @return bool
 	 */
 	public function save(Validation $validation = NULL)
@@ -275,6 +275,7 @@ class Group extends \ORM implements GroupInterface {
 	 *
 	 * @param  mixed  $permissions
 	 * @return array  $_permissions
+	 * @throws \InvalidArgumentException
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
@@ -301,6 +302,7 @@ class Group extends \ORM implements GroupInterface {
 	 *
 	 * @param  array  $permissions
 	 * @return void
+	 * @throws \InvalidArgumentException
 	 */
 	public function setPermissionsAttribute(array $permissions)
 	{
@@ -359,9 +361,8 @@ class Group extends \ORM implements GroupInterface {
 	/**
 	 * Tests if a unique key value exists in the database.
 	 *
-	 * @param   mixed    the value to test
-	 * @param   string   field name
-	 * @param   string   table name
+	 * @param   mixed  $value  the value to test
+	 * @param   string $field  field name
 	 * @return  boolean
 	 */
 	public function unique_key_exists($value, $field)

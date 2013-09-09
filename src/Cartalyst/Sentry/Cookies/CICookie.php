@@ -32,7 +32,7 @@ class CICookie implements CookieInterface {
 	/**
 	 * The CodeIgniter input object.
 	 *
-	 * @var CI_Input
+	 * @var \CI_Input
 	 */
 	protected $input;
 
@@ -46,7 +46,7 @@ class CICookie implements CookieInterface {
 	/**
 	 * Create a new CodeIgniter cookie driver for Sentry.
 	 *
-	 * @param  CI_Input  $input
+	 * @param  \CI_Input  $input
 	 * @param  array     $config
 	 * @param  string    $key
 	 */

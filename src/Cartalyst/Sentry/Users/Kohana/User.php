@@ -289,7 +289,7 @@ class User extends \ORM implements UserInterface {
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
-	 * @throws ORM_Validation_Exception
+	 * @throws \ORM_Validation_Exception
 	 */
 	public function validate()
 	{
@@ -299,7 +299,7 @@ class User extends \ORM implements UserInterface {
 	/**
 	 * Saves the user.
 	 *
-	 * @param  array  $options
+	 * @param  Validation  $validation
 	 * @return bool
 	 */
 	public function save(Validation $validation = NULL)
@@ -753,7 +753,7 @@ class User extends \ORM implements UserInterface {
 	 * @param  string  $string
 	 * @param  string  $hashedString
 	 * @return bool
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	public function checkHash($string, $hashedString)
 	{
@@ -770,7 +770,7 @@ class User extends \ORM implements UserInterface {
 	 *
 	 * @param  string  $string
 	 * @return string
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	public function hash($string)
 	{
@@ -784,7 +784,9 @@ class User extends \ORM implements UserInterface {
 
 	/**
 	 * Generate a random string. If your server has
+	 * @param int $length
 	 * @return string
+	 * @throws \RuntimeException
 	 */
 	public function getRandomString($length = 42)
 	{
@@ -877,9 +879,8 @@ class User extends \ORM implements UserInterface {
 	/**
 	 * Tests if a unique key value exists in the database.
 	 *
-	 * @param   mixed    the value to test
-	 * @param   string   field name
-	 * @param   string   table name
+	 * @param   mixed  $value  the value to test
+	 * @param   string $field  field name
 	 * @return  boolean
 	 */
 	public function unique_key_exists($value, $field = NULL)
@@ -903,7 +904,7 @@ class User extends \ORM implements UserInterface {
 	/**
 	 * Allows a model use both email and username as unique identifiers for login
 	 *
-	 * @param   string  unique value
+	 * @param   string $value unique value
 	 * @return  string  field name
 	 */
 	public function unique_key($value)

@@ -257,7 +257,7 @@ class Throttle extends Model implements ThrottleInterface {
 	/**
 	 * User relationship for the throttle.
 	 *
-	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function user()
 	{
@@ -410,7 +410,7 @@ class Throttle extends Model implements ThrottleInterface {
 	/**
 	 * Get suspension time.
 	 *
-	 * @param  int
+	 * @return  int
 	 */
 	public static function getSuspensionTime()
 	{
