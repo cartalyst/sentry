@@ -75,7 +75,7 @@ class Throttle extends \ORM implements ThrottleInterface {
 	/**
 	 * Returns the associated user with the throttler.
 	 *
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function getUser()
 	{
@@ -234,8 +234,8 @@ class Throttle extends \ORM implements ThrottleInterface {
 	 * Check user throttle status.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
-	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
+	 * @throws \Cartalyst\Sentry\Throttling\UserBannedException
+	 * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
 	public function check(Validation $extra_validation = NULL)
 	{

@@ -25,7 +25,7 @@ interface ProviderInterface {
 	 *
 	 * @param  mixed   $id
 	 * @param  string  $ipAddress
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
 	public function findByUserId($id, $ipAddress = null);
 
@@ -34,7 +34,7 @@ interface ProviderInterface {
 	 *
 	 * @param  string  $login
 	 * @param  string  $ipAddress
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
 	public function findByUserLogin($login, $ipAddress = null);
 

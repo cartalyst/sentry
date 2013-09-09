@@ -35,7 +35,7 @@ class Provider implements ProviderInterface {
 	 * The user provider used for finding users
 	 * to attach throttles to.
 	 *
-	 * @var Cartalyst\Sentry\Users\UserInterface
+	 * @var \Cartalyst\Sentry\Users\UserInterface
 	 */
 	protected $userProvider;
 
@@ -49,7 +49,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Creates a new throttle provider.
 	 *
-	 * @param  Cartalyst\Sentry\Users\UserInterface  $userProvider
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $userProvider
 	 * @return void
 	 */
 	public function __construct(UserProviderInterface $userProvider, $model = null)
@@ -67,7 +67,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  mixed   $id
 	 * @param  string  $ipAddress
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
@@ -104,7 +104,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  string  $login
 	 * @param  string  $ipAddress
-	 * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
 	public function findByUserLogin($login, $ipAddress = null)
 	{

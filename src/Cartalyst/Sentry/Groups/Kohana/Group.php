@@ -332,8 +332,8 @@ class Group extends \ORM implements GroupInterface {
 	 *
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
+	 * @throws \Cartalyst\Sentry\Groups\NameRequiredException
+	 * @throws \Cartalyst\Sentry\Groups\GroupExistsException
 	 */
 	public function validate()
 	{

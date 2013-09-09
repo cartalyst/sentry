@@ -327,8 +327,8 @@ class Group extends Model implements GroupInterface {
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
+	 * @throws \Cartalyst\Sentry\Groups\NameRequiredException
+	 * @throws \Cartalyst\Sentry\Groups\GroupExistsException
 	 */
 	public function validate()
 	{

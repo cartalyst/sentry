@@ -24,8 +24,8 @@ interface ProviderInterface {
 	 * Find the group by ID.
 	 *
 	 * @param  int  $id
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findById($id);
 
@@ -33,8 +33,8 @@ interface ProviderInterface {
 	 * Find the group by name.
 	 *
 	 * @param  string  $name
-	 * @return Cartalyst\Sentry\GroupInterface  $group
-	 * @throws Cartalyst\Sentry\GroupNotFoundException
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
 	 */
 	public function findByName($name);
 
@@ -49,7 +49,7 @@ interface ProviderInterface {
 	 * Creates a group.
 	 *
 	 * @param  array  $attributes
-	 * @return Cartalyst\Sentry\Groups\GroupInterface
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface
 	 */
 	public function create(array $attributes);
 

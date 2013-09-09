@@ -43,21 +43,21 @@ class Sentry {
 	 * are available for finding the user to set
 	 * here.
 	 *
-	 * @var Cartalyst\Sentry\Users\UserInterface
+	 * @var \Cartalyst\Sentry\Users\UserInterface
 	 */
 	protected $user;
 
 	/**
 	 * The session driver used by Sentry.
 	 *
-	 * @var Cartalyst\Sentry\Sessions\SessionInterface
+	 * @var \Cartalyst\Sentry\Sessions\SessionInterface
 	 */
 	protected $session;
 
 	/**
 	 * The cookie driver used by Sentry.
 	 *
-	 * @var Cartalyst\Sentry\Cookies\CookieInterface
+	 * @var \Cartalyst\Sentry\Cookies\CookieInterface
 	 */
 	protected $cookie;
 
@@ -66,7 +66,7 @@ class Sentry {
 	 * objects which implement the Sentry user
 	 * interface.
 	 *
-	 * @var Cartalyst\Sentry\Users\ProviderInterface
+	 * @var \Cartalyst\Sentry\Users\ProviderInterface
 	 */
 	protected $userProvider;
 
@@ -75,7 +75,7 @@ class Sentry {
 	 * objects which implement the Sentry group
 	 * interface.
 	 *
-	 * @var Cartalyst\Sentry\Groups\ProviderInterface
+	 * @var \Cartalyst\Sentry\Groups\ProviderInterface
 	 */
 	protected $groupProvider;
 
@@ -84,7 +84,7 @@ class Sentry {
 	 * objects which implement the Sentry throttling
 	 * interface.
 	 *
-	 * @var Cartalyst\Sentry\Throttling\ProviderInterface
+	 * @var \Cartalyst\Sentry\Throttling\ProviderInterface
 	 */
 	protected $throttleProvider;
 
@@ -98,11 +98,11 @@ class Sentry {
 	/**
 	 * Create a new Sentry object.
 	 *
-	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $session
-	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $cookie
-	 * @param  Cartalyst\Sentry\Users\UserProviderInterface  $userProvider
-	 * @param  Cartalyst\Sentry\Groups\GroupProviderInterface  $groupProvider
-	 * @param  Cartalyst\Sentry\Throttling\ThrottleProviderInterface  $throttleProvider
+	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
+	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface  $cookie
+	 * @param  \Cartalyst\Sentry\Users\UserProviderInterface  $userProvider
+	 * @param  \Cartalyst\Sentry\Groups\GroupProviderInterface  $groupProvider
+	 * @param  \Cartalyst\Sentry\Throttling\ThrottleProviderInterface  $throttleProvider
 	 * @param  string  $ipAddress
 	 * @return void
 	 */
@@ -134,7 +134,7 @@ class Sentry {
 	 *
 	 * @param  array  $credentials
 	 * @param  bool   $activate
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function register(array $credentials, $activate = false)
 	{
@@ -155,12 +155,12 @@ class Sentry {
 	 *
 	 * @param  array  $credentials
 	 * @param  bool   $remember
-	 * @return Cartalyst\Sentry\Users\UserInterface
-	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
-	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
-	 * @throws Cartalyst\Sentry\Users\LoginRequiredException
-	 * @throws Cartalyst\Sentry\Users\PasswordRequiredException
-	 * @throws Cartalyst\Sentry\Users\UserNotFoundException
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Throttling\UserBannedException
+	 * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
+	 * @throws \Cartalyst\Sentry\Users\LoginRequiredException
+	 * @throws \Cartalyst\Sentry\Users\PasswordRequiredException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
 	 */
 	public function authenticate(array $credentials, $remember = false)
 	{
@@ -229,7 +229,7 @@ class Sentry {
 	 * Alias for authenticating with the remember flag checked.
 	 *
 	 * @param  array  $credentials
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function authenticateAndRemember(array $credentials)
 	{
@@ -308,10 +308,10 @@ class Sentry {
 	 * Logs in the given user and sets properties
 	 * in the session.
 	 *
-	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  bool  $remember
 	 * @return void
-	 * @throws Cartalyst\Sentry\Users\UserNotActivatedException
+	 * @throws \Cartalyst\Sentry\Users\UserNotActivatedException
 	 */
 	public function login(UserInterface $user, $remember = false)
 	{
@@ -342,7 +342,7 @@ class Sentry {
 	/**
 	 * Alias for logging in and remembering.
 	 *
-	 * @param  Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 */
 	public function loginAndRemember(UserInterface $user)
 	{
@@ -365,7 +365,7 @@ class Sentry {
 	/**
 	 * Sets the user to be used by Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Users\UserInterface
+	 * @param  \Cartalyst\Sentry\Users\UserInterface
 	 * @return void
 	 */
 	public function setUser(UserInterface $user)
@@ -376,7 +376,7 @@ class Sentry {
 	/**
 	 * Returns the current user being used by Sentry, if any.
 	 *
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function getUser()
 	{
@@ -392,7 +392,7 @@ class Sentry {
 	/**
 	 * Sets the session driver for Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $session
+	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @return void
 	 */
 	public function setSession(SessionInterface $session)
@@ -403,7 +403,7 @@ class Sentry {
 	/**
 	 * Gets the session driver for Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Sessions\SessionInterface
+	 * @return \Cartalyst\Sentry\Sessions\SessionInterface
 	 */
 	public function getSession()
 	{
@@ -413,7 +413,7 @@ class Sentry {
 	/**
 	 * Sets the cookie driver for Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $cookie
+	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface  $cookie
 	 * @return void
 	 */
 	public function setCookie(CookieInterface $cookie)
@@ -424,7 +424,7 @@ class Sentry {
 	/**
 	 * Gets the cookie driver for Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Cookies\CookieInterface
+	 * @return \Cartalyst\Sentry\Cookies\CookieInterface
 	 */
 	public function getCookie()
 	{
@@ -434,7 +434,7 @@ class Sentry {
 	/**
 	 * Sets the group provider for Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Groups\ProviderInterface
+	 * @param  \Cartalyst\Sentry\Groups\ProviderInterface
 	 * @return void
 	 */
 	public function setGroupProvider(GroupProviderInterface $groupProvider)
@@ -445,7 +445,7 @@ class Sentry {
 	/**
 	 * Gets the group provider for Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Groups\ProviderInterface
+	 * @return \Cartalyst\Sentry\Groups\ProviderInterface
 	 */
 	public function getGroupProvider()
 	{
@@ -455,7 +455,7 @@ class Sentry {
 	/**
 	 * Sets the user provider for Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Users\ProviderInterface
+	 * @param  \Cartalyst\Sentry\Users\ProviderInterface
 	 * @return void
 	 */
 	public function setUserProvider(UserProviderInterface $userProvider)
@@ -466,7 +466,7 @@ class Sentry {
 	/**
 	 * Gets the user provider for Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Users\ProviderInterface
+	 * @return \Cartalyst\Sentry\Users\ProviderInterface
 	 */
 	public function getUserProvider()
 	{
@@ -476,7 +476,7 @@ class Sentry {
 	/**
 	 * Sets the throttle provider for Sentry.
 	 *
-	 * @param  Cartalyst\Sentry\Throttling\ProviderInterface
+	 * @param  \Cartalyst\Sentry\Throttling\ProviderInterface
 	 * @return void
 	 */
 	public function setThrottleProvider(ThrottleProviderInterface $throttleProvider)
@@ -487,7 +487,7 @@ class Sentry {
 	/**
 	 * Gets the throttle provider for Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Throttling\ProviderInterface
+	 * @return \Cartalyst\Sentry\Throttling\ProviderInterface
 	 */
 	public function getThrottleProvider()
 	{
@@ -519,8 +519,8 @@ class Sentry {
      * Find the group by ID.
      *
      * @param  int  $id
-     * @return Cartalyst\Sentry\GroupInterface  $group
-     * @throws Cartalyst\Sentry\GroupNotFoundException
+     * @return \Cartalyst\Sentry\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\GroupNotFoundException
      */
     public function findGroupById($id)
     {
@@ -531,8 +531,8 @@ class Sentry {
      * Find the group by name.
      *
      * @param  string  $name
-     * @return Cartalyst\Sentry\GroupInterface  $group
-     * @throws Cartalyst\Sentry\GroupNotFoundException
+     * @return \Cartalyst\Sentry\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\GroupNotFoundException
      */
     public function findGroupByName($name)
     {
@@ -553,7 +553,7 @@ class Sentry {
      * Creates a group.
      *
      * @param  array  $attributes
-     * @return Cartalyst\Sentry\Groups\GroupInterface
+     * @return \Cartalyst\Sentry\Groups\GroupInterface
      */
     public function createGroup(array $attributes)
     {
@@ -565,8 +565,8 @@ class Sentry {
      * Finds a user by the given user ID.
      *
      * @param  mixed  $id
-     * @return Cartalyst\Sentry\Users\UserInterface
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @return \Cartalyst\Sentry\Users\UserInterface
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserById($id)
     {
@@ -577,8 +577,8 @@ class Sentry {
      * Finds a user by the login value.
      *
      * @param  string  $login
-     * @return Cartalyst\Sentry\Users\UserInterface
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @return \Cartalyst\Sentry\Users\UserInterface
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByLogin($login)
     {
@@ -589,8 +589,8 @@ class Sentry {
      * Finds a user by the given credentials.
      *
      * @param  array  $credentials
-     * @return Cartalyst\Sentry\Users\UserInterface
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @return \Cartalyst\Sentry\Users\UserInterface
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByCredentials(array $credentials){
         return $this->userProvider->findByCredentials($credentials);
@@ -600,9 +600,9 @@ class Sentry {
      * Finds a user by the given activation code.
      *
      * @param  string  $code
-     * @return Cartalyst\Sentry\Users\UserInterface
+     * @return \Cartalyst\Sentry\Users\UserInterface
      * @throws RuntimeException
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByActivationCode($code)
     {
@@ -613,9 +613,9 @@ class Sentry {
      * Finds a user by the given reset password code.
      *
      * @param  string  $code
-     * @return Cartalyst\Sentry\Users\UserInterface
+     * @return \Cartalyst\Sentry\Users\UserInterface
      * @throws RuntimeException
-     * @throws Cartalyst\Sentry\Users\UserNotFoundException
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
      */
     public function findUserByResetPasswordCode($code)
     {
@@ -636,7 +636,7 @@ class Sentry {
      * Returns all users who belong to
      * a group.
      *
-     * @param  Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
      * @return array
      */
     public function findAllUsersInGroup($group)
@@ -672,7 +672,7 @@ class Sentry {
      * Creates a user.
      *
      * @param  array  $credentials
-     * @return Cartalyst\Sentry\Users\UserInterface
+     * @return \Cartalyst\Sentry\Users\UserInterface
      */
     public function createUser(array $credentials)
     {
@@ -682,7 +682,7 @@ class Sentry {
     /**
      * Returns an empty user object.
      *
-     * @return Cartalyst\Sentry\Users\UserInterface
+     * @return \Cartalyst\Sentry\Users\UserInterface
      */
     public function getEmptyUser()
     {
@@ -694,7 +694,7 @@ class Sentry {
      *
      * @param  mixed   $id
      * @param  string  $ipAddress
-     * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+     * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
      */
     public function findThrottlerByUserId($id, $ipAddress = null)
     {
@@ -706,7 +706,7 @@ class Sentry {
      *
      * @param  string  $login
      * @param  string  $ipAddress
-     * @return Cartalyst\Sentry\Throttling\ThrottleInterface
+     * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
      */
     public function findThrottlerByUserLogin($login, $ipAddress = null)
     {
