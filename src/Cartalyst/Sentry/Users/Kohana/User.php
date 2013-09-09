@@ -299,10 +299,10 @@ class User extends \ORM implements UserInterface {
 	/**
 	 * Saves the user.
 	 *
-	 * @param  Validation  $validation
+	 * @param  \Validation  $validation
 	 * @return bool
 	 */
-	public function save(Validation $validation = NULL)
+	public function save(\Validation $validation = NULL)
 	{
 		$this->validate();
 
