@@ -34,21 +34,21 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * The cookie object.
 	 *
-	 * @var Illuminate\Cookie\CookieJar
+	 * @var \Illuminate\Cookie\CookieJar
 	 */
 	protected $jar;
 
 	/**
 	 * The cookie to be stored.
 	 *
-	 * @var Symfony\Component\HttpFoundation\Cookie
+	 * @var \Symfony\Component\HttpFoundation\Cookie
 	 */
 	protected $cookie;
 
 	/**
 	 * Creates a new cookie instance.
 	 *
-	 * @param  Illuminate\Cookie\CookieJar  $jar
+	 * @param  \Illuminate\Cookie\CookieJar  $jar
 	 * @param  string  $key
 	 * @return void
 	 */
@@ -119,7 +119,7 @@ class IlluminateCookie implements CookieInterface {
 	 * Returns the Symfony cookie object associated
 	 * with the Illuminate cookie.
 	 *
-	 * @return Symfony\Component\HttpFoundation\Cookie
+	 * @return \Symfony\Component\HttpFoundation\Cookie
 	 */
 	public function getCookie()
 	{

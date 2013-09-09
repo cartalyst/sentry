@@ -40,12 +40,13 @@ class Sentry extends Facade {
 	/**
 	 * Creates a Sentry instance.
 	 *
-	 * @param  Cartalys\Sentry\Users\UserProvider           $userProvider
-	 * @param  Cartalys\Sentry\Groups\GroupProvider         $groupProvider
-	 * @param  Cartalys\Sentry\Throttling\ThrottleProvider  $throttleProvider
-	 * @param  Cartalys\Sentry\Sessions\SessionInterface    $session
-	 * @param  Cartalys\Sentry\Cookies\CookieInterface      $cookie
-	 * @return Cartalyst\Sentry\Sentry
+	 * @param  \Cartalyst\Sentry\Users\ProviderInterface $userProvider
+	 * @param  \Cartalyst\Sentry\Groups\ProviderInterface $groupProvider
+	 * @param  \Cartalyst\Sentry\Throttling\ProviderInterface $throttleProvider
+	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface $session
+	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface $cookie
+	 * @param  string $ipAddress
+	 * @return \Cartalyst\Sentry\Sentry
 	 */
 	public static function createSentry(
 		UserProviderInterface $userProvider = null,

@@ -31,7 +31,7 @@ class Sentry extends Facade {
 	/**
 	 * Creates a new instance of Sentry.
 	 *
-	 * @return Cartalyst\Sentry\Sentry
+	 * @return \Cartalyst\Sentry\Sentry
 	 */
 	public static function createSentry()
 	{

@@ -32,14 +32,14 @@ class IlluminateSession implements SessionInterface {
 	/**
 	 * Session store object.
 	 *
-	 * @var Illuminate\Session\Store
+	 * @var \Illuminate\Session\Store
 	 */
 	protected $session;
 
 	/**
 	 * Creates a new Illuminate based Session driver for Sentry.
 	 *
-	 * @param  Illuminate\Session\Store  $session
+	 * @param  \Illuminate\Session\Store  $session
 	 * @param  string  $key
 	 * @return void
 	 */

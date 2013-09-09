@@ -71,7 +71,7 @@ class Throttle extends Model implements ThrottleInterface {
 	/**
 	 * Returns the associated user with the throttler.
 	 *
-	 * @return Cartalyst\Sentry\Users\UserInterface
+	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function getUser()
 	{
@@ -230,8 +230,8 @@ class Throttle extends Model implements ThrottleInterface {
 	 * Check user throttle status.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Throttling\UserBannedException
-	 * @throws Cartalyst\Sentry\Throttling\UserSuspendedException
+	 * @throws \Cartalyst\Sentry\Throttling\UserBannedException
+	 * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
 	 */
 	public function check()
 	{
@@ -257,7 +257,7 @@ class Throttle extends Model implements ThrottleInterface {
 	/**
 	 * User relationship for the throttle.
 	 *
-	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function user()
 	{
@@ -410,7 +410,7 @@ class Throttle extends Model implements ThrottleInterface {
 	/**
 	 * Get suspension time.
 	 *
-	 * @param  int
+	 * @return  int
 	 */
 	public static function getSuspensionTime()
 	{

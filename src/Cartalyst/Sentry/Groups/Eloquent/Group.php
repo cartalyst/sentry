@@ -219,7 +219,7 @@ class Group extends Model implements GroupInterface {
 	/**
 	 * Returns the relationship between groups and users.
 	 *
-	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
 	public function users()
 	{
@@ -252,8 +252,9 @@ class Group extends Model implements GroupInterface {
 	/**
 	 * Mutator for giving permissions.
 	 *
-	 * @param  mixed  $permissions
-	 * @return array  $_permissions
+	 * @param  mixed $permissions
+	 * @return array
+	 * @throws \InvalidArgumentException
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
@@ -280,6 +281,7 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @param  array  $permissions
 	 * @return void
+	 * @throws \InvalidArgumentException
 	 */
 	public function setPermissionsAttribute(array $permissions)
 	{
@@ -327,8 +329,8 @@ class Group extends Model implements GroupInterface {
 	 * Exceptions if validation fails.
 	 *
 	 * @return bool
-	 * @throws Cartalyst\Sentry\Groups\NameRequiredException
-	 * @throws Cartalyst\Sentry\Groups\GroupExistsException
+	 * @throws \Cartalyst\Sentry\Groups\NameRequiredException
+	 * @throws \Cartalyst\Sentry\Groups\GroupExistsException
 	 */
 	public function validate()
 	{
