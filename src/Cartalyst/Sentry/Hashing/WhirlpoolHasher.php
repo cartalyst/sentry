@@ -50,7 +50,7 @@ class WhirlpoolHasher implements HasherInterface {
    */
   public function checkhash($string, $hashedString)
   {
-    $salt = substr($hashedString, 0, 16);
+    $salt = substr($hashedString, 0, $this->saltLength);
 
     return ($salt.hash('whirlpool', $salt.$string)) === $hashedString;
   }
