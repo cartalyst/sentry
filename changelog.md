@@ -1,7 +1,7 @@
 #v2.0.0-beta8
 
 - Added whirlpool hashing.
-
+- Fixed `saltLength` while check the password.
 
 #v2.0.0-beta7
 
