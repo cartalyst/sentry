@@ -1,3 +1,8 @@
+#v2.0.0-beta8
+
+- Added whirlpool hashing.
+
+
 #v2.0.0-beta7
 
  - User's activation codes and reset password codes are now URL friendly. We've had a number of issues regarding this.
