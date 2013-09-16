@@ -42,12 +42,12 @@ return array(
 	|
 	| This option allows you to specify the default hasher used by Sentry
 	|
-	| Supported: "native", "bcrypt", "sha256"
+	| Supported: "native", "bcrypt", "sha256", "whirlpool"
 	|
 	*/
 
 	'hasher' => 'native',
-  
+
 	/*
 	|--------------------------------------------------------------------------
 	| Cookie
@@ -58,7 +58,7 @@ return array(
 	*/
 
 	'cookie' => array(
-    
+
 		/*
 		|--------------------------------------------------------------------------
 		| Default Cookie Key
@@ -69,9 +69,9 @@ return array(
 		| Supported: string
 		|
 		*/
-  
-		'key' => 'cartalyst_sentry',  
-  
+
+		'key' => 'cartalyst_sentry',
+
  	),
 
 	/*
