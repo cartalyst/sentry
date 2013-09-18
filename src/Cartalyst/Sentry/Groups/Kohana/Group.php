@@ -136,7 +136,7 @@ class Group extends \ORM implements GroupInterface {
 			// Now, let's check if the permission ends in a wildcard "*" symbol.
 			// If it does, we'll check through all the merged permissions to see
 			// if a permission exists which matches the wildcard.
-			if ((strlen($permission) > 1) and Text::ends_with($permission, '*'))
+			if ((strlen($permission) > 1) and \Text::ends_with($permission, '*'))
 			{
 				$matched = false;
 
@@ -146,8 +146,8 @@ class Group extends \ORM implements GroupInterface {
 					$checkPermission = substr($permission, 0, -1);
 
 					// We will make sure that the merged permission does not
-					// exactly match our permission, but starts wtih it.
-					if ($checkPermission != $groupPermission and Text::starts_with($groupPermission, $checkPermission) and $value == 1)
+					// exactly match our permission, but starts with it.
+					if ($checkPermission != $groupPermission and \Text::starts_with($groupPermission, $checkPermission) and $value == 1)
 					{
 						$matched = true;
 						break;
@@ -158,7 +158,7 @@ class Group extends \ORM implements GroupInterface {
 			// Now, let's check if the permission starts in a wildcard "*" symbol.
 			// If it does, we'll check through all the merged permissions to see
 			// if a permission exists which matches the wildcard.
-			elseif ((strlen($permission) > 1) and Text::starts_with($permission, '*'))
+			elseif ((strlen($permission) > 1) and \Text::starts_with($permission, '*'))
 			{
 				$matched = false;
 
@@ -168,8 +168,8 @@ class Group extends \ORM implements GroupInterface {
 					$checkPermission = substr($permission, 1);
 
 					// We will make sure that the merged permission does not
-					// exactly match our permission, but ends wtih it.
-					if ($checkPermission != $groupPermission and Text::ends_with($groupPermission, $checkPermission) and $value == 1)
+					// exactly match our permission, but ends with it.
+					if ($checkPermission != $groupPermission and \Text::ends_with($groupPermission, $checkPermission) and $value == 1)
 					{
 						$matched = true;
 						break;
@@ -184,7 +184,7 @@ class Group extends \ORM implements GroupInterface {
 				foreach ($groupPermissions as $groupPermission => $value)
 				{
 					// This time check if the groupPermission ends in wildcard "*" symbol.
-					if ((strlen($groupPermission) > 1) and Text::ends_with($groupPermission, '*'))
+					if ((strlen($groupPermission) > 1) and \Text::ends_with($groupPermission, '*'))
 					{
 						$matched = false;
 
@@ -192,8 +192,8 @@ class Group extends \ORM implements GroupInterface {
 						$checkGroupPermission = substr($groupPermission, 0, -1);
 
 						// We will make sure that the merged permission does not
-						// exactly match our permission, but starts wtih it.
-						if ($checkGroupPermission != $permission and Text::starts_with($permission, $checkGroupPermission) and $value == 1)
+						// exactly match our permission, but starts with it.
+						if ($checkGroupPermission != $permission and \Text::starts_with($permission, $checkGroupPermission) and $value == 1)
 						{
 							$matched = true;
 							break;

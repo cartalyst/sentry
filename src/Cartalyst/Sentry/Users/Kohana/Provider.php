@@ -293,6 +293,11 @@ class Provider implements ProviderInterface {
 	 */
 	public function create(array $credentials)
 	{
+		if ( ! isset($credentials['permissions']) )
+		{
+			$credentials['permissions'] = array();
+		}
+
 		$user = $this->createModel();
 		$user->values($credentials);
 		$user->save();
