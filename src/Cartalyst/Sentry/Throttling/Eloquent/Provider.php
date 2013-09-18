@@ -72,8 +72,9 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
+		$user  = $this->userProvider->findById($id);
 		$model = $this->createModel();
-		$query = $model->where('user_id', '=', ($userId = $id));
+		$query = $model->where('user_id', '=', ($userId = $user->getId()));
 
 		if ($ipAddress)
 		{
