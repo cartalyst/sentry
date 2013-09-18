@@ -632,7 +632,7 @@ class User extends \ORM implements UserInterface {
 			// Now, let's check if the permission ends in a wildcard "*" symbol.
 			// If it does, we'll check through all the merged permissions to see
 			// if a permission exists which matches the wildcard.
-			if ((strlen($permission) > 1) and Text::ends_with($permission, '*'))
+			if ((strlen($permission) > 1) and \Text::ends_with($permission, '*'))
 			{
 				$matched = false;
 
@@ -642,8 +642,8 @@ class User extends \ORM implements UserInterface {
 					$checkPermission = substr($permission, 0, -1);
 
 					// We will make sure that the merged permission does not
-					// exactly match our permission, but starts wtih it.
-					if ($checkPermission != $mergedPermission and Text::starts_with($mergedPermission, $checkPermission) and $value == 1)
+					// exactly match our permission, but starts with it.
+					if ($checkPermission != $mergedPermission and \Text::starts_with($mergedPermission, $checkPermission) and $value == 1)
 					{
 						$matched = true;
 						break;
@@ -651,7 +651,7 @@ class User extends \ORM implements UserInterface {
 				}
 			}
 			
-			elseif ((strlen($permission) > 1) and Text::starts_with($permission, '*'))
+			elseif ((strlen($permission) > 1) and \Text::starts_with($permission, '*'))
 			{
 				$matched = false;
 
@@ -662,7 +662,7 @@ class User extends \ORM implements UserInterface {
 
 					// We will make sure that the merged permission does not
 					// exactly match our permission, but ends with it.
-					if ($checkPermission != $mergedPermission and Text::ends_with($mergedPermission, $checkPermission) and $value == 1)
+					if ($checkPermission != $mergedPermission and \Text::ends_with($mergedPermission, $checkPermission) and $value == 1)
 					{
 						$matched = true;
 						break;
@@ -677,7 +677,7 @@ class User extends \ORM implements UserInterface {
 				foreach ($mergedPermissions as $mergedPermission => $value)
 				{
 					// This time check if the mergedPermission ends in wildcard "*" symbol.
-					if ((strlen($mergedPermission) > 1) and Text::ends_with($mergedPermission, '*'))
+					if ((strlen($mergedPermission) > 1) and \Text::ends_with($mergedPermission, '*'))
 					{
 						$matched = false;
 
@@ -685,8 +685,8 @@ class User extends \ORM implements UserInterface {
 						$checkMergedPermission = substr($mergedPermission, 0, -1);
 
 						// We will make sure that the merged permission does not
-						// exactly match our permission, but starts wtih it.
-						if ($checkMergedPermission != $permission and Text::starts_with($permission, $checkMergedPermission) and $value == 1)
+						// exactly match our permission, but starts with it.
+						if ($checkMergedPermission != $permission and \Text::starts_with($permission, $checkMergedPermission) and $value == 1)
 						{
 							$matched = true;
 							break;
