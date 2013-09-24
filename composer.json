@@ -35,9 +35,9 @@
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
 
-		"illuminate/cookie": "4.0.*",
-		"illuminate/database": "4.0.*",
-		"illuminate/session": "4.0.*",
+		"illuminate/cookie": "~4",
+		"illuminate/database": "~4",
+		"illuminate/session": "~4",
 		"ircmaxell/password-compat": "1.0.*"
 	},
 	"suggest": {
