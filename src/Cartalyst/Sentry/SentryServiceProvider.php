@@ -197,7 +197,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$key = $app['config']['cartalyst/sentry::cookie.key'];
 
-			return new IlluminateSession($app['session'], $key);
+			return new IlluminateSession($app['session.store'], $key);
 		});
 	}
 
