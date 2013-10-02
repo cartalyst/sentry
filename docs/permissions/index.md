@@ -26,9 +26,10 @@ That said, here are the values that your groups and users permissions can have:
 Just as permissions are defined for groups and individual users, the permission
 inheritance model depends on a user's group.
 
-An Administrator can assign different permissions to a user that is assigned to
-a group, and if that group has different access permissions, the user's access
-is always determined by the group access.
+An Administrator can assign different permissions to a user than is assigned to a group:
+
+- If a user is not assigned a permission, or if the user is assigned a permission of 0 then the user will inherit permissions from the group
+- If a user is assigned a permission of -1 or 1, then the user's permission will override the group permission
 
 > **Note:** Permission Inheritance only works for users permissions, an example
 is provided on this page to help you
