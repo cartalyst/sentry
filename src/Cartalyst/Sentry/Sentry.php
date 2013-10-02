@@ -117,7 +117,7 @@ class Sentry {
 	{
 		$this->userProvider     = $userProvider ?: new UserProvider(new NativeHasher);
 		$this->groupProvider    = $groupProvider ?: new GroupProvider;
-		$this->throttleProvider = $throttleProvider ?: new ThrottleProvider($userProvider);
+		$this->throttleProvider = $throttleProvider ?: new ThrottleProvider($this->userProvider);
 
 		$this->session          = $session ?: new NativeSession;
 		$this->cookie           = $cookie ?: new NativeCookie;
