@@ -112,12 +112,12 @@ class EloquentGroupProviderTest extends PHPUnit_Framework_TestCase {
 
 		$provider->shouldReceive('createModel')->once()->andReturn($query = m::mock('StdClass'));
 
+		$group1 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group')->shouldReceive('hasGetMutator')->andReturn(false);
+		$group2 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group')->shouldReceive('hasGetMutator')->andReturn(false);
+
 		$query->shouldReceive('newQuery')->andReturn($query);
 		$query->shouldReceive('get')->andReturn($query);
-		$query->shouldReceive('all')->andReturn($groups = array(
-			$group1 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group'),
-			$group2 = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group'),
-		));
+		$query->shouldReceive('all')->andReturn($groups = array($group1, $group2));
 
 		$this->assertEquals($groups, $provider->findAll());
 	}
