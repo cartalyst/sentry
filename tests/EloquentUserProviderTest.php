@@ -440,17 +440,21 @@ class EloquentUserProviderTest extends PHPUnit_Framework_TestCase {
 
 	public function testFindingAllUsersInGroup()
 	{
-		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider[findAll]');
-
-		$provider->shouldReceive('findAll')->once()->andReturn(array(
-			$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
-			$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User'),
-		));
-
-		$user1->shouldReceive('inGroup')->with($group = m::mock('Cartalyst\Sentry\Groups\GroupInterface'))->once()->andReturn(true);
+		$user1 = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user1->shouldReceive('hasGetMutator')->andReturn(false);
-		$user2->shouldReceive('inGroup')->with($group)->once()->andReturn(false);
+		$user2 = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
 		$user2->shouldReceive('hasGetMutator')->andReturn(false);
+
+		$users = m::mock('Cartalyst\Sentry\Users\Eloquent\User');
+		$users->shouldReceive('hasGetMutator')->andReturn(false);
+		$users->shouldReceive('get')->andReturn(array($user1));
+
+		$group = m::mock('Cartalyst\Sentry\Groups\Eloquent\Group');
+		$group->shouldReceive('hasGetMutator')->andReturn(false);
+		$group->shouldReceive('users')->once()->andReturn($users);
+
+		$provider = m::mock('Cartalyst\Sentry\Users\Eloquent\Provider');
+		$provider->shouldReceive('findAllInGroup')->once()->andReturn($group->users()->get());
 
 		$this->assertEquals(array($user1), $provider->findAllInGroup($group));
 	}

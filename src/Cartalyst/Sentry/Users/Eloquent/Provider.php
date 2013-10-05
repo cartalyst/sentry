@@ -240,10 +240,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findAllInGroup($group)
 	{
-		return array_filter($this->findAll(), function($user) use ($group)
-		{
-			return $user->inGroup($group);
-		});
+		return $group->users()->get();
 	}
 
 	/**
