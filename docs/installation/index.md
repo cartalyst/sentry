@@ -1,8 +1,8 @@
-### Installation
+## Install & Configure
 
-----------
+You can use Sentry package on Laravel 4 and outside by installing the package through Composer.
 
-* [In Laravel 4](/sentry-2/installation/laravel-4)
-* [In FuelPHP 1.x](/sentry-2/installation/fuelphp-1)
-* [In CodeIgniter 3.0-dev](/sentry-2/installation/codeigniter-3)
-* [With Composer](/sentry-2/installation/composer)
+* [Install Through Composer]({url}/installation/composer)
+* [Install in Laravel 4]({url}/installation/laravel-4)
+* [Install in FuelPHP 1.x]({url}/installation/fuelphp-1)
+* [Install in CodeIgniter 3.0-dev]({url}/installation/codeigniter-3)

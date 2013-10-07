@@ -1,6 +1,8 @@
-### Installing in FuelPHP 1.x (with Composer)
+## Installing in FuelPHP 1.x (with Composer)
 
-Using Sentry with FuelPHP is easy. We begin by creating the `composer.json` file at `fuel/app/` with the following:
+Using Sentry with FuelPHP is easy.
+
+We begin by creating the `composer.json` file at `fuel/app/` with the following:
 
 	{
 		"require": {
@@ -11,13 +13,17 @@ Using Sentry with FuelPHP is easy. We begin by creating the `composer.json` file
 		"minimum-stability": "dev"
 	}
 
-Navigate to your `app` folder in Terminal and run `composer update`. You must put the following in `app/bootstrap.php` below `Autoloader::register()`:
+Navigate to your `app` folder in Terminal and run `composer update`.
+
+You must put the following in `app/bootstrap.php` below `Autoloader::register()`:
 
 	// Enable composer based autoloading
 	require APPPATH.'vendor/autoload.php';
 
 
-Great! You now have composer working with FuelPHP. Just one more step is involved now, right at the bottom of that same file, `app/bootstrap.php`, put the following:
+Great! You now have composer working with FuelPHP.
+
+Just one more step is involved now, right at the bottom of that same file, `app/bootstrap.php`, put the following:
 
 	class_alias('Cartalyst\Sentry\Facades\FuelPHP\Sentry', 'Sentry');
 
