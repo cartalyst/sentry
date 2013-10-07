@@ -8,7 +8,7 @@ required, all the other fields are optional.
 
 When you are creating your user, and something goes wrong, you most likely want
 to know where is the problem, well, Sentry got you covered, and if a problem
-arises, individual [Exceptions](/sentry-2/users/create#exceptions) are thrown, one for each error you have.
+arises, individual [Exceptions]({url}/users/create#exceptions) are thrown, one for each error you have.
 
 ----------
 

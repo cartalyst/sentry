@@ -1,6 +1,6 @@
-### Installing using Composer
+## Installing & Configure through Composer
 
-Ensure you have the following in your `composer.json` file:
+Open your `composer.json` file and add the following lines
 
 	{
 		"require": {
@@ -8,10 +8,18 @@ Ensure you have the following in your `composer.json` file:
 			"illuminate/database": "4.0.*",
 			"ircmaxell/password-compat": "1.0.*"
 		},
-		"minimum-stability": "dev"
+		"minimum-stability": "stable"
 	}
 
+Run a composer update from the command line
 
+	composer update
+
+If you haven't yet, make sure to require Composer's autoload file in your app root to autoload the installed packages.
+
+	require 'vendor/autoload.php';
+
+<!--
 Example usage
 
 	// Create an alias for our Facade
@@ -74,13 +82,13 @@ Initializing Sentry requires you pass a number of dependencies to it. These depe
 Of course, we provide default implementations of all these for you. To setup our default implementations, the following should suffice:
 
 	$hasher = new Cartalyst\Sentry\Hashing\NativeHasher; // There are other hashers available, take your pick
-	
+
 	$userProvider = new Cartalyst\Sentry\Users\Eloquent\Provider($hasher);
-	
+
 	$groupProvider = new Cartalyst\Sentry\Groups\Eloquent\Provider;
-	
+
 	$throttleProvider = new Cartalyst\Sentry\Throttling\Eloquent\Provider($userProvider);
-	
+
 	$session = new Cartalyst\Sentry\Sessions\NativeSession;
 
 	// Note, all of the options below are, optional!
@@ -92,9 +100,9 @@ Of course, we provide default implementations of all these for you. To setup our
 		'secure'   => null, // Default "false"
 		'httpOnly' => null, // Default "false"
 	);
-	
+
 	$cookie = new Cartalyst\Sentry\Cookies\NativeCookie($options);
-	
+
 	$sentry = new Sentry(
 		$userProvider,
 		$groupProvider,
@@ -102,9 +110,10 @@ Of course, we provide default implementations of all these for you. To setup our
 		$session,
 		$cookie,
 	);
-	
+
 ----------
 
 ### Setup the database
 
 Don't forget to setup database tables for Sentry. In the schema folder you will find a [mysql file](https://github.com/cartalyst/sentry/blob/master/schema/mysql.sql) that will setup the tables for you.
+-->

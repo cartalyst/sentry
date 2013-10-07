@@ -8,7 +8,7 @@ The check method returns a `bool` of whether the user is logged in or not, or
 if the user is not activated.
 
 If it's logged in, the current User is set in Sentry so you can easily access
-it via [`getUser()`](/sentry-2/users/find#get-the-current-logged-in-user) .
+it via [`getUser()`]({url}/users/find#get-the-current-logged-in-user) .
 
 A user must be activated to pass `check()` .
 

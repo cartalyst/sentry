@@ -1,6 +1,8 @@
-### Installing in CodeIgniter 3.0-dev (with Composer)
+## Installing in CodeIgniter 3.0-dev
 
-Installation in CodeIgniter is fairly straightforward. Obviously, using Sentry in CodeIgniter brings the minimum PHP version to 5.3.0. To install, add the following to your `composer.json` file:
+Installation in CodeIgniter is fairly straightforward.
+
+Obviously, using Sentry in CodeIgniter brings the minimum PHP version to 5.3.0. To install, add the following to your `composer.json` file:
 
 	{
 		"require": {

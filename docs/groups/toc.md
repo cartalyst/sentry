@@ -1,19 +1,19 @@
 ## Group
 
-* [Overview](/sentry-2/groups)
+* [Overview]({url}/groups)
 
 ### Managing Groups
 
-* [Create a Group](/sentry-2/groups/create)
-* [Update a Group](/sentry-2/groups/update)
-* [Delete a Group](/sentry-2/groups/delete)
+* [Create a Group]({url}/groups/create)
+* [Update a Group]({url}/groups/update)
+* [Delete a Group]({url}/groups/delete)
 
 ### Find Groups
 
-* [Find All Groups](/sentry-2/groups/find#find-all-the-groups)
-* [Find a Group by Id](/sentry-2/groups/find#find-a-group-by-its-id)
-* [Find a Group by Name](/sentry-2/groups/find#find-a-groups-by-its-name)
+* [Find All Groups]({url}/groups/find#find-all-the-groups)
+* [Find a Group by Id]({url}/groups/find#find-a-group-by-its-id)
+* [Find a Group by Name]({url}/groups/find#find-a-groups-by-its-name)
 
 ### Helpers
 
-* [getPermissions()](/sentry-2/groups/helpers#getpermissions)
+* [getPermissions()]({url}/groups/helpers#getpermissions)

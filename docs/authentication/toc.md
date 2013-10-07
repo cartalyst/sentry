@@ -1,9 +1,9 @@
 ## Authentication
 
-* [Authenticate a User](/sentry-2/authentication)
-* [Logs a User In](/sentry-2/authentication/login)
-* [Logs a User Out](/sentry-2/authentication/logout)
+* [Authenticate a User]({url}/authentication)
+* [Logs a User In]({url}/authentication/login)
+* [Logs a User Out]({url}/authentication/logout)
 
 ### Helpers
 
-* [check()](/sentry-2/authentication/helpers#check-if-the-user-is-logged-in)
+* [check()]({url}/authentication/helpers#check-if-the-user-is-logged-in)
