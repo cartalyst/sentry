@@ -222,7 +222,7 @@ class Provider implements ProviderInterface {
 	}
 
 	/**
-	 * Returns an all users.
+	 * Returns an array containing all users.
 	 *
 	 * @return array
 	 */
