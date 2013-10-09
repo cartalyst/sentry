@@ -359,11 +359,11 @@ class Throttle extends Model implements ThrottleInterface {
 
 		if (isset($result['suspended']))
 		{
-			$result['suspended'] = $this->getSuspended($result['suspended']);
+			$result['suspended'] = $this->getSuspendedAttribute($result['suspended']);
 		}
 		if (isset($result['banned']))
 		{
-			$result['banned'] = $this->getBanned($result['banned']);
+			$result['banned'] = $this->getBannedAttribute($result['banned']);
 		}
 		if (isset($result['last_attempt_at']) and $result['last_attempt_at'] instanceof DateTime)
 		{
