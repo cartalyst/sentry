@@ -48,7 +48,10 @@ class BcryptHasher implements HasherInterface {
 		// Create salt
 		$salt = $this->createSalt();
 
-		return crypt($string, '$2a$'.$strength.'$'.$salt.'$');
+		//create prefix; $2y$ fixes blowfish weakness
+		$prefix = PHP_VERSION_ID < 50307 ? '$2a$' : '$2y$';
+		
+		return crypt($string, $prefix.$strength.'$'.$salt.'$');
 	}
 
 	/**
