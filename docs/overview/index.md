@@ -6,18 +6,18 @@ Sentry is a simple, powerful and easy to use authorization and authentication pa
 
 ---
 
-- Configurable authentication (can use any type of authentication required, such as username or email)
+- Configurable Authentication
 - Authorization
 - User Activation *(optional)*
-- Groups and group permissions
+- Groups and Group Permissions
 - User Permissions
-- Remember me feature
+- Remember Me
 - Login Throttling *(optional)*
 - User Suspension
 - User Banning
 - Password Resetting
-- User data
-- Interface driven (switch out your own implementations at will)
+- User Data
+- Interface Driven (switch out your own implementations at will)
 
 ### Requirements {#requirements}
 
