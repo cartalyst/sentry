@@ -1,4 +1,4 @@
-### Activating a User
+## Activating a User
 
 User activation is very easy with Sentry, you need to first find the user you
 want to activate, then use the `attemptActivation()` method and provide the
@@ -8,19 +8,17 @@ will return `false` .
 If the user you are trying to activate, is already activated, an Exception
 `Cartalyst\Sentry\Users\UserAlreadyActivatedException` will be thrown.
 
-----------
+### Exceptions {#exceptions}
 
-#### Exceptions
+---
 
-##### Cartalyst\Sentry\Users\UserAlreadyActivatedException
+**Cartalyst\Sentry\Users\UserAlreadyActivatedException**
 
 If the provided user is already activated, this exception will be thrown.
 
-##### Cartalyst\Sentry\Users\UserNotFoundException
+**Cartalyst\Sentry\Users\UserNotFoundException**
 
 If the provided user was not found, this exception will be thrown.
-
-----------
 
 #### Example
 

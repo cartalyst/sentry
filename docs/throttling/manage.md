@@ -1,16 +1,14 @@
-### Throttling Management
+## Throttling Management
 
-..
+### Disable the Throttling Feature {#disable-the-throttling-feature}
 
-----------
-
-#### Disable the Throttling Feature
+---
 
 Disables the throttling feature.
 
 Can be done on the throttle provider (global) level or on a throttle instance itself.
 
-##### Example
+#### Example
 
 	// Get the Throttle Provider
 	$throttleProvider = Sentry::getThrottleProvider();
@@ -18,15 +16,15 @@ Can be done on the throttle provider (global) level or on a throttle instance it
 	// Disable the Throttling Feature
 	$throttleProvider->disable();
 
-----------
+### Enable the Throttling Feature {#enable-the-throttling-feature}
 
-#### Enable the Throttling Feature
+---
 
 Enables the throttling feature.
 
 Can be done on the throttle provider (global) level or on a throttle instance itself.
 
-##### Example
+#### Example
 
 	// Get the Throttle Provider
 	$throttleProvider = Sentry::getThrottleProvider();
@@ -34,13 +32,13 @@ Can be done on the throttle provider (global) level or on a throttle instance it
 	// Enable the Throttling Feature
 	$throttleProvider->enable();
 
-----------
+### Check the Throttling Feature Status {#check-the-throttling-feature-status}
 
-#### Check the Throttling Feature Status
+---
 
 Checks to see if the throttling feature is enabled or disabled.
 
-##### Example
+#### Example
 
 	// Get the Throttle Provider
 	$provider = Sentry::getThrottleProvider();

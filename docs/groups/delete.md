@@ -1,16 +1,14 @@
-### Delete a Group
+## Delete a Group
 
 Deleting groups is very simple and easy.
 
-----------
+### Exceptions
 
-#### Exceptions
+---
 
-##### Cartalyst\Sentry\Groups\GroupNotFoundException
+**Cartalyst\Sentry\Groups\GroupNotFoundException**
 
 If the provided group was not found, this exception will be thrown.
-
-----------
 
 #### Example
 

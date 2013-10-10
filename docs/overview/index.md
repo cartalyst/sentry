@@ -1,12 +1,6 @@
 ## Introduction
 
-- [Features](#features)
-- [Requirements](#requirements)
-- [License](#license)
-
-Sentry is a simple, powerful and easy to use authorization and authentication package.
-
-It provides additional features such as groups, permissions, custom hashing algorithms and additional security features.
+Sentry is a simple, powerful and easy to use authorization and authentication package. It provides additional features such as groups, permissions, custom hashing algorithms and additional security features.
 
 ### Features {#features}
 

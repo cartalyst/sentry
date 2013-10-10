@@ -1,30 +1,28 @@
-### User Throttling
+## User Throttling
 
-..
+### Exceptions
 
-----------
+---
 
-#### Exceptions
-
-##### Cartalyst\Sentry\Throttle\UserNotFoundException
+**Cartalyst\Sentry\Throttle\UserNotFoundException**
 
 If the provided user was not found, this exception will be thrown.
 
-##### Cartalyst\Sentry\Throttling\UserSuspendedException
+**Cartalyst\Sentry\Throttling\UserSuspendedException**
 
 When the provided user is suspended, this exception will be thrown.
 
-##### Cartalyst\Sentry\Throttling\UserBannedException
+**Cartalyst\Sentry\Throttling\UserBannedException**
 
 When the provided user is banned, this exception will be thrown.
 
-----------
+### Ban user(s) {#ban-users}
 
-#### Ban user(s)
+---
 
 Bans the user associated with the throttle.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -39,13 +37,13 @@ Bans the user associated with the throttle.
 		echo 'User was not found.';
 	}
 
-----------
+### Unban user(s) {#unban-users}
 
-#### Unban user(s)
+---
 
 Unbans the user associated with the throttle.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -60,14 +58,13 @@ Unbans the user associated with the throttle.
 		echo 'User was not found.';
 	}
 
-----------
+### Check if a User is Banned {#check-if-a-user-is-banned}
 
-#### Check if a User is Banned
-
+---
 
 Checks to see if the user is banned.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -87,14 +84,14 @@ Checks to see if the user is banned.
 		echo 'User was not found.';
 	}
 
-----------
+### Suspend user(s) {#suspend-users}
 
-#### Suspend user(s)
+---
 
 Suspends a user temporarily. Length of the suspension is set by the driver or
 setSuspensionTime($minutes).
 
-##### Example
+#### Example
 
 	try
 	{
@@ -109,14 +106,14 @@ setSuspensionTime($minutes).
 		echo 'User was not found.';
 	}
 
-----------
+### Unsuspend user(s) {#unsuspend-users}
 
-#### Unsuspend user(s)
+---
 
 Unsuspends a login. This also clears all previous attempts by the specified
 login if they were suspended.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -131,13 +128,13 @@ login if they were suspended.
 		echo 'User was not found.';
 	}
 
-----------
+### Check if a User is Suspended {#check-if-a-user-is-suspended}
 
-#### Check if a User is Suspended
+---
 
 Checks to see if the user is suspended.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -157,13 +154,13 @@ Checks to see if the user is suspended.
 		echo 'User was not found.';
 	}
 
-----------
+### Set the User Suspension Time {#set-the-user-suspension-time}
 
-#### Set the User Suspension Time
+---
 
 Sets the length of the suspension.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -176,13 +173,13 @@ Sets the length of the suspension.
 		echo 'User was not found.';
 	}
 
-----------
+### Get the User Suspension Time {#get-the-user-suspension-time}
 
-#### Get the User Suspension Time
+---
 
 Retrieves the length of the suspension time set by the throttling driver.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -195,15 +192,13 @@ Retrieves the length of the suspension time set by the throttling driver.
 		echo 'User was not found.';
 	}
 
+### Add a Login Attempt {#add-a-login-attempt}
 
-
-----------
-
-#### Add a Login Attempt
+---
 
 Adds an attempt to the throttle object.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -216,16 +211,16 @@ Adds an attempt to the throttle object.
 		echo 'User was not found.';
 	}
 
-----------
+### Get Login Attempts {#get-login-attempts}
 
-#### Get Login Attempts
+---
 
 Retrieves the number of attempts a user currently has tried. Checks suspension
 time to see if login attempts can be reset. This may happen if the suspension
 time was (for example) 10 minutes however the last login was 15 minutes ago,
 attempts will be reset to 0.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -238,13 +233,13 @@ attempts will be reset to 0.
 		echo 'User was not found.';
 	}
 
-----------
+### Clear Login Attempts {#clear-login-attempts}
 
-#### Clear Login Attempts
+---
 
 Clears all login attempts, it also unsuspends them. This does not unban a login.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -257,13 +252,13 @@ Clears all login attempts, it also unsuspends them. This does not unban a login.
 		echo 'User was not found.';
 	}
 
-----------
+### Check the User Throttle Status {#check-the-user-throttle-status}
 
-#### Check the Throttle Status
+---
 
 Checks the login throttle status and throws a number of Exceptions upon failure.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -289,13 +284,13 @@ Checks the login throttle status and throws a number of Exceptions upon failure.
 		ehco 'User is banned.';
 	}
 
-----------
+### Set Attempt Limit {#set-attempt-limit}
 
-#### Set Attempt Limit
+---
 
 Sets the number of attempts allowed before suspension.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -308,13 +303,13 @@ Sets the number of attempts allowed before suspension.
 		echo 'User was not found.';
 	}
 
-----------
+### Get Attempt Limit {#get-attempt-limit}
 
-#### Get Attempt Limit
+---
 
 Retrieves the number of attempts allowed by the throttle object.
 
-##### Example
+#### Example
 
 	try
 	{

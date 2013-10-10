@@ -1,11 +1,5 @@
 ## Install & Configure in Laravel 4
 
- - 1. [Composer](#composer)
- - 2. [Service Provider](#service-provider)
- - 3. [Alias](#aliases)
- - 4. [Migrations](#migrations)
- - 5. [Configuration](#configuration)
-
 ### 1. Composer {#composer}
 
 ----
@@ -53,7 +47,6 @@ command to run the migrations:
 	php artisan migrate --package=cartalyst/sentry
 
 Feel free to write your own migrations which insert the correct tables if you'd like!
-
 
 ### 5. Configuration {#configuration}
 
