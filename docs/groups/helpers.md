@@ -1,12 +1,12 @@
-### Helpers
+## Helpers
 
-----------
+### getPermissions() {#getpermissions}
 
-#### getPermissions()
+---
 
 Returns the permissions of a group.
 
-##### Example
+#### Example
 
 	try
 	{

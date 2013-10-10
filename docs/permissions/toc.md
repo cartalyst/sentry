@@ -1,3 +1,3 @@
 ## Permissions
 
-* [Overview]({url}/permissions)
+- [Overview]({url}/permissions)

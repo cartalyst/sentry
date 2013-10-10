@@ -20,7 +20,6 @@ You must put the following in `app/bootstrap.php` below `Autoloader::register()`
 	// Enable composer based autoloading
 	require APPPATH.'vendor/autoload.php';
 
-
 Great! You now have composer working with FuelPHP.
 
 Just one more step is involved now, right at the bottom of that same file, `app/bootstrap.php`, put the following:

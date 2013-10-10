@@ -1,22 +1,20 @@
-### Create a new Group
+## Create a new Group
 
 Creating new Groups is very easy and in this section you will learn how to
 create one.
 
-----------
+### Exceptions
 
-#### Exceptions
+---
 
-##### Cartalyst\Sentry\Groups\NameRequiredException
+**Cartalyst\Sentry\Groups\NameRequiredException**
 
 If you don't provide the group name, this exception will be thrown.
 
-##### Cartalyst\Sentry\Groups\GroupExistsException
+**Cartalyst\Sentry\Groups\GroupExistsException**
 
 This exception will be thrown when the group you are trying to create already
 exists on your database.
-
-----------
 
 #### Example
 

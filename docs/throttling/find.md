@@ -1,21 +1,21 @@
-### Find User(s)
+## Find User(s)
 
-----------
+### Exceptions
 
-#### Exceptions
+---
 
-##### Cartalyst\Sentry\Users\UserNotFoundException
+**Cartalyst\Sentry\Users\UserNotFoundException**
 
 If the provided user was not found, this exception will be thrown.
 
-----------
+### Find a User by their Id {#find-a-user-by-their-id}
 
-#### Find a User by their Id
+---
 
 Retrieves a throttle object based on the user ID provided. Will always retrieve
 a throttle object.
 
-##### Example
+#### Example
 
 	try
 	{
@@ -26,14 +26,14 @@ a throttle object.
 		echo 'User was not found.';
 	}
 
-----------
+### Find a User by their Login {#find-a-user-by-their-login}
 
-#### Find a User by their Login
+---
 
 Retrieves a throttle object based on the user login provided. Will always
 retrieve a throttle object.
 
-##### Example
+#### Example
 
 	try
 	{

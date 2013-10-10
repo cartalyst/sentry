@@ -1,11 +1,6 @@
 ## Overview
 
-- [Introduction]({url}/overview#introduction)
-
-<!--
-## Introduction
-
-* [Overview]({url}/overview)
-* [Notable Changes]({url}/overview/notable-changes)
-* [Download]({url}/overview/download)
--->
+- [Introduction]({url}/overview)
+    - [Features]({url}/overview#features)
+    - [Requirements]({url}/overview#requirements)
+    - [License]({url}/overview#license)
