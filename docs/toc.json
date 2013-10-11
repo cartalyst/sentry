@@ -1,6 +1,6 @@
 {
-	"sections" : [
-		"overview",
+	"chapters" : [
+		"introduction",
 		"installation",
 		"permissions",
 		"authentication",
