@@ -1,4 +1,4 @@
-### Download
+## Download
 
 You have two options to download Sentry 2:
 
@@ -7,9 +7,9 @@ You have two options to download Sentry 2:
 	* Download the `.zip` file
 	* Clone the repository
 
-----------
+### Composer
 
-#### Composer
+---
 
 To install through composer, simply put the following in your `composer.json` file:
 
@@ -23,9 +23,10 @@ To install through composer, simply put the following in your `composer.json` fi
 The `minimum-stability` flag is only required while Sentry 2 is in alpha stage.
 When it becomes stable you may change your flag.
 
-----------
 
-#### GitHub
+### GitHub
+
+---
 
 ##### Download Sentry
 
