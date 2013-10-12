@@ -490,7 +490,7 @@ class User extends Model implements UserInterface {
 		$groupNames = [];
 
 		foreach ($this->getGroups() as $group) {
-			$groupNames[] = $group->name;
+			$groupNames[] = $group->getName();
 		}
 
 		return $groupNames;
