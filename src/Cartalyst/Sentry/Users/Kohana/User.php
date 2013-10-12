@@ -516,9 +516,10 @@ class User extends \ORM implements UserInterface {
 	 **/
 	public function getGroupNames()
 	{
-		$groupNames = [];
+		$groupNames = array();
 
-		foreach ($this->getGroups() as $group) {
+		foreach ($this->getGroups() as $group)
+		{
 			$groupNames[] = $group->getName();
 		}
 
