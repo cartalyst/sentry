@@ -15,7 +15,7 @@ If you don't provide the group name, this exception will be thrown.
 This exception will be thrown when the group you are trying to create already
 exists on your database.
 
-**Cartalyst\Sentry\Users\GroupNotFoundException**
+**Cartalyst\Sentry\Groups\GroupNotFoundException**
 
 If the provided group was not found, this exception will be thrown.
 
