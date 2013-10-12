@@ -12,7 +12,7 @@ If the provided user was not found, this exception will be thrown.
 
 When the provided user is suspended, this exception will be thrown.
 
-**Cartalyst\Sentry\Throttling\UserBannedException**
+**Cartalyst\Sentry\Users\UserBannedException**
 
 When the provided user is banned, this exception will be thrown.
 
