@@ -1,12 +1,12 @@
 ## Groups
 
-- [Managing Groups]({url}/groups)
-    - [Create a Group]({url}/groups/create)
-    - [Update a Group]({url}/groups/update)
-    - [Delete a Group]({url}/groups/delete)
+
+- [Create a Group]({url}/groups/create)
+- [Update a Group]({url}/groups/update)
+- [Delete a Group]({url}/groups/delete)
 - [Find Groups]({url}/groups/find)
-    - [Find All Groups]({url}/groups/find#find-all-the-groups)
-    - [Find a Group by Id]({url}/groups/find#find-a-group-by-its-id)
-    - [Find a Group by Name]({url}/groups/find#find-a-group-by-its-name)
+    - [Find All Groups](#find-all-the-groups)
+    - [Find a Group by Id](#find-a-group-by-its-id)
+    - [Find a Group by Name](#find-a-group-by-its-name)
 - [Helpers]({url}/groups/helpers)
-    - [getPermissions()]({url}/groups/helpers#getpermissions)
+    - [getPermissions()](#getpermissions)
