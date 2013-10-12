@@ -507,6 +507,23 @@ class User extends \ORM implements UserInterface {
 
 		return $this->userGroups;
 	}
+	
+	/**
+	 * Return an array of group names which the given
+	 * user belongs to.
+	 *
+	 * @return array
+	 **/
+	public function getGroupNames()
+	{
+		$groupNames = [];
+
+		foreach ($this->getGroups() as $group) {
+			$groupNames[] = $group->getName();
+		}
+
+		return $groupNames;
+	}
 
 	/**
 	 * Adds the user to the given group.
