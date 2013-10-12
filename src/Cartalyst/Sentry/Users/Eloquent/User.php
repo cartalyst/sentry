@@ -483,7 +483,7 @@ class User extends Model implements UserInterface {
 	 * Return an array of group names which the given
 	 * user belongs to.
 	 *
-	 * @return void
+	 * @return array
 	 **/
 	public function getGroupNames()
 	{
