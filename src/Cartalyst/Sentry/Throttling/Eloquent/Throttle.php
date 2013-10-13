@@ -92,6 +92,7 @@ class Throttle extends Model implements ThrottleInterface {
 
 		return $this->attempts;
 	}
+
 	/**
 	 * Get the number of login attempts a user has left before suspension.
 	 *
