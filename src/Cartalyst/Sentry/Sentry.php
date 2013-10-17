@@ -310,12 +310,13 @@ class Sentry {
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  bool  $remember
+	 * @param  bool  $requiresActivation
 	 * @return void
 	 * @throws \Cartalyst\Sentry\Users\UserNotActivatedException
 	 */
-	public function login(UserInterface $user, $remember = false)
+	public function login(UserInterface $user, $remember = false, $requiresActivation = true)
 	{
-		if ( ! $user->isActivated())
+		if ($requiresActivation && ! $user->isActivated())
 		{
 			$login = $user->getLogin();
 			throw new UserNotActivatedException("Cannot login user [$login] as they are not activated.");
@@ -343,10 +344,11 @@ class Sentry {
 	 * Alias for logging in and remembering.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $requiresActivation
 	 */
-	public function loginAndRemember(UserInterface $user)
+	public function loginAndRemember(UserInterface $user, $requiresActivation = true)
 	{
-		$this->login($user, true);
+		$this->login($user, true, $requiresActivation);
 	}
 
 	/**
