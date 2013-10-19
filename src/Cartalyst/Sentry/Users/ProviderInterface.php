@@ -84,7 +84,7 @@ interface ProviderInterface {
 	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return array
 	 */
-	public function findAllInGroup($group);
+	public function findAllInGroup(GroupInterface $group);
 
 	/**
 	 * Returns all users with access to

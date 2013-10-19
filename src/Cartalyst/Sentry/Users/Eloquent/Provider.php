@@ -238,7 +238,7 @@ class Provider implements ProviderInterface {
 	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return array
 	 */
-	public function findAllInGroup($group)
+	public function findAllInGroup(GroupInterface $group)
 	{
 		return $group->users()->get();
 	}
