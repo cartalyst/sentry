@@ -558,8 +558,9 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
     public function testFindAllUsersInGroup()
     {
+        $group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
         $this->userProvider->shouldReceive('findAllInGroup')->once()->andReturn(true);
-        $this->assertTrue($this->sentry->findAllUsersInGroup(""));
+        $this->assertTrue($this->sentry->findAllUsersInGroup($group));
     }
 
     public function testFindAllUsersWithAccess()
