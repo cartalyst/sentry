@@ -111,6 +111,20 @@ class User extends Model implements UserInterface {
 	protected $mergedPermissions;
 
 	/**
+	 * The Eloquent group model.
+	 *
+	 * @var string
+	 */
+	protected static $groupModel = 'Cartalyst\Sentry\Groups\Eloquent\Group';
+
+	/**
+	 * The user groups pivot table name.
+	 *
+	 * @var string
+	 */
+	protected static $userGroupsPivot = 'users_groups';
+
+	/**
 	 * Returns the user's ID.
 	 *
 	 * @return  mixed
@@ -631,7 +645,7 @@ class User extends Model implements UserInterface {
 					}
 				}
 			}
-			
+
 			elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
 			{
 				$matched = false;
@@ -735,7 +749,29 @@ class User extends Model implements UserInterface {
 	 */
 	public function groups()
 	{
-		return $this->belongsToMany('Cartalyst\Sentry\Groups\Eloquent\Group', 'users_groups');
+		return $this->belongsToMany(static::$groupModel, static::$userGroupsPivot);
+	}
+
+	/**
+	 * Set the Eloquent model to use for group relationships.
+	 *
+	 * @param  string  $model
+	 * @return void
+	 */
+	public static function setGroupModel($model)
+	{
+		static::$groupModel = $model;
+	}
+
+	/**
+	 * Set the user groups pivot table name.
+	 *
+	 * @param  string  $tableName
+	 * @return void
+	 */
+	public static function setUserGroupsPivot($tableName)
+	{
+		static::$userGroupsPivot = $tableName;
 	}
 
 	/**
@@ -774,7 +810,8 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Generate a random string. If your server has
+	 * Generate a random string.
+	 *
 	 * @return string
 	 */
 	public function getRandomString($length = 42)
