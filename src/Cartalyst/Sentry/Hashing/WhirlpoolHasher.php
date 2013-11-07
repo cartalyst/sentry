@@ -20,51 +20,51 @@
 
 class WhirlpoolHasher implements HasherInterface {
 
-    /**
-     * Salt Length
-     *
-     * @var int
-     */
-    public $saltLength = 16;
+	/**
+	 * Salt Length
+	 *
+	 * @var int
+	 */
+	public $saltLength = 16;
 
-    /**
-     * Hash string.
-     *
-     * @param  string  $string
-     * @return string
-     */
-    public function hash($string)
-    {
-        // Create salt
-        $salt = $this->createSalt();
+	/**
+	 * Hash string.
+	 *
+	 * @param  string  $string
+	 * @return string
+	 */
+	public function hash($string)
+	{
+		// Create salt
+		$salt = $this->createSalt();
 
-        return $salt.hash('whirlpool', $salt.$string);
-    }
+		return $salt.hash('whirlpool', $salt.$string);
+	}
 
-    /**
-     * Check string against hashed string.
-     *
-     * @param  string  $string
-     * @param  string  $hashedString
-     * @return bool
-     */
-    public function checkhash($string, $hashedString)
-    {
-        $salt = substr($hashedString, 0, $this->saltLength);
+	/**
+	 * Check string against hashed string.
+	 *
+	 * @param  string  $string
+	 * @param  string  $hashedString
+	 * @return bool
+	 */
+	public function checkhash($string, $hashedString)
+	{
+		$salt = substr($hashedString, 0, $this->saltLength);
 
-        return ($salt.hash('whirlpool', $salt.$string)) === $hashedString;
-    }
+		return ($salt.hash('whirlpool', $salt.$string)) === $hashedString;
+	}
 
-    /**
-     * Create a random string for a salt.
-     *
-     * @return string
-     */
-    public function createSalt()
-    {
-        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	/**
+	 * Create a random string for a salt.
+	 *
+	 * @return string
+	 */
+	public function createSalt()
+	{
+		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
-    }
+		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
+	}
 
 }

@@ -447,7 +447,7 @@ class Throttle extends Model implements ThrottleInterface {
 		$timeLeft = $clearAttemptsAt->diff($now);
 
 		$minutesLeft = ($timeLeft->s != 0 ?
-						($timeLeft->days * 24 * 60) + ($timeLeft->h * 60) + ($timeLeft->i) + 1 : 
+						($timeLeft->days * 24 * 60) + ($timeLeft->h * 60) + ($timeLeft->i) + 1 :
 						($timeLeft->days * 24 * 60) + ($timeLeft->h * 60) + ($timeLeft->i));
 
 		return $minutesLeft;

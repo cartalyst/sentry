@@ -515,203 +515,203 @@ class Sentry {
 		return $this->ipAddress;
 	}
 
-    /**
-     * Find the group by ID.
-     *
-     * @param  int  $id
-     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
-     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
-     */
-    public function findGroupById($id)
-    {
-        return $this->groupProvider->findById($id);
-    }
+	/**
+	 * Find the group by ID.
+	 *
+	 * @param  int  $id
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+	 */
+	public function findGroupById($id)
+	{
+		return $this->groupProvider->findById($id);
+	}
 
-    /**
-     * Find the group by name.
-     *
-     * @param  string  $name
-     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
-     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
-     */
-    public function findGroupByName($name)
-    {
-        return $this->groupProvider->findByName($name);
-    }
+	/**
+	 * Find the group by name.
+	 *
+	 * @param  string  $name
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+	 */
+	public function findGroupByName($name)
+	{
+		return $this->groupProvider->findByName($name);
+	}
 
-    /**
-     * Returns all groups.
-     *
-     * @return array  $groups
-     */
-    public function findAllGroups()
-    {
-        return $this->groupProvider->findAll();
-    }
+	/**
+	 * Returns all groups.
+	 *
+	 * @return array  $groups
+	 */
+	public function findAllGroups()
+	{
+		return $this->groupProvider->findAll();
+	}
 
-    /**
-     * Creates a group.
-     *
-     * @param  array  $attributes
-     * @return \Cartalyst\Sentry\Groups\GroupInterface
-     */
-    public function createGroup(array $attributes)
-    {
-        return $this->groupProvider->create($attributes);
-    }
+	/**
+	 * Creates a group.
+	 *
+	 * @param  array  $attributes
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface
+	 */
+	public function createGroup(array $attributes)
+	{
+		return $this->groupProvider->create($attributes);
+	}
 
 
-    /**
-     * Finds a user by the given user ID.
-     *
-     * @param  mixed  $id
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-     */
-    public function findUserById($id)
-    {
-        return $this->userProvider->findById($id);
-    }
+	/**
+	 * Finds a user by the given user ID.
+	 *
+	 * @param  mixed  $id
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserById($id)
+	{
+		return $this->userProvider->findById($id);
+	}
 
-    /**
-     * Finds a user by the login value.
-     *
-     * @param  string  $login
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-     */
-    public function findUserByLogin($login)
-    {
-        return $this->userProvider->findByLogin($login);
-    }
+	/**
+	 * Finds a user by the login value.
+	 *
+	 * @param  string  $login
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserByLogin($login)
+	{
+		return $this->userProvider->findByLogin($login);
+	}
 
-    /**
-     * Finds a user by the given credentials.
-     *
-     * @param  array  $credentials
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-     */
-    public function findUserByCredentials(array $credentials){
-        return $this->userProvider->findByCredentials($credentials);
-    }
+	/**
+	 * Finds a user by the given credentials.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserByCredentials(array $credentials){
+		return $this->userProvider->findByCredentials($credentials);
+	}
 
-    /**
-     * Finds a user by the given activation code.
-     *
-     * @param  string  $code
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws \RuntimeException
-     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-     */
-    public function findUserByActivationCode($code)
-    {
-        return $this->userProvider->findByActivationCode($code);
-    }
+	/**
+	 * Finds a user by the given activation code.
+	 *
+	 * @param  string  $code
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \RuntimeException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserByActivationCode($code)
+	{
+		return $this->userProvider->findByActivationCode($code);
+	}
 
-    /**
-     * Finds a user by the given reset password code.
-     *
-     * @param  string  $code
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     * @throws \RuntimeException
-     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-     */
-    public function findUserByResetPasswordCode($code)
-    {
-        return $this->userProvider->findByResetPasswordCode($code);
-    }
+	/**
+	 * Finds a user by the given reset password code.
+	 *
+	 * @param  string  $code
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \RuntimeException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findUserByResetPasswordCode($code)
+	{
+		return $this->userProvider->findByResetPasswordCode($code);
+	}
 
-    /**
-     * Returns an all users.
-     *
-     * @return array
-     */
-    public function findAllUsers()
-    {
-        return $this->userProvider->findAll();
-    }
+	/**
+	 * Returns an all users.
+	 *
+	 * @return array
+	 */
+	public function findAllUsers()
+	{
+		return $this->userProvider->findAll();
+	}
 
-    /**
-     * Returns all users who belong to
-     * a group.
-     *
-     * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
-     * @return array
-     */
-    public function findAllUsersInGroup($group)
-    {
-        return $this->userProvider->findAllInGroup($group);
-    }
+	/**
+	 * Returns all users who belong to
+	 * a group.
+	 *
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return array
+	 */
+	public function findAllUsersInGroup($group)
+	{
+		return $this->userProvider->findAllInGroup($group);
+	}
 
-    /**
-     * Returns all users with access to
-     * a permission(s).
-     *
-     * @param  string|array  $permissions
-     * @return array
-     */
-    public function findAllUsersWithAccess($permissions)
-    {
-        return $this->userProvider->findAllWithAccess($permissions);
-    }
+	/**
+	 * Returns all users with access to
+	 * a permission(s).
+	 *
+	 * @param  string|array  $permissions
+	 * @return array
+	 */
+	public function findAllUsersWithAccess($permissions)
+	{
+		return $this->userProvider->findAllWithAccess($permissions);
+	}
 
-    /**
-     * Returns all users with access to
-     * any given permission(s).
-     *
-     * @param  array  $permissions
-     * @return array
-     */
-    public function findAllUsersWithAnyAccess(array $permissions)
-    {
-        return $this->userProvider->findAllWithAnyAccess($permissions);
-    }
+	/**
+	 * Returns all users with access to
+	 * any given permission(s).
+	 *
+	 * @param  array  $permissions
+	 * @return array
+	 */
+	public function findAllUsersWithAnyAccess(array $permissions)
+	{
+		return $this->userProvider->findAllWithAnyAccess($permissions);
+	}
 
-    /**
-     * Creates a user.
-     *
-     * @param  array  $credentials
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     */
-    public function createUser(array $credentials)
-    {
-        return $this->userProvider->create($credentials);
-    }
+	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function createUser(array $credentials)
+	{
+		return $this->userProvider->create($credentials);
+	}
 
-    /**
-     * Returns an empty user object.
-     *
-     * @return \Cartalyst\Sentry\Users\UserInterface
-     */
-    public function getEmptyUser()
-    {
-        return $this->userProvider->getEmptyUser();
-    }
+	/**
+	 * Returns an empty user object.
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getEmptyUser()
+	{
+		return $this->userProvider->getEmptyUser();
+	}
 
-    /**
-     * Finds a throttler by the given user ID.
-     *
-     * @param  mixed   $id
-     * @param  string  $ipAddress
-     * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
-     */
-    public function findThrottlerByUserId($id, $ipAddress = null)
-    {
-        return $this->throttleProvider->findByUserId($id,$ipAddress);
-    }
+	/**
+	 * Finds a throttler by the given user ID.
+	 *
+	 * @param  mixed   $id
+	 * @param  string  $ipAddress
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 */
+	public function findThrottlerByUserId($id, $ipAddress = null)
+	{
+		return $this->throttleProvider->findByUserId($id,$ipAddress);
+	}
 
-    /**
-     * Finds a throttling interface by the given user login.
-     *
-     * @param  string  $login
-     * @param  string  $ipAddress
-     * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
-     */
-    public function findThrottlerByUserLogin($login, $ipAddress = null)
-    {
-        return $this->throttleProvider->findByUserLogin($login,$ipAddress);
-    }
+	/**
+	 * Finds a throttling interface by the given user login.
+	 *
+	 * @param  string  $login
+	 * @param  string  $ipAddress
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 */
+	public function findThrottlerByUserLogin($login, $ipAddress = null)
+	{
+		return $this->throttleProvider->findByUserLogin($login,$ipAddress);
+	}
 
 	/**
 	 * Handle dynamic method calls into the method.
