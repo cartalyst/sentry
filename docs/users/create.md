@@ -40,7 +40,7 @@ already registerd on your database, you can't use this email for this user.
 		$user = Sentry::createUser(array(
 			'email'     => 'john.doe@example.com',
 			'password'  => 'test',
-			'activated' => 1,
+			'activated' => true,
 		));
 
 		// Find the group using the group id
@@ -81,7 +81,7 @@ will be thrown.
 		$user = Sentry::createUser(array(
 			'email'       => 'john.doe@example.com',
 			'password'    => 'test',
-			'activated'   => 1,
+			'activated'   => true,
 			'permissions' => array(
 				'user.create' => -1,
 				'user.delete' => -1,
