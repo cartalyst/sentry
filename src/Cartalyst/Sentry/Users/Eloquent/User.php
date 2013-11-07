@@ -631,7 +631,7 @@ class User extends Model implements UserInterface {
 					}
 				}
 			}
-			
+
 			elseif ((strlen($permission) > 1) and starts_with($permission, '*'))
 			{
 				$matched = false;

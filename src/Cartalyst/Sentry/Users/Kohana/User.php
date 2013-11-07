@@ -650,7 +650,7 @@ class User extends \ORM implements UserInterface {
 					}
 				}
 			}
-			
+
 			elseif ((strlen($permission) > 1) and \Text::starts_with($permission, '*'))
 			{
 				$matched = false;
