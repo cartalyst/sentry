@@ -52,3 +52,5 @@ already registerd on your database, you can't use this email for this user.
 	{
 		echo 'User with this login already exists.';
 	}
+
+> **Note**: Passing a boolean of `true` as the second parameter activates the user automatically.
