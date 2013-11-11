@@ -323,9 +323,8 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
 
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getId')->once()->andReturn(1);
 
-		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setUser($user);
@@ -346,9 +345,8 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$cookie->shouldReceive('forget')->once();
 
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getId')->once()->andReturn(1);
 
-		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setSession($session);
@@ -370,9 +368,8 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$cookie->shouldReceive('forget')->once();
 
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
-		$user->shouldReceive('getId')->once()->andReturn(1);
 
-		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->sentry->setSession($session);
@@ -399,7 +396,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$throttle->shouldReceive('isBanned')->once()->andReturn(false);
 		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
 
-		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
@@ -421,7 +418,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$throttle->shouldReceive('isSuspended')->once()->andReturn(false);
 
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
-		$this->throttleProvider->shouldReceive('findByUserId')->once()->andReturn($throttle);
+		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
 		$user->shouldReceive('getId')->once()->andReturn(1);
