@@ -103,7 +103,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
-		return $this->findByUserModel($this->userProvider->findById($id));
+		return $this->findByUserModel($this->userProvider->findById($id),$ipAddress);
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserLogin($login, $ipAddress = null)
 	{
-		return $this->findByUserModel($this->userProvider->findByLogin($login));
+		return $this->findByUserModel($this->userProvider->findByLogin($login),$ipAddress);
 	}
 
 	/**
