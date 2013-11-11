@@ -71,7 +71,7 @@ class Provider implements ProviderInterface {
 	 * @param  string  $ipAddress
 	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByUserModel(UserInterface $user, $ipAddress = null)
+	public function findByUser(UserInterface $user, $ipAddress = null)
 	{
 		$model = $this->createModel();
 		$query = $model->where('user_id', '=', ($userId = $user->getId()));
@@ -103,7 +103,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
-		return $this->findByUserModel($this->userProvider->findById($id),$ipAddress);
+		return $this->findByUser($this->userProvider->findById($id),$ipAddress);
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Provider implements ProviderInterface {
 	 */
 	public function findByUserLogin($login, $ipAddress = null)
 	{
-		return $this->findByUserModel($this->userProvider->findByLogin($login),$ipAddress);
+		return $this->findByUser($this->userProvider->findByLogin($login),$ipAddress);
 	}
 
 	/**

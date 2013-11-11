@@ -30,7 +30,7 @@ interface ProviderInterface {
 	 * @param  string  $ipAddress
 	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByUserModel(UserInterface $user, $ipAddress = null);
+	public function findByUser(UserInterface $user, $ipAddress = null);
 
 	/**
 	 * Finds a throttler by the given user ID.
