@@ -401,7 +401,6 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 		$this->userProvider->shouldReceive('findById')->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
-		$user->shouldReceive('getId')->once()->andReturn(1);
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
@@ -421,7 +420,6 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->throttleProvider->shouldReceive('findByUserModel')->once()->andReturn($throttle);
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
 
-		$user->shouldReceive('getId')->once()->andReturn(1);
 		$user->shouldReceive('checkPersistCode')->with('persist_code')->once()->andReturn(true);
 		$user->shouldReceive('isActivated')->once()->andReturn(true);
 
