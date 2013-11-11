@@ -502,7 +502,7 @@ class User extends \ORM implements UserInterface {
 	{
 		if ( ! $this->userGroups)
 		{
-			$this->userGroups = $this->groups;
+			$this->userGroups = $this->groups->find_all();
 		}
 
 		return $this->userGroups;
