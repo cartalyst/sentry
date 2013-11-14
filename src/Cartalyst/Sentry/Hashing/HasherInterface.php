@@ -21,20 +21,20 @@
 interface HasherInterface {
 
 	/**
-	 * Hash string.
+	 * Hash the given value.
 	 *
-	 * @param  string  $string
+	 * @param  string  $value
 	 * @return string
 	 */
-	public function hash($string);
+	public function hash($value);
 
 	/**
-	 * Check string against hashed string.
+	 * Check string against hashed value.
 	 *
-	 * @param  string  $string
-	 * @param  string  $hashedString
+	 * @param  string  $value
+	 * @param  string  $hashedValue
 	 * @return bool
 	 */
-	public function checkhash($string, $hashedString);
+	public function checkhash($value, $hashedValue);
 
 }

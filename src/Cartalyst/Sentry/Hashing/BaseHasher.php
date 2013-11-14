@@ -18,38 +18,25 @@
  * @link       http://cartalyst.com
  */
 
-class BcryptHasher implements HasherInterface {
+abstract class BaseHasher implements HasherInterface {
 
 	/**
-	 * Hash strength.
+	 * Salt length.
 	 *
 	 * @var int
 	 */
-	public $strength = 8;
+	public $saltLength = 22;
 
 	/**
-	 * {@inheritDoc}
+	 * Create a random string for a salt.
+	 *
+	 * @return string
 	 */
-	public function hash($value)
+	public function createSalt()
 	{
-		// Format strength
-		$strength = str_pad($this->strength, 2, '0', STR_PAD_LEFT);
+		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-		// Create salt
-		$salt = $this->createSalt();
-
-		//create prefix; $2y$ fixes blowfish weakness
-		$prefix = PHP_VERSION_ID < 50307 ? '$2a$' : '$2y$';
-
-		return crypt($value, $prefix.$strength.'$'.$salt.'$');
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkhash($value, $hashedValue)
-	{
-		return crypt($value, $hashedValue) === $hashedValue;
+		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
 	}
 
 }

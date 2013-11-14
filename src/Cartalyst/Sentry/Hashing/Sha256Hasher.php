@@ -18,53 +18,34 @@
  * @link       http://cartalyst.com
  */
 
-class Sha256Hasher implements HasherInterface {
-
-	/**
-	 * Salt Length
-	 *
-	 * @var int
-	 */
-	public $saltLength = 16;
+class Sha256Hasher extends BaseHasher implements HasherInterface {
 
 	/**
 	 * Hash string.
 	 *
-	 * @param  string  $string
+	 * @param  string  $value
 	 * @return string
 	 */
-	public function hash($string)
+	public function hash($value)
 	{
 		// Create salt
 		$salt = $this->createSalt();
 
-		return $salt.hash('sha256', $salt.$string);
+		return $salt.hash('sha256', $salt.$value);
 	}
 
 	/**
 	 * Check string against hashed string.
 	 *
-	 * @param  string  $string
-	 * @param  string  $hashedString
+	 * @param  string  $value
+	 * @param  string  $hashedValue
 	 * @return bool
 	 */
-	public function checkhash($string, $hashedString)
+	public function checkhash($value, $hashedValue)
 	{
-		$salt = substr($hashedString, 0, $this->saltLength);
+		$salt = substr($hashedValue, 0, $this->saltLength);
 
-		return ($salt.hash('sha256', $salt.$string)) === $hashedString;
-	}
-
-	/**
-	 * Create a random string for a salt.
-	 *
-	 * @return string
-	 */
-	public function createSalt()
-	{
-		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
+		return ($salt.hash('sha256', $salt.$value)) === $hashedValue;
 	}
 
 }

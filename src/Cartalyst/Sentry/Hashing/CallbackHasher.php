@@ -18,30 +18,42 @@
  * @link       http://cartalyst.com
  */
 
-class BcryptHasher implements HasherInterface {
+use Closure;
+
+class CallbackHasher implements HasherInterface {
 
 	/**
-	 * Hash strength.
+	 * The closure used for hashing a value.
 	 *
-	 * @var int
+	 * @var \Closure
 	 */
-	public $strength = 8;
+	protected $hash;
+
+	/**
+	 * The closure used for checking a hashed value.
+	 *
+	 * @var \Closure
+	 */
+	protected $checkHash;
+
+	/**
+	 * Create a new callback hasher instance.
+	 *
+	 * @param  \Closure  $hash
+	 * @param  \Closure  $checkHash
+	 */
+	public function __construct(Closure $hash, Closure $checkHash)
+	{
+		$this->hash = $hash;
+		$this->checkHash = $checkHash;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function hash($value)
 	{
-		// Format strength
-		$strength = str_pad($this->strength, 2, '0', STR_PAD_LEFT);
-
-		// Create salt
-		$salt = $this->createSalt();
-
-		//create prefix; $2y$ fixes blowfish weakness
-		$prefix = PHP_VERSION_ID < 50307 ? '$2a$' : '$2y$';
-
-		return crypt($value, $prefix.$strength.'$'.$salt.'$');
+		return $this->$hash($value);
 	}
 
 	/**
@@ -49,7 +61,7 @@ class BcryptHasher implements HasherInterface {
 	 */
 	public function checkhash($value, $hashedValue)
 	{
-		return crypt($value, $hashedValue) === $hashedValue;
+		return $this->$checkHash($value, $hashedValue);
 	}
 
 }
