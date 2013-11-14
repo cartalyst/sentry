@@ -21,6 +21,7 @@
 use Cartalyst\Sentry\Throttling\ThrottleInterface;
 use Cartalyst\Sentry\Throttling\ProviderInterface;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 
 class Provider implements ProviderInterface {
 
@@ -70,50 +71,10 @@ class Provider implements ProviderInterface {
 	 * @param  string  $ipAddress
 	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
 	 */
-	public function findByUserId($id, $ipAddress = null)
+	public function findByUser(UserInterface $user, $ipAddress = null)
 	{
-		$user  = $this->userProvider->findById($id);
-		$user_id = $user->id;
-
 		$model = $this->createModel();
-		$query = $model->where('user_id', '=', $user_id);
-
-		if ($ipAddress)
-		{
-			$query->where('ip_address', '=', $ipAddress);
-		}
-
-		$throttle = $query->find();
-
-		if ( ! $throttle->loaded() )
-		{
-
-			$throttle = $this->createModel();
-			$values = array(
-				'user_id' => $user->id
-			);
-			if ($ipAddress) $values['ip_address'] = $ipAddress;
-			$throttle->values($values);
-			$throttle->save();
-		}
-
-		return $throttle;
-	}
-
-	/**
-	 * Finds a throttling interface by the given user login.
-	 *
-	 * @param  string  $login
-	 * @param  string  $ipAddress
-	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
-	 */
-	public function findByUserLogin($login, $ipAddress = null)
-	{
-		$user  = $this->userProvider->findByLogin($login);
-		$user_id = $user->id;
-
-		$model = $this->createModel();
-		$query = $model->where('user_id', '=', $user_id);
+		$query = $model->where('user_id', '=', ($user_id = $user->id));
 
 		if ($ipAddress)
 		{
@@ -131,6 +92,30 @@ class Provider implements ProviderInterface {
 		}
 
 		return $throttle;
+	}
+
+	/**
+	 * Finds a throttler by the given user ID.
+	 *
+	 * @param  mixed   $id
+	 * @param  string  $ipAddress
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 */
+	public function findByUserId($id, $ipAddress = null)
+	{
+		return $this->findByUser($this->userProvider->findById($id),$ipAddress);
+	}
+
+	/**
+	 * Finds a throttling interface by the given user login.
+	 *
+	 * @param  string  $login
+	 * @param  string  $ipAddress
+	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 */
+	public function findByUserLogin($login, $ipAddress = null)
+	{
+		return $this->findByUser($this->userProvider->findByLogin($login),$ipAddress);
 	}
 
 	/**
