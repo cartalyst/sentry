@@ -244,19 +244,6 @@ class Group extends \ORM implements GroupInterface {
 	}
 
 	/**
-	 * Saves the group.
-	 *
-	 * @param \Validation $validation
-	 * @return bool
-	 */
-	public function save(\Validation $validation = NULL)
-	{
-		$this->validate();
-
-		return parent::save($validation);
-	}
-
-	/**
 	 * Delete the group.
 	 *
 	 * @return bool

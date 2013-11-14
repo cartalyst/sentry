@@ -296,19 +296,6 @@ class User extends \ORM implements UserInterface {
 		return $this->check();
 	}
 
-	/**
-	 * Saves the user.
-	 *
-	 * @param  \Validation  $validation
-	 * @return bool
-	 */
-	public function save(\Validation $validation = NULL)
-	{
-		$this->validate();
-
-		return parent::save($validation);
-	}
-
 	public function set($column, $value)
 	{
 		$dates = array('activated_at', 'last_login');
@@ -502,7 +489,7 @@ class User extends \ORM implements UserInterface {
 	{
 		if ( ! $this->userGroups)
 		{
-			$this->userGroups = $this->groups;
+			$this->userGroups = $this->groups->find_all();
 		}
 
 		return $this->userGroups;
