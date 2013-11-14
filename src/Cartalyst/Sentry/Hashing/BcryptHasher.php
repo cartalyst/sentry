@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-class BcryptHasher implements HasherInterface {
+class BcryptHasher extends BaseHasher implements HasherInterface {
 
 	/**
 	 * Hash strength.
