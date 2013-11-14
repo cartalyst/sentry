@@ -46,12 +46,7 @@
 		"happydemon/txt": "Required Text helpers when using the Kohana implementation"
 	},
 	"autoload": {
-		"classmap": [
-			"src/Cartalyst/Sentry/Groups/Exceptions.php",
-			"src/Cartalyst/Sentry/Throttling/Exceptions.php",
-			"src/Cartalyst/Sentry/Users/Exceptions.php",
-			"src/migrations"
-		],
+		"classmap": [],
 		"psr-0": {
 			"Cartalyst\\Sentry": "src/"
 		}
