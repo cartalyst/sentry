@@ -735,7 +735,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function groups()
 	{
-		return $this->belongsToMany('Cartalyst\Sentry\Groups\Eloquent\Group', 'users_groups');
+		return $this->belongsToMany(Config::get('cartalyst/sentry::groups.model'), 'users_groups');
 	}
 
 	/**
