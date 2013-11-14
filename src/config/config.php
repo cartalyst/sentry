@@ -127,15 +127,29 @@ return array(
 		| Login Attribute
 		|--------------------------------------------------------------------------
 		|
-		| If you're the "eloquent" driver and extending the base Eloquent model,
-		| we allow you to globally override the login attribute without even
-		| subclassing the model, simply by specifying the attribute below.
+		| If you're using the "eloquent" driver and extending the base Eloquent
+		| model, we allow you to globally override the login attribute without
+		| even subclassing the model, simply by specifying the attribute below.
 		|
 		*/
 
 		'login_attribute' => 'email',
 
 	),
+
+	/*
+	|--------------------------------------------------------------------------
+	| User Groups Pivot Table
+	|--------------------------------------------------------------------------
+	|
+	| When using the "eloquent" driver, you can specify the table name
+	| for the user groups pivot table.
+	|
+	| Default: users_groups
+	|
+	*/
+
+	'user_groups_pivot_table' => 'users_groups',
 
 	/*
 	|--------------------------------------------------------------------------

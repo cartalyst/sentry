@@ -112,7 +112,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$model = $app['config']['cartalyst/sentry::users.model'];
 
 			// We will never be accessing a user in Sentry without accessing
-			// the user provider first. So, we can lazily setup our user
+			// the user provider first. So, we can lazily set up our user
 			// model's login attribute here. If you are manually using the
 			// attribute outside of Sentry, you will need to ensure you are
 			// overriding at runtime.
@@ -123,6 +123,28 @@ class SentryServiceProvider extends ServiceProvider {
 				forward_static_call_array(
 					array($model, 'setLoginAttributeName'),
 					array($loginAttribute)
+				);
+			}
+
+			// Define the Group model to use for relationships.
+			if (method_exists($model, 'setGroupModel'))
+			{
+				$groupModel = $app['config']['cartalyst/sentry::groups.model'];
+
+				forward_static_call_array(
+					array($model, 'setGroupModel'),
+					array($groupModel)
+				);
+			}
+
+			// Define the user group pivot table name to use for relationships.
+			if (method_exists($model, 'setUserGroupsPivot'))
+			{
+				$pivotTable = $app['config']['cartalyst/sentry::user_groups_pivot_table'];
+
+				forward_static_call_array(
+					array($model, 'setUserGroupsPivot'),
+					array($pivotTable)
 				);
 			}
 
@@ -140,6 +162,28 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->app['sentry.group'] = $this->app->share(function($app)
 		{
 			$model = $app['config']['cartalyst/sentry::groups.model'];
+
+			// Define the User model to use for relationships.
+			if (method_exists($model, 'setUserModel'))
+			{
+				$userModel = $app['config']['cartalyst/sentry::users.model'];
+
+				forward_static_call_array(
+					array($model, 'setUserModel'),
+					array($userModel)
+				);
+			}
+
+			// Define the user group pivot table name to use for relationships.
+			if (method_exists($model, 'setUserGroupsPivot'))
+			{
+				$pivotTable = $app['config']['cartalyst/sentry::user_groups_pivot_table'];
+
+				forward_static_call_array(
+					array($model, 'setUserGroupsPivot'),
+					array($pivotTable)
+				);
+			}
 
 			return new GroupProvider($model);
 		});
