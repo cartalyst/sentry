@@ -21,6 +21,28 @@
 class NativeHasher implements HasherInterface {
 
 	/**
+	 * Array of alternative hashing functions
+	 */
+	private static $fallbacks = array();
+
+	/**
+	 * Add Fallback
+	 *
+	 * Add an alternative hashing function for verifying passwords.
+	 *
+	 * @param  string $algo
+	 * @param  function $function
+	 * @param  array $options
+	 */
+	public static function addFallback($algo, $function, $options = array())
+	{
+		static::$fallbacks[$algo] = array(
+			'function' => $function,
+			'options' => $options
+		);
+	}
+
+	/**
 	 * Hash string.
 	 *
 	 * @param  string $string
@@ -54,7 +76,27 @@ class NativeHasher implements HasherInterface {
 	 */
 	public function checkhash($string, $hashedString)
 	{
-		return password_verify($string, $hashedString);
+		$verified = password_verify($string, $hashedString);
+		if ( ! $verified) 
+		{
+			// Try the fallbacks
+			foreach (static::$fallbacks as $algo => $fallback)
+			{
+				$verified = $fallback['function']($string, $hashedString, $fallback['options']);
+				if ($verified) break;
+			}
+		}
+		return $verified;
 	}
 
+	/**
+	 * Check if the algorithm of the input should be upgraded.
+	 *
+	 * @param  string $hashedString
+	 * @return bool
+	 */
+	public function needsRehashed($hashedString)
+	{
+		return password_needs_rehash($hashedString, PASSWORD_DEFAULT);
+	}
 }
