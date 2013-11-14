@@ -53,7 +53,9 @@ class CallbackHasher implements HasherInterface {
 	 */
 	public function hash($value)
 	{
-		return $this->$hash($value);
+		$callback = $this->hash;
+
+		return $callback($value);
 	}
 
 	/**
@@ -61,7 +63,9 @@ class CallbackHasher implements HasherInterface {
 	 */
 	public function checkhash($value, $hashedValue)
 	{
-		return $this->$checkHash($value, $hashedValue);
+		$callback = $this->checkHash;
+
+		return $callback($value, $hashedValue);
 	}
 
 }
