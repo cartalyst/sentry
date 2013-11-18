@@ -157,7 +157,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 			'password' => 'baz_bat',
 		);
 
-		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
@@ -178,7 +178,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 			'password' => 'baz_bat',
 		);
 
-		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
@@ -199,7 +199,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 			'password' => 'baz_bat',
 		);
 
-		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
@@ -266,7 +266,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 			'password' => 'baz_bat',
 		);
 
-		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Caralyst\Sentry\Users\UserInterface'));
+		$this->userProvider->shouldReceive('getEmptyUser')->once()->andReturn($emptyUser = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 		$emptyUser->shouldReceive('getLoginName')->once()->andReturn('email');
 
 		$this->throttleProvider->shouldReceive('isEnabled')->once()->andReturn(true);
@@ -277,11 +277,11 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 		$this->userProvider->shouldReceive('findByCredentials')->with($credentials)->once()->andReturn($user = m::mock('Cartalyst\Sentry\Users\UserInterface'));
 
 		// Upon successful login with throttling, the throttle
-		// attemps are cleared
+		// attempts are cleared
 		$throttle->shouldReceive('clearLoginAttempts')->once();
 
 		// We then clear any reset password attempts as the
-		// login was succesfuly
+		// login was successfully
 		$user->shouldReceive('clearResetPassword')->once();
 
 		// And we manually log in our user

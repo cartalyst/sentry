@@ -26,6 +26,6 @@ Just one more step is involved now, right at the bottom of that same file, `app/
 
 	class_alias('Cartalyst\Sentry\Facades\FuelPHP\Sentry', 'Sentry');
 
-This will mean you can use the FuelPHP Sentry facade as the class `Sentry`. Vòila! Sentry automatically works with your current database configuration, there is no further setup required.
+This will mean you can use the FuelPHP Sentry facade as the class `Sentry`. Voilà! Sentry automatically works with your current database configuration, there is no further setup required.
 
 > **Note**: Sentry will always run off the default database connection, so ensure this is working. We may look at adding support for alternate connections in the future however it is not implemented at this stage. Pull requests are welcome.
