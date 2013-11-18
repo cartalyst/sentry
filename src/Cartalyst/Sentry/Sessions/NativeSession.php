@@ -21,7 +21,7 @@
 class NativeSession implements SessionInterface {
 
 	/**
-	 * The key used in the Session.
+	 * Session key.
 	 *
 	 * @var string
 	 */
@@ -54,20 +54,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Returns the session key.
-	 *
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	/**
-	 * Put a value in the Sentry session.
-	 *
-	 * @param  mixed  $value
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function put($value)
 	{
@@ -75,9 +62,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Get the Sentry session value.
-	 *
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
 	public function get()
 	{
@@ -85,9 +70,7 @@ class NativeSession implements SessionInterface {
 	}
 
 	/**
-	 * Remove the Sentry session.
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forget()
 	{
@@ -99,9 +82,9 @@ class NativeSession implements SessionInterface {
 	 *
 	 * @return void
 	 */
-	public function startSession()
+	protected function startSession()
 	{
-		// Let's start the session
+		// Check that the session hasn't already been started
 		if (session_id() == '')
 		{
 			session_start();
@@ -113,9 +96,27 @@ class NativeSession implements SessionInterface {
 	 *
 	 * @return void
 	 */
-	public function writeSession()
+	protected function writeSession()
 	{
 		session_write_close();
+	}
+
+	/**
+	 * Unserializes a value from the session and returns it.
+	 *
+	 * @return mixed.
+	 */
+	protected function getSession()
+	{
+		if (isset($_SESSION[$this->key]))
+		{
+			$value = $_SESSION[$this->key];
+
+			if ($value)
+			{
+				return unserialize($value);
+			}
+		}
 	}
 
 	/**
@@ -125,22 +126,9 @@ class NativeSession implements SessionInterface {
 	 * @param  mixed  $value
 	 * @return void
 	 */
-	public function setSession($value)
+	protected function setSession($value)
 	{
-		$_SESSION[$this->getKey()] = serialize($value);
-	}
-
-	/**
-	 * Unserializes a value from the session and returns it.
-	 *
-	 * @return mixed.
-	 */
-	public function getSession()
-	{
-		if (isset($_SESSION[$this->getKey()]))
-		{
-			return unserialize($_SESSION[$this->getKey()]);
-		}
+		$_SESSION[$this->key] = serialize($value);
 	}
 
 	/**
@@ -148,11 +136,11 @@ class NativeSession implements SessionInterface {
 	 *
 	 * @return void
 	 */
-	public function forgetSession()
+	protected function forgetSession()
 	{
-		if (isset($_SESSION[$this->getKey()]))
+		if (isset($_SESSION[$this->key]))
 		{
-			unset($_SESSION[$this->getKey()]);
+			unset($_SESSION[$this->key]);
 		}
 	}
 

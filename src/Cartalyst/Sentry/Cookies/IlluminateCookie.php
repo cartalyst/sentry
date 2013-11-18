@@ -25,18 +25,18 @@ use Symfony\Component\HttpFoundation\Cookie;
 class IlluminateCookie implements CookieInterface {
 
 	/**
-	 * The key used in the Cookie.
-	 *
-	 * @var string
-	 */
-	protected $key = 'cartalyst_sentry';
-
-	/**
 	 * The cookie object.
 	 *
 	 * @var \Illuminate\Cookie\CookieJar
 	 */
 	protected $jar;
+
+	/**
+	 * Cookie key.
+	 *
+	 * @var string
+	 */
+	protected $key = 'cartalyst_sentry';
 
 	/**
 	 * The cookie to be stored.
@@ -46,7 +46,7 @@ class IlluminateCookie implements CookieInterface {
 	protected $cookie;
 
 	/**
-	 * Creates a new cookie instance.
+	 * Create a new Illuminate cookie driver.
 	 *
 	 * @param  \Illuminate\Cookie\CookieJar  $jar
 	 * @param  string  $key
@@ -63,61 +63,39 @@ class IlluminateCookie implements CookieInterface {
 	}
 
 	/**
-	 * Returns the cookie key.
-	 *
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	/**
-	 * Put a value in the Sentry cookie.
-	 *
-	 * @param  mixed  $value
-	 * @param  int    $minutes
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function put($value, $minutes)
 	{
-		$this->cookie = $this->jar->make($this->getKey(), $value, $minutes);
+		$this->cookie = $this->jar->make($this->key, $value, $minutes);
 	}
 
 	/**
-	 * Put a value in the Sentry cookie forever.
-	 *
-	 * @param  mixed  $value
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forever($value)
 	{
-		$this->cookie = $this->jar->forever($this->getKey(), $value);
+		$this->cookie = $this->jar->forever($this->key, $value);
 	}
 
 	/**
-	 * Get the Sentry cookie value.
-	 *
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
 	public function get()
 	{
-		return $this->jar->get($this->getKey());
+		return $this->jar->get($this->key);
 	}
 
 	/**
-	 * Remove the Sentry cookie.
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forget()
 	{
-		$this->cookie = $this->jar->forget($this->getKey());
+		$this->cookie = $this->jar->forget($this->key);
 	}
 
 	/**
-	 * Returns the Symfony cookie object associated
-	 * with the Illuminate cookie.
+	 * Returns the Symfony cookie object associated with the Illuminate cookie.
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Cookie
 	 */

@@ -18,17 +18,19 @@
  * @link       http://cartalyst.com
  */
 
-class FuelPHPCookie implements CookieInterface {
+use Cookie;
+
+class KohanaCookie implements CookieInterface {
 
 	/**
-	 * The key used in the Cookie.
+	 * Cookie key.
 	 *
 	 * @var string
 	 */
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Create a new FuelPHP cookie driver for Sentry.
+	 * Create a new Kohana cookie driver.
 	 *
 	 * @param  string  $key
 	 */
@@ -41,58 +43,40 @@ class FuelPHPCookie implements CookieInterface {
 	}
 
 	/**
-	 * Returns the cookie key.
-	 *
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	/**
-	 * Put a value in the Sentry cookie.
-	 *
-	 * @param  mixed  $value
-	 * @param  int    $minutes
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function put($value, $minutes)
 	{
-		\Cookie::set($this->getKey(), serialize($value), $minutes);
+		Cookie::set($this->key, serialize($value), $minutes * 60);
 	}
 
 	/**
-	 * Put a value in the Sentry cookie forever.
-	 *
-	 * @param  mixed  $value
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forever($value)
 	{
-		// Forever can set a cookie for 5 years.
-		// This should suffice "forever".
 		$this->put($value, 2628000);
 	}
 
 	/**
-	 * Get the Sentry cookie value.
-	 *
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
 	public function get()
 	{
-		return unserialize(\Cookie::get($this->getKey()));
+		$value = Cookie::get($this->key);
+
+		if ($value)
+		{
+			return unserialize($value);
+		}
 	}
 
 	/**
-	 * Remove the Sentry cookie.
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forget()
 	{
-		\Cookie::delete($this->getKey());
+		Cookie::delete($this->key);
 	}
 
 }

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Sessions;
+<?php namespace Cartalyst\SentrySessions;
 /**
  * Part of the Sentry package.
  *
@@ -18,30 +18,29 @@
  * @link       http://cartalyst.com
  */
 
-use CI_Session as Session;
+use Session;
 
-class CISession implements SessionInterface {
+class KohanaSession implements SessionInterface {
 
 	/**
-	 * The CodeIgniter session driver.
+	 * The Kohana session driver.
 	 *
-	 * @param  CI_Session
+	 * @param  Kohana_Session
 	 */
 	protected $store;
 
 	/**
-	 * The key used in the Session.
+	 * Session key.
 	 *
 	 * @var string
 	 */
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Creates a new CodeIgniter Session driver for Sentry.
+	 * Creates a new Kohana Session driver for Sentry.
 	 *
-	 * @param  \CI_Session  $store
+	 * @param  \Session  $store
 	 * @param  string  $key
-	 * @return void
 	 */
 	public function __construct(Session $store, $key = null)
 	{
@@ -54,44 +53,27 @@ class CISession implements SessionInterface {
 	}
 
 	/**
-	 * Returns the session key.
-	 *
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	/**
-	 * Put a value in the Sentry session.
-	 *
-	 * @param  mixed  $value
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function put($value)
 	{
-		$this->store->set_userdata($this->getkey(), serialize($value));
+		$this->store->set($this->key, serialize($value));
 	}
 
 	/**
-	 * Get the Sentry session value.
-	 *
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
 	public function get()
 	{
-		return unserialize($this->store->userdata($this->getKey()));
+		return unserialize($this->store->get($this->key));
 	}
 
 	/**
-	 * Remove the Sentry session.
-	 *
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function forget()
 	{
-		$this->store->unset_userdata($this->getKey());
+		$this->store->delete($this->key);
 	}
 
 }

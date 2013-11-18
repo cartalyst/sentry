@@ -21,13 +21,6 @@
 interface CookieInterface {
 
 	/**
-	 * Returns the cookie key.
-	 *
-	 * @return string
-	 */
-	public function getKey();
-
-	/**
 	 * Put a value in the Sentry cookie.
 	 *
 	 * @param  mixed  $value

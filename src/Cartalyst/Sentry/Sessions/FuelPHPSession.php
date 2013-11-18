@@ -18,78 +18,62 @@
  * @link       http://cartalyst.com
  */
 
-class KohanaSession implements SessionInterface {
+use Fuel\Core\Session_Driver as Session;
+
+class FuelPHPSession implements SessionInterface {
 
 	/**
-	 * The Kohana session driver.
+	 * The FuelPHP session driver.
 	 *
-	 * @param  Kohana_Session
+	 * @param  Fuel\Core\Session_Driver
 	 */
 	protected $store;
 
 	/**
-	 * The key used in the Session.
+	 * Session key.
 	 *
 	 * @var string
 	 */
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * Creates a new Kohana Session driver for Sentry.
+	 * Create a new FuelPHP Session driver.
 	 *
-	 * @param  \Session  $store
+	 * @param  \Fuel\Core\Session_Driver  $store
 	 * @param  string  $key
-	 * @return void
 	 */
-	public function __construct(\Session $store, $key = null)
+	public function __construct(Session $store, $key = null)
 	{
 		$this->store = $store;
 
-		if ( isset($key) )
+		if (isset($key))
 		{
 			$this->key = $key;
 		}
 	}
 
 	/**
-	 * Returns the session key.
-	 *
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	/**
-	 * Put a value in the Sentry session.
-	 *
-	 * @param  mixed  $value
-	 * @return void
+	 * {@inheritDoc}
 	 */
 	public function put($value)
 	{
-		$this->store->set($this->getkey(), serialize($value));
+		$this->store->set($this->key, $value);
 	}
 
 	/**
-	 * Get the Sentry session value.
-	 *
-	 * @return mixed
+	 * {@inheritDoc}
 	 */
 	public function get()
 	{
-		return unserialize($this->store->get($this->getKey()));
+		return $this->store->get($this->key);
 	}
 
-	/**
-	 * Remove the Sentry session.
-	 *
-	 * @return void
+/**
+	 * {@inheritDoc}
 	 */
 	public function forget()
 	{
-		$this->store->delete($this->getKey());
+		$this->store->delete($this->key);
 	}
 
 }

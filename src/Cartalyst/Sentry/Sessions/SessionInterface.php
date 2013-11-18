@@ -21,13 +21,6 @@
 interface SessionInterface {
 
 	/**
-	 * Returns the session key.
-	 *
-	 * @return string
-	 */
-	public function getKey();
-
-	/**
 	 * Put a value in the Sentry session.
 	 *
 	 * @param  mixed   $value
