@@ -44,28 +44,7 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	protected function checkPermission(array $prepared, $permission)
-	{
-		if (array_key_exists($permission, $prepared) and $prepared[$permission] === true)
-		{
-			return true;
-		}
-
-		foreach ($prepared as $key => $value)
-		{
-			if (str_is($permission, $key) and $value === true)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Does the heavy lifting of merging permissions.
+	 * Does the heavy lifting of perparing permissions.
 	 *
 	 * @param  array  $prepared
 	 * @param  array  $permissions
