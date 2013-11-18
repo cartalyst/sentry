@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-class EloquentPermissions extends BasePermissions implements PermissionsInterface {
+class EloquentPermissionsFactory {
 
 	/**
 	 * Associated user.
@@ -28,11 +28,11 @@ class EloquentPermissions extends BasePermissions implements PermissionsInterfac
 	protected $user;
 
 	/**
-	 * Flag for whether permissions have been loaded.
+	 * Cached permissions object.
 	 *
-	 * @var bool
+	 * @var \Cartalyst\Sentry\Permissions\PermissionsInterface
 	 */
-	protected $loadedPermissions = false;
+	protected $permissions;
 
 	/**
 	 * Create a new Eloquent permissions instance.
@@ -45,31 +45,24 @@ class EloquentPermissions extends BasePermissions implements PermissionsInterfac
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Get the permissions instance.
+	 *
+	 * @return \Cartalyst\Sentry\Permissions\PermissionsInterface
 	 */
-	public function hasAccess($permissions)
+	public function getPermissions()
 	{
-		if ($this->loadedPermissions === false)
+		if ($this->permissions === null)
 		{
-			$this->loadPermissions();
-			$this->loadedPermissions = true;
+			list($userPermissions, $groupPermissions) = $this->loadPermissions();
+
+			$permissions = $this->createPermissions();
+			$permissions->setUserPermissiosn($userPermissions);
+			$permissions->setGroupPermissions($groupPermissions);
+
+			$this->permissions = $permissions;
 		}
 
-		return parent::hasAccess($permissions);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function hasAnyAccess($permissions)
-	{
-		if ($this->loadedPermissions === false)
-		{
-			$this->loadPermissions();
-			$this->loadedPermissions = true;
-		}
-
-		return parent::hasAnyAccess($permissions);
+		return $this->permissions;
 	}
 
 	/**
@@ -79,12 +72,25 @@ class EloquentPermissions extends BasePermissions implements PermissionsInterfac
 	 */
 	protected function loadPermissions()
 	{
-		$this->userPermissions = $this->user->permissions;
+		$userPermissions = $this->user->permissions;
+		$groupPermissions = array();
 
 		foreach ($this->user->groups as $group)
 		{
-			$this->groupPermissions[] = $group->permissions;
+			$groupPermissions[] = $group->permissions;
 		}
+
+		return array($userPermissions, $groupPermissions);
+	}
+
+	/**
+	 * Creates a permissions object.
+	 *
+	 * @return \Cartalyst\Sentry\Permissions\SentryPermissions
+	 */
+	protected function createPermissions()
+	{
+		return new SentryPermissions;
 	}
 
 }

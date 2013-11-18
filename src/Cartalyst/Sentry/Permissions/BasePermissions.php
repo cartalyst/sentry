@@ -39,11 +39,11 @@ abstract class BasePermissions implements PermissionsInterface {
 	 */
 	public function hasAccess($permissions)
 	{
-		$merged = $this->getMergedPermissions();
+		$prepared = $this->getPreparedPermissions();
 
 		foreach ((array) $permissions as $permission)
 		{
-			if ( ! $this->checkPermission($merged, $permission))
+			if ( ! $this->checkPermission($prepared, $permission))
 			{
 				return false;
 			}
@@ -57,11 +57,11 @@ abstract class BasePermissions implements PermissionsInterface {
 	 */
 	public function hasAnyAccess($permissions)
 	{
-		$merged = $this->getMergedPermissions();
+		$prepared = $this->getPreparedPermissions();
 
 		foreach ((array) $permissions as $permission)
 		{
-			if ($this->checkPermission($merged, $permission))
+			if ($this->checkPermission($prepared, $permission))
 			{
 				return true;
 			}
@@ -113,71 +113,20 @@ abstract class BasePermissions implements PermissionsInterface {
 	}
 
 	/**
-	 * Returns merged permissions.
+	 * Checks a permission in the prepared array, including wildcard permissions.
 	 *
-	 * @return void
-	 */
-	protected function getMergedPermissions()
-	{
-		$merged = array();
-
-		if ( ! empty($this->groupPermissions))
-		{
-			foreach ($this->groupPermissions as $permissions)
-			{
-				$this->mergePermissions($merged, $permissions);
-			}
-		}
-
-		if ( ! empty($this->userPermissions))
-		{
-			$this->mergePermissions($merged, $this->userPermissions);
-		}
-
-		return $merged;
-	}
-
-	/**
-	 * Does the heavy lifting of merging permissions.
-	 *
-	 * @param  array  $merged
-	 * @param  array  $permissions
-	 * @return void
-	 */
-	protected function mergePermissions(array &$merged, array $permissions)
-	{
-		foreach ($permissions as $key => $value)
-		{
-			// If the value is not in the array, we're opting in
-			if ( ! array_key_exists($key, $merged))
-			{
-				$merged[$key] = $value;
-				continue;
-			}
-
-			// If our value is in the array and equals false, it will override
-			if ($value === false)
-			{
-				$merged[$key] = $value;
-			}
-		}
-	}
-
-	/**
-	 * Checks a permission in the merged array, including wildcard permissions.
-	 *
-	 * @param  array   $merged
+	 * @param  array   $prepared
 	 * @param  string  $permission
 	 * @return bool
 	 */
-	protected function checkPermission(array $merged, $permission)
+	protected function checkPermission(array $prepared, $permission)
 	{
-		if (array_key_exists($permission, $merged) and $merged[$permission] === true)
+		if (array_key_exists($permission, $prepared) and $prepared[$permission] === true)
 		{
 			return true;
 		}
 
-		foreach ($merged as $key => $value)
+		foreach ($prepared as $key => $value)
 		{
 			if (str_is($permission, $key) and $value === true)
 			{
@@ -187,5 +136,12 @@ abstract class BasePermissions implements PermissionsInterface {
 
 		return false;
 	}
+
+	/**
+	 * Returns prepared permissions.
+	 *
+	 * @return void
+	 */
+	abstract protected function getPreparedPermissions();
 
 }
