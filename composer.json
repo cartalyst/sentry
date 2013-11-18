@@ -9,23 +9,23 @@
 			"email": "help@cartalyst.com"
 		},
 		{
-			"name": "Dan Syme",
-			"email": "dan.syme@cartalyst.com",
-			"role": "Creator & Designer"
-		},
-		{
 			"name": "Ben Corlett",
 			"email": "ben.corlett@cartalyst.com",
 			"role": "Developer"
 		},
 		{
-			"name": "Daniel Petrie",
-			"email": "dan.petrie@cartalyst.com",
+			"name": "Bruno Gaspar",
+			"email": "bruno.gaspar@cartalyst.com",
 			"role": "Developer"
 		},
 		{
-			"name": "Bruno Gaspar",
-			"email": "bruno.gaspar@cartalyst.com",
+			"name": "Dan Syme",
+			"email": "dan.syme@cartalyst.com",
+			"role": "Creator & Designer"
+		},
+		{
+			"name": "Daniel Petrie",
+			"email": "dan.petrie@cartalyst.com",
 			"role": "Developer"
 		}
 	],
