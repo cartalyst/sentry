@@ -22,7 +22,7 @@ Run composer update from the command line
 
 ----
 
-Add the following to the list of service providres in `app/config/app.php`.
+Add the following to the list of service providers in `app/config/app.php`.
 
 	'Cartalyst\Sentry\SentryServiceProvider',
 
@@ -40,7 +40,7 @@ Add the following to the list of class aliases in `app/config/app.php`.
 
 ----
 
-Sentry comes with it's own migration files and in order for you to run these migrations succesfully you need to have
+Sentry comes with it's own migration files and in order for you to run these migrations successfully you need to have
 a default database connection setup on your Laravel 4 application, once you have that setup, you can run the following
 command to run the migrations:
 

@@ -75,7 +75,7 @@ Initializing Sentry requires you pass a number of dependencies to it. These depe
 1. A hasher (must implement `Cartalyst\Sentry\Hashing\HasherInterface`).
 2. A user provider, taking a hasher (must implement `Cartalyst\Sentry\Users\ProviderInterface`).
 3. A group provider (must implement `Cartalyst\Sentry\Groups\ProviderInterface`).
-4. A throtte provider, taking a user provider (must implement `Cartalyst\Sentry\Throttling\ProviderInterface`).
+4. A throttle provider, taking a user provider (must implement `Cartalyst\Sentry\Throttling\ProviderInterface`).
 5. A session manager (must implement `Cartalyst\Sentry\Sessions\SessionInterface`).
 6. A cookie manager (must implement `Cartalyst\Sentry\Cookies\CookieInterface`).
 

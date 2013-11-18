@@ -445,7 +445,7 @@ class User extends \ORM implements UserInterface {
 	}
 
 	/**
-	 * Attemps to reset a user's password by matching
+	 * Attempts to reset a user's password by matching
 	 * the reset code generated with the user's.
 	 *
 	 * @param  string  $resetCode

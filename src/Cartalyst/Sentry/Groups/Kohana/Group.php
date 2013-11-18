@@ -296,7 +296,7 @@ class Group extends \ORM implements GroupInterface {
 		// Merge permissions
 		$permissions = array_merge($this->getPermissions(), $permissions);
 
-		// Loop through and adjsut permissions as needed
+		// Loop through and adjust permissions as needed
 		foreach ($permissions as $permission => &$value)
 		{
 			// Lets make sure their is a valid permission value

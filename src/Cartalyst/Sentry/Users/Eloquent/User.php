@@ -443,7 +443,7 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
-	 * Attemps to reset a user's password by matching
+	 * Attempts to reset a user's password by matching
 	 * the reset code generated with the user's.
 	 *
 	 * @param  string  $resetCode
@@ -637,7 +637,7 @@ class User extends Model implements UserInterface {
 					$checkPermission = substr($permission, 0, -1);
 
 					// We will make sure that the merged permission does not
-					// exactly match our permission, but starts wtih it.
+					// exactly match our permission, but starts with it.
 					if ($checkPermission != $mergedPermission and starts_with($mergedPermission, $checkPermission) and $value == 1)
 					{
 						$matched = true;
@@ -680,7 +680,7 @@ class User extends Model implements UserInterface {
 						$checkMergedPermission = substr($mergedPermission, 0, -1);
 
 						// We will make sure that the merged permission does not
-						// exactly match our permission, but starts wtih it.
+						// exactly match our permission, but starts with it.
 						if ($checkMergedPermission != $permission and starts_with($permission, $checkMergedPermission) and $value == 1)
 						{
 							$matched = true;
