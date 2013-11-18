@@ -44,7 +44,7 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 	}
 
 	/**
-	 * Does the heavy lifting of perparing permissions.
+	 * Does the heavy lifting of preparing permissions.
 	 *
 	 * @param  array  $prepared
 	 * @param  array  $permissions
