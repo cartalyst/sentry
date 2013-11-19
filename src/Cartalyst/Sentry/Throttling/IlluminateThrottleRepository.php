@@ -70,6 +70,20 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	protected $ipThresholds = 5;
 
 	/**
+	 * The interval at which point failed logins for one user are checked.
+	 *
+	 * @var int
+	 */
+	protected $userInterval = 900;
+
+	/**
+	 * Works identical to global and IP thresholds, however regarding a user.
+	 *
+	 * @var int|array
+	 */
+	protected $userThresholds = 5;
+
+	/**
 	 * Create a new Illuminate throttle repository.
 	 *
 	 * @param  string  $ipAddress
@@ -77,8 +91,10 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * @param  int|array  $globalThresholds
 	 * @param  int  $ipInterval
 	 * @param  int|array  $ipThresholds
+	 * @param  int  $userInterval
+	 * @param  int|array  $userThresholds
 	 */
-	public function __construct($ipAddress, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null)
+	public function __construct($ipAddress, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
 	{
 		$this->ipAddress = $ipAddress;
 
@@ -100,6 +116,16 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		if (isset($ipThresholds))
 		{
 			$this->ipThresholds = is_array($ipThresholds) ? $ipThresholds : (int) $ipThresholds;
+		}
+
+		if (isset($userInterval))
+		{
+			$this->userInterval = (int) $userInterval;
+		}
+
+		if (isset($userThresholds))
+		{
+			$this->userThresholds = is_array($userThresholds) ? $userThresholds : (int) $userThresholds;
 		}
 	}
 
