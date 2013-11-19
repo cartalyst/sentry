@@ -18,6 +18,8 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Users\UserRepository;
+
 interface ThrottleRepositoryInterface {
 
 	/**
@@ -26,5 +28,21 @@ interface ThrottleRepositoryInterface {
 	 * @return int
 	 */
 	public function globalDelay();
+
+	/**
+	 * Returns the IP address throttling delay, in seconds.
+	 *
+	 * @param  string  $ipAddress
+	 * @return int
+	 */
+	public function ipDelay($ipAddress);
+
+	/**
+	 * Returns the throttling delay for the given user, in seconds.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserRepository  $user
+	 * @return int
+	 */
+	public function userDelay(UserRepository $user);
 
 }
