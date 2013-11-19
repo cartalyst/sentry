@@ -19,7 +19,7 @@
  */
 
 use Carbon\Carbon;
-use Cartalyst\Sentry\Users\UserRepository;
+use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
 class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
@@ -160,7 +160,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function userDelay(UserRepository $user)
+	public function userDelay(UserRepositoryInterface $user)
 	{
 		return $this->delay('user', $user);
 	}
@@ -266,7 +266,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	protected function getUserThrottles(UserRepository $user)
+	protected function getUserThrottles(UserRepositoryInterface $user)
 	{
 		$key = $user->getKey();
 
@@ -283,7 +283,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	protected function loadUserThrottles(UserRepository $user)
+	protected function loadUserThrottles(UserRepositoryInterface $user)
 	{
 		$interval = Carbon::now()
 			->subSeconds($this->userInterval);

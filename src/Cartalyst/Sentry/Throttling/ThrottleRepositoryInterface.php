@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Users\UserRepository;
+use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
 interface ThrottleRepositoryInterface {
 
@@ -40,9 +40,9 @@ interface ThrottleRepositoryInterface {
 	/**
 	 * Returns the throttling delay for the given user, in seconds.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserRepository  $user
+	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return int
 	 */
-	public function userDelay(UserRepository $user);
+	public function userDelay(UserRepositoryInterface $user);
 
 }
