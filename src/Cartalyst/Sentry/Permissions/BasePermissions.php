@@ -113,6 +113,32 @@ abstract class BasePermissions implements PermissionsInterface {
 	}
 
 	/**
+	 * Does the heavy lifting of preparing permissions.
+	 *
+	 * @param  array  $prepared
+	 * @param  array  $permissions
+	 * @return void
+	 */
+	protected function preparePermissions(array &$prepared, array $permissions)
+	{
+		foreach ($permissions as $key => $value)
+		{
+			// If the value is not in the array, we're opting in
+			if ( ! array_key_exists($key, $prepared))
+			{
+				$prepared[$key] = $value;
+				continue;
+			}
+
+			// If our value is in the array and equals false, it will override
+			if ($value === false)
+			{
+				$prepared[$key] = $value;
+			}
+		}
+	}
+
+	/**
 	 * Checks a permission in the prepared array, including wildcard permissions.
 	 *
 	 * @param  array   $prepared
