@@ -65,17 +65,9 @@ class IlluminateCookie implements CookieInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function put($value, $minutes)
+	public function put($value)
 	{
-		$this->cookie = $this->jar->make($this->key, $value, $minutes);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function forever($value)
-	{
-		$this->cookie = $this->jar->forever($this->key, $value);
+		$this->cookie = $this->jar->forever($this->key, $value, $minutes);
 	}
 
 	/**

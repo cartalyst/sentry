@@ -45,17 +45,9 @@ class FuelPHPCookie implements CookieInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function put($value, $minutes)
+	public function put($value)
 	{
-		Cookie::set($this->key, serialize($value), $minutes);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function forever($value)
-	{
-		$this->put($value, 2628000);
+		Cookie::set($this->key, serialize($value), 2628000);
 	}
 
 	/**

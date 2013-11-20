@@ -21,21 +21,12 @@
 interface CookieInterface {
 
 	/**
-	 * Put a value in the Sentry cookie.
-	 *
-	 * @param  mixed  $value
-	 * @param  int    $minutes
-	 * @return void
-	 */
-	public function put($value, $minutes);
-
-	/**
-	 * Put a value in the Sentry cookie forever.
+	 * Put a value in the Sentry cookie (to be stored until it's cleared).
 	 *
 	 * @param  mixed  $value
 	 * @return void
 	 */
-	public function forever($value);
+	public function put($value);
 
 	/**
 	 * Get the Sentry cookie value.

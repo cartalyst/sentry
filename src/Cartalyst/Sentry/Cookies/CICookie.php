@@ -66,22 +66,14 @@ class CICookie implements CookieInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function put($value, $minutes)
+	public function put($value)
 	{
 		$options = array_merge($this->options, array(
 			'value'  => serialize($value),
-			'expire' => $minutes,
+			'expire' => 2628000,
 		));
 
 		$this->input->set_cookie($options);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function forever($value)
-	{
-		$this->put($value, 2628000);
 	}
 
 	/**

@@ -53,17 +53,9 @@ class NativeCookie implements CookieInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function put($value, $minutes)
+	public function put($value)
 	{
-		$this->setCookie($value, $this->minutesToLifetime($minutes));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function forever($value)
-	{
-		$this->put($value, 2628000);
+		$this->setCookie($value, $this->minutesToLifetime(2628000));
 	}
 
 	/**
