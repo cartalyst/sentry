@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling;
+<?php namespace Cartalyst\Sentry\Permissions;
 /**
  * Part of the Sentry package.
  *
@@ -18,10 +18,13 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Database\Eloquent\Model;
+interface PermissibleInterface {
 
-class EloquentLogin extends Model {
-
-	protected $table = 'logins';
+	/**
+	 * Returns a permissions instance.
+	 *
+	 * @return \Cartalyst\Sentry\Permissions\PermissionsInterface
+	 */
+	public function getPermissions();
 
 }

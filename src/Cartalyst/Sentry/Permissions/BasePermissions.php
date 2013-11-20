@@ -35,6 +35,25 @@ abstract class BasePermissions implements PermissionsInterface {
 	protected $groupPermissions = array();
 
 	/**
+	 * Create a new permissions instance.
+	 *
+	 * @param  array  $userPermissions
+	 * @param  array  $groupPermisions
+	 */
+	public function __construct(array $userPermissions = null, array $groupPermissions = null)
+	{
+		if (isset($userPermissions))
+		{
+			$this->userPermissions = $userPermissions;
+		}
+
+		if (isset($groupPermissions))
+		{
+			$this->groupPermissions = $groupPermissions;
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function hasAccess($permissions)
