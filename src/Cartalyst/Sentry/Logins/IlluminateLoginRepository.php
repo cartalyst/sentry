@@ -18,15 +18,42 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
-class IlluminateLoginRepository implements LoginInterface {
+class IlluminateLoginRepository implements LoginRepositoryInterface {
+
+	/**
+	 * Session storage driver.
+	 *
+	 * @var \Cartalyst\Sentry\Sessions\SessionInterface
+	 */
+	protected $session;
+
+	/**
+	 * Cookie storage driver.
+	 *
+	 * @var \Cartalyst\Sentry\Cookies\CookieInterface
+	 */
+	protected $cookie;
+
+	/**
+	 * Create a new Illuminate login repository.
+	 *
+	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $session
+	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $cookie
+	 */
+	public function __construct(SessionInterface $session, CookieInterface $cookie)
+	{
+		$this->session = $session;
+		$this->cookie  = $cookie;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function check(UserRepositoryInterface $user, SessionInterface $session)
+	public function check(UserRepositoryInterface $user)
 	{
 
 	}
@@ -34,7 +61,7 @@ class IlluminateLoginRepository implements LoginInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function add(UserRepositoryInterface $user, SessionInterface $session)
+	public function add(UserRepositoryInterface $user)
 	{
 
 	}
@@ -42,7 +69,7 @@ class IlluminateLoginRepository implements LoginInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function remove(UserRepositoryInterface $user, SessionInterface $session)
+	public function addAndRemember(UserRepositoryInterface $user)
 	{
 
 	}
@@ -50,7 +77,15 @@ class IlluminateLoginRepository implements LoginInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function flush(UserRepositoryInterface $user, SessionInterface $session)
+	public function remove(UserRepositoryInterface $user)
+	{
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function flush(UserRepositoryInterface $user)
 	{
 
 	}

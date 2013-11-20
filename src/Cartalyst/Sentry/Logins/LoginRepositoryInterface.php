@@ -18,48 +18,52 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
-interface LoginInterface {
+interface LoginRepositoryInterface {
 
 	/**
 	 * Checks to see if the given user is logged into a session.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
-	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @return bool
 	 */
-	public function check(UserRepositoryInterface $user, SessionInterface $session);
+	public function check(UserRepositoryInterface $user);
 
 	/**
 	 * Adds a new user login.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
-	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @return bool
 	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function add(UserRepositoryInterface $user, SessionInterface $session);
+	public function add(UserRepositoryInterface $user);
+
+	/**
+	 * Adds a new user login, to remember.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
+	 * @return bool
+	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
+	 */
+	public function addAndRemember(UserRepositoryInterface $user);
 
 	/**
 	 * Adds a new user login.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
-	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @return bool
 	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function remove(UserRepositoryInterface $user, SessionInterface $session);
+	public function remove(UserRepositoryInterface $user);
 
 	/**
 	 * Adds a new user login.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
-	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface  $session
 	 * @return bool
 	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function flush(UserRepositoryInterface $user, SessionInterface $session);
+	public function flush(UserRepositoryInterface $user);
 
 }
