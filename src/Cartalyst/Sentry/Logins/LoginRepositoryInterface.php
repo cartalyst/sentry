@@ -31,7 +31,7 @@ interface LoginRepositoryInterface {
 	public function check(UserRepositoryInterface $user);
 
 	/**
-	 * Adds a new user login.
+	 * Adds a new user login to the current session and attaches the user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
@@ -49,7 +49,7 @@ interface LoginRepositoryInterface {
 	public function addAndRemember(UserRepositoryInterface $user);
 
 	/**
-	 * Adds a new user login.
+	 * Removes the login bound to the current session.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
@@ -58,7 +58,7 @@ interface LoginRepositoryInterface {
 	public function remove(UserRepositoryInterface $user);
 
 	/**
-	 * Adds a new user login.
+	 * Flushes all logins for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
