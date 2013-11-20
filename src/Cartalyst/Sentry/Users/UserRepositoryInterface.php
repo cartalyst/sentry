@@ -26,6 +26,6 @@ interface UserRepositoryInterface {
 	 * @param  array  $credentials
 	 * @return \Cartalyst\Sentry\Users\EloquentUser
 	 */
-	public function findByCredentials(array $findByCredentials);
+	public function findByCredentials(array $credentials);
 
 }

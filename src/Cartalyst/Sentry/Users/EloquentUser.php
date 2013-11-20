@@ -35,6 +35,8 @@ class EloquentUser extends Model implements PermissibleInterface {
 	 */
 	protected $permissionsInstance;
 
+	protected $loginNames = array('email', 'username');
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -46,6 +48,11 @@ class EloquentUser extends Model implements PermissibleInterface {
 		}
 
 		return $this->permissionsInstance;
+	}
+
+	public function getLoginNames()
+	{
+		return $this->loginNames;
 	}
 
 	/**

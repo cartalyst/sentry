@@ -18,14 +18,81 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Hashing\HasherInterface;
+
 class IlluminateUserRepository implements UserRepositoryInterface {
+
+	/**
+	 * Hasher.
+	 *
+	 * @var \Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	protected $hasher;
+
+	/**
+	 * Create a new Illuminate user repository.
+	 *
+	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface
+	 */
+	public function __construct(HasherInterface $hasher)
+	{
+		$this->hasher = $hasher;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findByCredentials(array $findByCredentials)
+	public function findByCredentials(array $credentials)
 	{
+		$instance = new EloquentUser;
+		$loginNames = $instance->getLoginNames();
+		$query = $instance->newQuery();
 
+		$passedLoginNames = array_intersect_key(array_flip($credentials), $loginNames);
+
+		if (count($passedLoginNames) > 0)
+		{
+			$query->whereNested(function($query) use ($passedLoginNames, $credentials)
+			{
+				foreach ($passedLoginNames as $key)
+				{
+					$query->orWhere($key, $credentials[$key]);
+				}
+			});
+		}
+		elseif (array_key_exists('login', $credentials))
+		{
+			$value = $credentials['login'];
+			$credentials[reset($passedLoginNames)] = $value;
+		}
+		else
+		{
+			throw new \InvalidArgumentException('Missing [login] creential.');
+		}
+
+		if ( ! array_key_exists('password', $credentials))
+		{
+			throw new \InvalidArgumentException('Missing [password] credential.');
+		}
+
+		foreach ($credentials as $key => $value)
+		{
+			if (array_key_exists($key, $passedLoginNames)) continue;
+
+			$query->where($key, $value);
+		}
+
+		$user = $query->first();
+
+		if ($user and $this->validateCredentials($user, $credentials['password']))
+		{
+			return $user;
+		}
+	}
+
+	protected function validateCredentials(EloquentUser $user, $password)
+	{
+		return $this->hasher->check($password, $user->password);
 	}
 
 }
