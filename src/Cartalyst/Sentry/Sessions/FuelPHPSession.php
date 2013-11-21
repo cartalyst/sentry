@@ -68,7 +68,7 @@ class FuelPHPSession implements SessionInterface {
 		return $this->store->get($this->key);
 	}
 
-/**
+	/**
 	 * {@inheritDoc}
 	 */
 	public function forget()

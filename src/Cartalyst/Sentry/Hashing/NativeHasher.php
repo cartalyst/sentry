@@ -21,11 +21,7 @@
 class NativeHasher implements HasherInterface {
 
 	/**
-	 * Hash string.
-	 *
-	 * @param  string $value
-	 * @return string
-	 * @throws \RuntimeException
+	 * {@inheritDoc}
 	 */
 	public function hash($value)
 	{
@@ -38,11 +34,7 @@ class NativeHasher implements HasherInterface {
 	}
 
 	/**
-	 * Check string against hashed string.
-	 *
-	 * @param  string  $value
-	 * @param  string  $hashedValue
-	 * @return bool
+	 * {@inheritDoc}
 	 */
 	public function checkhash($value, $hashedValue)
 	{

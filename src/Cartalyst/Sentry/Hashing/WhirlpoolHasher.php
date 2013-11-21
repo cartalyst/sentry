@@ -21,10 +21,7 @@
 class WhirlpoolHasher extends BaseHasher implements HasherInterface {
 
 	/**
-	 * Hash string.
-	 *
-	 * @param  string  $value
-	 * @return string
+	 * {@inheritDoc}
 	 */
 	public function hash($value)
 	{
@@ -35,11 +32,7 @@ class WhirlpoolHasher extends BaseHasher implements HasherInterface {
 	}
 
 	/**
-	 * Check string against hashed string.
-	 *
-	 * @param  string  $value
-	 * @param  string  $hashedValue
-	 * @return bool
+	 * {@inheritDoc}
 	 */
 	public function checkhash($value, $hashedValue)
 	{

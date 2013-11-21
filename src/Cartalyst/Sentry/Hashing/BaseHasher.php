@@ -25,14 +25,14 @@ abstract class BaseHasher implements HasherInterface {
 	 *
 	 * @var int
 	 */
-	public $saltLength = 22;
+	protected $saltLength = 22;
 
 	/**
 	 * Create a random string for a salt.
 	 *
 	 * @return string
 	 */
-	public function createSalt()
+	protected function createSalt()
 	{
 		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
