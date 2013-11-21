@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Logins;
+<?php namespace Cartalyst\Sentry\Persistence;
 /**
  * Part of the Sentry package.
  *
@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
-interface LoginRepositoryInterface {
+interface PersistenceRepositoryInterface {
 
 	/**
 	 * Checks to see if the given user is logged into a session.
@@ -31,7 +31,7 @@ interface LoginRepositoryInterface {
 	public function check(UserRepositoryInterface $user);
 
 	/**
-	 * Adds a new user login to the current session and attaches the user.
+	 * Adds a new user persistence to the current session and attaches the user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
@@ -40,7 +40,7 @@ interface LoginRepositoryInterface {
 	public function add(UserRepositoryInterface $user);
 
 	/**
-	 * Adds a new user login, to remember.
+	 * Adds a new user persistence, to remember.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
@@ -49,7 +49,7 @@ interface LoginRepositoryInterface {
 	public function addAndRemember(UserRepositoryInterface $user);
 
 	/**
-	 * Removes the login bound to the current session.
+	 * Removes the persistence bound to the current session.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool
@@ -58,7 +58,7 @@ interface LoginRepositoryInterface {
 	public function remove(UserRepositoryInterface $user);
 
 	/**
-	 * Flushes all logins for the given user.
+	 * Flushes all persistence for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $user
 	 * @return bool

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Logins;
+<?php namespace Cartalyst\Sentry\Persistence;
 /**
  * Part of the Sentry package.
  *
@@ -22,7 +22,7 @@ use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
-class IlluminateLoginRepository implements LoginRepositoryInterface {
+class IlluminatePersistenceRepository implements PersistenceRepositoryInterface {
 
 	/**
 	 * Session storage driver.
@@ -39,7 +39,7 @@ class IlluminateLoginRepository implements LoginRepositoryInterface {
 	protected $cookie;
 
 	/**
-	 * Create a new Illuminate login repository.
+	 * Create a new Illuminate persistence repository.
 	 *
 	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $session
 	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $cookie
