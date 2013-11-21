@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
-use Cartalyst\Sentry\Users\UserRepositoryInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 
 class IlluminatePersistenceRepository implements PersistenceRepositoryInterface {
 
@@ -53,7 +53,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function check(UserRepositoryInterface $user)
+	public function check(UserInterface $user)
 	{
 
 	}
@@ -61,7 +61,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function add(UserRepositoryInterface $user)
+	public function add(UserInterface $user)
 	{
 
 	}
@@ -69,7 +69,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addAndRemember(UserRepositoryInterface $user)
+	public function addAndRemember(UserInterface $user)
 	{
 
 	}
@@ -77,7 +77,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function remove(UserRepositoryInterface $user)
+	public function remove(UserInterface $user)
 	{
 
 	}
@@ -85,7 +85,7 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function flush(UserRepositoryInterface $user)
+	public function flush(UserInterface $user)
 	{
 
 	}
