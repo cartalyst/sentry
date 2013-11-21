@@ -18,22 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-interface UserRepositoryInterface {
-
-	/**
-	 * Finds a user by the given primary key.
-	 *
-	 * @param  int  $id
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function findById($id);
-
-	/**
-	 * Finds a user by the given credentials.
-	 *
-	 * @param  array  $credentials
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function findByCredentials(array $credentials);
+interface UserInterface {
 
 }

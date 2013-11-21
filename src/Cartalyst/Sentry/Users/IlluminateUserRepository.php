@@ -30,13 +30,29 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	protected $hasher;
 
 	/**
+	 * Model name.
+	 *
+	 * @var string
+	 */
+	protected $model;
+
+	/**
 	 * Create a new Illuminate user repository.
 	 *
 	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface
 	 */
-	public function __construct(HasherInterface $hasher)
+	public function __construct(HasherInterface $hasher, $model)
 	{
 		$this->hasher = $hasher;
+		$this->model = $model;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function findById($id)
+	{
+		return $this->createModel()->newQuery()->find($id);
 	}
 
 	/**
@@ -44,55 +60,101 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 */
 	public function findByCredentials(array $credentials)
 	{
-		$instance = new EloquentUser;
+		$instance = $this->createModel();
 		$loginNames = $instance->getLoginNames();
 		$query = $instance->newQuery();
 
-		$passedLoginNames = array_intersect_key(array_flip($credentials), $loginNames);
+		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
 
-		if (count($passedLoginNames) > 0)
+		if (is_array($logins))
 		{
-			$query->whereNested(function($query) use ($passedLoginNames, $credentials)
+			foreach ($logins as $key => $value)
 			{
-				foreach ($passedLoginNames as $key)
-				{
-					$query->orWhere($key, $credentials[$key]);
-				}
-			});
-		}
-		elseif (array_key_exists('login', $credentials))
-		{
-			$value = $credentials['login'];
-			$credentials[reset($passedLoginNames)] = $value;
+				$query->where($key, $value);
+			}
 		}
 		else
 		{
-			throw new \InvalidArgumentException('Missing [login] creential.');
-		}
-
-		if ( ! array_key_exists('password', $credentials))
-		{
-			throw new \InvalidArgumentException('Missing [password] credential.');
-		}
-
-		foreach ($credentials as $key => $value)
-		{
-			if (array_key_exists($key, $passedLoginNames)) continue;
-
-			$query->where($key, $value);
+			$query->whereNested(function($query) use ($loginNames, $logins)
+			{
+				foreach ($loginNames as $name)
+				{
+					$query->orWhere($name, $logins);
+				}
+			});
 		}
 
 		$user = $query->first();
 
-		if ($user and $this->validateCredentials($user, $credentials['password']))
+		if ($user and $this->validateCredentials($user, $password))
 		{
 			return $user;
 		}
 	}
 
+	/**
+	 * Parses the given credentials to return logins, password and others.
+	 *
+	 * @param  array  $credentials
+	 * @param  array  $loginNames
+	 * @return array
+	 * @throws \InvalidArgumentException
+	 */
+	protected function parseCredentials(array $credentials, array $loginNames)
+	{
+		if ( ! array_key_exists('password', $credentials))
+		{
+			throw new \InvalidArgumentException('You have not passed a [password].');
+		}
+
+		$passedNames = array_intersect_key($credentials, array_flip($loginNames));
+
+		if (count($passedNames) > 0)
+		{
+			$logins = array();
+
+			foreach ($passedNames as $name => $value)
+			{
+				$logins[$name] = $credentials[$name];
+				unset($credentials[$name]);
+			}
+		}
+		elseif (isset($credentials['login']))
+		{
+			$logins = $credentials['login'];
+			unset($credentials['login']);
+		}
+		else
+		{
+			throw new \InvalidArgumentException('No [login] credential was passed.');
+		}
+
+		$password = $credentials['password'];
+		unset($credentials['password']);
+		return array($logins, $password, $credentials);
+	}
+
+	/**
+	 * Validates the given password against a user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\EloquentUser  $user
+	 * @return bool
+	 */
 	protected function validateCredentials(EloquentUser $user, $password)
 	{
-		return $this->hasher->check($password, $user->password);
+		return $this->hasher->checkHash($password, $user->password);
+	}
+
+	/**
+	 * Create a new instance of the model.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Model
+	 */
+	public function createModel()
+	{
+		$class = '\\'.ltrim($this->model, '\\');
+
+		return new $class;
 	}
 
 }
