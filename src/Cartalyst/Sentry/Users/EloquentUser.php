@@ -20,8 +20,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
+use Cartalyst\Sentry\Persistence\PersistableInterface;
 
-class EloquentUser extends Model implements PermissibleInterface {
+class EloquentUser extends Model implements PermissibleInterface, PersistableInterface, UserInterface {
 
 	/**
 	 * {@inheritDoc}
@@ -35,7 +36,44 @@ class EloquentUser extends Model implements PermissibleInterface {
 	 */
 	protected $permissionsInstance;
 
+	/**
+	 * Array of login column names.
+	 *
+	 * @var array
+	 */
 	protected $loginNames = array('email', 'username');
+
+	/**
+	 * Returns an array of login column names.
+	 *
+	 * @return array
+	 */
+	public function getLoginNames()
+	{
+		return $this->loginNames;
+	}
+
+	/**
+	 * Get mutator for persistence codes.
+	 *
+	 * @param  mixed  $codes
+	 * @return array
+	 */
+	public function getPersistenceCodesAttribute($codes)
+	{
+		return ($codes) ? json_decode($codes, true) : array();
+	}
+
+	/**
+	 * Set mutator for persitence codes.
+	 *
+	 * @param  mixed  $codes
+	 * @return void
+	 */
+	public function setPersistenceCodesAttribute(array $codes)
+	{
+		$this->attributes['codes'] = ($codes) ? json_encode($codes) : '';
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -50,9 +88,48 @@ class EloquentUser extends Model implements PermissibleInterface {
 		return $this->permissionsInstance;
 	}
 
-	public function getLoginNames()
+	/**
+	 * {@inheritDoc}
+	 */
+	public function generatePersistenceCode()
 	{
-		return $this->loginNames;
+		return str_random(32);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getPersistenceCodes()
+	{
+		return $this->persistence_codes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function addPersistenceCode($code)
+	{
+		$codes = $this->persistence_codes;
+		array_add($codes, $code);
+		$this->persistence_codes = $codes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function removePersistenceCode($code)
+	{
+		$codes = $this->persistence_codes;
+		array_forget($codes, $code);
+		$this->persistence_codes = $codes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function savePersistenceCodes()
+	{
+		return $this->save();
 	}
 
 	/**

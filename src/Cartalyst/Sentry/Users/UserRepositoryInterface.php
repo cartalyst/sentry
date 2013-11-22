@@ -36,4 +36,12 @@ interface UserRepositoryInterface {
 	 */
 	public function findByCredentials(array $credentials);
 
+	/**
+	 * Finds a user by the given persistence code.
+	 *
+	 * @param  string  $code
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function findByPersistenceCode($code);
+
 }

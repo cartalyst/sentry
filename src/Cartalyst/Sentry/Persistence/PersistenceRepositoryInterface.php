@@ -23,47 +23,42 @@ use Cartalyst\Sentry\Users\UserInterface;
 interface PersistenceRepositoryInterface {
 
 	/**
-	 * Checks to see if the given user is logged into a session.
+	 * Checks for a persistance code in the current session.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
+	 * @return string
 	 */
-	public function check(UserInterface $user);
+	public function check();
 
 	/**
 	 * Adds a new user persistence to the current session and attaches the user.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
 	 * @return bool
-	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function add(UserInterface $user);
+	public function add(PersistableInterface $persistable);
 
 	/**
 	 * Adds a new user persistence, to remember.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
 	 * @return bool
-	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function addAndRemember(UserInterface $user);
+	public function addAndRemember(PersistableInterface $persistable);
 
 	/**
 	 * Removes the persistence bound to the current session.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
 	 * @return bool
-	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function remove(UserInterface $user);
+	public function remove(PersistableInterface $persistable);
 
 	/**
 	 * Flushes all persistence for the given user.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
 	 * @return bool
-	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
 	 */
-	public function flush(UserInterface $user);
+	public function flush(PersistableInterface $persistable);
 
 }

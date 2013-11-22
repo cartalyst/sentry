@@ -18,18 +18,210 @@
  * @link       http://cartalyst.com
  */
 
+use Closure;
+
 class Sentry {
 
-	public function login(UserRepositoryInterface $user, $remmeber = false)
+	protected $user;
+
+	protected $users;
+
+	protected $throttle;
+
+	protected $throttling = true;
+
+	protected $ipAddress;
+
+	protected $persistance;
+
+	/**
+	 * Checks to see if a user is logged in.
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 * @todo   IS this where we would throw exceptions? (Not Activated etc)
+	 */
+	public function check()
+	{
+		$code = $this->persistance->check();
+
+		if ($code === null)
+		{
+			return false;
+		}
+
+		$user = $this->users->findByPersistenceCode($code);
+
+		if ($user === null)
+		{
+			return false;
+		}
+
+		$this->checkThrottle();
+
+		return $user;
+	}
+
+	/**
+	 * Checks to see if a user is logged in, bypassing throttling
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function forceCheck()
+	{
+		return $this->bypassThrottling(function($sentry)
+		{
+			return $sentry->check();
+		});
+	}
+
+	/**
+	 * Authenticates a user, with "remember" flag.
+	 *
+	 * @param  array  $credentials
+	 * @param  bool  $remember
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function authenticate(array $credentials, $remember = false)
+	{
+		$user = $this->users->findByCredentials($credentials);
+
+		$this->checkThrottle($user);
+
+		return $user;
+	}
+
+	/**
+	 * Authenticates a user, with "remember" flag.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function authenticateAndRemember(array $credentials)
+	{
+		return $this->authenticate($credentials, true);
+	}
+
+	/**
+	 * Forces an authentication to bypass throttling.
+	 *
+	 * @param  array  $credentials
+	 * @param  bool  $remember
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function forceAuthenticate(array $credentials, $remmeber = false)
+	{
+		return $this->bypassThrottling(function($sentry) use ($credentials, $remember)
+		{
+			return $sentry->authenticate($credentials, $remember);
+		});
+	}
+
+	/**
+	 * Forces an authentication to bypass throttling, with "remember" flag.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function forceAuthenticateAndRemember(array $credentials)
+	{
+		return $this->forceAuthenticate($credentials, true);
+	}
+
+	/**
+	 * Persists a login for the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $remember
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function login(UserInterface $user, $remmeber = false)
 	{
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
 
-		return $this->logins->$method($user);
+		return $this->persistance->$method($user);
 	}
 
-	public function logout(UserRepositoryInterface $user)
+	/**
+	 * Log the current (or given) user out.
+	 *
+	 * @param  bool  $everywhere
+	 * @return bool
+	 */
+	public function logout($everywhere = false)
 	{
-		return $this->logins->remove($user);
+		if ($this->user === null)
+		{
+			return true;
+		}
+
+		$method = ($everywhere === true) ? 'flush' : 'remove';
+
+		return $this->persistance->$method($this->user);
+	}
+
+	/**
+	 * Pass a closure to Sentry to bypass throttling.
+	 *
+	 * @param  \Closure  $callback
+	 * @return mixed
+	 */
+	public function bypassThrottling(Closure $callback)
+	{
+		// Cache the throttling status
+		$throttling = $this->throttling;
+		$this->throttling = false;
+
+		// Fire the callback
+		$result = $callback($this);
+
+		// Reset throttling
+		$this->throttling = $throttling;
+
+		return $result;
+	}
+
+	/**
+	 * Performs a throttle check.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 * @throws \RuntimeException
+	 */
+	protected function checkThrottle(UserInterface $user = null)
+	{
+		if ($this->throttling === false)
+		{
+			return true;
+		}
+
+		$globalDelay = $this->throttle->globalDelay();
+
+		if ($globalDelay > 0)
+		{
+			throw new \RuntimeException("Gobal throttling prohibits users from logging in for another [$globalDelay] second(s).");
+		}
+
+		if (isset($this->ipAddress))
+		{
+			$ipDelay = $this->throttle->ipDelay();
+
+			if ($ipDelay > 0)
+			{
+				throw new \RuntimeException("IP address throttling prohibits you from logging in for another [$ipDelay] second(s).");
+			}
+		}
+
+		if (isset($user))
+		{
+			$userDelay = $this->throttle->userDelay($user);
+
+			if ($ipDelay > 0)
+			{
+				throw new \RuntimeException("User throttling prohibits your account being accessed in for another [$ipDelay] second(s).");
+			}
+		}
+
+		return true;
 	}
 
 }

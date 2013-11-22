@@ -18,10 +18,43 @@
  * @link       http://cartalyst.com
  */
 
-class PersistableInterface {
+interface PersistableInterface {
 
-	public function getPersistCodes();
+	/**
+	 * Generates a random persist code.
+	 *
+	 * @return  string
+	 */
+	public function generatePersistenceCode();
 
-	public function addPersistCode($persistCode);
+	/**
+	 * Returns an array of assigned persist codes.
+	 *
+	 * @return array
+	 */
+	public function getPersistenceCodes();
+
+	/**
+	 * Adds a new persist code.
+	 *
+	 * @param  string  $code
+	 * @return void
+	 */
+	public function addPersistenceCode($code);
+
+	/**
+	 * Removes a persist code.
+	 *
+	 * @param  string  $code
+	 * @return void
+	 */
+	public function removePersistenceCode($code);
+
+	/**
+	 * Saves persistence codes, allowing for manipulation with one save.
+	 *
+	 * @return bool
+	 */
+	public function savePersistenceCodes();
 
 }

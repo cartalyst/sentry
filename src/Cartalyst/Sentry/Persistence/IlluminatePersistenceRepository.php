@@ -20,7 +20,6 @@
 
 use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
-use Cartalyst\Sentry\Users\UserInterface;
 
 class IlluminatePersistenceRepository implements PersistenceRepositoryInterface {
 
@@ -53,41 +52,80 @@ class IlluminatePersistenceRepository implements PersistenceRepositoryInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function check(UserInterface $user)
+	public function check()
 	{
+		if ($code = $this->session->get())
+		{
+			return $code;
+		}
 
+		if ($code = $this->cookie->get())
+		{
+			return $code;
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function add(UserInterface $user)
+	public function add(PersistableInterface $persistable, $remember = false)
 	{
+		$code = $persistable->generatePersistenceCode();
 
+		$this->session->put($code);
+
+		if ($remember === true)
+		{
+			$this->cookie->put($code);
+		}
+
+		$persistable->addPersistenceCode($code)
+
+		return $persistable->savePersistenceCodes();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function addAndRemember(UserInterface $user)
+	public function addAndRemember(PersistableInterface $persistable)
 	{
-
+		return $this->add($persistable, true);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function remove(UserInterface $user)
+	public function remove(PersistableInterface $persistable)
 	{
+		$code = $this->check();
 
+		if ($code === null)
+		{
+			return true;
+		}
+
+		$this->session->forget();
+		$this->cookie->forget();
+
+		$persistable->removePersistenceCode($code)
+
+		return $persistable->savePersistenceCodes();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function flush(UserInterface $user)
+	public function flush(PersistableInterface $persistable)
 	{
+		$this->session->forget();
+		$this->cookie->forget();
 
+		foreach ($persistable->getPersistenceCodes() as $code)
+		{
+			$persistable->removePersistenceCode($code);
+		}
+
+		return $persistable->savePersistenceCodes();
 	}
 
 }
