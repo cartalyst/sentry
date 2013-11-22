@@ -22,17 +22,47 @@ use Closure;
 
 class Sentry {
 
+	/**
+	 * The current cached, logged in user.
+	 *
+	 * @var \Cartalyst\Sentry\Users\UserInterface
+	 */
 	protected $user;
 
+	/**
+	 * User repository.
+	 *
+	 * @var \Cartalyst\Sentry\Users\UserRepositoryInterface
+	 */
 	protected $users;
 
+	/**
+	 * Throttle repository.
+	 *
+	 * @var \Cartalyst\Sentry\Throttling\ThrottleRepositoryInterface
+	 */
 	protected $throttle;
 
+	/**
+	 * Flag for whether throttling is enabled in Sentry.
+	 *
+	 * @var bool
+	 */
 	protected $throttling = true;
 
-	protected $ipAddress;
-
+	/**
+	 * The persistence driver (the class which actually manages sessions).
+	 *
+	 * @var \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 */
 	protected $persistance;
+
+	/**
+	 * The cached IP address, used for throttling checks.
+	 *
+	 * @var string
+	 */
+	protected $ipAddress;
 
 	/**
 	 * Checks to see if a user is logged in.
