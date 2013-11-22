@@ -118,18 +118,100 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function validForCreation(array $credentials)
+	{
+		return $this->validateUser($credentials);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function validForUpdate($id, array $credentials)
+	{
+		return $this->validateUser($credentials, $id);
+	}
+
+	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function create(array $credentials)
+	{
+		$user = $this->createModel();
+
+		$credentials['password'] = $this->hasher->hash($credentials['password']);
+
+		$user
+			->fill($credentials)
+			->save();
+
+		return $user;
+	}
+
+	/**
+	 * Updates a user.
+	 *
+	 * @param  int  $id
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function update($id, array $credentials)
+	{
+		$user = $this->find($id);
+
+		if (isset($credentials['password']))
+		{
+			$credentials['password'] = $this->hasher->hash($credentials['password']);
+		}
+
+		$user
+			->fill($credentials)
+			->save();
+	}
+
+	/**
+	 * Deletes a user.
+	 *
+	 * @param  int  $id
+	 * @return int
+	 */
+	public function delete($id)
+	{
+		return $this
+			->createModel()
+			->newQuery()
+			->where('id', $id)
+			->delete();
+	}
+
+	/**
 	 * Parses the given credentials to return logins, password and others.
 	 *
 	 * @param  array  $credentials
 	 * @param  array  $loginNames
+	 * @param  bool   $checkPassword
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	protected function parseCredentials(array $credentials, array $loginNames)
+	protected function parseCredentials(array $credentials, array $loginNames, $checkPassword = true)
 	{
-		if ( ! array_key_exists('password', $credentials))
+		if ($checkPassword === true and ! array_key_exists('password', $credentials))
 		{
 			throw new \InvalidArgumentException('You have not passed a [password].');
+		}
+
+		if (isset($credentials['password']))
+		{
+			$password = $credentials['password'];
+			unset($credentials['password']);
+		}
+		else
+		{
+			$password = null;
 		}
 
 		$passedNames = array_intersect_key($credentials, array_flip($loginNames));
@@ -154,8 +236,6 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 			throw new \InvalidArgumentException('No [login] credential was passed.');
 		}
 
-		$password = $credentials['password'];
-		unset($credentials['password']);
 		return array($logins, $password, $credentials);
 	}
 
@@ -168,6 +248,30 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	protected function validateCredentials(EloquentUser $user, $password)
 	{
 		return $this->hasher->checkHash($password, $user->password);
+	}
+
+	/**
+	 * Validates the user.
+	 *
+	 * @param  array  $credentials
+	 * @param  int  $id
+	 * @return bool
+	 * @throws \InvalidArgumentException
+	 */
+	protected function validateUser(array $credentials, $id = null)
+	{
+		$instance = $this->createModel();
+		$loginNames = $instance->getLoginNames();
+
+		// We will simply parse credentials which checks logins and passwords
+		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames, false);
+
+		if ($id === null and $password === null)
+		{
+			throw new \InvalidArgumentException('You have not passed a [password].');
+		}
+
+		return true;
 	}
 
 	/**

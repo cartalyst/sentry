@@ -44,4 +44,46 @@ interface UserRepositoryInterface {
 	 */
 	public function findByPersistenceCode($code);
 
+	/**
+	 * Validate if the given user is valid for creation.
+	 *
+	 * @param  array  $credentials
+	 * @return bool
+	 */
+	public function validForCreation(array $credentials);
+
+	/**
+	 * Validate if the given user is valid for updating.
+	 *
+	 * @param  int  $id
+	 * @param  array  $credentials
+	 * @return bool
+	 */
+	public function validForCreation($id, array $credentials);
+
+	/**
+	 * Creates a user.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function create(array $credentials);
+
+	/**
+	 * Updates a user.
+	 *
+	 * @param  int  $id
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function update($id, array $credentials);
+
+	/**
+	 * Deletes a user.
+	 *
+	 * @param  int  $id
+	 * @return int
+	 */
+	public function delete($id);
+
 }

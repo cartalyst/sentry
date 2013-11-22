@@ -64,6 +64,32 @@ class Sentry {
 	 */
 	protected $ipAddress;
 
+	public function register(array $credentials)
+	{
+		$valid = $this->users->validForCreation($credentials);
+
+		$user = $this->users->create($credentials);
+
+		// Activate...
+
+		return $user;
+	}
+
+	public function registerAndActivate(array $credentials)
+	{
+		return $this->register($credentials, true):
+	}
+
+	public function activate($code)
+	{
+
+	}
+
+	public function forceActivate(UserInterface $user)
+	{
+
+	}
+
 	/**
 	 * Checks to see if a user is logged in.
 	 *
@@ -252,6 +278,25 @@ class Sentry {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Dynamically pass missing methods to Sentry.
+	 *
+	 * @param  string  $method
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
+	public function __call($method, $parameters)
+	{
+		if (starts_with($method, 'findBy'))
+		{
+			return call_user_func_array(array($this->users, $method), $parameters);
+		}
+
+		$className = get_class($this);
+
+		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}
 
 }

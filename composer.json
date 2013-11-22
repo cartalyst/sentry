@@ -30,7 +30,8 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.3"
+		"php": ">=5.3.3",
+		"illuminate/support": "~4"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
