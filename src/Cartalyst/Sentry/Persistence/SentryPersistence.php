@@ -21,7 +21,7 @@
 use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 
-class IlluminatePersistenceRepository implements PersistenceRepositoryInterface {
+class SentryPersistence implements PersistenceInterface {
 
 	/**
 	 * Session storage driver.

@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-interface PersistenceRepositoryInterface {
+interface PersistenceInterface {
 
 	/**
 	 * Checks for a persistance code in the current session.
