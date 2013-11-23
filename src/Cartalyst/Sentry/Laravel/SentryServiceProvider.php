@@ -21,11 +21,13 @@
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Checkpoints\ActivationCheckpoint;
+use Cartalyst\Sentry\Checkpoints\SwiftIdentityCheckpoint;
 use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
+use Cartalyst\Sentry\Swift\IlluminateSwiftRepository;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Illuminate\Http\Request;
@@ -123,6 +125,7 @@ class SentryServiceProvider extends ServiceProvider {
 	protected function registerCheckpoints()
 	{
 		$this->registerActivationCheckpoint();
+		$this->registerSwiftCheckpoint();
 		$this->registerThrottleCheckpoint();
 
 		$this->app['sentry.checkpoints'] = $this->app->share(function($app)
@@ -134,6 +137,7 @@ class SentryServiceProvider extends ServiceProvider {
 				switch ($checkpoint)
 				{
 					case 'activation':
+					case 'swift':
 					case 'throttle':
 						return $app["sentry.checkpoint.{$checkpoint}"];
 
@@ -164,6 +168,39 @@ class SentryServiceProvider extends ServiceProvider {
 			$expires = $app['config']['cartalyst/sentry::activation.expires'];
 
 			return new IlluminateActivationRepository($model, $expires);
+		});
+	}
+
+	protected function registerSwiftCheckpoint()
+	{
+		$this->registerSwift();
+
+		$this->app['sentry.checkpoint.swift'] = $this->app->share(function($app)
+		{
+			return new SwiftIdentityCheckpoint($app['sentry.swift']);
+		});
+	}
+
+	protected function registerSwift()
+	{
+		$this->app['sentry.swift'] = $this->app->share(function($app)
+		{
+			$email = $app['config']['cartalyst/sentry::swift.email'];
+			$password = $app['config']['cartalyst/sentry::swift.password'];
+			$apiKey = $app['config']['cartalyst/sentry::swift.api_key'];
+			$appCode = $app['config']['cartalyst/sentry::swift.app_code'];
+			$method = $app['config']['cartalyst/sentry::swift.method'];
+			$model = $app['config']['cartalyst/sentry::swift.model'];
+
+			return new IlluminateSwiftRepository(
+				$email,
+				$password,
+				$apiKey,
+				$appCode,
+				$this->app['request']->getClientIp(),
+				$method,
+				$model
+			);
 		});
 	}
 
@@ -241,6 +278,8 @@ class SentryServiceProvider extends ServiceProvider {
 			'sentry.users',
 			'sentry.activation',
 			'sentry.checkpoint.activation',
+			'sentry.swift',
+			'sentry.checkpoint.swift',
 			'sentry.throttle',
 			'sentry.checkpoint.throttle',
 			'sentry.checkpoints',

@@ -12,7 +12,7 @@ return array(
 
 	),
 
-	'checkpoints' => array('activation', 'throttle'),
+	'checkpoints' => array('activation', 'throttle'/*, 'swift'*/),
 
 	'activation' => array(
 
@@ -56,6 +56,20 @@ return array(
 			'thresholds' => 5,
 
 		),
+
+	),
+
+
+	'swift' => array(
+
+		'email' => null,
+		'password' => null,
+		'api_key' => null,
+		'app_code' => null,
+
+		'method' => 'swipe',
+
+		'model' => 'Cartalyst\Sentry\Swift\EloquentSwift',
 
 	),
 

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Checkpoints;
+<?php namespace Cartalyst\Sentry\Swift;
 /**
  * Part of the Sentry package.
  *
@@ -18,20 +18,27 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Users\UserInterface;
+use Illuminate\Database\Eloquent\Model;
 
-/**
- * @todo Have 2 methods, handleLogin() and handleCheck().
- */
-interface CheckpointInterface {
+class EloquentSwift extends Model {
 
 	/**
-	 * Handle the checkpoint for the given user. Return false to deny entry.
-	 * Feel free to throw custom exceptions here.
-	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
+	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user = null);
+	protected $table = 'swift';
+
+	protected $fillable = array(
+		'method',
+	);
+
+	/**
+	 * User relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo('Cartalyst\Sentry\Users\EloquentUser');
+	}
 
 }

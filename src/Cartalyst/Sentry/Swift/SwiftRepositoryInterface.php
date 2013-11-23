@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Checkpoints;
+<?php namespace Cartalyst\Sentry\Swift;
 /**
  * Part of the Sentry package.
  *
@@ -20,18 +20,31 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-/**
- * @todo Have 2 methods, handleLogin() and handleCheck().
- */
-interface CheckpointInterface {
+interface SwiftRepositoryInterface {
 
 	/**
-	 * Handle the checkpoint for the given user. Return false to deny entry.
-	 * Feel free to throw custom exceptions here.
+	 * Return if the swift authentication passes.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
 	 */
-	public function handle(UserInterface $user = null);
+	public function passes(UserInterface $user);
+
+	/**
+	 * Return if the SMS code passes swift authentication.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function passesSms(UserInterface $user, $code);
+
+	/**
+	 * Set the SMS number for the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $number
+	 * @return bool
+	 */
+	public function saveNumber(UserInterface $user, $number);
 
 }
