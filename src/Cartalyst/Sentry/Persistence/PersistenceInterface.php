@@ -23,7 +23,7 @@ use Cartalyst\Sentry\Users\UserInterface;
 interface PersistenceInterface {
 
 	/**
-	 * Checks for a persistance code in the current session.
+	 * Checks for a persistence code in the current session.
 	 *
 	 * @return string
 	 */

@@ -46,7 +46,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function approveLogin(UserInterface $user)
+	public function handle(UserInterface $user)
 	{
 		$globalDelay = $this->throttle->globalDelay();
 

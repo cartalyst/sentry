@@ -19,6 +19,7 @@
  */
 
 use Carbon\Carbon;
+use Cartalyst\Sentry\Users\UserInterface;
 
 /**
  * @todo Switch over to eager loading where possible, under the assumption that the Eloquent user model will include the required relationship.

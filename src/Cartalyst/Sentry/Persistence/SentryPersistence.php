@@ -79,7 +79,7 @@ class SentryPersistence implements PersistenceInterface {
 			$this->cookie->put($code);
 		}
 
-		$persistable->addPersistenceCode($code)
+		$persistable->addPersistenceCode($code);
 
 		return $persistable->savePersistenceCodes();
 	}
@@ -107,7 +107,7 @@ class SentryPersistence implements PersistenceInterface {
 		$this->session->forget();
 		$this->cookie->forget();
 
-		$persistable->removePersistenceCode($code)
+		$persistable->removePersistenceCode($code);
 
 		return $persistable->savePersistenceCodes();
 	}

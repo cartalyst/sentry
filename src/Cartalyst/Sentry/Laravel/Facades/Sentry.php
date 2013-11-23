@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry;
+<?php namespace Cartalyst\Sentry\Laravel\Facades;
 /**
  * Part of the Sentry package.
  *
@@ -18,24 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Facade;
 
-class SentryServiceProvider extends ServiceProvider {
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function boot()
-	{
-
-	}
+class Sentry extends Facade {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function register()
+	protected static function getFacadeAccessor()
 	{
-		foreach ()
+		return 'sentry';
 	}
 
 }

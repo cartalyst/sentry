@@ -18,7 +18,13 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Checkpoints\CheckpointInterface;
+use Cartalyst\Sentry\Hashing\NativeHasher;
+use Cartalyst\Sentry\Persistence\PersistenceInterface;
+use Cartalyst\Sentry\Users\IlluminateUserRepository;
+use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Closure;
+use Illuminate\Events\Dispatcher;
 
 class Sentry {
 
@@ -30,11 +36,25 @@ class Sentry {
 	protected $user;
 
 	/**
+	 * The persistence driver (the class which actually manages sessions).
+	 *
+	 * @var \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 */
+	protected $persistence;
+
+	/**
 	 * User repository.
 	 *
 	 * @var \Cartalyst\Sentry\Users\UserRepositoryInterface
 	 */
 	protected $users;
+
+	/**
+	 * Event dispatcher.
+	 *
+	 * @var \Illuminate\Events\Dispatcher
+	 */
+	protected $dispatcher;
 
 	/**
 	 * Flag for whether checkpoints are enabled.
@@ -44,18 +64,26 @@ class Sentry {
 	protected $checkpoints = true;
 
 	/**
-	 * The persistence driver (the class which actually manages sessions).
+	 * Create a new Sentry instance.
 	 *
-	 * @var \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
+	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
+	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
 	 */
-	protected $persistance;
+	public function __construct(PersistenceInterface $persistence, UserRepositoryInterface $users = null, Dispatcher $dispatcher = null)
+	{
+		$this->persistence = $persistence;
 
-	/**
-	 * Event dispatcher.
-	 *
-	 * @var \Illuminate\Events\Dispatcher
-	 */
-	protected $dispatcher;
+		if (isset($users))
+		{
+			$this->users = $users;
+		}
+
+		if (isset($dispatcher))
+		{
+			$this->dispatcher = $dispatcher;
+		}
+	}
 
 	/**
 	 * Registers a user. You may provide a callback to occur before the user
@@ -122,7 +150,7 @@ class Sentry {
 	 */
 	public function check()
 	{
-		$code = $this->persistance->check();
+		$code = $this->persistence->check();
 
 		if ($code === null)
 		{
@@ -226,7 +254,7 @@ class Sentry {
 
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
 
-		return $this->persistance->$method($user);
+		return $this->persistence->$method($user);
 	}
 
 	/**
@@ -255,7 +283,7 @@ class Sentry {
 
 		$method = ($everywhere === true) ? 'flush' : 'remove';
 
-		return $this->persistance->$method($this->user);
+		return $this->persistence->$method($this->user);
 	}
 
 	/**
@@ -280,6 +308,36 @@ class Sentry {
 	}
 
 	/**
+	 * Returns if checkpoints are enabled.
+	 *
+	 * @return bool
+	 */
+	public function checkpointsEnabled()
+	{
+		return $this->checkpoints;
+	}
+
+	/**
+	 * Enables checkpoints.
+	 *
+	 * @return void
+	 */
+	public function enableCheckpoints()
+	{
+		$this->checkpoints = true;
+	}
+
+	/**
+	 * Disables checkpoints.
+	 *
+	 * @return void
+	 */
+	public function disableCheckpoints()
+	{
+		$this->checkpoints = false;
+	}
+
+	/**
 	 * Add a new checkpoint to Sentry.
 	 *
 	 * @param  \Closure|string  $checkpoint
@@ -288,7 +346,20 @@ class Sentry {
 	 */
 	public function addCheckpoint($checkpoint, $priority = 0)
 	{
-		$this->registerEvent('checkpoint', $callback, $priority);
+		if (is_object($checkpoint))
+		{
+			if ( ! $checkpoint instanceof CheckpointInterface)
+			{
+				throw new \InvalidArgumentException('Invalid checkpoint instance.');
+			}
+
+			$checkpoint = function() use ($checkpoint)
+			{
+				return $checkpoint->handle();
+			};
+		}
+
+		$this->registerEvent('checkpoint', $checkpoint, $priority);
 	}
 
 	/**
@@ -311,14 +382,108 @@ class Sentry {
 		return ($response !== false);
 	}
 
+	/**
+	 * Register a Sentry event.
+	 *
+	 * @param  string  $event
+	 * @param  \Closure|string  $callback
+	 * @param  int  $priority
+	 * @return void
+	 */
 	protected function registerEvent($event, $callback, $priority = 0)
 	{
-		$this->dispatcher->listen("sentry.{$event}", $callback, $priority);
+		$dispatcher = $this->getEventDispatcher();
+
+		$dispatcher->listen("sentry.{$event}", $callback, $priority);
 	}
 
+	/**
+	 * Call a Sentry event.
+	 *
+	 * @param  string  $event
+	 * @param  mixed   $payload
+	 * @return mixed
+	 */
 	protected function fireEvent($event, $payload = array())
 	{
-		return $this->dispatcher->fire("sentry.{$event}", $payload);
+		$dispatcher = $this->getEventDispatcher();
+
+		return $dispatcher->fire("sentry.{$event}", $payload);
+	}
+
+	/**
+	 * Get the user repository.
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserRepositoryInterface
+	 */
+	public function getUserRepository()
+	{
+		if ($this->users === null)
+		{
+			$this->users = $this->createUserRepository();
+		}
+
+		return $this->users;
+	}
+
+	/**
+	 * Set the user repository.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
+	 * @return void
+	 */
+	public function setUserRepository(UserRepositoryInterface $users)
+	{
+		$this->users = $users;
+	}
+
+	/**
+	 * Creates a default user repository if none has been specified.
+	 *
+	 * @return \Cartalyst\Sentry\Users\IlluminateUserRepository
+	 */
+	protected function createUserRepository()
+	{
+		$hasher = new NativeHasher;
+		$model = 'Cartalyst\Sentry\Users\EloquentUser';
+
+		return new IlluminateUserRepository($hasher, $model);
+	}
+
+	/**
+	 * Get the event dispatcher.
+	 *
+	 * @return \Illuminate\Events\Dispatcher
+	 */
+	public function getEventDispatcher()
+	{
+		if ($this->dispatcher === null)
+		{
+			$this->dispatcher = $this->createEventDispatcher();
+		}
+
+		return $this->dispatcher;
+	}
+
+	/**
+	 * Set the event dispatcher.
+	 *
+	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
+	 * @return void
+	 */
+	public function setEventDispatcher(Dispatcher $dispatcher)
+	{
+		$this->dispatcher = $dispatcher;
+	}
+
+	/**
+	 * Creates a default event dispatcher if none has been specified.
+	 *
+	 * @return \Cartalyst\Sentry\Users\IlluminateEventDispatcher
+	 */
+	protected function createEventDispatcher()
+	{
+		return new Dispatcher;
 	}
 
 	/**
@@ -332,7 +497,9 @@ class Sentry {
 	{
 		if (starts_with($method, 'findBy'))
 		{
-			return call_user_func_array(array($this->users, $method), $parameters);
+			$users = $this->getUserRepository();
+
+			return call_user_func_array(array($users, $method), $parameters);
 		}
 
 		$className = get_class($this);
