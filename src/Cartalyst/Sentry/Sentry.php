@@ -178,12 +178,12 @@ class Sentry {
 
 		$user = $this->users->findByPersistenceCode($code);
 
-		if ($user === null)
+		if ( ! $this->cycleCheckpoints($user))
 		{
 			return false;
 		}
 
-		if ( ! $this->cycleCheckpoints($user))
+		if ($user === null)
 		{
 			return false;
 		}
@@ -404,7 +404,7 @@ class Sentry {
 				throw new \InvalidArgumentException('Invalid checkpoint instance.');
 			}
 
-			$checkpoint = function(UserInterface $user) use ($checkpoint)
+			$checkpoint = function(UserInterface $user = null) use ($checkpoint)
 			{
 				return $checkpoint->handle($user);
 			};
@@ -421,7 +421,7 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
 	 */
-	protected function cycleCheckpoints(UserInterface $user)
+	protected function cycleCheckpoints(UserInterface $user = null)
 	{
 		if ($this->checkpoints === false)
 		{

@@ -12,14 +12,14 @@ return array(
 
 	),
 
-	'checkpoints' => array('activation'/*, throttling */),
+	'checkpoints' => array('activation', 'throttle'),
 
 	'activation' => array(
 
 		'model' => 'Cartalyst\Sentry\Activations\EloquentActivation',
 
-		// Minutes
-		'expires' => 4320,
+		// Seconds - defaults to 3 days
+		'expires' => 259200,
 
 	),
 

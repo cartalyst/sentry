@@ -31,7 +31,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var string
 	 */
-	protected $model;
+	protected $model = 'Cartalyst\Sentry\Throttling\EloquentThrottle';
 
 	/**
 	 * The interval which failed logins are checked, to prevent brute force.
@@ -85,7 +85,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var array
 	 */
-	protected $ipThrottles;
+	protected $ipThrottles = array();
 
 	/**
 	 * The interval at which point failed logins for one user are checked.
@@ -106,7 +106,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var \Illuminate\Database\Eloquent\Collection
 	 */
-	protected $userThrottles;
+	protected $userThrottles = array();
 
 	/**
 	 * Create a new Illuminate throttle repository.
@@ -119,8 +119,13 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * @param  int  $userInterval
 	 * @param  int|array  $userThresholds
 	 */
-	public function __construct($model, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
+	public function __construct($model = null, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
 	{
+		if (isset($model))
+		{
+			$this->model = $model;
+		}
+
 		if (isset($globalInterval))
 		{
 			$this->globalInterval = (int) $globalInterval;
@@ -199,13 +204,13 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		{
 			foreach (array_reverse($this->$thresholds, true) as $attempts => $delay)
 			{
-				if ($throttles->count() >= $attempts)
+				if ($throttles->count() > $attempts)
 				{
 					return $delay;
 				}
 			}
 		}
-		elseif ($this->$thresholds >= $throttles->count())
+		elseif ($throttles->count() > $this->$thresholds)
 		{
 			return $this->secondsToFree($throttle, $this->$thresholds, $this->$interval);
 		}

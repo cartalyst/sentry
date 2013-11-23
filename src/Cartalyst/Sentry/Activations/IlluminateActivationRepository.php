@@ -31,14 +31,14 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 *
 	 * @var string
 	 */
-	protected $model;
+	protected $model = 'Cartalyst\Sentry\Activations\EloquentActivation';
 
 	/**
 	 * Time, in minutes, in which activation codes expire.
 	 *
 	 * @var int
 	 */
-	protected $expires = 4320;
+	protected $expires = 259200;
 
 	/**
 	 * Create a new Illuminate activation repository.
@@ -46,9 +46,12 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 * @param  string  $model
 	 * @param  int  $expires
 	 */
-	public function __construct($model, $expires = null)
+	public function __construct($model = null, $expires = null)
 	{
-		$this->model = $model;
+		if (isset($model))
+		{
+			$this->model = $model;
+		}
 
 		if (isset($expires))
 		{

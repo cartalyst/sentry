@@ -46,22 +46,22 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user)
+	public function handle(UserInterface $user = null)
 	{
 		$globalDelay = $this->throttle->globalDelay();
 
 		if ($globalDelay > 0)
 		{
-			throw new \RuntimeException("Gobal throttling prohibits users from logging in for another [$globalDelay] second(s).");
+			$this->throwException("Gobal throttling prohibits users from logging in for another [$globalDelay] second(s).", 'global', $globalDelay);
 		}
 
 		if (isset($this->ipAddress))
 		{
-			$ipDelay = $this->throttle->ipDelay();
+			$ipDelay = $this->throttle->ipDelay($this->ipAddress);
 
 			if ($ipDelay > 0)
 			{
-				throw new \RuntimeException("IP address throttling prohibits you from logging in for another [$ipDelay] second(s).");
+				$this->throwException("IP address throttling prohibits you from logging in for another [$ipDelay] second(s).", 'ip', $ipDelay);
 			}
 		}
 
@@ -71,11 +71,19 @@ class ThrottleCheckpoint implements CheckpointInterface {
 
 			if ($ipDelay > 0)
 			{
-				throw new \RuntimeException("User throttling prohibits your account being accessed in for another [$ipDelay] second(s).");
+				$this->throwException("User throttling prohibits your account being accessed in for another [$ipDelay] second(s).", 'user', $userDelay);
 			}
 		}
 
 		return true;
+	}
+
+	protected function throwException($message, $type, $delay)
+	{
+		$exception = new ThrottlingException($message);
+		$exception->setDelay($delay);
+		$exception->setType($type);
+		throw $exception;
 	}
 
 }

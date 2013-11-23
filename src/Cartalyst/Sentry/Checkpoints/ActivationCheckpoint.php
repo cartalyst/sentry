@@ -43,8 +43,14 @@ class ActivationCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user)
+	public function handle(UserInterface $user = null)
 	{
+		// We only intercept successful logins
+		if ($user === null)
+		{
+			return;
+		}
+
 		$exists = $this->activations->exists($user);
 
 		if ($exists === false)

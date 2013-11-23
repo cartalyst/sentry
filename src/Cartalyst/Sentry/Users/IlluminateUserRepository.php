@@ -35,17 +35,21 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 *
 	 * @var string
 	 */
-	protected $model;
+	protected $model = 'Cartalyst\Sentry\Users\EloquentUser';
 
 	/**
 	 * Create a new Illuminate user repository.
 	 *
 	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface
 	 */
-	public function __construct(HasherInterface $hasher, $model)
+	public function __construct(HasherInterface $hasher, $model = null)
 	{
 		$this->hasher = $hasher;
-		$this->model = $model;
+
+		if (isset($model))
+		{
+			$this->model = $model;
+		}
 	}
 
 	/**
