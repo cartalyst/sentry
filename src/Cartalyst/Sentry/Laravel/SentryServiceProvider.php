@@ -29,8 +29,8 @@ use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\HttpFoundation\Response;
 
 class SentryServiceProvider extends ServiceProvider {
 
@@ -221,6 +221,8 @@ class SentryServiceProvider extends ServiceProvider {
 					$sentry->addCheckpoint($checkpoint);
 				}
 			}
+
+			$sentry->setActivationsRepository($app['sentry.activation']);
 
 			return $sentry;
 		});

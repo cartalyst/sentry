@@ -18,11 +18,14 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
+use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentry\Checkpoints\CheckpointInterface;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\PersistenceInterface;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 use Closure;
 use Illuminate\Events\Dispatcher;
 
@@ -64,6 +67,13 @@ class Sentry {
 	protected $checkpoints = true;
 
 	/**
+	 * Activations repository.
+	 *
+	 * @var \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
+	 */
+	protected $activations;
+
+	/**
 	 * Create a new Sentry instance.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
@@ -90,34 +100,28 @@ class Sentry {
 	 * is saved, or provide a true boolean as a shortcut to activation.
 	 *
 	 * @param  array  $credentials
-	 * @param  \Closure|bool  $callbcak
+	 * @param  \Closure|bool  $callback
 	 * @return \Cartalyst\Sentry\Users\UserInteface|bool
 	 */
 	public function register(array $credentials, $callback = null)
 	{
 		$valid = $this->users->validForCreation($credentials);
 
-		if ($callback === true)
-		{
-			$me = $this;
-			$callback = function(UserInterface $user)
-			{
-				$activation = $me->activate($user);
-
-				if ($activation === false)
-				{
-					return false;
-				}
-
-				return $user;
-			};
-		}
-		elseif ( ! $callback instanceof Closure)
+		if ($callback !== null and ! $callback instanceof Closure and $callback !== true)
 		{
 			throw new \InvalidArgumentException('You must provide a closure or true boolean.');
 		}
 
-		return $this->users->create($credentials, $callback);
+		$argument = ($callback instanceof Closure) ? $callback : null;
+
+		$user = $this->users->create($credentials, $argument);
+
+		if ($callback === true)
+		{
+			$this->activate($user);
+		}
+
+		return $user;
 	}
 
 	/**
@@ -137,9 +141,24 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
 	 */
-	public function activate(UserInterface $user)
+	public function activate($user)
 	{
-		return $this->activations->activate($user);
+		if (is_string($user))
+		{
+			$users = $this->getUserRepository();
+
+			$user = $users->findById($user);
+		}
+
+		if ( ! $user instanceof UserInterface)
+		{
+			throw new \InvalidArgumentException('No valid user was provided.');
+		}
+
+		$activations = $this->getActivationsRepository();
+
+		$code = $activations->create($user);
+		return $activations->complete($user, $code);
 	}
 
 	/**
@@ -169,7 +188,7 @@ class Sentry {
 			return false;
 		}
 
-		return $user;
+		return $this->user = $user;
 	}
 
 	/**
@@ -186,15 +205,41 @@ class Sentry {
 	}
 
 	/**
+	 * Returns if we are currently a guest.
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function guest()
+	{
+		return ( ! $this->check());
+	}
+
+	/**
 	 * Authenticates a user, with "remember" flag.
 	 *
 	 * @param  array  $credentials
 	 * @param  bool  $remember
+	 * @param  bool  $bool
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function authenticate(array $credentials, $remember = false)
+	public function authenticate(array $credentials, $remember = false, $login = true)
 	{
 		$user = $this->users->findByCredentials($credentials);
+
+		if ( ! $user)
+		{
+			return false;
+		}
+
+		if ( ! $this->cycleCheckpoints($user))
+		{
+			return false;
+		}
+
+		if ($login === false)
+		{
+			return true;
+		}
 
 		$method = ($remember === true) ? 'loginAndRemember' : 'login';
 
@@ -219,7 +264,7 @@ class Sentry {
 	 * @param  bool  $remember
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function forceAuthenticate(array $credentials, $remmeber = false)
+	public function forceAuthenticate(array $credentials, $remember = false)
 	{
 		return $this->bypassCheckpoints(function($sentry) use ($credentials, $remember)
 		{
@@ -239,19 +284,25 @@ class Sentry {
 	}
 
 	/**
+	 * Attempt a stateless authentication.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function stateless(array $credentials)
+	{
+		return $this->authenticate($credentials, false, false);
+	}
+
+	/**
 	 * Persists a login for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  bool  $remember
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function login(UserInterface $user, $remmeber = false)
+	public function login(UserInterface $user, $remember = false)
 	{
-		if ( ! $this->cycleCheckpoints($user))
-		{
-			return false;
-		}
-
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
 
 		return $this->persistence->$method($user);
@@ -353,9 +404,9 @@ class Sentry {
 				throw new \InvalidArgumentException('Invalid checkpoint instance.');
 			}
 
-			$checkpoint = function() use ($checkpoint)
+			$checkpoint = function(UserInterface $user) use ($checkpoint)
 			{
-				return $checkpoint->handle();
+				return $checkpoint->handle($user);
 			};
 		}
 
@@ -409,6 +460,64 @@ class Sentry {
 		$dispatcher = $this->getEventDispatcher();
 
 		return $dispatcher->fire("sentry.{$event}", $payload);
+	}
+
+	/**
+	 * Get the currently logged in user, lazily checking for it.
+	 *
+	 * @param  bool  $check
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getUser($check = true)
+	{
+		if ($check === true and $this->user === null)
+		{
+			$this->check();
+		}
+
+		return $this->user;
+	}
+
+	/**
+	 * Get the currently logged in user, lazily checking for it.
+	 *
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 */
+	public function getUserWithoutCheck()
+	{
+		return $this->getUser(false);
+	}
+
+	/**
+	 * Set the user associated with Sentry (does not log in).
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface
+	 * @return void
+	 */
+	public function setUser(UserInterface $user)
+	{
+		$this->user = $user;
+	}
+
+	/**
+	 * Get the persistence instance.
+	 *
+	 * @return \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 */
+	public function getPersistence()
+	{
+		return $this->persistence;
+	}
+
+	/**
+	 * Set the persistence instance.
+	 *
+	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 * @return void
+	 */
+	public function setPersistence(PersistenceInterface $persistence)
+	{
+		$this->persistence = $persistence;
 	}
 
 	/**
@@ -484,6 +593,44 @@ class Sentry {
 	protected function createEventDispatcher()
 	{
 		return new Dispatcher;
+	}
+
+	/**
+	 * Get the activations repository.
+	 *
+	 * @return \Cartalyst\Sentry\Activationss\ActivationRepositoryInterface
+	 */
+	public function getActivationsRepository()
+	{
+		if ($this->activations === null)
+		{
+			$this->activations = $this->createActivationsRepository();
+		}
+
+		return $this->activations;
+	}
+
+	/**
+	 * Set the activations repository.
+	 *
+	 * @param  \Cartalyst\Sentry\Activationss\ActivationRepositoryInterface  $activations
+	 * @return void
+	 */
+	public function setActivationsRepository(ActivationRepositoryInterface $activations)
+	{
+		$this->activations = $activations;
+	}
+
+	/**
+	 * Creates a default activations repository if none has been specified.
+	 *
+	 * @return \Cartalyst\Sentry\Activationss\IlluminateActivationRepository
+	 */
+	protected function createActivationsRepository()
+	{
+		$model = 'Cartalyst\Sentry\Activationss\EloquentActivation';
+
+		return new IlluminateActivationRepository($model);
 	}
 
 	/**

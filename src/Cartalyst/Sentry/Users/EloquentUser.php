@@ -32,6 +32,22 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	protected $table = 'users';
 
 	/**
+	 * {@inheritDoc}
+	 */
+	protected $fillable = array(
+		'email',
+		'password',
+	);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected $with = array(
+		// 'activations',
+		// 'throttles',
+	);
+
+	/**
 	 * Cached permissions instance for the given user.
 	 *
 	 * @var \Cartalyst\Sentry\Permissions\PermissionsInterface
@@ -43,7 +59,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	 *
 	 * @var array
 	 */
-	protected $loginNames = array('email', 'username');
+	protected $loginNames = array('email');
 
 	/**
 	 * Returns an array of login column names.
@@ -62,7 +78,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	 */
 	public function activations()
 	{
-		return $this->hasMany('Cartalyst\Sentry\Activations\EloquentActivation');
+		return $this->hasMany('Cartalyst\Sentry\Activations\EloquentActivation', 'user_id');
 	}
 
 	/**
@@ -72,7 +88,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	 */
 	public function throttles()
 	{
-		return $this->hasMany('Cartalyst\Sentry\Throttles');
+		return $this->hasMany('Cartalyst\Sentry\Throttling\EloquentThrottle', 'user_id');
 	}
 
 	/**
@@ -94,7 +110,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	 */
 	public function setPersistenceCodesAttribute(array $codes)
 	{
-		$this->attributes['codes'] = ($codes) ? json_encode($codes) : '';
+		$this->attributes['persistence_codes'] = ($codes) ? json_encode($codes) : '';
 	}
 
 	/**
@@ -140,7 +156,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	public function addPersistenceCode($code)
 	{
 		$codes = $this->persistence_codes;
-		array_add($codes, $code);
+		$codes[] = $code;
 		$this->persistence_codes = $codes;
 	}
 
@@ -150,7 +166,14 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	public function removePersistenceCode($code)
 	{
 		$codes = $this->persistence_codes;
-		array_forget($codes, $code);
+
+		$index = array_search($code, $codes);
+
+		if ($index !== false)
+		{
+			unset($codes[$index]);
+		}
+
 		$this->persistence_codes = $codes;
 	}
 

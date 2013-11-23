@@ -61,17 +61,18 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function create(UserInterface $user)
 	{
-		$activation = $this->creatModel();
+		$activation = $this->createModel();
 
 		$code = $this->generateActivationCode();
 
-		$model->fill(array(
-			'user_id' => $user->getUserId(),
+		$activation->fill(array(
 			'code' => $code,
 			'completed' => false,
 		));
 
-		$model->save();
+		$activation->user()->associate($user);
+
+		$activation->save();
 
 		return $code;
 	}

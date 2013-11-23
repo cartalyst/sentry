@@ -12,6 +12,8 @@ return array(
 
 	),
 
+	'checkpoints' => array('activation'/*, throttling */),
+
 	'activation' => array(
 
 		'model' => 'Cartalyst\Sentry\Activations\EloquentActivation',
@@ -56,7 +58,5 @@ return array(
 		),
 
 	),
-
-	'checkpoints' => array('activation', 'throttle'),
 
 );
