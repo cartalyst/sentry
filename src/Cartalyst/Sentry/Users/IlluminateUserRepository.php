@@ -19,6 +19,7 @@
  */
 
 use Cartalyst\Sentry\Hashing\HasherInterface;
+use Closure;
 
 class IlluminateUserRepository implements UserRepositoryInterface {
 
@@ -134,30 +135,34 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	}
 
 	/**
-	 * Creates a user.
-	 *
-	 * @param  array  $credentials
-	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * {@inheritDoc}
 	 */
-	public function create(array $credentials)
+	public function create(array $credentials, Closure $callback = null)
 	{
 		$user = $this->createModel();
 
 		$credentials['password'] = $this->hasher->hash($credentials['password']);
 
-		$user
-			->fill($credentials)
-			->save();
+		$user->fill($credentials);
+
+
+		if ($callback)
+		{
+			$result = $callback($user);
+
+			if ($result === false)
+			{
+				return false;
+			}
+		}
+
+		$user->save();
 
 		return $user;
 	}
 
 	/**
-	 * Updates a user.
-	 *
-	 * @param  int  $id
-	 * @param  array  $credentials
-	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * {@inheritDoc}
 	 */
 	public function update($id, array $credentials)
 	{

@@ -19,9 +19,19 @@
  */
 
 use Carbon\Carbon;
-use Cartalyst\Sentry\Users\UserRepositoryInterface;
+use Cartalyst\Sentry\Users\UserInterface;
 
+/**
+ * @todo Switch over to eager loading where possible, under the assumption that the Eloquent user model will include the required relationship.
+ */
 class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
+
+	/**
+	 * Model name.
+	 *
+	 * @var string
+	 */
+	protected $model;
 
 	/**
 	 * The interval which failed logins are checked, to prevent brute force.
@@ -75,7 +85,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var array
 	 */
-	protected $ipThrottles = array();
+	protected $ipThrottles;
 
 	/**
 	 * The interval at which point failed logins for one user are checked.
@@ -96,11 +106,12 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var \Illuminate\Database\Eloquent\Collection
 	 */
-	protected $userThrottles = array();
+	protected $userThrottles;
 
 	/**
 	 * Create a new Illuminate throttle repository.
 	 *
+	 * @param  string  $model
 	 * @param  int  $globalInterval
 	 * @param  int|array  $globalThresholds
 	 * @param  int  $ipInterval
@@ -108,7 +119,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * @param  int  $userInterval
 	 * @param  int|array  $userThresholds
 	 */
-	public function __construct($globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
+	public function __construct($model, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
 	{
 		if (isset($globalInterval))
 		{
@@ -160,7 +171,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function userDelay(UserRepositoryInterface $user)
+	public function userDelay(UserInterface $user)
 	{
 		return $this->delay('user', $user);
 	}
@@ -225,7 +236,9 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		$interval = Carbon::now()
 			->subSeconds($this->globalInterval);
 
-		return EloquentThrottle::where('type', '=', 'global')
+		return $this->createModel()
+			->newQuery()
+			->where('type', '=', 'global')
 			->where('created_at', '>', $interval)
 			->get();
 	}
@@ -255,7 +268,9 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		$interval = Carbon::now()
 			->subSeconds($this->ipInterval);
 
-		return EloquentThrottle::where('type', '=', 'ip')
+		return $this
+			->createModel()
+			->where('type', '=', 'ip')
 			->where('ip', '=', $ipAddress)
 			->where('created_at', '>', $interval)
 			->get();
@@ -266,9 +281,9 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	protected function getUserThrottles(UserRepositoryInterface $user)
+	protected function getUserThrottles(UserInterface $user)
 	{
-		$key = $user->getKey();
+		$key = $user->getUserId();
 
 		if ( ! array_key_exists($key, $this->userThrottles))
 		{
@@ -283,13 +298,15 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	protected function loadUserThrottles(UserRepositoryInterface $user)
+	protected function loadUserThrottles(UserInterface $user)
 	{
 		$interval = Carbon::now()
 			->subSeconds($this->userInterval);
 
-		return EloquentThrottle::where('type', '=', 'user')
-			->where('user_id', '=', $user->getKey())
+		return $this
+			->createModel()
+			->where('type', '=', 'user')
+			->where('user_id', '=', $user->getUserId())
 			->where('created_at', '>', $interval)
 			->get();
 	}
@@ -310,6 +327,18 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 			->addSeconds($interval);
 
 		return $free->diffInSeconds();
+	}
+
+	/**
+	 * Create a new instance of the model.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Model
+	 */
+	public function createModel()
+	{
+		$class = '\\'.ltrim($this->model, '\\');
+
+		return new $class;
 	}
 
 }

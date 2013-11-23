@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling;
+<?php namespace Cartalyst\Sentry\Activations;
 /**
  * Part of the Sentry package.
  *
@@ -20,29 +20,38 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-interface ThrottleRepositoryInterface {
+interface ActivationRepositoryInterface {
 
 	/**
-	 * Returns the global throttling delay, in seconds.
-	 *
-	 * @return int
-	 */
-	public function globalDelay();
-
-	/**
-	 * Returns the IP address throttling delay, in seconds.
-	 *
-	 * @param  string  $ipAddress
-	 * @return int
-	 */
-	public function ipDelay($ipAddress);
-
-	/**
-	 * Returns the throttling delay for the given user, in seconds.
+	 * Create a new activation record and code.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return string
+	 */
+	public function create(UserInterface $user);
+
+	/**
+	 * Check if a valid activation exists.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function exists(UserInterface $user);
+
+	/**
+	 * Complete activation for the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $code
+	 * @return bool
+	 */
+	public function complete(UserInterface $user, $code);
+
+	/**
+	 * Remove expired activation codes.
+	 *
 	 * @return int
 	 */
-	public function userDelay(UserInterface $user);
+	public function deleteExpired();
 
 }

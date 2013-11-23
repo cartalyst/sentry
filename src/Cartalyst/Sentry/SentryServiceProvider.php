@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Users;
+<?php namespace Cartalyst\Sentry;
 /**
  * Part of the Sentry package.
  *
@@ -18,13 +18,24 @@
  * @link       http://cartalyst.com
  */
 
-interface UserInterface {
+use Illuminate\Support\ServiceProvider;
+
+class SentryServiceProvider extends ServiceProvider {
 
 	/**
-	 * Get the user's primary key.
-	 *
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	public function getUserId();
+	public function boot()
+	{
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function register()
+	{
+		foreach ()
+	}
 
 }

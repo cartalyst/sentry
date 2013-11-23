@@ -37,18 +37,11 @@ class Sentry {
 	protected $users;
 
 	/**
-	 * Throttle repository.
-	 *
-	 * @var \Cartalyst\Sentry\Throttling\ThrottleRepositoryInterface
-	 */
-	protected $throttle;
-
-	/**
-	 * Flag for whether throttling is enabled in Sentry.
+	 * Flag for whether checkpoints are enabled.
 	 *
 	 * @var bool
 	 */
-	protected $throttling = true;
+	protected $checkpoints = true;
 
 	/**
 	 * The persistence driver (the class which actually manages sessions).
@@ -58,36 +51,67 @@ class Sentry {
 	protected $persistance;
 
 	/**
-	 * The cached IP address, used for throttling checks.
+	 * Event dispatcher.
 	 *
-	 * @var string
+	 * @var \Illuminate\Events\Dispatcher
 	 */
-	protected $ipAddress;
+	protected $dispatcher;
 
-	public function register(array $credentials)
+	/**
+	 * Registers a user. You may provide a callback to occur before the user
+	 * is saved, or provide a true boolean as a shortcut to activation.
+	 *
+	 * @param  array  $credentials
+	 * @param  \Closure|bool  $callbcak
+	 * @return \Cartalyst\Sentry\Users\UserInteface|bool
+	 */
+	public function register(array $credentials, $callback = null)
 	{
 		$valid = $this->users->validForCreation($credentials);
 
-		$user = $this->users->create($credentials);
+		if ($callback === true)
+		{
+			$me = $this;
+			$callback = function(UserInterface $user)
+			{
+				$activation = $me->activate($user);
 
-		// Activate...
+				if ($activation === false)
+				{
+					return false;
+				}
 
-		return $user;
+				return $user;
+			};
+		}
+		elseif ( ! $callback instanceof Closure)
+		{
+			throw new \InvalidArgumentException('You must provide a closure or true boolean.');
+		}
+
+		return $this->users->create($credentials, $callback);
 	}
 
+	/**
+	 * Registers a user, activating them.
+	 *
+	 * @param  array  $credentials
+	 * @return \Cartalyst\Sentry\Users\UserInteface|bool
+	 */
 	public function registerAndActivate(array $credentials)
 	{
-		return $this->register($credentials, true):
+		return $this->register($credentials, true);
 	}
 
-	public function activate($code)
+	/**
+	 * Activates the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function activate(UserInterface $user)
 	{
-
-	}
-
-	public function forceActivate(UserInterface $user)
-	{
-
+		return $this->activations->activate($user);
 	}
 
 	/**
@@ -112,19 +136,22 @@ class Sentry {
 			return false;
 		}
 
-		$this->checkThrottle();
+		if ( ! $this->cycleCheckpoints($user))
+		{
+			return false;
+		}
 
 		return $user;
 	}
 
 	/**
-	 * Checks to see if a user is logged in, bypassing throttling
+	 * Checks to see if a user is logged in, bypassing checkpoints
 	 *
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
 	public function forceCheck()
 	{
-		return $this->bypassThrottling(function($sentry)
+		return $this->bypassCheckpoints(function($sentry)
 		{
 			return $sentry->check();
 		});
@@ -141,9 +168,9 @@ class Sentry {
 	{
 		$user = $this->users->findByCredentials($credentials);
 
-		$this->checkThrottle($user);
+		$method = ($remember === true) ? 'loginAndRemember' : 'login';
 
-		return $user;
+		return $this->$method($user);
 	}
 
 	/**
@@ -158,7 +185,7 @@ class Sentry {
 	}
 
 	/**
-	 * Forces an authentication to bypass throttling.
+	 * Forces an authentication to bypass checkpoints.
 	 *
 	 * @param  array  $credentials
 	 * @param  bool  $remember
@@ -166,14 +193,14 @@ class Sentry {
 	 */
 	public function forceAuthenticate(array $credentials, $remmeber = false)
 	{
-		return $this->bypassThrottling(function($sentry) use ($credentials, $remember)
+		return $this->bypassCheckpoints(function($sentry) use ($credentials, $remember)
 		{
 			return $sentry->authenticate($credentials, $remember);
 		});
 	}
 
 	/**
-	 * Forces an authentication to bypass throttling, with "remember" flag.
+	 * Forces an authentication to bypass checkpoints, with "remember" flag.
 	 *
 	 * @param  array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
@@ -192,9 +219,25 @@ class Sentry {
 	 */
 	public function login(UserInterface $user, $remmeber = false)
 	{
+		if ( ! $this->cycleCheckpoints($user))
+		{
+			return false;
+		}
+
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
 
 		return $this->persistance->$method($user);
+	}
+
+	/**
+	 * Persists a login for the given user, with "remember" flag.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
+	 */
+	public function loginAndRemember(UserInterface $user)
+	{
+		return $this->login($user, true);
 	}
 
 	/**
@@ -216,68 +259,66 @@ class Sentry {
 	}
 
 	/**
-	 * Pass a closure to Sentry to bypass throttling.
+	 * Pass a closure to Sentry to bypass checkpoints.
 	 *
 	 * @param  \Closure  $callback
 	 * @return mixed
 	 */
-	public function bypassThrottling(Closure $callback)
+	public function bypassCheckpoints(Closure $callback)
 	{
-		// Cache the throttling status
-		$throttling = $this->throttling;
-		$this->throttling = false;
+		// Temporarily rmeove the array of registered checkpoints
+		$checkpoints = $this->checkpoints;
+		$this->checkpoints = false;
 
 		// Fire the callback
 		$result = $callback($this);
 
-		// Reset throttling
-		$this->throttling = $throttling;
+		// Reset checkpoints
+		$this->checkpoints = $checkpoints;
 
 		return $result;
 	}
 
 	/**
-	 * Performs a throttle check.
+	 * Add a new checkpoint to Sentry.
+	 *
+	 * @param  \Closure|string  $checkpoint
+	 * @param  int  $priority
+	 * @return void
+	 */
+	public function addCheckpoint($checkpoint, $priority = 0)
+	{
+		$this->registerEvent('checkpoint', $callback, $priority);
+	}
+
+	/**
+	 * Cycles through all registered checkpoints for a user. Checkpoints may
+	 * throw their own exceptions, however, if just one returns false, the
+	 * cycle fails.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
-	 * @throws \RuntimeException
 	 */
-	protected function checkThrottle(UserInterface $user = null)
+	protected function cycleCheckpoints(UserInterface $user)
 	{
-		if ($this->throttling === false)
+		if ($this->checkpoints === false)
 		{
 			return true;
 		}
 
-		$globalDelay = $this->throttle->globalDelay();
+		$response = $this->fireEvent('checkpoint', $user);
 
-		if ($globalDelay > 0)
-		{
-			throw new \RuntimeException("Gobal throttling prohibits users from logging in for another [$globalDelay] second(s).");
-		}
+		return ($response !== false);
+	}
 
-		if (isset($this->ipAddress))
-		{
-			$ipDelay = $this->throttle->ipDelay();
+	protected function registerEvent($event, $callback, $priority = 0)
+	{
+		$this->dispatcher->listen("sentry.{$event}", $callback, $priority);
+	}
 
-			if ($ipDelay > 0)
-			{
-				throw new \RuntimeException("IP address throttling prohibits you from logging in for another [$ipDelay] second(s).");
-			}
-		}
-
-		if (isset($user))
-		{
-			$userDelay = $this->throttle->userDelay($user);
-
-			if ($ipDelay > 0)
-			{
-				throw new \RuntimeException("User throttling prohibits your account being accessed in for another [$ipDelay] second(s).");
-			}
-		}
-
-		return true;
+	protected function fireEvent($event, $payload = array())
+	{
+		return $this->dispatcher->fire("sentry.{$event}", $payload);
 	}
 
 	/**

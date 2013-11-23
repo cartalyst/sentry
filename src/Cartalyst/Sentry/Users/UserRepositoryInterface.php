@@ -18,6 +18,8 @@
  * @link       http://cartalyst.com
  */
 
+use Closure;
+
 interface UserRepositoryInterface {
 
 	/**
@@ -59,15 +61,16 @@ interface UserRepositoryInterface {
 	 * @param  array  $credentials
 	 * @return bool
 	 */
-	public function validForCreation($id, array $credentials);
+	public function validForUpdate($id, array $credentials);
 
 	/**
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials
+	 * @param  \Closure  $callback
 	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
-	public function create(array $credentials);
+	public function create(array $credentials, Closure $callback = null);
 
 	/**
 	 * Updates a user.

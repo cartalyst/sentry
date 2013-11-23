@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling;
+<?php namespace Cartalyst\Sentry\Checkpoints;
 /**
  * Part of the Sentry package.
  *
@@ -20,29 +20,15 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-interface ThrottleRepositoryInterface {
+interface CheckpointInterface {
 
 	/**
-	 * Returns the global throttling delay, in seconds.
-	 *
-	 * @return int
-	 */
-	public function globalDelay();
-
-	/**
-	 * Returns the IP address throttling delay, in seconds.
-	 *
-	 * @param  string  $ipAddress
-	 * @return int
-	 */
-	public function ipDelay($ipAddress);
-
-	/**
-	 * Returns the throttling delay for the given user, in seconds.
+	 * Handle the checkpoint for the given user. Return false to deny entry.
+	 * Feel free to throw custom exceptions here.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return int
+	 * @return bool
 	 */
-	public function userDelay(UserInterface $user);
+	public function handle(UserInterface $user);
 
 }

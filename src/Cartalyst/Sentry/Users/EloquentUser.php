@@ -19,10 +19,12 @@
  */
 
 use Illuminate\Database\Eloquent\Model;
+use Cartalyst\Sentry\Activations\ActivatableInterface;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
 use Cartalyst\Sentry\Persistence\PersistableInterface;
+use Cartalyst\Sentry\Throttling\ThrottledInterface;
 
-class EloquentUser extends Model implements PermissibleInterface, PersistableInterface, UserInterface {
+class EloquentUser extends Model implements ActivatableInterface, PermissibleInterface, PersistableInterface, ThrottledInterface, UserInterface {
 
 	/**
 	 * {@inheritDoc}
@@ -54,6 +56,26 @@ class EloquentUser extends Model implements PermissibleInterface, PersistableInt
 	}
 
 	/**
+	 * Activation relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function activations()
+	{
+		return $this->hasMany('Cartalyst\Sentry\Activations\EloquentActivation');
+	}
+
+	/**
+	 * Throttles relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function throttles()
+	{
+		return $this->hasMany('Cartalyst\Sentry\Throttles');
+	}
+
+	/**
 	 * Get mutator for persistence codes.
 	 *
 	 * @param  mixed  $codes
@@ -73,6 +95,14 @@ class EloquentUser extends Model implements PermissibleInterface, PersistableInt
 	public function setPersistenceCodesAttribute(array $codes)
 	{
 		$this->attributes['codes'] = ($codes) ? json_encode($codes) : '';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getActivations()
+	{
+		return $this->activations;
 	}
 
 	/**
@@ -130,6 +160,22 @@ class EloquentUser extends Model implements PermissibleInterface, PersistableInt
 	public function savePersistenceCodes()
 	{
 		return $this->save();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getThrottles()
+	{
+		return $this->throttles;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getUserId()
+	{
+		return $this->getKey();
 	}
 
 	/**

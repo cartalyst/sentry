@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Users;
+<?php namespace Cartalyst\Sentry\Activations;
 /**
  * Part of the Sentry package.
  *
@@ -18,13 +18,13 @@
  * @link       http://cartalyst.com
  */
 
-interface UserInterface {
+interface ActivatableInterface {
 
 	/**
-	 * Get the user's primary key.
+	 * Return all activation attempts for the user.
 	 *
-	 * @return int
+	 * @return \IteratorAggregate
 	 */
-	public function getUserId();
+	public function getActivations();
 
 }

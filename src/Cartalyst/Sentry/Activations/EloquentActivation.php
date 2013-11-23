@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Users;
+<?php namespace Cartalyst\Sentry\Activations;
 /**
  * Part of the Sentry package.
  *
@@ -18,13 +18,32 @@
  * @link       http://cartalyst.com
  */
 
-interface UserInterface {
+use Illuminate\Database\Eloquent\Model;
+
+class EloquentActivation extends Model {
 
 	/**
-	 * Get the user's primary key.
-	 *
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	public function getUserId();
+	protected $table = 'activations';
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected $fillable = array(
+		'code',
+		'completed',
+		'completed_at',
+	);
+
+	/**
+	 * User relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo('Cartalyst\Sentry\Users\EloquentUser');
+	}
 
 }
