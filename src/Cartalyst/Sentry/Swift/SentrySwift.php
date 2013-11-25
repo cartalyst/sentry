@@ -22,7 +22,7 @@ use ApiBase;
 use Cartalyst\Sentry\Users\UserInterface;
 use SwiftIdentityExpressApi;
 
-class IlluminateSwiftRepository implements SwiftRepositoryInterface {
+class SentrySwift implements SwiftInterface {
 
 	protected $api;
 
@@ -87,24 +87,12 @@ class IlluminateSwiftRepository implements SwiftRepositoryInterface {
 	 */
 	public function response(UserInterface $user)
 	{
-		if ($this->method === 'swipe')
-		{
-			$api = $this->getApi();
+		$api = $this->getApi();
 
-			$response = $api->doSecondFactor($user->getUserLogin(), $this->appCode, $this->ipAddress);
-			$code = ApiBase::dispatchUser($response);
+		$response = $api->doSecondFactor($user->getUserLogin(), $this->appCode, $this->ipAddress);
+		$code = ApiBase::dispatchUser($response);
 
-			return array($response, $code);
-		}
-		else
-		{
-			$model = $this->modelForUser($user);
-
-			// if ( ! $model->number)
-			// {
-			// 	return NEED_REGISTER_SMS;
-			// }
-		}
+		return array($response, $code);
 	}
 
 	/**

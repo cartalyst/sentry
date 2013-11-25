@@ -27,7 +27,7 @@ use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
-use Cartalyst\Sentry\Swift\IlluminateSwiftRepository;
+use Cartalyst\Sentry\Swift\SentrySwift;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Illuminate\Http\Request;
@@ -192,7 +192,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$method = $app['config']['cartalyst/sentry::swift.method'];
 			$model = $app['config']['cartalyst/sentry::swift.model'];
 
-			return new IlluminateSwiftRepository(
+			return new SentrySwift(
 				$email,
 				$password,
 				$apiKey,

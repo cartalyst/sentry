@@ -12,7 +12,7 @@ return array(
 
 	),
 
-	'checkpoints' => array('activation', 'throttle', 'swift'),
+	'checkpoints' => array('activation', 'swift', 'throttle'),
 
 	'activation' => array(
 
@@ -20,6 +20,19 @@ return array(
 
 		// Seconds - defaults to 3 days
 		'expires' => 259200,
+
+	),
+
+	'swift' => array(
+
+		'email' => null,
+		'password' => null,
+		'api_key' => null,
+		'app_code' => null,
+
+		'method' => 'swipe',
+
+		'model' => 'Cartalyst\Sentry\Swift\EloquentSwift',
 
 	),
 
@@ -56,20 +69,6 @@ return array(
 			'thresholds' => 5,
 
 		),
-
-	),
-
-
-	'swift' => array(
-
-		'email' => null,
-		'password' => null,
-		'api_key' => null,
-		'app_code' => null,
-
-		'method' => 'swipe',
-
-		'model' => 'Cartalyst\Sentry\Swift\EloquentSwift',
 
 	),
 

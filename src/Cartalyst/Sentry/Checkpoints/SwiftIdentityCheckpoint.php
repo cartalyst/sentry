@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Swift\SwiftRepositoryInterface;
+use Cartalyst\Sentry\Swift\SwiftInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use SpiExpressSecondFactor;
 
@@ -26,7 +26,7 @@ class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterf
 
 	protected $swift;
 
-	public function __construct(SwiftRepositoryInterface $swift)
+	public function __construct(SwiftInterface $swift)
 	{
 		$this->swift = $swift;
 	}

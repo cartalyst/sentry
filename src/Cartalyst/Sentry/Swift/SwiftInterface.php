@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-interface SwiftRepositoryInterface {
+interface SwiftInterface {
 
 	/**
 	 * Return the Swift Identity authentication response object and code.
