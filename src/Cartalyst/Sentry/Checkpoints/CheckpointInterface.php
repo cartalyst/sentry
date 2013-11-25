@@ -20,18 +20,32 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-/**
- * @todo Have 2 methods, handleLogin() and handleCheck().
- */
 interface CheckpointInterface {
 
 	/**
-	 * Handle the checkpoint for the given user. Return false to deny entry.
-	 * Feel free to throw custom exceptions here.
+	 * Checkpoint after a user is logged in. Return false to deny persistence.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
 	 */
-	public function handle(UserInterface $user = null);
+	public function login(UserInterface $user);
+
+	/**
+	 * Checkpoint for when a user is currently stored in the session.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function check(UserInterface $user);
+
+	/**
+	 * Checkpoint for when a failed login attempt is logged. User is not always
+	 * passed and the result of the method will not affect anything, as the
+	 * login failed.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return void
+	 */
+	public function fail(UserInterface $user = null);
 
 }

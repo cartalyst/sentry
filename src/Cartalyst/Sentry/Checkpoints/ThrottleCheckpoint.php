@@ -46,7 +46,34 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user = null)
+	public function login(UserInterface $user)
+	{
+		return $this->checkThrottling($user);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function check(UserInterface $user)
+	{
+		return $this->checkThrottling($user);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function fail(UserInterface $user = null)
+	{
+		$this->throttle->log($this->ipAddress, $user);
+	}
+
+	/**
+	 * Checks the throttling status of the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function checkThrottling(UserInterface $user)
 	{
 		$globalDelay = $this->throttle->globalDelay();
 
@@ -78,6 +105,14 @@ class ThrottleCheckpoint implements CheckpointInterface {
 		return true;
 	}
 
+	/**
+	 * Throws a throttling exception.
+	 *
+	 * @param  string  $message
+	 * @param  string  $type
+	 * @param  int  $delay
+	 * @throws \Cartalyst\Sentry\Checkpoints\ThrottlingException
+	 */
 	protected function throwException($message, $type, $delay)
 	{
 		$exception = new ThrottlingException($message);

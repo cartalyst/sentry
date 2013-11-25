@@ -21,7 +21,7 @@
 use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 
-class ActivationCheckpoint implements CheckpointInterface {
+class ActivationCheckpoint extends BaseCheckpoint implements CheckpointInterface {
 
 	/**
 	 * Activations repository.
@@ -43,14 +43,28 @@ class ActivationCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user = null)
+	public function login(UserInterface $user)
 	{
-		// We only intercept successful logins
-		if ($user === null)
-		{
-			return;
-		}
+		return $this->checkActivation($user);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function check(UserInterface $user)
+	{
+		return $this->checkActivation($user);
+	}
+
+	/**
+	 * Checks the activation status of the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 * @throws \Cartalyst\Sentry\Checkpoints\NotActivatedException
+	 */
+	public function checkActivation(UserInterface $user)
+	{
 		$exists = $this->activations->exists($user);
 
 		if ($exists === false)

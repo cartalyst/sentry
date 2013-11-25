@@ -182,6 +182,14 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function log($ipAddress, UserInterface $user = null)
+	{
+		throw new \BadMethodCallException(__METHOD__);
+	}
+
+	/**
 	 * Returns a delay for the given type.
 	 *
 	 * @param  string  $type

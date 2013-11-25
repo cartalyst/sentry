@@ -89,12 +89,20 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 			});
 		}
 
-		$user = $query->first();
+		return $query->first();
 
 		if ($user and $this->validateCredentials($user, $password))
 		{
 			return $user;
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function validateCredentials(UserInterface $user, array $credentials)
+	{
+		return $this->hasher->checkHash($credentials['password'], $user->password);
 	}
 
 	/**
@@ -246,17 +254,6 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		}
 
 		return array($logins, $password, $credentials);
-	}
-
-	/**
-	 * Validates the given password against a user.
-	 *
-	 * @param  \Cartalyst\Sentry\Users\EloquentUser  $user
-	 * @return bool
-	 */
-	protected function validateCredentials(EloquentUser $user, $password)
-	{
-		return $this->hasher->checkHash($password, $user->password);
 	}
 
 	/**

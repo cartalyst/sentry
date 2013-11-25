@@ -23,12 +23,12 @@ use Cartalyst\Sentry\Users\UserInterface;
 interface SwiftRepositoryInterface {
 
 	/**
-	 * Return if the swift authentication passes.
+	 * Return the Swift Identity authentication response object and code.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
+	 * @return array
 	 */
-	public function passes(UserInterface $user);
+	public function response(UserInterface $user);
 
 	/**
 	 * Return if the SMS code passes swift authentication.
@@ -36,7 +36,7 @@ interface SwiftRepositoryInterface {
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
 	 */
-	public function passesSms(UserInterface $user, $code);
+	public function smsResponse(UserInterface $user, $code);
 
 	/**
 	 * Set the SMS number for the given user.

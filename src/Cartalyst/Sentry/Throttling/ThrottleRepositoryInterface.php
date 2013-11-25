@@ -45,4 +45,13 @@ interface ThrottleRepositoryInterface {
 	 */
 	public function userDelay(UserInterface $user);
 
+	/**
+	 * Log a new throttling entry.
+	 *
+	 * @param  string  $ipAddress
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return void
+	 */
+	public function log($ipAddress, UserInterface $user = null);
+
 }

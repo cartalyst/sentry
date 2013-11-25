@@ -12,7 +12,7 @@ return array(
 
 	),
 
-	'checkpoints' => array('activation', 'throttle'/*, 'swift'*/),
+	'checkpoints' => array('activation', 'throttle', 'swift'),
 
 	'activation' => array(
 

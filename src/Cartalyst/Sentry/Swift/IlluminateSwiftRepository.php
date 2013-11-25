@@ -85,33 +85,32 @@ class IlluminateSwiftRepository implements SwiftRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function passes(UserInterface $user)
+	public function response(UserInterface $user)
 	{
 		if ($this->method === 'swipe')
 		{
 			$api = $this->getApi();
 
-			// @todo, remove hardcoding
 			$response = $api->doSecondFactor($user->getUserLogin(), $this->appCode, $this->ipAddress);
-			$dispatch = ApiBase::dispatchUser($response);
+			$code = ApiBase::dispatchUser($response);
 
-			return $dispatch;
+			return array($response, $code);
 		}
 		else
 		{
 			$model = $this->modelForUser($user);
 
-			if ( ! $model->number)
-			{
-				return NEED_REGISTER_SMS;
-			}
+			// if ( ! $model->number)
+			// {
+			// 	return NEED_REGISTER_SMS;
+			// }
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function passesSms(UserInterface $user, $code)
+	public function smsResponse(UserInterface $user, $code)
 	{
 
 	}

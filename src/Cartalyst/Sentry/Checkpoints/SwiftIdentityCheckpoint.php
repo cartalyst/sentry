@@ -20,8 +20,9 @@
 
 use Cartalyst\Sentry\Swift\SwiftRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
+use SpiExpressSecondFactor;
 
-class SwiftIdentityCheckpoint implements CheckpointInterface {
+class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterface {
 
 	protected $swift;
 
@@ -33,49 +34,68 @@ class SwiftIdentityCheckpoint implements CheckpointInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handle(UserInterface $user = null)
+	public function login(UserInterface $user)
 	{
-		if ($user === null)
-		{
-			return;
-		}
+		list($response, $code) = $this->swift->response($user);
 
-		$response = $this->swift->passes($user);
-
-		switch ($response)
+		switch ($code)
 		{
 			case NEED_REGISTER_SMS:
-				dd('redirect the user to a sms registration page');
+				$message = 'User needs to register SMS.';
 				break;
 
 			case NEED_REGISTER_SWIPE:
-				dd('redirect the user to a swipe registration process');
+				$message = 'User needs to register their swipe application.';
 				break;
 
 			case RC_SWIPE_TIMEOUT:
-				dd('Invalidate the session');
-				break;
+				return false;
 
 			case RC_SWIPE_ACCEPTED:
-				dd('The user has reply OK to the swipe');
-				break;
+				return true;
 
 			case RC_SWIPE_REJECTED:
-				dd('Invalidate the session');
-				break;
+				$message = 'User has rejected swipe request.';
 
 			case RC_SMS_DELIVERED:
-				dd('Redirect the user to an SMS Answer form page');
+				$message = 'SMS was delivered to user.';
 				break;
 
 			case RC_ERROR:
-				dd('An error happened, redirect to an error page. You may have forgot to do the api-login');
+				$message = 'An error occured with Swift Identity.';
 				break;
 
 			case RC_APP_DOES_NOT_EXIST:
-				dd('The application doesn\'t exist, you have an error in your application code');
+				$message = 'Your Swift Identity app is misconfigured.';
 				break;
 		}
+
+		$this->throwException($message, $code, $user, $response);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function check(UserInterface $user)
+	{
+		return true;
+	}
+
+	/**
+	 * Throws an exception due to an unsuccessful Swift Identity authentication.
+	 *
+	 * @param  string  $message
+	 * @param  int  $code
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  \SpiExpressSecondFactor  $response
+	 * @throws \Cartalyst\Sentry\Checkpoints\SwiftIdentityException
+	 */
+	protected function throwException($message, $code, UserInterface $user, SpiExpressSecondFactor $response)
+	{
+		$exception = new SwiftIdentityException($message, $code);
+		$exception->setUser($user);
+		$exception->setResponse($response);
+		throw $exception;
 	}
 
 }

@@ -64,7 +64,7 @@ class Sentry {
 	 *
 	 * @var bool
 	 */
-	protected $checkpoints = true;
+	protected $checkpoints = array();
 
 	/**
 	 * Activations repository.
@@ -178,12 +178,12 @@ class Sentry {
 
 		$user = $this->users->findByPersistenceCode($code);
 
-		if ( ! $this->cycleCheckpoints($user))
+		if ($user === null)
 		{
 			return false;
 		}
 
-		if ($user === null)
+		if ( ! $this->cycleCheckpoints('check', $user))
 		{
 			return false;
 		}
@@ -225,13 +225,16 @@ class Sentry {
 	public function authenticate(array $credentials, $remember = false, $login = true)
 	{
 		$user = $this->users->findByCredentials($credentials);
+		$valid = $this->users->validateCredentials($user, $credentials);
 
-		if ( ! $user)
+		if ($user === null or $valid === false)
 		{
+			$this->cycleCheckpoints('fail', $user, false);
+
 			return false;
 		}
 
-		if ( ! $this->cycleCheckpoints($user))
+		if ( ! $this->cycleCheckpoints('login', $user))
 		{
 			return false;
 		}
@@ -391,26 +394,12 @@ class Sentry {
 	/**
 	 * Add a new checkpoint to Sentry.
 	 *
-	 * @param  \Closure|string  $checkpoint
-	 * @param  int  $priority
+	 * @param  \Cartalyst\Sentry\Checkpoints\CheckpointInterface  $checkpoint
 	 * @return void
 	 */
-	public function addCheckpoint($checkpoint, $priority = 0)
+	public function addCheckpoint(CheckpointInterface $checkpoint)
 	{
-		if (is_object($checkpoint))
-		{
-			if ( ! $checkpoint instanceof CheckpointInterface)
-			{
-				throw new \InvalidArgumentException('Invalid checkpoint instance.');
-			}
-
-			$checkpoint = function(UserInterface $user = null) use ($checkpoint)
-			{
-				return $checkpoint->handle($user);
-			};
-		}
-
-		$this->registerEvent('checkpoint', $checkpoint, $priority);
+		$this->checkpoints[] = $checkpoint;
 	}
 
 	/**
@@ -418,19 +407,24 @@ class Sentry {
 	 * throw their own exceptions, however, if just one returns false, the
 	 * cycle fails.
 	 *
+	 * @param  string  $method
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $halt
 	 * @return bool
 	 */
-	protected function cycleCheckpoints(UserInterface $user = null)
+	protected function cycleCheckpoints($method, UserInterface $user = null, $halt = true)
 	{
-		if ($this->checkpoints === false)
+		foreach ($this->checkpoints as $checkpoint)
 		{
-			return true;
+			$response = $checkpoint->$method($user);
+
+			if ($response === false and $halt === true)
+			{
+				return false;
+			}
 		}
 
-		$response = $this->fireEvent('checkpoint', $user);
-
-		return ($response !== false);
+		return true;
 	}
 
 	/**

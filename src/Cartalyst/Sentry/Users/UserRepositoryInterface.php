@@ -47,6 +47,15 @@ interface UserRepositoryInterface {
 	public function findByPersistenceCode($code);
 
 	/**
+	 * Validate the password of the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  array  $credentials
+	 * @return bool
+	 */
+	public function validateCredentials(UserInterface $user, array $credentials);
+
+	/**
 	 * Validate if the given user is valid for creation.
 	 *
 	 * @param  array  $credentials
