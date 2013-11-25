@@ -702,11 +702,9 @@ class Sentry {
 	 */
 	public function __call($method, $parameters)
 	{
-		if (starts_with($method, 'findUserBy'))
+		if (starts_with($method, 'findBy'))
 		{
 			$users = $this->getUserRepository();
-
-			$method = 'findBy'.substr($method, 10);
 
 			return call_user_func_array(array($users, $method), $parameters);
 		}

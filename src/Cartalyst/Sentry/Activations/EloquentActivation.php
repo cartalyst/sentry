@@ -25,7 +25,14 @@ class EloquentActivation extends Model {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $table = 'activations';
+	protected $table = 'user_events';
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected $attributes = array(
+		'type' => 'activation',
+	);
 
 	/**
 	 * {@inheritDoc}
@@ -37,13 +44,51 @@ class EloquentActivation extends Model {
 	);
 
 	/**
+	 * The users model name.
+	 *
+	 * @var string
+	 */
+	protected static $usersModel = 'Cartalyst\Sentry\Users\EloquentUser';
+
+	/**
 	 * User relationship.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function user()
 	{
-		return $this->belongsTo('Cartalyst\Sentry\Users\EloquentUser');
+		return $this->belongsTo(static::$usersModel);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function newQuery($excludeDeleted = true)
+	{
+		$builder = parent::newQuery($excludeDeleted);
+
+		return $builder->where('type', 'activation');
+	}
+
+	/**
+	 * Get the users model.
+	 *
+	 * @return string
+	 */
+	public static function getUsersModel()
+	{
+		return static::$usersModel;
+	}
+
+	/**
+	 * Set the users model.
+	 *
+	 * @param  string  $usersModel
+	 * @return void
+	 */
+	public static function setUsersModel($usersModel)
+	{
+		static::$usersModel = $usersModel;
 	}
 
 }

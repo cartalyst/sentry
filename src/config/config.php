@@ -20,7 +20,7 @@ return array(
 
 	'checkpoints' => array('activation', 'swift', 'throttle'),
 
-	'activation' => array(
+	'activations' => array(
 
 		'model' => 'Cartalyst\Sentry\Activations\EloquentActivation',
 

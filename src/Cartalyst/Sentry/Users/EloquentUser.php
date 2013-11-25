@@ -56,6 +56,27 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	protected $loginNames = array('email');
 
 	/**
+	 * The activations model name.
+	 *
+	 * @var string
+	 */
+	protected static $activationsModel = 'Cartalyst\Sentry\Activations\EloquentActivation';
+
+	/**
+	 * The groups model name.
+	 *
+	 * @var string
+	 */
+	protected static $groupsModel = 'Cartalyst\Sentry\Groups\EloquentGroup';
+
+	/**
+	 * The throttling model name.
+	 *
+	 * @var string
+	 */
+	protected static $throttlingModel = 'Cartalyst\Sentry\Throttling\EloquentThrottle';
+
+	/**
 	 * Returns an array of login column names.
 	 *
 	 * @return array
@@ -72,7 +93,7 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	 */
 	public function activations()
 	{
-		return $this->hasMany('Cartalyst\Sentry\Activations\EloquentActivation', 'user_id');
+		return $this->hasMany(static::$activationsModel, 'user_id');
 	}
 
 	/**
@@ -82,7 +103,7 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	 */
 	public function groups()
 	{
-		return $this->belongsToMany('Cartalyst\Sentry\Groups\EloquentGroup', 'groups_users', 'user_id', 'group_id');
+		return $this->belongsToMany(static::$groupsModel, 'groups_users', 'user_id', 'group_id');
 	}
 
 	/**
@@ -92,7 +113,7 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	 */
 	public function throttles()
 	{
-		return $this->hasMany('Cartalyst\Sentry\Throttling\EloquentThrottle', 'user_id');
+		return $this->hasMany(static::$throttlingModel, 'user_id');
 	}
 
 	/**
@@ -303,6 +324,69 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 		}
 
 		return new SentryPermissions($userPermissions, $groupPermissions);
+	}
+
+	/**
+	 * Get the activations model.
+	 *
+	 * @return string
+	 */
+	public static function getActivationsModel()
+	{
+		return static::$activationsModel;
+	}
+
+	/**
+	 * Set the activations model.
+	 *
+	 * @param  string  $activationsModel
+	 * @return void
+	 */
+	public static function setActivationsModel($activationsModel)
+	{
+		static::$activationsModel = $activationsModel;
+	}
+
+	/**
+	 * Get the throttling model.
+	 *
+	 * @return string
+	 */
+	public static function getThrottlingModel()
+	{
+		return static::$throttlingModel;
+	}
+
+	/**
+	 * Set the throttling model.
+	 *
+	 * @param  string  $throttlingModel
+	 * @return void
+	 */
+	public static function setThrottlingModel($throttlingModel)
+	{
+		static::$throttlingModel = $throttlingModel;
+	}
+
+	/**
+	 * Get the groups model.
+	 *
+	 * @return string
+	 */
+	public static function getGroupsModel()
+	{
+		return static::$groupsModel;
+	}
+
+	/**
+	 * Set the groups model.
+	 *
+	 * @param  string  $groupsModel
+	 * @return void
+	 */
+	public static function setGroupsModel($groupsModel)
+	{
+		static::$groupsModel = $groupsModel;
 	}
 
 	/**

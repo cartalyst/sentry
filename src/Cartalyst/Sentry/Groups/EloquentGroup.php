@@ -40,13 +40,20 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	);
 
 	/**
+	 * The users model name.
+	 *
+	 * @var string
+	 */
+	protected static $usersModel = 'Cartalyst\Sentry\Users\EloquentUser';
+
+	/**
 	 * Users relationship.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
 	public function users()
 	{
-		return $this->belongsToMany('Cartalyst\Sentry\Users\EloquentUser', 'groups_users', 'group_id', 'user_id');
+		return $this->belongsToMany(static::$usersModel, 'groups_users', 'group_id', 'user_id');
 	}
 
 	/**
@@ -116,6 +123,27 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	protected function createPermissions()
 	{
 		return new SentryPermissions($this->permissions);
+	}
+
+	/**
+	 * Get the users model.
+	 *
+	 * @return string
+	 */
+	public static function getUsersModel()
+	{
+		return static::$usersModel;
+	}
+
+	/**
+	 * Set the users model.
+	 *
+	 * @param  string  $usersModel
+	 * @return void
+	 */
+	public static function setUsersModel($usersModel)
+	{
+		static::$usersModel = $usersModel;
 	}
 
 	/**

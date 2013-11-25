@@ -22,12 +22,46 @@ use Illuminate\Database\Eloquent\Model;
 
 class EloquentThrottle extends Model {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected $table = 'throttle';
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected $fillable = array(
 		'type',
 		'ip',
 	);
+
+	/**
+	 * Get the users model.
+	 *
+	 * @return string
+	 */
+	public static function getUsersModel()
+	{
+		return static::$usersModel;
+	}
+
+	/**
+	 * Set the users model.
+	 *
+	 * @param  string  $usersModel
+	 * @return void
+	 */
+	public static function setUsersModel($usersModel)
+	{
+		static::$usersModel = $usersModel;
+	}
+
+	/**
+	 * The users model name.
+	 *
+	 * @var string
+	 */
+	protected static $usersModel = 'Cartalyst\Sentry\Users\EloquentUser';
 
 	/**
 	 * User relationship.
@@ -36,7 +70,7 @@ class EloquentThrottle extends Model {
 	 */
 	public function user()
 	{
-		return $this->belongsTo('Cartalyst\Sentry\Users\EloquentUser');
+		return $this->belongsTo(static::$usersModel);
 	}
 
 }
