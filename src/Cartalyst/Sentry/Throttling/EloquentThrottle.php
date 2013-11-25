@@ -24,4 +24,19 @@ class EloquentThrottle extends Model {
 
 	protected $table = 'throttle';
 
+	protected $fillable = array(
+		'type',
+		'ip',
+	);
+
+	/**
+	 * User relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo('Cartalyst\Sentry\Users\EloquentUser');
+	}
+
 }

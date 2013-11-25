@@ -19,6 +19,7 @@
  */
 
 use Cartalyst\Sentry\Users\UserInterface;
+use Closure;
 
 interface SwiftInterface {
 
@@ -31,14 +32,6 @@ interface SwiftInterface {
 	public function response(UserInterface $user);
 
 	/**
-	 * Return if the SMS code passes swift authentication.
-	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
-	 */
-	public function smsResponse(UserInterface $user, $code);
-
-	/**
 	 * Set the SMS number for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
@@ -46,5 +39,7 @@ interface SwiftInterface {
 	 * @return bool
 	 */
 	public function saveNumber(UserInterface $user, $number);
+
+	public function checkAnswer(UserInterface $user, $answer, Closure $callback);
 
 }

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Users;
+<?php namespace Cartalyst\Sentry\Laravel\Facades;
 /**
  * Part of the Sentry package.
  *
@@ -18,34 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-interface UserInterface {
+use Illuminate\Support\Facades\Facade;
+
+class SwiftIdentity extends Facade {
 
 	/**
-	 * Get the user's primary key.
-	 *
-	 * @return int
+	 * {@inheritDoc}
 	 */
-	public function getUserId();
-
-	/**
-	 * Get the user's login.
-	 *
-	 * @return string
-	 */
-	public function getUserLogin();
-
-	/**
-	 * Get the user's login attribute name.
-	 *
-	 * @return string
-	 */
-	public function getUserLoginName();
-
-	/**
-	 * Get the user's passwrd.
-	 *
-	 * @return string
-	 */
-	public function getUserPassword();
+	protected static function getFacadeAccessor()
+	{
+		return 'sentry.swift';
+	}
 
 }

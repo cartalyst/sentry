@@ -186,7 +186,25 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 */
 	public function log($ipAddress, UserInterface $user = null)
 	{
-		throw new \BadMethodCallException(__METHOD__);
+		$global = $this->createModel();
+		$global->fill(array(
+			'type' => 'global',
+		));
+		$global->save();
+
+		$ip = $this->createModel();
+		$ip->fill(array(
+			'type' => 'ip',
+			'ip' => $ipAddress,
+		));
+		$ip->save();
+
+		$userThrottle = $this->createModel();
+		$userThrottle->fill(array(
+			'type' => 'user',
+		));
+		$userThrottle->user()->associate($user);
+		$userThrottle->save();
 	}
 
 	/**
