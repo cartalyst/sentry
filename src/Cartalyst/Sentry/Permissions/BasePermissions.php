@@ -21,35 +21,35 @@
 abstract class BasePermissions implements PermissionsInterface {
 
 	/**
-	 * User permissions.
+	 * Permissions.
 	 *
 	 * @var array
 	 */
-	protected $userPermissions = array();
+	protected $permisions = array();
 
 	/**
-	 * Group permissions (where each item is a group containing permissions).
+	 * Secondary permissions.
 	 *
 	 * @var array
 	 */
-	protected $groupPermissions = array();
+	protected $secondaryPermissions = array();
 
 	/**
 	 * Create a new permissions instance.
 	 *
-	 * @param  array  $userPermissions
-	 * @param  array  $groupPermisions
+	 * @param  array  $permisions
+	 * @param  array  $secondaryPermisions
 	 */
-	public function __construct(array $userPermissions = null, array $groupPermissions = null)
+	public function __construct(array $permisions = null, array $secondaryPermissions = null)
 	{
-		if (isset($userPermissions))
+		if (isset($permisions))
 		{
-			$this->userPermissions = $userPermissions;
+			$this->permisions = $permisions;
 		}
 
-		if (isset($groupPermissions))
+		if (isset($secondaryPermissions))
 		{
-			$this->groupPermissions = $groupPermissions;
+			$this->secondaryPermissions = $secondaryPermissions;
 		}
 	}
 
@@ -90,45 +90,45 @@ abstract class BasePermissions implements PermissionsInterface {
 	}
 
 	/**
-	 * Get user permissions.
+	 * Get permissions.
 	 *
 	 * @return array
 	 */
-	public function getUserPermissions()
+	public function getPermissions()
 	{
-		return $this->userPermissions;
+		return $this->permisions;
 	}
 
 	/**
-	 * Set user permissions.
+	 * Set permissions.
 	 *
-	 * @param  array  $userPermissions
+	 * @param  array  $permisions
 	 * @return void
 	 */
-	public function setUserPermissions(array $userPermissions)
+	public function setPermissions(array $permisions)
 	{
-		$this->userPermissions = $userPermissions;
+		$this->permisions = $permisions;
 	}
 
 	/**
-	 * Get group permissions.
+	 * Get secondary permissions.
 	 *
 	 * @return array
 	 */
-	public function getGroupPermissions()
+	public function getSecondaryPermissions()
 	{
-		return $this->groupPermissions;
+		return $this->secondaryPermissions;
 	}
 
 	/**
-	 * Set group permissions.
+	 * Set secondary permissions.
 	 *
-	 * @param  array  $groupPermissions
+	 * @param  array  $secondaryPermissions
 	 * @return void
 	 */
-	public function setGroupPermissions(array $groupPermissions)
+	public function setSecondaryPermissions(array $secondaryPermissions)
 	{
-		$this->groupPermissions = $groupPermissions;
+		$this->secondaryPermissions = $secondaryPermissions;
 	}
 
 	/**

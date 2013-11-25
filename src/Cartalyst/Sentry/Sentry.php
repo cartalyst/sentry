@@ -21,6 +21,8 @@
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentry\Checkpoints\CheckpointInterface;
+use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
+use Cartalyst\Sentry\Groups\GroupRepositoryInterface;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\PersistenceInterface;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
@@ -53,6 +55,13 @@ class Sentry {
 	protected $users;
 
 	/**
+	 * Group repository.
+	 *
+	 * @var \Cartalyst\Sentry\Groups\GroupRepositoryInterface
+	 */
+	protected $groups;
+
+	/**
 	 * Event dispatcher.
 	 *
 	 * @var \Illuminate\Events\Dispatcher
@@ -77,16 +86,22 @@ class Sentry {
 	 * Create a new Sentry instance.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
+	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
 	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
 	 */
-	public function __construct(PersistenceInterface $persistence, UserRepositoryInterface $users = null, Dispatcher $dispatcher = null)
+	public function __construct(PersistenceInterface $persistence, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null, Dispatcher $dispatcher = null)
 	{
 		$this->persistence = $persistence;
 
 		if (isset($users))
 		{
 			$this->users = $users;
+		}
+
+		if (isset($groups))
+		{
+			$this->groups = $groups;
 		}
 
 		if (isset($dispatcher))
@@ -148,6 +163,12 @@ class Sentry {
 			$users = $this->getUserRepository();
 
 			$user = $users->findById($user);
+		}
+		elseif (is_array($user))
+		{
+			$users = $this->getUserRepository();
+
+			$user = $users->findByCredentials($user);
 		}
 
 		if ( ! $user instanceof UserInterface)
@@ -554,6 +575,44 @@ class Sentry {
 	}
 
 	/**
+	 * Get the group repository.
+	 *
+	 * @return \Cartalyst\Sentry\Groups\GroupRepositoryInterface
+	 */
+	public function getGroupRepository()
+	{
+		if ($this->groups === null)
+		{
+			$this->groups = $this->createGroupRepository();
+		}
+
+		return $this->groups;
+	}
+
+	/**
+	 * Set the group repository.
+	 *
+	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
+	 * @return void
+	 */
+	public function setGroupRepository(GroupRepositoryInterface $groups)
+	{
+		$this->groups = $groups;
+	}
+
+	/**
+	 * Creates a default group repository if none has been specified.
+	 *
+	 * @return \Cartalyst\Sentry\Groups\IlluminateGroupRepository
+	 */
+	protected function createGroupRepository()
+	{
+		$model = 'Cartalyst\Sentry\Groups\EloquentGroup';
+
+		return new IlluminateGroupRepository($model);
+	}
+
+	/**
 	 * Get the event dispatcher.
 	 *
 	 * @return \Illuminate\Events\Dispatcher
@@ -636,14 +695,38 @@ class Sentry {
 	 */
 	public function __call($method, $parameters)
 	{
-		if (starts_with($method, 'findBy'))
+		if (starts_with($method, 'findUserBy'))
 		{
 			$users = $this->getUserRepository();
+
+			$method = 'findBy'.substr($method, 10);
 
 			return call_user_func_array(array($users, $method), $parameters);
 		}
 
+		if (starts_with($method, 'findGroupBy'))
+		{
+			$groups = $this->getGroupRepository();
+
+			$method = 'findBy'.substr($method, 11);
+
+			return call_user_func_array(array($groups, $method), $parameters);
+		}
+
+		$methods = array('getGroups', 'inGroup', 'hasAccess', 'hasAnyAccess');
 		$className = get_class($this);
+
+		if (in_array($method, $methods))
+		{
+			$user = $this->getUser();
+
+			if ($user === null)
+			{
+				throw new \BadMethodCallException("Method {$className}::{$method}() can only be called if a user is logged in.");
+			}
+
+			return call_user_func_array(array($user, $method), $parameters);
+		}
 
 		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}

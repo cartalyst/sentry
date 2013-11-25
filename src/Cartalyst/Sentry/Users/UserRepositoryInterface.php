@@ -64,15 +64,6 @@ interface UserRepositoryInterface {
 	public function validForCreation(array $credentials);
 
 	/**
-	 * Validate if the given user is valid for updating.
-	 *
-	 * @param  int  $id
-	 * @param  array  $credentials
-	 * @return bool
-	 */
-	public function validForUpdate($id, array $credentials);
-
-	/**
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials
@@ -80,22 +71,5 @@ interface UserRepositoryInterface {
 	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
 	public function create(array $credentials, Closure $callback = null);
-
-	/**
-	 * Updates a user.
-	 *
-	 * @param  int  $id
-	 * @param  array  $credentials
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function update($id, array $credentials);
-
-	/**
-	 * Deletes a user.
-	 *
-	 * @param  int  $id
-	 * @return int
-	 */
-	public function delete($id);
 
 }

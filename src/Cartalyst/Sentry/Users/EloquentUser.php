@@ -19,12 +19,14 @@
  */
 
 use Cartalyst\Sentry\Activations\ActivatableInterface;
+use Cartalyst\Sentry\Groups\GroupableInterface;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
+use Cartalyst\Sentry\Permissions\SentryPermissions;
 use Cartalyst\Sentry\Persistence\PersistableInterface;
 use Cartalyst\Sentry\Throttling\ThrottledInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class EloquentUser extends Model implements ActivatableInterface, PermissibleInterface, PersistableInterface, ThrottledInterface, UserInterface {
+class EloquentUser extends Model implements ActivatableInterface, GroupableInterface, PermissibleInterface, PersistableInterface, ThrottledInterface, UserInterface {
 
 	/**
 	 * {@inheritDoc}
@@ -37,14 +39,6 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	protected $fillable = array(
 		'email',
 		'password',
-	);
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected $with = array(
-		// 'activations',
-		// 'throttles',
 	);
 
 	/**
@@ -82,6 +76,16 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	}
 
 	/**
+	 * Groups relationship.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
+	public function groups()
+	{
+		return $this->belongsToMany('Cartalyst\Sentry\Groups\EloquentGroup', 'groups_users', 'user_id', 'group_id');
+	}
+
+	/**
 	 * Throttles relationship.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -103,7 +107,7 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	}
 
 	/**
-	 * Set mutator for persitence codes.
+	 * Set mutator for persistence codes.
 	 *
 	 * @param  mixed  $codes
 	 * @return void
@@ -114,11 +118,69 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	}
 
 	/**
+	 * Get mutator for permissions.
+	 *
+	 * @param  mixed  $permissions
+	 * @return array
+	 */
+	public function getPermissionsAttribute($permissions)
+	{
+		return ($permissions) ? json_decode($permissions, true) : array();
+	}
+
+	/**
+	 * Set mutator for permissions.
+	 *
+	 * @param  mixed  $permissions
+	 * @return void
+	 */
+	public function setPermissionsAttribute(array $permissions)
+	{
+		$this->attributes['permissions'] = ($permissions) ? json_encode($permissions) : '';
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function getActivations()
 	{
 		return $this->activations;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getGroups()
+	{
+		return $this->groups;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function inGroup($group)
+	{
+		$group = array_first($this->groups, function($index, $instance) use ($group)
+		{
+			if ($group instanceof GroupInterface)
+			{
+				return ($instance === $group);
+			}
+
+			if ($instance->getGroupId() == $group)
+			{
+				return true;
+			}
+
+			if ($instance->getGroupSlug() == $group)
+			{
+				return true;
+			}
+
+			return false;
+		});
+
+		return ($group !== null);
 	}
 
 	/**
@@ -233,6 +295,27 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 		}
 
 		return new SentryPermissions($userPermissions, $groupPermissions);
+	}
+
+	/**
+	 * Dynamically pass missing methods to the group.
+	 *
+	 * @param  string  $method
+	 * @param  array   $parameters
+	 * @return mixed
+	 */
+	public function __call($method, $parameters)
+	{
+		$methods = array('hasAccess', 'hasAnyAccess');
+
+		if (in_array($method, $methods))
+		{
+			$permissions = $this->getPermissions();
+
+			return call_user_func_array(array($permissions, $method), $parameters);
+		}
+
+		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}
 
 }

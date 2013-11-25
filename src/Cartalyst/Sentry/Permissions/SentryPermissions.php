@@ -27,17 +27,17 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 	{
 		$prepared = array();
 
-		if ( ! empty($this->groupPermissions))
+		if ( ! empty($this->secondaryPermissions))
 		{
-			foreach ($this->groupPermissions as $permissions)
+			foreach ($this->secondaryPermissions as $permissions)
 			{
 				$this->preparePermissions($prepared, $permissions);
 			}
 		}
 
-		if ( ! empty($this->userPermissions))
+		if ( ! empty($this->permisions))
 		{
-			$this->preparePermissions($prepared, $this->userPermissions);
+			$this->preparePermissions($prepared, $this->permisions);
 		}
 
 		return $prepared;

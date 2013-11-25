@@ -12,6 +12,12 @@ return array(
 
 	),
 
+	'groups' => array(
+
+		'model' => 'Cartalyst\Sentry\Groups\EloquentGroup',
+
+	),
+
 	'checkpoints' => array('activation', 'swift', 'throttle'),
 
 	'activation' => array(

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Permissions;
+<?php namespace Cartalyst\Sentry\Groups;
 /**
  * Part of the Sentry package.
  *
@@ -18,29 +18,27 @@
  * @link       http://cartalyst.com
  */
 
-class StrictPermissions extends BasePermissions implements PermissionsInterface {
+interface GroupInterface {
 
 	/**
-	 * {@inheritDoc}
+	 * Return the group's primary key.
+	 *
+	 * @return int
 	 */
-	protected function getPreparedPermissions()
-	{
-		$prepared = array();
+	public function getGroupId();
 
-		if ( ! empty($this->secondaryPermissions))
-		{
-			foreach ($this->secondaryPermissions as $permissions)
-			{
-				$this->preparePermissions($prepared, $permissions);
-			}
-		}
+	/**
+	 * Return the group's slug.
+	 *
+	 * @return string
+	 */
+	public function getGroupSlug();
 
-		if ( ! empty($this->permisions))
-		{
-			$prepared = array_merge($prepared, $this->permisions);
-		}
-
-		return $prepared;
-	}
+	/**
+	 * Return all users for the group.
+	 *
+	 * @return \IteratorAggregate
+	 */
+	public function getUsers();
 
 }

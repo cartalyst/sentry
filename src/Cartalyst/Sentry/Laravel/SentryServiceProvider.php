@@ -23,6 +23,7 @@ use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Checkpoints\ActivationCheckpoint;
 use Cartalyst\Sentry\Checkpoints\SwiftIdentityCheckpoint;
 use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
+use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Sentry;
@@ -56,6 +57,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->registerPersistence();
 		$this->registerUsers();
+		$this->registerGroups();
 		$this->registerCheckpoints();
 		$this->registerSentry();
 	}
@@ -119,6 +121,16 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
 		{
 			return new NativeHasher;
+		});
+	}
+
+	protected function registerGroups()
+	{
+		$this->app['sentry.groups'] = $this->app->share(function($app)
+		{
+			$model = $app['config']['cartalyst/sentry::groups.model'];
+
+			return new IlluminateGroupRepository($model);
 		});
 	}
 
@@ -248,6 +260,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$sentry = new Sentry(
 				$app['sentry.persistence'],
 				$app['sentry.users'],
+				$app['sentry.groups'],
 				$app['events']
 			);
 
@@ -276,6 +289,7 @@ class SentryServiceProvider extends ServiceProvider {
 			'sentry.persistence',
 			'sentry.hasher',
 			'sentry.users',
+			'sentry.groups',
 			'sentry.activation',
 			'sentry.checkpoint.activation',
 			'sentry.swift',
