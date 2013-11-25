@@ -36,6 +36,11 @@ class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterf
 	 */
 	public function login(UserInterface $user)
 	{
+		if ($this->swift->isAnswering())
+		{
+			return true;
+		}
+
 		list($response, $code) = $this->swift->response($user);
 
 		switch ($code)

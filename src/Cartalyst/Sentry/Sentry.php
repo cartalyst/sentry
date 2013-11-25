@@ -217,21 +217,28 @@ class Sentry {
 	/**
 	 * Authenticates a user, with "remember" flag.
 	 *
-	 * @param  array  $credentials
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @param  bool  $remember
 	 * @param  bool  $bool
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function authenticate(array $credentials, $remember = false, $login = true)
+	public function authenticate($credentials, $remember = false, $login = true)
 	{
-		$user = $this->users->findByCredentials($credentials);
-		$valid = $this->users->validateCredentials($user, $credentials);
-
-		if ($user === null or $valid === false)
+		if ($credentials instanceof UserInterface)
 		{
-			$this->cycleCheckpoints('fail', $user, false);
+			$user = $credentials;
+		}
+		else
+		{
+			$user = $this->users->findByCredentials($credentials);
+			$valid = $this->users->validateCredentials($user, $credentials);
 
-			return false;
+			if ($user === null or $valid === false)
+			{
+				$this->cycleCheckpoints('fail', $user, false);
+
+				return false;
+			}
 		}
 
 		if ( ! $this->cycleCheckpoints('login', $user))
@@ -252,10 +259,10 @@ class Sentry {
 	/**
 	 * Authenticates a user, with "remember" flag.
 	 *
-	 * @param  array  $credentials
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function authenticateAndRemember(array $credentials)
+	public function authenticateAndRemember($credentials)
 	{
 		return $this->authenticate($credentials, true);
 	}
@@ -263,11 +270,11 @@ class Sentry {
 	/**
 	 * Forces an authentication to bypass checkpoints.
 	 *
-	 * @param  array  $credentials
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @param  bool  $remember
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function forceAuthenticate(array $credentials, $remember = false)
+	public function forceAuthenticate($credentials, $remember = false)
 	{
 		return $this->bypassCheckpoints(function($sentry) use ($credentials, $remember)
 		{
@@ -278,10 +285,10 @@ class Sentry {
 	/**
 	 * Forces an authentication to bypass checkpoints, with "remember" flag.
 	 *
-	 * @param  array  $credentials
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function forceAuthenticateAndRemember(array $credentials)
+	public function forceAuthenticateAndRemember($credentials)
 	{
 		return $this->forceAuthenticate($credentials, true);
 	}
@@ -289,10 +296,10 @@ class Sentry {
 	/**
 	 * Attempt a stateless authentication.
 	 *
-	 * @param  array  $credentials
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
-	public function stateless(array $credentials)
+	public function stateless($credentials)
 	{
 		return $this->authenticate($credentials, false, false);
 	}

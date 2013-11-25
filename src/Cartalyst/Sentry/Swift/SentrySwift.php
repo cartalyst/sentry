@@ -20,6 +20,7 @@
 
 use ApiBase;
 use Cartalyst\Sentry\Users\UserInterface;
+use Closure;
 use SwiftIdentityExpressApi;
 
 class SentrySwift implements SwiftInterface {
@@ -37,6 +38,8 @@ class SentrySwift implements SwiftInterface {
 	protected $ipAddress;
 
 	protected $method = 'swipe';
+
+	protected $answering = false;
 
 	/**
 	 * Model name.
@@ -98,41 +101,39 @@ class SentrySwift implements SwiftInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function smsResponse(UserInterface $user, $code)
+	public function saveNumber(UserInterface $user, $number)
 	{
+		$api = $this->getApi();
 
+		$response = $api->setUserSmsNumber($user->getUserLogin(), $this->appCode, $number);
+
+		return ($response->status == 1);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function saveNumber(UserInterface $user, $number)
+	public function checkAnswer(UserInterface $user, $answer, Closure $callback)
 	{
+		$this->answering = true;
 
-	}
+		$api = $this->getApi();
 
-	protected function modelForUser(UserInterface $user)
-	{
-		$model = $this
-			->createModel()
-			->where('user_id', $user->getUserId())
-			->where('method', $this->method)
-			->first();
+		$response = $api->answerSMS($user->getUserLogin(), $this->appCode, $answer);
 
-		if ( ! $model)
+		if ($response->getReturnCode() == RC_SMS_ANSWER_REJECTED)
 		{
-			$model = $this
-				->createModel()
-				->fill(array(
-					'method' => $this->method,
-				));
-
-			$model->user()->associate($user);
-
-			$model->save();
+			return false;
 		}
 
-		return $model;
+		$response = $callback($user);
+		$this->answering = false;
+		return $response;
+	}
+
+	public function isAnswering()
+	{
+		return $this->answering;
 	}
 
 	protected function getApi()
