@@ -26,7 +26,7 @@ use Cartalyst\Sentry\Persistence\PersistableInterface;
 use Cartalyst\Sentry\Throttling\ThrottledInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class EloquentUser extends Model implements ActivatableInterface, GroupableInterface, PermissibleInterface, PersistableInterface, ThrottledInterface, UserInterface {
+class EloquentUser extends Model implements GroupableInterface, PermissibleInterface, PersistableInterface, UserInterface {
 
 	/**
 	 * {@inheritDoc}
@@ -56,25 +56,11 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	protected $loginNames = array('email');
 
 	/**
-	 * The activations model name.
-	 *
-	 * @var string
-	 */
-	protected static $activationsModel = 'Cartalyst\Sentry\Activations\EloquentActivation';
-
-	/**
 	 * The groups model name.
 	 *
 	 * @var string
 	 */
 	protected static $groupsModel = 'Cartalyst\Sentry\Groups\EloquentGroup';
-
-	/**
-	 * The throttling model name.
-	 *
-	 * @var string
-	 */
-	protected static $throttlingModel = 'Cartalyst\Sentry\Throttling\EloquentThrottle';
 
 	/**
 	 * Returns an array of login column names.
@@ -87,16 +73,6 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	}
 
 	/**
-	 * Activation relationship.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function activations()
-	{
-		return $this->hasMany(static::$activationsModel, 'user_id');
-	}
-
-	/**
 	 * Groups relationship.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -104,16 +80,6 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	public function groups()
 	{
 		return $this->belongsToMany(static::$groupsModel, 'groups_users', 'user_id', 'group_id');
-	}
-
-	/**
-	 * Throttles relationship.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
-	 */
-	public function throttles()
-	{
-		return $this->hasMany(static::$throttlingModel, 'user_id');
 	}
 
 	/**
@@ -158,14 +124,6 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	public function setPermissionsAttribute(array $permissions)
 	{
 		$this->attributes['permissions'] = ($permissions) ? json_encode($permissions) : '';
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getActivations()
-	{
-		return $this->activations;
 	}
 
 	/**
@@ -271,14 +229,6 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getThrottles()
-	{
-		return $this->throttles;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getUserId()
 	{
 		return $this->getKey();
@@ -324,48 +274,6 @@ class EloquentUser extends Model implements ActivatableInterface, GroupableInter
 		}
 
 		return new SentryPermissions($userPermissions, $groupPermissions);
-	}
-
-	/**
-	 * Get the activations model.
-	 *
-	 * @return string
-	 */
-	public static function getActivationsModel()
-	{
-		return static::$activationsModel;
-	}
-
-	/**
-	 * Set the activations model.
-	 *
-	 * @param  string  $activationsModel
-	 * @return void
-	 */
-	public static function setActivationsModel($activationsModel)
-	{
-		static::$activationsModel = $activationsModel;
-	}
-
-	/**
-	 * Get the throttling model.
-	 *
-	 * @return string
-	 */
-	public static function getThrottlingModel()
-	{
-		return static::$throttlingModel;
-	}
-
-	/**
-	 * Set the throttling model.
-	 *
-	 * @param  string  $throttlingModel
-	 * @return void
-	 */
-	public static function setThrottlingModel($throttlingModel)
-	{
-		static::$throttlingModel = $throttlingModel;
 	}
 
 	/**

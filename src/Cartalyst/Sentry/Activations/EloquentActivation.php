@@ -25,14 +25,7 @@ class EloquentActivation extends Model {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $table = 'user_events';
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected $attributes = array(
-		'type' => 'activation',
-	);
+	protected $table = 'activations';
 
 	/**
 	 * {@inheritDoc}
@@ -58,16 +51,6 @@ class EloquentActivation extends Model {
 	public function user()
 	{
 		return $this->belongsTo(static::$usersModel);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function newQuery($excludeDeleted = true)
-	{
-		$builder = parent::newQuery($excludeDeleted);
-
-		return $builder->where('type', 'activation');
 	}
 
 	/**

@@ -113,18 +113,10 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$model = $app['config']['cartalyst/sentry::users.model'];
 
-			$relations = array(
-				$app['config']['cartalyst/sentry::activations.model'],
-				$app['config']['cartalyst/sentry::groups.model'],
-				$app['config']['cartalyst/sentry::throttling.model']
-			);
-
-			foreach ($relations as $related)
+			$groups = $app['config']['cartalyst/sentry::users.model'];
+			if (class_exists($groups) and method_exists($groups, 'setUsersModel'))
 			{
-				if (class_exists($related) and method_exists($related, 'setUsersModel'))
-				{
-					forward_static_call_array(array($related, 'setUsersModel'), array($model));
-				}
+				forward_static_call_array(array($groups, 'setUsersModel'), array($model));
 			}
 
 			return new IlluminateUserRepository($app['sentry.hasher'], $model);
@@ -145,10 +137,10 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$model = $app['config']['cartalyst/sentry::groups.model'];
 
-			$user = $app['config']['cartalyst/sentry::users.model'];
-			if (class_exists($user) and method_exists($user, 'setGroupsModel'))
+			$users = $app['config']['cartalyst/sentry::users.model'];
+			if (class_exists($users) and method_exists($users, 'setGroupsModel'))
 			{
-				forward_static_call_array(array($user, 'setGroupsModel'), array($model));
+				forward_static_call_array(array($users, 'setGroupsModel'), array($model));
 			}
 
 			return new IlluminateGroupRepository($model);
@@ -199,12 +191,6 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$model = $app['config']['cartalyst/sentry::activations.model'];
 			$expires = $app['config']['cartalyst/sentry::activations.expires'];
-
-			$user = $app['config']['cartalyst/sentry::users.model'];
-			if (class_exists($user) and method_exists($user, 'setActivationsModel'))
-			{
-				forward_static_call_array(array($user, 'setActivationsModel'), array($model));
-			}
 
 			return new IlluminateActivationRepository($model, $expires);
 		});
@@ -266,12 +252,6 @@ class SentryServiceProvider extends ServiceProvider {
 			{
 				${"{$type}Interval"} = $app['config']["cartalyst/sentry::throttling.{$type}.interval"];
 				${"{$type}Thresholds"} = $app['config']["cartalyst/sentry::throttling.{$type}.thresholds"];
-			}
-
-			$user = $app['config']['cartalyst/sentry::users.model'];
-			if (class_exists($user) and method_exists($user, 'setThrottlingModel'))
-			{
-				forward_static_call_array(array($user, 'setThrottlingModel'), array($model));
 			}
 
 			return new IlluminateThrottleRepository(
