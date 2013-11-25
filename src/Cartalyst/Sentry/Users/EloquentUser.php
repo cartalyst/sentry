@@ -202,6 +202,22 @@ class EloquentUser extends Model implements ActivatableInterface, PermissibleInt
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getUserLogin()
+	{
+		return $this->getAttribute($this->getUserLoginName());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getUserLoginName()
+	{
+		return reset($this->loginNames);
+	}
+
+	/**
 	 * Creates a permissions object.
 	 *
 	 * @return \Cartalyst\Sentry\Permissions\PermissionsInterface

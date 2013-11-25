@@ -27,4 +27,18 @@ interface UserInterface {
 	 */
 	public function getUserId();
 
+	/**
+	 * Get the user's login.
+	 *
+	 * @return string
+	 */
+	public function getUserLogin();
+
+	/**
+	 * Get the user's login attribute name.
+	 *
+	 * @return string
+	 */
+	public function getUserLoginName();
+
 }

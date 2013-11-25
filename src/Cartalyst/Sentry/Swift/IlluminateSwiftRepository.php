@@ -92,7 +92,7 @@ class IlluminateSwiftRepository implements SwiftRepositoryInterface {
 			$api = $this->getApi();
 
 			// @todo, remove hardcoding
-			$response = $api->doSecondFactor($user->email, $this->appCode, $this->ipAddress);
+			$response = $api->doSecondFactor($user->getUserLogin(), $this->appCode, $this->ipAddress);
 			$dispatch = ApiBase::dispatchUser($response);
 
 			return $dispatch;
