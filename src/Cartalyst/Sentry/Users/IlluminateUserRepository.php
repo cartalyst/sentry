@@ -18,6 +18,7 @@
  * @link       http://cartalyst.com
  */
 
+use Carbon\Carbon;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Closure;
 
@@ -134,6 +135,23 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		}
 
 		return $users->first();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function recordLogin(UserInterface $user)
+	{
+		$user->last_login = Carbon::now();
+		return $user->save();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function recordLogout(UserInterface $user)
+	{
+		return $user->save();
 	}
 
 	/**

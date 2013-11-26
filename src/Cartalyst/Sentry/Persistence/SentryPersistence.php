@@ -80,8 +80,6 @@ class SentryPersistence implements PersistenceInterface {
 		}
 
 		$persistable->addPersistenceCode($code);
-
-		return $persistable->savePersistenceCodes();
 	}
 
 	/**
@@ -107,9 +105,7 @@ class SentryPersistence implements PersistenceInterface {
 		$this->session->forget();
 		$this->cookie->forget();
 
-		$persistable->removePersistenceCode($code);
-
-		return $persistable->savePersistenceCodes();
+		return $persistable->removePersistenceCode($code);
 	}
 
 	/**
@@ -122,10 +118,15 @@ class SentryPersistence implements PersistenceInterface {
 
 		foreach ($persistable->getPersistenceCodes() as $code)
 		{
-			$persistable->removePersistenceCode($code);
+			$response = $persistable->removePersistenceCode($code);
+
+			if ($response === false)
+			{
+				return false;
+			}
 		}
 
-		return $persistable->savePersistenceCodes();
+		return true;
 	}
 
 }

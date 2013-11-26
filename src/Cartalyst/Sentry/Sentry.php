@@ -266,7 +266,7 @@ class Sentry {
 		else
 		{
 			$user = $this->users->findByCredentials($credentials);
-			$valid = $this->users->validateCredentials($user, $credentials);
+			$valid = ($user !== null) ? $this->users->validateCredentials($user, $credentials) : false;
 
 			if ($user === null or $valid === false)
 			{
@@ -350,7 +350,14 @@ class Sentry {
 	{
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
 
-		return $this->persistence->$method($user);
+		$response = $this->persistence->$method($user);
+
+		if ($response === false)
+		{
+			return false;
+		}
+
+		return $this->users->recordLogin($user);
 	}
 
 	/**
@@ -379,7 +386,14 @@ class Sentry {
 
 		$method = ($everywhere === true) ? 'flush' : 'remove';
 
-		return $this->persistence->$method($this->user);
+		$response = $this->persistence->$method($this->user);
+
+		if ($response === false)
+		{
+			return false;
+		}
+
+		return $this->users->recordLogout($user);
 	}
 
 	/**

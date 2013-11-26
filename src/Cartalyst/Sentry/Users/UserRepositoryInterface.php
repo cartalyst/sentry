@@ -47,6 +47,22 @@ interface UserRepositoryInterface {
 	public function findByPersistenceCode($code);
 
 	/**
+	 * Records a login for the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function recordLogin(UserInterface $user);
+
+	/**
+	 * Records a logout for the given user.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return bool
+	 */
+	public function recordLogout(UserInterface $user);
+
+	/**
 	 * Validate the password of the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user

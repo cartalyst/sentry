@@ -39,7 +39,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	protected $fillable = array(
 		'email',
 		'password',
-		'last_login',
+		'first_name',
+		'last_name',
 	);
 
 	/**
@@ -200,6 +201,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		$codes = $this->persistence_codes;
 		$codes[] = $code;
 		$this->persistence_codes = $codes;
+
+		return true;
 	}
 
 	/**
@@ -217,16 +220,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		}
 
 		$this->persistence_codes = $codes;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function savePersistenceCodes()
-	{
-		$this->last_login = Carbon::now();
-
-		return $this->save();
+		return true;
 	}
 
 	/**
@@ -317,6 +312,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 
 			return call_user_func_array(array($permissions, $method), $parameters);
 		}
+
+		$className = get_class($this);
 
 		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}

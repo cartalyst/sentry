@@ -196,12 +196,15 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		));
 		$ip->save();
 
-		$userThrottle = $this->createModel();
-		$userThrottle->fill(array(
-			'type' => 'user',
-		));
-		$userThrottle->user_id = $user->getUserId();
-		$userThrottle->save();
+		if ($user !== null)
+		{
+			$userThrottle = $this->createModel();
+			$userThrottle->fill(array(
+				'type' => 'user',
+			));
+			$userThrottle->user_id = $user->getUserId();
+			$userThrottle->save();
+		}
 	}
 
 	/**
