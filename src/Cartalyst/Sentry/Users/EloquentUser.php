@@ -39,6 +39,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	protected $fillable = array(
 		'email',
 		'password',
+		'last_login',
 	);
 
 	/**
@@ -223,6 +224,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function savePersistenceCodes()
 	{
+		$this->last_login = Carbon::now();
+
 		return $this->save();
 	}
 
