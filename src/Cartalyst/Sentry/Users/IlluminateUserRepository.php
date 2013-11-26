@@ -43,6 +43,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 *
 	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
+	 * @return void
 	 */
 	public function __construct(HasherInterface $hasher, $model = null)
 	{
@@ -229,7 +230,6 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 *
 	 * @param  array  $credentials
 	 * @param  array  $loginNames
-	 * @param  bool   $checkPassword
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
