@@ -57,7 +57,7 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	}
 
 	/**
-	 * Get mutator for permissions.
+	 * Get mutator for the "permissions" attribute.
 	 *
 	 * @param  mixed  $permissions
 	 * @return array
@@ -68,7 +68,7 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	}
 
 	/**
-	 * Set mutator for permissions.
+	 * Set mutator for the "permissions" attribute.
 	 *
 	 * @param  mixed  $permissions
 	 * @return void

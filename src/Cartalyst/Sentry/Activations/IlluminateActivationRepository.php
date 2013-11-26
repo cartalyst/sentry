@@ -45,6 +45,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 *
 	 * @param  string  $model
 	 * @param  int  $expires
+	 * @return void
 	 */
 	public function __construct($model = null, $expires = null)
 	{

@@ -39,6 +39,7 @@ abstract class BasePermissions implements PermissionsInterface {
 	 *
 	 * @param  array  $permisions
 	 * @param  array  $secondaryPermisions
+	 * @return void
 	 */
 	public function __construct(array $permisions = null, array $secondaryPermissions = null)
 	{

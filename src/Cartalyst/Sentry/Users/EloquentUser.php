@@ -85,7 +85,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
-	 * Get mutator for persistence codes.
+	 * Get mutator for the "persistence codes" attribute.
 	 *
 	 * @param  mixed  $codes
 	 * @return array
@@ -96,7 +96,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
-	 * Set mutator for persistence codes.
+	 * Set mutator for the "persistence codes" attribute.
 	 *
 	 * @param  mixed  $codes
 	 * @return void
@@ -107,7 +107,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
-	 * Get mutator for permissions.
+	 * Get mutator for the "permissions" attribute.
 	 *
 	 * @param  mixed  $permissions
 	 * @return array
@@ -118,7 +118,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
-	 * Set mutator for permissions.
+	 * Set mutator for the "permissions" attribute.
 	 *
 	 * @param  mixed  $permissions
 	 * @return void
@@ -301,6 +301,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return mixed
+	 * @throws \BadMethodCallException
 	 */
 	public function __call($method, $parameters)
 	{

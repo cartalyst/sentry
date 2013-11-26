@@ -37,9 +37,10 @@ class EloquentActivation extends Model {
 	);
 
 	/**
-	 * Set mutator for the completed attribute.
+	 * Get mutator for the "completed" attribute.
 	 *
 	 * @param  mixed  $completed
+	 * @return bool
 	 */
 	public function getCompletedAttribute($completed)
 	{
@@ -47,9 +48,10 @@ class EloquentActivation extends Model {
 	}
 
 	/**
-	 * Set mutator for the completed attribute.
+	 * Set mutator for the "completed" attribute.
 	 *
 	 * @param  mixed  $completed
+	 * @return void
 	 */
 	public function setCompletedAttribute($completed)
 	{

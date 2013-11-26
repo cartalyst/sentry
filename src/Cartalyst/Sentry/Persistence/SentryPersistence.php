@@ -38,10 +38,11 @@ class SentryPersistence implements PersistenceInterface {
 	protected $cookie;
 
 	/**
-	 * Create a new Illuminate persistence repository.
+	 * Create a new Sentry persistence repository.
 	 *
 	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $session
 	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $cookie
+	 * @return void
 	 */
 	public function __construct(SessionInterface $session, CookieInterface $cookie)
 	{

@@ -71,9 +71,9 @@ class Sentry {
 	protected $dispatcher;
 
 	/**
-	 * Flag for whether checkpoints are enabled.
+	 * Array that holds all the enabled checkpoints.
 	 *
-	 * @var bool
+	 * @var array
 	 */
 	protected $checkpoints = array();
 
@@ -126,6 +126,7 @@ class Sentry {
 	 * @param  array  $credentials
 	 * @param  \Closure|bool  $callback
 	 * @return \Cartalyst\Sentry\Users\UserInteface|bool
+	 * @throws \InvalidArgumentException
 	 */
 	public function register(array $credentials, $callback = null)
 	{
@@ -154,7 +155,7 @@ class Sentry {
 	}
 
 	/**
-	 * Registers a user, activating them.
+	 * Registers and activates the user.
 	 *
 	 * @param  array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInteface|bool
@@ -169,6 +170,7 @@ class Sentry {
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return bool
+	 * @throws \InvalidArgumentException
 	 */
 	public function activate($user)
 	{
@@ -193,6 +195,7 @@ class Sentry {
 		$activations = $this->getActivationsRepository();
 
 		$code = $activations->create($user);
+
 		return $activations->complete($user, $code);
 	}
 
@@ -246,7 +249,7 @@ class Sentry {
 	 */
 	public function guest()
 	{
-		return ( ! $this->check());
+		return ! $this->check();
 	}
 
 	/**
@@ -266,6 +269,7 @@ class Sentry {
 		else
 		{
 			$user = $this->users->findByCredentials($credentials);
+
 			$valid = ($user !== null) ? $this->users->validateCredentials($user, $credentials) : false;
 
 			if ($user === null or $valid === false)
@@ -318,7 +322,7 @@ class Sentry {
 	}
 
 	/**
-	 * Forces an authentication to bypass checkpoints, with "remember" flag.
+	 * Forces an authentication to bypass checkpoints, with the "remember" flag.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
@@ -404,7 +408,7 @@ class Sentry {
 	 */
 	public function bypassCheckpoints(Closure $callback)
 	{
-		// Temporarily rmeove the array of registered checkpoints
+		// Temporarily remove the array of registered checkpoints
 		$checkpoints = $this->checkpoints;
 		$this->checkpoints = false;
 
@@ -459,9 +463,9 @@ class Sentry {
 	}
 
 	/**
-	 * Cycles through all registered checkpoints for a user. Checkpoints may
-	 * throw their own exceptions, however, if just one returns false, the
-	 * cycle fails.
+	 * Cycles through all the registered checkpoints for a user. Checkpoints
+	 * may throw their own exceptions, however, if just one returns false,
+	 * the cycle fails.
 	 *
 	 * @param  string  $method
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
@@ -541,7 +545,7 @@ class Sentry {
 	/**
 	 * Set the user associated with Sentry (does not log in).
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return void
 	 */
 	public function setUser(UserInterface $user)
@@ -562,7 +566,7 @@ class Sentry {
 	/**
 	 * Set the persistence instance.
 	 *
-	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface
+	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
 	 * @return void
 	 */
 	public function setPersistence(PersistenceInterface $persistence)
@@ -767,6 +771,7 @@ class Sentry {
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return mixed
+	 * @throws \BadMethodCallException
 	 */
 	public function __call($method, $parameters)
 	{

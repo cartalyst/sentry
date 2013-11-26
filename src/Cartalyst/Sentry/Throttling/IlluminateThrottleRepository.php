@@ -115,6 +115,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * @param  int|array  $ipThresholds
 	 * @param  int  $userInterval
 	 * @param  int|array  $userThresholds
+	 * @return void
 	 */
 	public function __construct($model = null, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
 	{
@@ -277,6 +278,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * Gets the IP address throttles collection.
 	 *
+	 * @param  string  $ipAddress
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	protected function getIpThrottles($ipAddress)
@@ -292,6 +294,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * Loads and returns the IP address throttles collection.
 	 *
+	 * @param  string  $ipAddress
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	protected function loadIpThrottles($ipAddress)
@@ -310,6 +313,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * Gets the user throttles collection.
 	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	protected function getUserThrottles(UserInterface $user)
@@ -327,6 +331,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * Loads and returns the user throttles collection.
 	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	protected function loadUserThrottles(UserInterface $user)
@@ -349,6 +354,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @param  \Cartalyst\Sentry\Throttling\EloquentThrottle  $throttle
 	 * @param  int  $delay
+	 * @param  int  $interval
 	 * @return int
 	 */
 	protected function secondsToFree(EloquentThrottle $throttle, $delay, $interval)

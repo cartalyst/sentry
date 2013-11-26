@@ -34,6 +34,7 @@ class ActivationCheckpoint extends BaseCheckpoint implements CheckpointInterface
 	 * Create a new activation checkpoint.
 	 *
 	 * @param  \Cartalyst\Sentry\Activations\ActivationRepositoryInterface  $activations
+	 * @return void
 	 */
 	public function __construct(ActivationRepositoryInterface $activations)
 	{

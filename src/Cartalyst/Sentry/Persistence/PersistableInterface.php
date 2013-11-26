@@ -23,7 +23,7 @@ interface PersistableInterface {
 	/**
 	 * Generates a random persist code.
 	 *
-	 * @return  string
+	 * @return string
 	 */
 	public function generatePersistenceCode();
 

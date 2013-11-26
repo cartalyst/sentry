@@ -51,7 +51,7 @@ class SwiftIdentityException extends RuntimeException {
 	/**
 	 * Set the user associated with Sentry (does not log in).
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return void
 	 */
 	public function setUser(UserInterface $user)

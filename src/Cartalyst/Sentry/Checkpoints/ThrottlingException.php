@@ -82,7 +82,7 @@ class ThrottlingException extends RuntimeException {
 	/**
 	 * Get a Carbon object representing the time which the throttle is lifted.
 	 *
-	 * @return  \Carbon\Carbon
+	 * @return \Carbon\Carbon
 	 */
 	public function getFree()
 	{

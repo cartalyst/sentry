@@ -37,6 +37,13 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	protected $ipAddress;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param  \Cartalyst\Sentry\Throttling\ThrottleRepositoryInterface  $throttle
+	 * @param  string  $ipAddress
+	 * @return void
+	 */
 	public function __construct(ThrottleRepositoryInterface $throttle, $ipAddress)
 	{
 		$this->throttle  = $throttle;
@@ -79,7 +86,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 
 		if ($globalDelay > 0)
 		{
-			$this->throwException("Gobal throttling prohibits users from logging in for another [$globalDelay] second(s).", 'global', $globalDelay);
+			$this->throwException("Gobal throttling prohibits users from logging in for another [{$globalDelay}] second(s).", 'global', $globalDelay);
 		}
 
 		if (isset($this->ipAddress))
@@ -88,7 +95,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 
 			if ($ipDelay > 0)
 			{
-				$this->throwException("IP address throttling prohibits you from logging in for another [$ipDelay] second(s).", 'ip', $ipDelay);
+				$this->throwException("IP address throttling prohibits you from logging in for another [{$ipDelay}] second(s).", 'ip', $ipDelay);
 			}
 		}
 
@@ -98,7 +105,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 
 			if ($ipDelay > 0)
 			{
-				$this->throwException("User throttling prohibits your account being accessed in for another [$ipDelay] second(s).", 'user', $userDelay);
+				$this->throwException("User throttling prohibits your account being accessed in for another [{$ipDelay}] second(s).", 'user', $userDelay);
 			}
 		}
 

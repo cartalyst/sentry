@@ -54,6 +54,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface
 	 * @param  string  $model
 	 * @param  int  $expires
+	 * @return void
 	 */
 	public function __construct(UserRepositoryInterface $users, $model = null, $expires = null)
 	{

@@ -31,6 +31,7 @@ interface GroupableInterface {
 	 * Return if the user is in the given group.
 	 *
 	 * @param  mixed  $group
+	 * @return bool
 	 */
 	public function inGroup($group);
 
