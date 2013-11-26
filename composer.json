@@ -48,7 +48,9 @@
 		"happydemon/txt": "Required Text helpers when using the Kohana implementation"
 	},
 	"autoload": {
-		"classmap": [],
+		"classmap": [
+			"src/migrations"
+		],
 		"psr-0": {
 			"Cartalyst\\Sentry": "src/"
 		}
