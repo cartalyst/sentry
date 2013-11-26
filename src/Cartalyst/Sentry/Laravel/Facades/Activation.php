@@ -27,7 +27,7 @@ class Activation extends Facade {
 	 */
 	protected static function getFacadeAccessor()
 	{
-		return 'sentry.activation';
+		return 'sentry.activations';
 	}
 
 }

@@ -117,8 +117,9 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	{
 		// Narrow down our query to those who's persistence codes array
 		// contains ours. We'll filter the right user out.
-		$users = $this->createModel(array('groups'))
+		$users = $this->createModel()
 			->newQuery()
+			->with(array('groups'))
 			->where('persistence_codes', 'like', "%{$code}%")
 			->get();
 
@@ -140,18 +141,20 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 */
 	public function validForCreation(array $credentials)
 	{
-		$instance = $this->createModel();
-		$loginNames = $instance->getLoginNames();
+		return $this->validateUser($credentials);
+	}
 
-		// We will simply parse credentials which checks logins and passwords
-		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames, false);
-
-		if ($password === null)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function validForUpdate($user, array $credentials)
+	{
+		if ($user instanceof UserInterface)
 		{
-			throw new \InvalidArgumentException('You have not passed a [password].');
+			$user = $user->getUserId();
 		}
 
-		return true;
+		return $this->validateUser($credentials, $user);
 	}
 
 	/**
@@ -182,6 +185,28 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function update($user, array $credentials)
+	{
+		if ( ! $user instanceof UserInterface)
+		{
+			$user = $this->find($id);
+		}
+
+		if (isset($credentials['password']))
+		{
+			$credentials['password'] = $this->hasher->hash($credentials['password']);
+		}
+
+		$user
+			->fill($credentials)
+			->save();
+
+		return $user;
+	}
+
+	/**
 	 * Parses the given credentials to return logins, password and others.
 	 *
 	 * @param  array  $credentials
@@ -190,13 +215,8 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	protected function parseCredentials(array $credentials, array $loginNames, $checkPassword = true)
+	protected function parseCredentials(array $credentials, array $loginNames)
 	{
-		if ($checkPassword === true and ! array_key_exists('password', $credentials))
-		{
-			throw new \InvalidArgumentException('You have not passed a [password].');
-		}
-
 		if (isset($credentials['password']))
 		{
 			$password = $credentials['password'];
@@ -226,10 +246,41 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		}
 		else
 		{
-			throw new \InvalidArgumentException('No [login] credential was passed.');
+			$logins = array();
 		}
 
 		return array($logins, $password, $credentials);
+	}
+
+	/**
+	 * Validates the user.
+	 *
+	 * @param  array  $credentials
+	 * @param  int  $id
+	 * @return bool
+	 * @throws \InvalidArgumentException
+	 */
+	protected function validateUser(array $credentials, $id = null)
+	{
+		$instance = $this->createModel();
+		$loginNames = $instance->getLoginNames();
+
+		// We will simply parse credentials which checks logins and passwords
+		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
+
+		if ($id === null)
+		{
+			if (empty($logins))
+			{
+				throw new \InvalidArgumentException('No [login] credential was passed.');
+			}
+			if ($password === null)
+			{
+				throw new \InvalidArgumentException('You have not passed a [password].');
+			}
+		}
+
+		return true;
 	}
 
 	/**

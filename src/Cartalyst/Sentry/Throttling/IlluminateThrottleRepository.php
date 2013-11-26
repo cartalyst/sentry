@@ -203,7 +203,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		$userThrottle->fill(array(
 			'type' => 'user',
 		));
-		$userThrottle->user()->associate($user);
+		$userThrottle->user_id = $user->getUserId();
 		$userThrottle->save();
 	}
 

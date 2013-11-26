@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling;
+<?php namespace Cartalyst\Sentry\Laravel\Facades;
 /**
  * Part of the Sentry package.
  *
@@ -18,21 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Facade;
 
-class EloquentThrottle extends Model {
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected $table = 'throttle';
+class Reminder extends Facade {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $fillable = array(
-		'type',
-		'ip',
-	);
+	protected static function getFacadeAccessor()
+	{
+		return 'sentry.reminders';
+	}
 
 }

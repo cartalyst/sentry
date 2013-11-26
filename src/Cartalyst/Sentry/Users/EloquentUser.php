@@ -101,7 +101,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function setPersistenceCodesAttribute(array $codes)
 	{
-		$this->attributes['persistence_codes'] = ($codes) ? json_encode($codes) : '';
+		$this->attributes['persistence_codes'] = ($codes) ? json_encode(array_values($codes)) : '';
 	}
 
 	/**

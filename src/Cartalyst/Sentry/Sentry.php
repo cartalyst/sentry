@@ -25,6 +25,8 @@ use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Groups\GroupRepositoryInterface;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\PersistenceInterface;
+use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
+use Cartalyst\Sentry\Reminders\ReminderRepositoryInterface;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
@@ -83,6 +85,13 @@ class Sentry {
 	protected $activations;
 
 	/**
+	 * Reminders repository.
+	 *
+	 * @var \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface
+	 */
+	protected $reminders;
+
+	/**
 	 * Create a new Sentry instance.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
@@ -120,11 +129,16 @@ class Sentry {
 	 */
 	public function register(array $credentials, $callback = null)
 	{
-		$valid = $this->users->validForCreation($credentials);
-
 		if ($callback !== null and ! $callback instanceof Closure and $callback !== true)
 		{
 			throw new \InvalidArgumentException('You must provide a closure or true boolean.');
+		}
+
+		$valid = $this->users->validForCreation($credentials);
+
+		if ($valid === false)
+		{
+			return false;
 		}
 
 		$argument = ($callback instanceof Closure) ? $callback : null;
@@ -658,7 +672,7 @@ class Sentry {
 	/**
 	 * Get the activations repository.
 	 *
-	 * @return \Cartalyst\Sentry\Activationss\ActivationRepositoryInterface
+	 * @return \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
 	 */
 	public function getActivationsRepository()
 	{
@@ -673,7 +687,7 @@ class Sentry {
 	/**
 	 * Set the activations repository.
 	 *
-	 * @param  \Cartalyst\Sentry\Activationss\ActivationRepositoryInterface  $activations
+	 * @param  \Cartalyst\Sentry\Activations\ActivationRepositoryInterface  $activations
 	 * @return void
 	 */
 	public function setActivationsRepository(ActivationRepositoryInterface $activations)
@@ -684,13 +698,53 @@ class Sentry {
 	/**
 	 * Creates a default activations repository if none has been specified.
 	 *
-	 * @return \Cartalyst\Sentry\Activationss\IlluminateActivationRepository
+	 * @return \Cartalyst\Sentry\Activations\IlluminateActivationRepository
 	 */
 	protected function createActivationsRepository()
 	{
-		$model = 'Cartalyst\Sentry\Activationss\EloquentActivation';
+		$model = 'Cartalyst\Sentry\Activations\EloquentActivation';
 
 		return new IlluminateActivationRepository($model);
+	}
+
+	/**
+	 * Get the reminders repository.
+	 *
+	 * @return \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface
+	 */
+	public function getRemindersRepository()
+	{
+		if ($this->reminders === null)
+		{
+			$this->reminders = $this->createRemindersRepository();
+		}
+
+		return $this->reminders;
+	}
+
+	/**
+	 * Set the reminders repository.
+	 *
+	 * @param  \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface  $reminders
+	 * @return void
+	 */
+	public function setRemindersRepository(ReminderRepositoryInterface $reminders)
+	{
+		$this->reminders = $reminders;
+	}
+
+	/**
+	 * Creates a default reminders repository if none has been specified.
+	 *
+	 * @return \Cartalyst\Sentry\Reminders\IlluminateReminderRepository
+	 */
+	protected function createRemindersRepository()
+	{
+		$model = 'Cartalyst\Sentry\Reminders\EloquentReminder';
+
+		$users = $this->getUserRepository();
+
+		return new IlluminateReminderRepository($users, $model);
 	}
 
 	/**

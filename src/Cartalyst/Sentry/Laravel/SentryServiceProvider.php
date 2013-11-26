@@ -26,6 +26,7 @@ use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
 use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
+use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Swift\SentrySwift;
@@ -59,7 +60,7 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerUsers();
 		$this->registerGroups();
 		$this->registerCheckpoints();
-		$this->updateModelRelations();
+		$this->registerReminders();
 		$this->registerSentry();
 	}
 
@@ -181,13 +182,13 @@ class SentryServiceProvider extends ServiceProvider {
 
 		$this->app['sentry.checkpoint.activation'] = $this->app->share(function($app)
 		{
-			return new ActivationCheckpoint($app['sentry.activation']);
+			return new ActivationCheckpoint($app['sentry.activations']);
 		});
 	}
 
 	protected function registerActivation()
 	{
-		$this->app['sentry.activation'] = $this->app->share(function($app)
+		$this->app['sentry.activations'] = $this->app->share(function($app)
 		{
 			$model = $app['config']['cartalyst/sentry::activations.model'];
 			$expires = $app['config']['cartalyst/sentry::activations.expires'];
@@ -231,20 +232,20 @@ class SentryServiceProvider extends ServiceProvider {
 
 	protected function registerThrottleCheckpoint()
 	{
-		$this->registerThrottle();
+		$this->registerThrottling();
 
 		$this->app['sentry.checkpoint.throttle'] = $this->app->share(function($app)
 		{
 			return new ThrottleCheckpoint(
-				$app['sentry.throttle'],
+				$app['sentry.throttling'],
 				$app['request']->getClientIp()
 			);
 		});
 	}
 
-	protected function registerThrottle()
+	protected function registerThrottling()
 	{
-		$this->app['sentry.throttle'] = $this->app->share(function($app)
+		$this->app['sentry.throttling'] = $this->app->share(function($app)
 		{
 			$model = $app['config']['cartalyst/sentry::throttling.model'];
 
@@ -266,9 +267,15 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
-	protected function updateModelRelations()
+	protected function registerReminders()
 	{
+		$this->app['sentry.reminders'] = $this->app->share(function($app)
+		{
+			$model = $app['config']['cartalyst/sentry::reminders.model'];
+			$expires = $app['config']['cartalyst/sentry::reminders.expires'];
 
+			return new IlluminateReminderRepository($app['sentry.users'], $model, $expires);
+		});
 	}
 
 	protected function registerSentry()
@@ -290,7 +297,8 @@ class SentryServiceProvider extends ServiceProvider {
 				}
 			}
 
-			$sentry->setActivationsRepository($app['sentry.activation']);
+			$sentry->setActivationsRepository($app['sentry.activations']);
+			$sentry->setRemindersRepository($app['sentry.reminders']);
 
 			return $sentry;
 		});
@@ -308,13 +316,14 @@ class SentryServiceProvider extends ServiceProvider {
 			'sentry.hasher',
 			'sentry.users',
 			'sentry.groups',
-			'sentry.activation',
+			'sentry.activations',
 			'sentry.checkpoint.activation',
 			'sentry.swift',
 			'sentry.checkpoint.swift',
-			'sentry.throttle',
+			'sentry.throttling',
 			'sentry.checkpoint.throttle',
 			'sentry.checkpoints',
+			'sentry.reminders',
 			'sentry',
 		);
 	}

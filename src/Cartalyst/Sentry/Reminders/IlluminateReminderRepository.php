@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Activations;
+<?php namespace Cartalyst\Sentry\Reminders;
 /**
  * Part of the Sentry package.
  *
@@ -20,34 +20,45 @@
 
 use Carbon\Carbon;
 use Cartalyst\Sentry\Users\UserInterface;
+use Cartalyst\Sentry\Users\UserRepositoryInterface;
 
 /**
  * @todo Switch over to eager loading where possible, under the assumption that the Eloquent user model will include the required relationship.
  */
-class IlluminateActivationRepository implements ActivationRepositoryInterface {
+class IlluminateReminderRepository implements ReminderRepositoryInterface {
+
+	/**
+	 * User repository.
+	 *
+	 * @var \Cartalyst\Sentry\Users\UserRepositoryInterface
+	 */
+	protected $users;
 
 	/**
 	 * Model name.
 	 *
 	 * @var string
 	 */
-	protected $model = 'Cartalyst\Sentry\Activations\EloquentActivation';
+	protected $model = 'Cartalyst\Sentry\Reminders\EloquentReminder';
 
 	/**
-	 * Time, in seconds, in which activation codes expire.
+	 * Time, in seconds, in which reminder codes expire.
 	 *
 	 * @var int
 	 */
 	protected $expires = 259200;
 
 	/**
-	 * Create a new Illuminate activation repository.
+	 * Create a new Illuminate reminder repository.
 	 *
+	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface
 	 * @param  string  $model
 	 * @param  int  $expires
 	 */
-	public function __construct($model = null, $expires = null)
+	public function __construct(UserRepositoryInterface $users, $model = null, $expires = null)
 	{
+		$this->users = $users;
+
 		if (isset($model))
 		{
 			$this->model = $model;
@@ -64,18 +75,18 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function create(UserInterface $user)
 	{
-		$activation = $this->createModel();
+		$reminder = $this->createModel();
 
-		$code = $this->generateActivationCode();
+		$code = $this->generateReminderCode();
 
-		$activation->fill(array(
+		$reminder->fill(array(
 			'code' => $code,
 			'completed' => false,
 		));
 
-		$activation->user_id = $user->getUserId();
+		$reminder->user_id = $user->getUserId();
 
-		$activation->save();
+		$reminder->save();
 
 		return $code;
 	}
@@ -85,37 +96,48 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function exists(UserInterface $user)
 	{
-		$activation = $this
+		$reminder = $this
 			->createModel()
 			->where('user_id', $user->getUserId())
 			->where('completed', true)
 			->first();
 
-		return ($activation !== null);
+		return ($reminder !== null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function complete(UserInterface $user, $code)
+	public function complete(UserInterface $user, $code, $password)
 	{
-		$activation = $this
+		$reminder = $this
 			->createModel()
 			->where('user_id', $user->getUserId())
 			->where('code', $code)
 			->first();
 
-		if ($activation === null)
+		if ($reminder === null)
 		{
 			return false;
 		}
 
-		$activation->fill(array(
+		$credentials = compact('password');
+
+		$valid = $this->users->validForUpdate($user, $credentials);
+
+		if ($valid === false)
+		{
+			return false;
+		}
+
+		$this->users->update($user, $credentials);
+
+		$reminder->fill(array(
 			'completed' => true,
 			'completed_at' => Carbon::now(),
 		));
 
-		$activation->save();
+		$reminder->save();
 
 		return true;
 	}
@@ -136,11 +158,11 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	}
 
 	/**
-	 * Return a random string for an activation code.
+	 * Return a random string for an reminder code.
 	 *
 	 * @return string
 	 */
-	protected function generateActivationCode()
+	protected function generateReminderCode()
 	{
 		return str_random(32);
 	}

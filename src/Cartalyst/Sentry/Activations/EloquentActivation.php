@@ -37,41 +37,23 @@ class EloquentActivation extends Model {
 	);
 
 	/**
-	 * The users model name.
+	 * Set mutator for the completed attribute.
 	 *
-	 * @var string
+	 * @param  mixed  $completed
 	 */
-	protected static $usersModel = 'Cartalyst\Sentry\Users\EloquentUser';
-
-	/**
-	 * User relationship.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function user()
+	public function getCompletedAttribute($completed)
 	{
-		return $this->belongsTo(static::$usersModel);
+		return (bool) $completed;
 	}
 
 	/**
-	 * Get the users model.
+	 * Set mutator for the completed attribute.
 	 *
-	 * @return string
+	 * @param  mixed  $completed
 	 */
-	public static function getUsersModel()
+	public function setCompletedAttribute($completed)
 	{
-		return static::$usersModel;
-	}
-
-	/**
-	 * Set the users model.
-	 *
-	 * @param  string  $usersModel
-	 * @return void
-	 */
-	public static function setUsersModel($usersModel)
-	{
-		static::$usersModel = $usersModel;
+		$this->attributes['completed'] = (int) (bool) $completed;
 	}
 
 }

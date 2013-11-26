@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Throttling;
+<?php namespace Cartalyst\Sentry\Reminders;
 /**
  * Part of the Sentry package.
  *
@@ -20,19 +20,40 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class EloquentThrottle extends Model {
+class EloquentReminder extends Model {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $table = 'throttle';
+	protected $table = 'reminders';
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected $fillable = array(
-		'type',
-		'ip',
+		'code',
+		'completed',
+		'completed_at',
 	);
+
+	/**
+	 * Set mutator for the completed attribute.
+	 *
+	 * @param  mixed  $completed
+	 */
+	public function getCompletedAttribute($completed)
+	{
+		return (bool) $completed;
+	}
+
+	/**
+	 * Set mutator for the completed attribute.
+	 *
+	 * @param  mixed  $completed
+	 */
+	public function setCompletedAttribute($completed)
+	{
+		$this->attributes['completed'] = (int) (bool) $completed;
+	}
 
 }

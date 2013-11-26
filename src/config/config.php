@@ -78,4 +78,13 @@ return array(
 
 	),
 
+	'reminders' => array(
+
+		'model' => 'Cartalyst\Sentry\Reminders\EloquentReminder',
+
+		// Seconds - defaults to 4 hours
+		'expires' => 14400,
+
+	),
+
 );
