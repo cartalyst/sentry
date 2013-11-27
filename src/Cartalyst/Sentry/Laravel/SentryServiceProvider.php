@@ -93,17 +93,6 @@ class SentryServiceProvider extends ServiceProvider {
 
 			return new IlluminateCookie($app['request'], $app['cookie'], $key);
 		});
-
-		$app = $this->app;
-		$this->app->close(function(Request $request, Response $response) use ($app)
-		{
-			$cookie = $app['sentry.cookie']->getCookie();
-
-			if ($cookie)
-			{
-				$response->headers->setCookie($cookie);
-			}
-		});
 	}
 
 	protected function registerUsers()

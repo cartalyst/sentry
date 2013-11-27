@@ -47,13 +47,6 @@ class IlluminateCookie implements CookieInterface {
 	protected $key = 'cartalyst_sentry';
 
 	/**
-	 * The cookie to be sent with the response.
-	 *
-	 * @var \Symfony\Component\HttpFoundation\Cookie
-	 */
-	protected $cookie;
-
-	/**
 	 * Create a new Illuminate cookie driver.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
@@ -77,7 +70,8 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function put($value)
 	{
-		$this->cookie = $this->jar->forever($this->key, $value);
+		$cookie = $this->jar->forever($this->key, $value);
+		$this->jar->queue($cookie);
 	}
 
 	/**
@@ -85,7 +79,13 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function get()
 	{
-		return $this->request->cookie($this->key);
+		$key = $this->key;
+		$request = $this->request;
+
+		return $this->jar->queued($key, function() use($key, $request)
+		{
+			return $request->cookie($key);
+		});
 	}
 
 	/**
@@ -93,17 +93,8 @@ class IlluminateCookie implements CookieInterface {
 	 */
 	public function forget()
 	{
-		$this->cookie = $this->jar->forget($this->key);
-	}
-
-	/**
-	 * Returns the Symfony cookie object associated with the Illuminate cookie.
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Cookie
-	 */
-	public function getCookie()
-	{
-		return $this->cookie;
+		$cookie = $this->jar->forget($this->key);
+		$this->jar->queue($cookie);
 	}
 
 }
