@@ -42,7 +42,6 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		'permissions',
 		'first_name',
 		'last_name',
-		'permissions',
 	);
 
 	/**
