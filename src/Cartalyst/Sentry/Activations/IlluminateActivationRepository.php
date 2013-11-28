@@ -86,11 +86,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function exists(UserInterface $user)
 	{
-		$activation = $this
-			->createModel()
-			->where('user_id', $user->getUserId())
-			->where('completed', true)
-			->first();
+		$activation = $this->getActivation($user);
 
 		return ($activation !== null);
 	}
@@ -124,6 +120,21 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
+	public function remove(UserInterface $user)
+	{
+		$activation = $this->getActivation($user);
+
+		if ($activation === null)
+		{
+			return false;
+		}
+
+		return $activation->delete();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function deleteExpired()
 	{
 		$expired = Carbon::now()->subMinutes($this->expires);
@@ -134,6 +145,15 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 			->where('completed', false)
 			->where('created_at', '<', $expires)
 			->delete();
+	}
+
+	protected function getActivation(UserInterface $user)
+	{
+		return $this
+			->createModel()
+			->where('user_id', $user->getUserId())
+			->where('completed', true)
+			->first();
 	}
 
 	/**

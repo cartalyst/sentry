@@ -210,12 +210,20 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	{
 		if ( ! $user instanceof UserInterface)
 		{
-			$user = $this->find($id);
+			$user = $this->findById($user);
 		}
 
-		if (isset($credentials['password']))
+		// Only hash the password if a valid one comes through
+		if (array_key_exists('password', $credentials))
 		{
-			$credentials['password'] = $this->hasher->hash($credentials['password']);
+			if ($credentials['password'])
+			{
+				$credentials['password'] = $this->hasher->hash($credentials['password']);
+			}
+			else
+			{
+				unset($credentials['password']);
+			}
 		}
 
 		$user
@@ -296,6 +304,11 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 			{
 				throw new \InvalidArgumentException('You have not passed a [password].');
 			}
+		}
+
+		if ($password and strlen($password) < 6)
+		{
+			throw new \InvalidArgumentException('Your [password] must be at least 6 characters.');
 		}
 
 		return true;
