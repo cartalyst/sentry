@@ -39,6 +39,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	protected $fillable = array(
 		'email',
 		'password',
+		'permissions',
 		'first_name',
 		'last_name',
 	);

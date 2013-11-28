@@ -48,6 +48,14 @@ interface ActivationRepositoryInterface {
 	public function complete(UserInterface $user, $code);
 
 	/**
+	 * Remove an existing activation (deactivate).
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @return int
+	 */
+	public function remove(UserInterface $user);
+
+	/**
 	 * Remove expired activation codes.
 	 *
 	 * @return int

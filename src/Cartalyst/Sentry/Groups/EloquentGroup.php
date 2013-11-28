@@ -37,6 +37,8 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	 */
 	protected $fillable = array(
 		'slug',
+		'name',
+		'permissions',
 	);
 
 	/**
