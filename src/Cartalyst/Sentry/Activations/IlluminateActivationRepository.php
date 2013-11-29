@@ -178,4 +178,15 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		return new $class;
 	}
 
+	/**
+	 * Runtime override of the model.
+	 *
+	 * @param  string  $model
+	 * @return void
+	 */
+	public function setModel($model)
+	{
+		$this->model = $model;
+	}
+
 }
