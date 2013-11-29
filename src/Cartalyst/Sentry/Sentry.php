@@ -383,14 +383,16 @@ class Sentry {
 	 */
 	public function logout($everywhere = false)
 	{
-		if ($this->user === null)
+		$user = $this->getUser();
+
+		if ($user === null)
 		{
 			return true;
 		}
 
 		$method = ($everywhere === true) ? 'flush' : 'remove';
 
-		$response = $this->persistence->$method($this->user);
+		$response = $this->persistence->$method($user);
 
 		if ($response === false)
 		{
