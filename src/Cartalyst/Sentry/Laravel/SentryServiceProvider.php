@@ -103,7 +103,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$model = $app['config']['cartalyst/sentry::users.model'];
 
-			$groups = $app['config']['cartalyst/sentry::users.model'];
+			$groups = $app['config']['cartalyst/sentry::groups.model'];
 			if (class_exists($groups) and method_exists($groups, 'setUsersModel'))
 			{
 				forward_static_call_array(array($groups, 'setUsersModel'), array($model));
