@@ -60,6 +60,13 @@ class Sentry {
 	protected $users;
 
 	/**
+	 * Cached, available methods on the user repository, used for dynamic calls.
+	 *
+	 * @var array
+	 */
+	protected $userMethods = array();
+
+	/**
 	 * Group repository.
 	 *
 	 * @var \Cartalyst\Sentry\Groups\GroupRepositoryInterface
@@ -610,6 +617,7 @@ class Sentry {
 		if ($this->users === null)
 		{
 			$this->users = $this->createUserRepository();
+			$this->userMethods = array();
 		}
 
 		return $this->users;
@@ -624,6 +632,7 @@ class Sentry {
 	public function setUserRepository(UserRepositoryInterface $users)
 	{
 		$this->users = $users;
+		$this->userMethods = array();
 	}
 
 	/**
@@ -792,6 +801,36 @@ class Sentry {
 	}
 
 	/**
+	 * Returns all accessible methods on the associated user repository.
+	 *
+	 * @return array
+	 */
+	protected function getUserMethods()
+	{
+		if (empty($this->userMethods))
+		{
+			$users = $this->getUserRepository();
+
+			$methods = get_class_methods($users);
+			$banned = array('__construct');
+
+			foreach ($banned as $method)
+			{
+				$index = array_search($method, $methods);
+
+				if ($index !== false)
+				{
+					unset($methods[$index]);
+				}
+			}
+
+			$this->userMethods = $methods;
+		}
+
+		return $this->userMethods;
+	}
+
+	/**
 	 * Dynamically pass missing methods to Sentry.
 	 *
 	 * @param  string  $method
@@ -801,7 +840,9 @@ class Sentry {
 	 */
 	public function __call($method, $parameters)
 	{
-		if (starts_with($method, 'findBy'))
+		$methods = $this->getUserMethods();
+
+		if (in_array($method, $methods))
 		{
 			$users = $this->getUserRepository();
 
