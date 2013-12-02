@@ -46,8 +46,15 @@ class SentryPersistence implements PersistenceInterface {
 	 */
 	public function __construct(SessionInterface $session, CookieInterface $cookie)
 	{
-		$this->session = $session;
-		$this->cookie  = $cookie;
+		if (isset($session))
+		{
+			$this->session = $session;
+		}
+
+		if (isset($cookie))
+		{
+			$this->cookie  = $cookie;
+		}
 	}
 
 	/**

@@ -182,7 +182,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function log($ipAddress, UserInterface $user = null)
+	public function log($ipAddress = null, UserInterface $user = null)
 	{
 		$global = $this->createModel();
 		$global->fill(array(
@@ -190,12 +190,15 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		));
 		$global->save();
 
-		$ip = $this->createModel();
-		$ip->fill(array(
-			'type' => 'ip',
-			'ip' => $ipAddress,
-		));
-		$ip->save();
+		if ($ipAddress !== null)
+		{
+			$ipAddressThrottle = $this->createModel();
+			$ipAddressThrottle->fill(array(
+				'type' => 'ip',
+				'ip' => $ipAddress,
+			));
+			$ipAddressThrottle->save();
+		}
 
 		if ($user !== null)
 		{

@@ -38,7 +38,7 @@ class NativeCookie implements CookieInterface {
 	 *
 	 * @param  string|array  $options
 	 */
-	public function __construct(array $options = array())
+	public function __construct($options = array())
 	{
 		if (is_array($options))
 		{

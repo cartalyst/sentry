@@ -44,10 +44,14 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 * @param  string  $ipAddress
 	 * @return void
 	 */
-	public function __construct(ThrottleRepositoryInterface $throttle, $ipAddress)
+	public function __construct(ThrottleRepositoryInterface $throttle, $ipAddress = null)
 	{
-		$this->throttle  = $throttle;
-		$this->ipAddress = $ipAddress;
+		$this->throttle = $throttle;
+
+		if (isset($ipAddress))
+		{
+			$this->ipAddress = $ipAddress;
+		}
 	}
 
 	/**

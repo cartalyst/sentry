@@ -19,10 +19,10 @@
  */
 
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
-use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Checkpoints\ActivationCheckpoint;
 use Cartalyst\Sentry\Checkpoints\SwiftIdentityCheckpoint;
 use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
+use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
@@ -167,7 +167,7 @@ class SentryServiceProvider extends ServiceProvider {
 
 	protected function registerActivationCheckpoint()
 	{
-		$this->registerActivation();
+		$this->registerActivations();
 
 		$this->app['sentry.checkpoint.activation'] = $this->app->share(function($app)
 		{
@@ -175,7 +175,7 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
-	protected function registerActivation()
+	protected function registerActivations()
 	{
 		$this->app['sentry.activations'] = $this->app->share(function($app)
 		{
@@ -205,7 +205,6 @@ class SentryServiceProvider extends ServiceProvider {
 			$apiKey = $app['config']['cartalyst/sentry::swift.api_key'];
 			$appCode = $app['config']['cartalyst/sentry::swift.app_code'];
 			$method = $app['config']['cartalyst/sentry::swift.method'];
-			$model = $app['config']['cartalyst/sentry::swift.model'];
 
 			return new SentrySwift(
 				$email,
@@ -213,8 +212,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$apiKey,
 				$appCode,
 				$this->app['request']->getClientIp(),
-				$method,
-				$model
+				$method
 			);
 		});
 	}

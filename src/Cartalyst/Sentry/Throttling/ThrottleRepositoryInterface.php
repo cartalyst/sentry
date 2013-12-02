@@ -52,6 +52,6 @@ interface ThrottleRepositoryInterface {
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return void
 	 */
-	public function log($ipAddress, UserInterface $user = null);
+	public function log($ipAddress = null, UserInterface $user = null);
 
 }

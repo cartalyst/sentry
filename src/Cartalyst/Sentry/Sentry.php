@@ -21,12 +21,15 @@
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentry\Checkpoints\CheckpointInterface;
+use Cartalyst\Sentry\Cookies\NativeCookie;
 use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Groups\GroupRepositoryInterface;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\PersistenceInterface;
+use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentry\Reminders\ReminderRepositoryInterface;
+use Cartalyst\Sentry\Sessions\NativeSession;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
@@ -99,9 +102,12 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
 	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
 	 */
-	public function __construct(PersistenceInterface $persistence, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null, Dispatcher $dispatcher = null)
+	public function __construct(PersistenceInterface $persistence = null, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null, Dispatcher $dispatcher = null)
 	{
-		$this->persistence = $persistence;
+		if (isset($persistence))
+		{
+			$this->persistence = $persistence;
+		}
 
 		if (isset($users))
 		{
@@ -562,6 +568,11 @@ class Sentry {
 	 */
 	public function getPersistence()
 	{
+		if ($this->persistence === null)
+		{
+			$this->persistence = $this->createPersistence();
+		}
+
 		return $this->persistence;
 	}
 
@@ -574,6 +585,19 @@ class Sentry {
 	public function setPersistence(PersistenceInterface $persistence)
 	{
 		$this->persistence = $persistence;
+	}
+
+	/**
+	 * Creates a persistence instance.
+	 *
+	 * @return \Cartalyst\Sentry\Users\IlluminateUserRepository
+	 */
+	protected function createPersistence()
+	{
+		$session = new NativeSession;
+		$cookie = new NativeCookie;
+
+		return new SentryPersistence($session, $cookie);
 	}
 
 	/**
