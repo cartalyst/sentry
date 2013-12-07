@@ -24,6 +24,8 @@ use PHPUnit_Framework_TestCase;
 
 class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
+	protected $request;
+
 	protected $jar;
 
 	protected $cookie;
@@ -35,9 +37,10 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp()
 	{
+		$this->request = m::mock('Illuminate\Http\Request');
 		$this->jar = m::mock('Illuminate\Cookie\CookieJar');
 
-		$this->cookie = new IlluminateCookie($this->jar, 'cookie_name_here');
+		$this->cookie = new IlluminateCookie($this->request, $this->jar, 'cookie_name_here');
 	}
 
 	/**
@@ -52,19 +55,31 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
 	public function testPut()
 	{
-		$this->jar->shouldReceive('make')->with('cookie_name_here', 'bar', 123)->once();
+		$this->jar->shouldReceive('make')->with('cookie_name_here', 'bar', 123)->once()->andReturn('cookie');
+		$this->jar->shouldReceive('queue')->with('cookie')->once();
 		$this->cookie->put('bar', 123);
 	}
 
 	public function testForever()
 	{
-		$this->jar->shouldReceive('forever')->with('cookie_name_here', 'bar')->once();
+		$this->jar->shouldReceive('forever')->with('cookie_name_here', 'bar')->once()->andReturn('cookie');
+		$this->jar->shouldReceive('queue')->with('cookie')->once();
 		$this->cookie->forever('bar');
 	}
 
-	public function testGet()
+	public function testGetWithQueuedCookie()
 	{
-		$this->jar->shouldReceive('get')->with('cookie_name_here')->once()->andReturn('bar');
+		$this->jar->shouldReceive('getQueuedCookies')->once()->andReturn(array('cookie_name_here' => 'bar'));
+		// $this->request->shouldReceive('cookie')->with('cookie_name_here')->once()->andReturn('bar');
+
+		// Ensure default param is "null"
+		$this->assertEquals('bar', $this->cookie->get());
+	}
+
+	public function testGetWithPreviousCookies()
+	{
+		$this->jar->shouldReceive('getQueuedCookies')->once()->andReturn(array());
+		$this->request->shouldReceive('cookie')->with('cookie_name_here')->once()->andReturn('bar');
 
 		// Ensure default param is "null"
 		$this->assertEquals('bar', $this->cookie->get());
@@ -72,7 +87,8 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 
 	public function testForget()
 	{
-		$this->jar->shouldReceive('forget')->with('cookie_name_here')->once();
+		$this->jar->shouldReceive('forget')->with('cookie_name_here')->once()->andReturn('cookie');
+		$this->jar->shouldReceive('queue')->with('cookie')->once();
 		$this->cookie->forget();
 	}
 

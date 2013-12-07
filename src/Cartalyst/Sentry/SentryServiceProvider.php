@@ -40,8 +40,6 @@ class SentryServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('cartalyst/sentry', 'cartalyst/sentry');
-
-		$this->observeEvents();
 	}
 
 	/**
@@ -52,17 +50,11 @@ class SentryServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		$this->registerHasher();
-
 		$this->registerUserProvider();
-
 		$this->registerGroupProvider();
-
 		$this->registerThrottleProvider();
-
 		$this->registerSession();
-
 		$this->registerCookie();
-
 		$this->registerSentry();
 	}
 
@@ -256,7 +248,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$key = $app['config']['cartalyst/sentry::cookie.key'];
 
-			return new IlluminateCookie($app['cookie'], $key);
+			return new IlluminateCookie($app['request'], $app['cookie'], $key);
 		});
 	}
 
@@ -270,11 +262,6 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry'] = $this->app->share(function($app)
 		{
-			// Once the authentication service has actually been requested by the developer
-			// we will set a variable in the application indicating such. This helps us
-			// know that we need to set any queued cookies in the after event later.
-			$app['sentry.loaded'] = true;
-
 			return new Sentry(
 				$app['sentry.user'],
 				$app['sentry.group'],
@@ -283,24 +270,6 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.cookie'],
 				$app['request']->getClientIp()
 			);
-		});
-	}
-
-	/**
-	 * Sets up event observations required by Sentry.
-	 *
-	 * @return void
-	 */
-	protected function observeEvents()
-	{
-		// Set the cookie after the app runs
-		$app = $this->app;
-		$this->app->after(function($request, $response) use ($app)
-		{
-			if (isset($app['sentry.loaded']) and $app['sentry.loaded'] == true and ($cookie = $app['sentry.cookie']->getCookie()))
-			{
-				$response->headers->setCookie($cookie);
-			}
 		});
 	}
 
