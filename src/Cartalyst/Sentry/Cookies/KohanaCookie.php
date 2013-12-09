@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cookie;
+use Kohana_Cookie as Cookie;
 
 class KohanaCookie implements CookieInterface {
 

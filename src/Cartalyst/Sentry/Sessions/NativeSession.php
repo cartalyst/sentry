@@ -85,7 +85,7 @@ class NativeSession implements SessionInterface {
 	protected function startSession()
 	{
 		// Check that the session hasn't already been started
-		if (session_id() == '')
+		if (session_id() == '' and ! headers_sent())
 		{
 			session_start();
 		}

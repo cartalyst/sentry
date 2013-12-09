@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Cookie;
+use Fuel\Core\Cookie;
 
 class FuelPHPCookie implements CookieInterface {
 

@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\SentrySessions;
+<?php namespace Cartalyst\Sentry\Sessions;
 /**
  * Part of the Sentry package.
  *
@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-use Session;
+use Kohana_Session as Session;
 
 class KohanaSession implements SessionInterface {
 
