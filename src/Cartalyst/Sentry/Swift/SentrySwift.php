@@ -25,20 +25,60 @@ use SwiftIdentityExpressApi;
 
 class SentrySwift implements SwiftInterface {
 
+	/**
+	 * The shared API instance.
+	 *
+	 * @var \SwiftIdentityExpressApi
+	 */
 	protected $api;
 
+	/**
+	 * The email address used to authenticate with the API.
+	 *
+	 * @var string
+	 */
 	protected $email;
 
+	/**
+	 * The password used to authenticate with the API.
+	 *
+	 * @var string
+	 */
 	protected $password;
 
+	/**
+	 * The key used to authenticate with the API.
+	 *
+	 * @var string
+	 */
 	protected $apiKey;
 
+	/**
+	 * The app code used to authenticate with the API.
+	 *
+	 * @var string
+	 */
 	protected $appCode;
 
+	/**
+	 * The IP address of the user authenticating.
+	 *
+	 * @var string
+	 */
 	protected $ipAddress;
 
+	/**
+	 * The Swift API method, "swipe" or "sms".
+	 *
+	 * @var string
+	 */
 	protected $method = 'swipe';
 
+	/**
+	 * Flag for whether the object is in an SMS answering state.
+	 *
+	 * @var bool
+	 */
 	protected $answering = false;
 
 	/**
@@ -49,7 +89,7 @@ class SentrySwift implements SwiftInterface {
 	protected $model = 'Cartalyst\Sentry\Swift\EloquentSwift';
 
 	/**
-	 * Create a new Illuminate swift repository.
+	 * Create a new Swift Identity.
 	 *
 	 * @param  string  $email
 	 * @param  string  $password
@@ -78,7 +118,7 @@ class SentrySwift implements SwiftInterface {
 	}
 
 	/**
-	 * Destory the object instance
+	 * Destroy the object instance.
 	 */
 	public function __destruct()
 	{
@@ -113,7 +153,7 @@ class SentrySwift implements SwiftInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function checkAnswer(UserInterface $user, $answer, Closure $callback)
+	public function checkAnswer(UserInterface $user, $answer, Closure $callback = null)
 	{
 		$this->answering = true;
 
@@ -126,17 +166,27 @@ class SentrySwift implements SwiftInterface {
 			return false;
 		}
 
-		$response = $callback($user);
+		$response = isset($callback) ? $callback($user) : true;
 		$this->answering = false;
 		return $response;
 	}
 
+	/**
+	 * Flag for whether the object is in an SMS answering state.
+	 *
+	 * @return bool
+	 */
 	public function isAnswering()
 	{
 		return $this->answering;
 	}
 
-	protected function getApi()
+	/**
+	 * Lazily get an API instance associated with the object.
+	 *
+	 * @return \SwiftIdentityExpressApi
+	 */
+	public function getApi()
 	{
 		if ($this->api === null)
 		{
@@ -146,6 +196,11 @@ class SentrySwift implements SwiftInterface {
 		return $this->api;
 	}
 
+	/**
+	 * Connect to the Swift Identity API.
+	 *
+	 * @return \SwiftIdentityExpressApi
+	 */
 	protected function connect()
 	{
 		$api = $this->createApi();
@@ -155,11 +210,21 @@ class SentrySwift implements SwiftInterface {
 		return $api;
 	}
 
+	/**
+	 * Create a new Swift Identity API instance.
+	 *
+	 * @return \SwiftIdentityExpressApi
+	 */
 	protected function createApi()
 	{
 		return new SwiftIdentityExpressApi('https://api.swiftidentity.com/rs/expressapi/1.0/xml/');
 	}
 
+	/**
+	 * Disconnects from the Swift Identity API.
+	 *
+	 * @return void
+	 */
 	protected function disconnect()
 	{
 		if ($this->api !== null)

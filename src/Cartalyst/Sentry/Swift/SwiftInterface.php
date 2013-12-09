@@ -40,6 +40,18 @@ interface SwiftInterface {
 	 */
 	public function saveNumber(UserInterface $user, $number);
 
-	public function checkAnswer(UserInterface $user, $answer, Closure $callback);
+	/**
+	 * Checks the SMS answer for the given user. Pass an optional callback to be
+	 * executed on successful verification of the answer to be executed while
+	 * the object is in an answering state. If you choose to pass a callback,
+	 * it's return value should be cascaded out of this method. If not, the
+	 * boolean result of the SMS answer should be returned instead.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  string  $answer
+	 * @param  \Closure  $callback
+	 * @return mixed
+	 */
+	public function checkAnswer(UserInterface $user, $answer, Closure $callback = null);
 
 }
