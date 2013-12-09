@@ -185,6 +185,13 @@ abstract class BasePermissions implements PermissionsInterface {
 		}
 	}
 
+	/**
+	 * Takes the given permission key and inspects it for a class & method. If
+	 * it exists, methods may be comma-separated, e.g. Class@method1,method2.
+	 *
+	 * @param  string  $key
+	 * @return array
+	 */
 	protected function extractClassPermissions($key)
 	{
 		if ( ! str_contains($key, '@'))
