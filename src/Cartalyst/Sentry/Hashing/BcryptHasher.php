@@ -32,13 +32,12 @@ class BcryptHasher extends BaseHasher implements HasherInterface {
 	 */
 	public function hash($value)
 	{
+		$salt = $this->createSalt();
+
 		// Format strength
 		$strength = str_pad($this->strength, 2, '0', STR_PAD_LEFT);
 
-		// Create salt
-		$salt = $this->createSalt();
-
-		//create prefix; $2y$ fixes blowfish weakness
+		// Create prefix - "$2y$"" fixes blowfish weakness
 		$prefix = PHP_VERSION_ID < 50307 ? '$2a$' : '$2y$';
 
 		return crypt($value, $prefix.$strength.'$'.$salt.'$');
@@ -47,7 +46,7 @@ class BcryptHasher extends BaseHasher implements HasherInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function checkhash($value, $hashedValue)
+	public function check($value, $hashedValue)
 	{
 		return crypt($value, $hashedValue) === $hashedValue;
 	}

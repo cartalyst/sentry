@@ -34,18 +34,18 @@ class CallbackHasher implements HasherInterface {
 	 *
 	 * @var \Closure
 	 */
-	protected $checkHash;
+	protected $check;
 
 	/**
 	 * Create a new callback hasher instance.
 	 *
 	 * @param  \Closure  $hash
-	 * @param  \Closure  $checkHash
+	 * @param  \Closure  $check
 	 */
-	public function __construct(Closure $hash, Closure $checkHash)
+	public function __construct(Closure $hash, Closure $check)
 	{
 		$this->hash = $hash;
-		$this->checkHash = $checkHash;
+		$this->check = $check;
 	}
 
 	/**
@@ -61,9 +61,9 @@ class CallbackHasher implements HasherInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function checkhash($value, $hashedValue)
+	public function check($value, $hashedValue)
 	{
-		$callback = $this->checkHash;
+		$callback = $this->check;
 
 		return $callback($value, $hashedValue);
 	}

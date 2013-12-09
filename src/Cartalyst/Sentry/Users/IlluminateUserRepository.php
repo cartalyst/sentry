@@ -109,7 +109,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	 */
 	public function validateCredentials(UserInterface $user, array $credentials)
 	{
-		return $this->hasher->checkHash($credentials['password'], $user->password);
+		return $this->hasher->check($credentials['password'], $user->password);
 	}
 
 	/**

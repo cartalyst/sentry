@@ -35,6 +35,6 @@ interface HasherInterface {
 	 * @param  string  $hashedValue
 	 * @return bool
 	 */
-	public function checkhash($value, $hashedValue);
+	public function check($value, $hashedValue);
 
 }

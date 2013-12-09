@@ -36,7 +36,7 @@ class NativeHasher implements HasherInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function checkhash($value, $hashedValue)
+	public function check($value, $hashedValue)
 	{
 		return password_verify($value, $hashedValue);
 	}
