@@ -155,7 +155,7 @@ class Sentry {
 			return false;
 		}
 
-		$argument = ($callback instanceof Closure) ? $callback : null;
+		$argument = $callback instanceof Closure ? $callback : null;
 
 		$user = $this->users->create($credentials, $argument);
 
@@ -283,7 +283,7 @@ class Sentry {
 		{
 			$user = $this->users->findByCredentials($credentials);
 
-			$valid = ($user !== null) ? $this->users->validateCredentials($user, $credentials) : false;
+			$valid = $user !== null ? $this->users->validateCredentials($user, $credentials) : false;
 
 			if ($user === null or $valid === false)
 			{
@@ -303,7 +303,7 @@ class Sentry {
 			return true;
 		}
 
-		$method = ($remember === true) ? 'loginAndRemember' : 'login';
+		$method = $remember === true ? 'loginAndRemember' : 'login';
 
 		return $this->$method($user);
 	}
@@ -365,7 +365,7 @@ class Sentry {
 	 */
 	public function login(UserInterface $user, $remember = false)
 	{
-		$method = ($remember === true) ? 'addAndRemember' : 'add';
+		$method = $remember === true ? 'addAndRemember' : 'add';
 		$this->persistence->$method($user);
 
 		return $this->users->recordLogin($user);
@@ -397,7 +397,7 @@ class Sentry {
 			return true;
 		}
 
-		$method = ($everywhere === true) ? 'flush' : 'remove';
+		$method = $everywhere === true ? 'flush' : 'remove';
 		$this->persistence->$method($user);
 
 		return $this->users->recordLogout($user);
