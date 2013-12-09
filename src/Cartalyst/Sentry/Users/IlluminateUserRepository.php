@@ -182,11 +182,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	public function create(array $credentials, Closure $callback = null)
 	{
 		$user = $this->createModel();
-
-		$credentials['password'] = $this->hasher->hash($credentials['password']);
-
-		$user->fill($credentials);
-
+		$this->fill($user, $credentials);
 
 		if ($callback)
 		{
@@ -213,22 +209,8 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 			$user = $this->findById($user);
 		}
 
-		// Only hash the password if a valid one comes through
-		if (array_key_exists('password', $credentials))
-		{
-			if ($credentials['password'])
-			{
-				$credentials['password'] = $this->hasher->hash($credentials['password']);
-			}
-			else
-			{
-				unset($credentials['password']);
-			}
-		}
-
-		$user
-			->fill($credentials)
-			->save();
+		$this->fill($user, $credentials);
+		$user->save();
 
 		return $user;
 	}
@@ -276,6 +258,40 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		}
 
 		return array($logins, $password, $credentials);
+	}
+
+	/**
+	 * Fills a user with the given credentials, intelligently.
+	 *
+	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  array  $credentials
+	 * @return void
+	 */
+	protected function fill(UserInterface $user, array $credentials)
+	{
+		$loginNames = $user->getLoginNames();
+
+		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
+
+		if (is_array($logins))
+		{
+			$user->fill($logins);
+		}
+		else
+		{
+			$loginName = reset($loginNames);
+			$user->fill(array(
+				$loginName => $logins,
+			));
+		}
+
+		$user->fill($credentials);
+
+		if (isset($password))
+		{
+			$password = $this->hasher->hash($password);
+			$user->fill(compact('password'));
+		}
 	}
 
 	/**

@@ -165,21 +165,44 @@ abstract class BasePermissions implements PermissionsInterface {
 	 */
 	protected function preparePermissions(array &$prepared, array $permissions)
 	{
-		foreach ($permissions as $key => $value)
+		foreach ($permissions as $keys => $value)
 		{
-			// If the value is not in the array, we're opting in
-			if ( ! array_key_exists($key, $prepared))
+			foreach ($this->extractClassPermissions($keys) as $key)
 			{
-				$prepared[$key] = $value;
-				continue;
-			}
+				// If the value is not in the array, we're opting in
+				if ( ! array_key_exists($key, $prepared))
+				{
+					$prepared[$key] = $value;
+					continue;
+				}
 
-			// If our value is in the array and equals false, it will override
-			if ($value === false)
-			{
-				$prepared[$key] = $value;
+				// If our value is in the array and equals false, it will override
+				if ($value === false)
+				{
+					$prepared[$key] = $value;
+				}
 			}
 		}
+	}
+
+	protected function extractClassPermissions($key)
+	{
+		if ( ! str_contains($key, '@'))
+		{
+			return (array) $key;
+		}
+
+		$keys = array();
+
+		list($class, $methods) = explode('@', $key);
+		$methods = array_map('trim', explode(',', $methods));
+
+		foreach ($methods as $method)
+		{
+			$keys[] = "{$class}@{$method}";
+		}
+
+		return $keys;
 	}
 
 	/**
