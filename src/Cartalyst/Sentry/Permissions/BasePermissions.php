@@ -25,7 +25,7 @@ abstract class BasePermissions implements PermissionsInterface {
 	 *
 	 * @var array
 	 */
-	protected $permisions = array();
+	protected $permissions = array();
 
 	/**
 	 * Secondary permissions.
@@ -44,15 +44,15 @@ abstract class BasePermissions implements PermissionsInterface {
 	/**
 	 * Create a new permissions instance.
 	 *
-	 * @param  array  $permisions
-	 * @param  array  $secondaryPermisions
+	 * @param  array  $permissions
+	 * @param  array  $secondaryPermissions
 	 * @return void
 	 */
-	public function __construct(array $permisions = null, array $secondaryPermissions = null)
+	public function __construct(array $permissions = null, array $secondaryPermissions = null)
 	{
-		if (isset($permisions))
+		if (isset($permissions))
 		{
-			$this->permisions = $permisions;
+			$this->permissions = $permissions;
 		}
 
 		if (isset($secondaryPermissions))
@@ -104,18 +104,18 @@ abstract class BasePermissions implements PermissionsInterface {
 	 */
 	public function getPermissions()
 	{
-		return $this->permisions;
+		return $this->permissions;
 	}
 
 	/**
 	 * Set permissions.
 	 *
-	 * @param  array  $permisions
+	 * @param  array  $permissions
 	 * @return void
 	 */
-	public function setPermissions(array $permisions)
+	public function setPermissions(array $permissions)
 	{
-		$this->permisions = $permisions;
+		$this->permissions = $permissions;
 		$this->preparedPermissions = null;
 	}
 

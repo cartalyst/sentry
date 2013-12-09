@@ -35,9 +35,11 @@ class StrictPermissions extends BasePermissions implements PermissionsInterface 
 			}
 		}
 
-		if ( ! empty($this->permisions))
+		if ( ! empty($this->permissions))
 		{
-			$prepared = array_merge($prepared, $this->permisions);
+			$permissions = array();
+			$this->preparePermissions($permissions, $this->permissions);
+			$prepared = array_merge($prepared, $permissions);
 		}
 
 		return $prepared;

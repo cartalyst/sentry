@@ -35,9 +35,9 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 			}
 		}
 
-		if ( ! empty($this->permisions))
+		if ( ! empty($this->permissions))
 		{
-			$this->preparePermissions($prepared, $this->permisions);
+			$this->preparePermissions($prepared, $this->permissions);
 		}
 
 		return $prepared;
