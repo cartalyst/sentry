@@ -38,7 +38,7 @@ interface PersistableInterface {
 	 * Adds a new persist code.
 	 *
 	 * @param  string  $code
-	 * @return bool
+	 * @return void
 	 */
 	public function addPersistenceCode($code);
 
@@ -46,7 +46,7 @@ interface PersistableInterface {
 	 * Removes a persist code.
 	 *
 	 * @param  string  $code
-	 * @return bool
+	 * @return void
 	 */
 	public function removePersistenceCode($code);
 

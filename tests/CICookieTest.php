@@ -18,9 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-use Mockery as m;
 use Cartalyst\Sentry\Cookies\CICookie;
 use CI_Input;
+use Mockery as m;
 use PHPUnit_Framework_TestCase;
 
 class CICookieTest extends PHPUnit_Framework_TestCase {

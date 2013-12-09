@@ -18,8 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Mockery as m;
 use Cartalyst\Sentry\Sessions\CISession;
+use Mockery as m;
 use PHPUnit_Framework_TestCase;
 
 class CISessionTest extends PHPUnit_Framework_TestCase {

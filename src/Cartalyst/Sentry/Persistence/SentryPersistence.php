@@ -40,8 +40,8 @@ class SentryPersistence implements PersistenceInterface {
 	/**
 	 * Create a new Sentry persistence repository.
 	 *
-	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $session
-	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $cookie
+	 * @param  Cartalyst\Sentry\Sessions\SessionInterface  $session
+	 * @param  Cartalyst\Sentry\Cookies\CookieInterface  $cookie
 	 * @return void
 	 */
 	public function __construct(SessionInterface $session, CookieInterface $cookie)
@@ -95,7 +95,7 @@ class SentryPersistence implements PersistenceInterface {
 	 */
 	public function addAndRemember(PersistableInterface $persistable)
 	{
-		return $this->add($persistable, true);
+		$this->add($persistable, true);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class SentryPersistence implements PersistenceInterface {
 
 		if ($code === null)
 		{
-			return true;
+			return;
 		}
 
 		$this->session->forget();
@@ -126,15 +126,8 @@ class SentryPersistence implements PersistenceInterface {
 
 		foreach ($persistable->getPersistenceCodes() as $code)
 		{
-			$response = $persistable->removePersistenceCode($code);
-
-			if ($response === false)
-			{
-				return false;
-			}
+			$persistable->removePersistenceCode($code);
 		}
-
-		return true;
 	}
 
 }

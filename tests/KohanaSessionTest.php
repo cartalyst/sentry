@@ -18,8 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Mockery as m;
 use Cartalyst\Sentry\Sessions\KohanaSession;
+use Mockery as m;
 use PHPUnit_Framework_TestCase;
 
 /**

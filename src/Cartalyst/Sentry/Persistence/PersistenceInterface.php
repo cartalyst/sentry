@@ -33,7 +33,7 @@ interface PersistenceInterface {
 	 * Adds a new user persistence to the current session and attaches the user.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
-	 * @return bool
+	 * @return void
 	 */
 	public function add(PersistableInterface $persistable);
 
@@ -41,7 +41,7 @@ interface PersistenceInterface {
 	 * Adds a new user persistence, to remember.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
-	 * @return bool
+	 * @return void
 	 */
 	public function addAndRemember(PersistableInterface $persistable);
 
@@ -49,7 +49,7 @@ interface PersistenceInterface {
 	 * Removes the persistence bound to the current session.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
-	 * @return bool
+	 * @return void
 	 */
 	public function remove(PersistableInterface $persistable);
 
@@ -57,7 +57,7 @@ interface PersistenceInterface {
 	 * Flushes all persistence for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistableInterface  $persistable
-	 * @return bool
+	 * @return void
 	 */
 	public function flush(PersistableInterface $persistable);
 

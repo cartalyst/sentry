@@ -202,8 +202,6 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		$codes = $this->persistence_codes;
 		$codes[] = $code;
 		$this->persistence_codes = $codes;
-
-		return true;
 	}
 
 	/**
@@ -221,8 +219,6 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		}
 
 		$this->persistence_codes = $codes;
-
-		return true;
 	}
 
 	/**

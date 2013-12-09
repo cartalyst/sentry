@@ -18,8 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Mockery as m;
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
+use Mockery as m;
 use PHPUnit_Framework_TestCase;
 
 class IlluminateCookieTest extends PHPUnit_Framework_TestCase {

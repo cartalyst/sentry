@@ -366,13 +366,7 @@ class Sentry {
 	public function login(UserInterface $user, $remember = false)
 	{
 		$method = ($remember === true) ? 'addAndRemember' : 'add';
-
-		$response = $this->persistence->$method($user);
-
-		if ($response === false)
-		{
-			return false;
-		}
+		$this->persistence->$method($user);
 
 		return $this->users->recordLogin($user);
 	}
@@ -404,13 +398,7 @@ class Sentry {
 		}
 
 		$method = ($everywhere === true) ? 'flush' : 'remove';
-
-		$response = $this->persistence->$method($user);
-
-		if ($response === false)
-		{
-			return false;
-		}
+		$this->persistence->$method($user);
 
 		return $this->users->recordLogout($user);
 	}
