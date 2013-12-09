@@ -195,9 +195,8 @@ abstract class BasePermissions implements PermissionsInterface {
 		$keys = array();
 
 		list($class, $methods) = explode('@', $key);
-		$methods = array_map('trim', explode(',', $methods));
 
-		foreach ($methods as $method)
+		foreach (explode(',', $methods) as $method)
 		{
 			$keys[] = "{$class}@{$method}";
 		}
