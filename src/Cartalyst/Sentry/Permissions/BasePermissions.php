@@ -35,6 +35,13 @@ abstract class BasePermissions implements PermissionsInterface {
 	protected $secondaryPermissions = array();
 
 	/**
+	 * An array of cached, prepared permissions.
+	 *
+	 * @var array
+	 */
+	protected $preparedPermissions;
+
+	/**
 	 * Create a new permissions instance.
 	 *
 	 * @param  array  $permisions
@@ -109,6 +116,7 @@ abstract class BasePermissions implements PermissionsInterface {
 	public function setPermissions(array $permisions)
 	{
 		$this->permisions = $permisions;
+		$this->preparedPermissions = null;
 	}
 
 	/**
@@ -130,6 +138,22 @@ abstract class BasePermissions implements PermissionsInterface {
 	public function setSecondaryPermissions(array $secondaryPermissions)
 	{
 		$this->secondaryPermissions = $secondaryPermissions;
+		$this->preparedPermissions = null;
+	}
+
+	/**
+	 * Lazily grabs prepared permissions.
+	 *
+	 * @return array
+	 */
+	protected function getPreparedPermissions()
+	{
+		if ($this->preparedPermissions === null)
+		{
+			$this->preparedPermissions = $this->createPreparedPermissions();
+		}
+
+		return $this->preparedPermissions;
 	}
 
 	/**
@@ -188,6 +212,6 @@ abstract class BasePermissions implements PermissionsInterface {
 	 *
 	 * @return void
 	 */
-	abstract protected function getPreparedPermissions();
+	abstract protected function createPreparedPermissions();
 
 }

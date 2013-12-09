@@ -23,7 +23,7 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getPreparedPermissions()
+	protected function createPreparedPermissions()
 	{
 		$prepared = array();
 
