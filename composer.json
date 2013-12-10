@@ -29,6 +29,24 @@
 			"role": "Developer"
 		}
 	],
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "swiftidentity/php-toolkit",
+				"version": "1.0.0",
+				"dist": {
+					"url": "http://www.swiftidentity.com/toolkits/swiftidentity-php-toolkit-1.0.zip",
+					"type": "zip"
+				},
+				"autoload": {
+					"classmap": [
+						"swiftidentity-php-toolkit-1.0/toolkit/com/swiftidentity/api"
+					]
+				}
+			}
+		}
+	],
 	"require": {
 		"php": ">=5.3.3",
 		"illuminate/events": ">=4.0.9,<4.2",
@@ -41,7 +59,8 @@
 		"illuminate/database": ">=4.0.9,<4.2",
 		"illuminate/http": ">=4.0.9,<4.2",
 		"illuminate/session": ">=4.0.9,<4.2",
-		"ircmaxell/password-compat": "1.0.*"
+		"ircmaxell/password-compat": "1.0.*",
+		"swiftidentity/php-toolkit": "1.0.*"
 	},
 	"suggest": {
 		"illuminate/database": "Default sentry user, group and throttling implementations.",
