@@ -115,7 +115,6 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * @param  int|array  $ipThresholds
 	 * @param  int  $userInterval
 	 * @param  int|array  $userThresholds
-	 * @return void
 	 */
 	public function __construct($model = null, $globalInterval = null, $globalThresholds = null, $ipInterval = null, $ipThresholds = null, $userInterval = null, $userThresholds = null)
 	{
@@ -126,32 +125,32 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		if (isset($globalInterval))
 		{
-			$this->globalInterval = (int) $globalInterval;
+			$this->setGlobalInterval($globalInterval);
 		}
 
 		if (isset($globalThresholds))
 		{
-			$this->globalThresholds = is_array($globalThresholds) ? $globalThresholds : (int) $globalThresholds;
+			$this->setGlobalThresholds($globalThresholds);
 		}
 
 		if (isset($ipInterval))
 		{
-			$this->ipInterval = (int) $ipInterval;
+			$this->setIpInterval($ipInterval);
 		}
 
 		if (isset($ipThresholds))
 		{
-			$this->ipThresholds = is_array($ipThresholds) ? $ipThresholds : (int) $ipThresholds;
+			$this->setIpThresholds($ipThresholds);
 		}
 
 		if (isset($userInterval))
 		{
-			$this->userInterval = (int) $userInterval;
+			$this->setUserInterval($userInterval);
 		}
 
 		if (isset($userThresholds))
 		{
-			$this->userThresholds = is_array($userThresholds) ? $userThresholds : (int) $userThresholds;
+			$this->setUserThresholds($userThresholds);
 		}
 	}
 
@@ -273,7 +272,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		return $this->createModel()
 			->newQuery()
-			->where('type', '=', 'global')
+			->where('type', 'global')
 			->where('created_at', '>', $interval)
 			->get();
 	}
@@ -307,8 +306,8 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		return $this
 			->createModel()
-			->where('type', '=', 'ip')
-			->where('ip', '=', $ipAddress)
+			->where('type', 'ip')
+			->where('ip', $ipAddress)
 			->where('created_at', '>', $interval)
 			->get();
 	}
@@ -344,8 +343,8 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		return $this
 			->createModel()
-			->where('type', '=', 'user')
-			->where('user_id', '=', $user->getUserId())
+			->where('type', 'user')
+			->where('user_id', $user->getUserId())
 			->where('created_at', '>', $interval)
 			->get();
 	}
@@ -390,6 +389,72 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	public function setModel($model)
 	{
 		$this->model = $model;
+	}
+
+	/**
+	 * Set the global interval.
+	 *
+	 * @param  int  $globalInterval
+	 * @return void
+	 */
+	public function setGlobalInterval($globalInterval)
+	{
+		$this->globalInterval = (int) $globalInterval;
+	}
+
+	/**
+	 * Set the global thresholds.
+	 *
+	 * @param  int|array  $globalThresholds
+	 * @return void
+	 */
+	public function setGlobalThresholds($globalThresholds)
+	{
+		$this->globalThresholds = is_array($globalThresholds) ? $globalThresholds : (int) $globalThresholds;
+	}
+
+	/**
+	 * Set the IP address interval.
+	 *
+	 * @param  int  $globalThresholds
+	 * @return void
+	 */
+	public function setIpInterval($ipInterval)
+	{
+		$this->ipInterval = (int) $ipInterval;
+	}
+
+	/**
+	 * Set the IP address thresholds.
+	 *
+	 * @param  int|array  $ipThresholds
+	 * @return void
+	 */
+	public function setIpThresholds($ipThresholds)
+	{
+		$this->ipThresholds = is_array($ipThresholds) ? $ipThresholds : (int) $ipThresholds;
+	}
+
+	/**
+	 * Set the user interval.
+	 *
+	 * @param  int  $globalThresholds
+	 * @return void
+	 */
+	public function setUserInterval($userInterval)
+	{
+		$this->userInterval = (int) $userInterval;
+	}
+
+	/**
+	 * Set the user thresholds.
+	 *
+	 * @param  int|array  $userThresholds
+	 * @return void
+	 */
+	public function setUserThresholds($userThresholds)
+	{
+		$this->userThresholds = is_array($userThresholds) ? $userThresholds : (int) $userThresholds;
 	}
 
 }
