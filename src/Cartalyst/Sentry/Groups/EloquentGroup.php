@@ -55,7 +55,7 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	 */
 	public function users()
 	{
-		return $this->belongsToMany(static::$usersModel, 'groups_users', 'group_id', 'user_id');
+		return $this->belongsToMany(static::$usersModel, 'groups_users', 'group_id', 'user_id')->withTimestamps();
 	}
 
 	/**
