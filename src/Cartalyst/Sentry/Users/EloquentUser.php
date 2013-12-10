@@ -82,7 +82,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function groups()
 	{
-		return $this->belongsToMany(static::$groupsModel, 'groups_users', 'user_id', 'group_id');
+		return $this->belongsToMany(static::$groupsModel, 'groups_users', 'user_id', 'group_id')->withTimestamps();
 	}
 
 	/**
