@@ -306,6 +306,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		return $this
 			->createModel()
+			->newQuery()
 			->where('type', 'ip')
 			->where('ip', $ipAddress)
 			->where('created_at', '>', $interval)
@@ -343,6 +344,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 
 		return $this
 			->createModel()
+			->newQuery()
 			->where('type', 'user')
 			->where('user_id', $user->getUserId())
 			->where('created_at', '>', $interval)
