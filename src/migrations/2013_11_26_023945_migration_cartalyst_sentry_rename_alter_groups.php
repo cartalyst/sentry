@@ -15,6 +15,8 @@ class MigrationCartalystSentryRenameAlterGroups extends Migration {
 		Schema::table('groups', function(Blueprint $table)
 		{
 			$table->string('slug')->after('id');
+			$table->dropUnique('groups_name_unique');
+			$table->unique('slug');
 		});
 
 		$groups = DB::table('groups')->get();
