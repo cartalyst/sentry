@@ -16,16 +16,22 @@ class MigrationCartalystSentryAlterThrottle extends Migration {
 
 		Schema::table('throttle', function(Blueprint $table)
 		{
-			$table->string('type')->after('id');
-			$table->renameColumn('ip_address', 'ip');
-			$table->timestamps();
-
+			$table->dropColumn('user_id');
 			$table->dropColumn('attempts');
 			$table->dropColumn('suspended');
 			$table->dropColumn('banned');
 			$table->dropColumn('last_attempt_at');
 			$table->dropColumn('suspended_at');
 			$table->dropColumn('banned_at');
+		});
+
+		Schema::table('throttle', function(Blueprint $table)
+		{
+			$table->integer('user_id')->after('id')->nullable();
+
+			$table->string('type')->after('user_id');
+			$table->renameColumn('ip_address', 'ip');
+			$table->timestamps();
 		});
 	}
 
@@ -36,6 +42,8 @@ class MigrationCartalystSentryAlterThrottle extends Migration {
 	 */
 	public function down()
 	{
+		DB::table('throttle')->truncate();
+
 		Schema::table('throttle', function(Blueprint $table)
 		{
 			$table->dropColumn('type');
