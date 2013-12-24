@@ -19,34 +19,22 @@ If you haven't yet, make sure to require Composer's autoload file in your app ro
 
 	require 'vendor/autoload.php';
 
-<!--
-Example usage
+Create an alias for our Facade.
 
-	// Create an alias for our Facade
 	class_alias('Cartalyst\Sentry\Facades\Native\Sentry', 'Sentry');
 
-	// Setup our database
+### Setup the Database
+
+Don't forget to setup database tables for Sentry. In the `schema` folder you will find a [mysql file](https://github.com/cartalyst/sentry/blob/master/schema/mysql.sql) that will setup the tables for you.
+
+Then resolve your database connection with Sentry.
+
 	$dsn      = 'mysql:dbname=my_database;host=localhost';
 	$user     = 'root';
 	$password = 'password';
 	Sentry::setupDatabaseResolver(new PDO($dsn, $user, $password));
 
-	// Done!
-
-	// Create our first user!
-	$user = Sentry::createUser(array(
-		'email'    => 'testing@test.com',
-		'password' => 'test',
-		'permissions' => array(
-			'test'  => 1,
-			'other' => -1,
-			'admin' => 1
-		)
-	));
-
-	var_dump($user);
-
-----------
+<!--
 
 ### Installing Using Composer (Customization example)
 
@@ -111,9 +99,4 @@ Of course, we provide default implementations of all these for you. To setup our
 		$cookie,
 	);
 
-----------
-
-### Setup the database
-
-Don't forget to setup database tables for Sentry. In the schema folder you will find a [mysql file](https://github.com/cartalyst/sentry/blob/master/schema/mysql.sql) that will setup the tables for you.
 -->
