@@ -25,7 +25,7 @@ class NativeHasher implements HasherInterface {
 	 */
 	public function hash($value)
 	{
-		if (($hash = password_hash($value, PASSWORD_DEFAULT)) === false)
+		if ( ! $hash = password_hash($value, PASSWORD_DEFAULT))
 		{
 			throw new \RuntimeException('Error hashing value. Check system compatibility with password_hash().');
 		}
