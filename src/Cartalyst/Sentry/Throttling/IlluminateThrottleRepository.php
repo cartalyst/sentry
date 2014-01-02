@@ -225,12 +225,14 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		$interval   = $type.'Interval';
 
 		$throttles = $this->$method($argument);
-		if ( ! $throttles->count()) return;
 
-		$throttle = $throttles->first();
+		if ( ! $throttles->count()) return 0;
 
 		if (is_array($this->$thresholds))
 		{
+			// Great, now we compare our delay against the most recent attempt
+			$last = $throttles->last();
+
 			foreach (array_reverse($this->$thresholds, true) as $attempts => $delay)
 			{
 				if ($throttles->count() <= $attempts)
@@ -238,8 +240,6 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 					continue;
 				}
 
-				// Great, now we compare our delay against the most recent attempt
-				$last = $throttles->last();
 				if ($last->created_at->diffInSeconds() < $delay)
 				{
 					return $this->secondsToFree($last, $delay);
@@ -248,8 +248,12 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		}
 		elseif ($throttles->count() > $this->$thresholds)
 		{
-			return $this->secondsToFree($throttle, $this->$interval);
+			$first = $throttles->first();
+
+			return $this->secondsToFree($first, $this->$interval);
 		}
+
+		return 0;
 	}
 
 	/**

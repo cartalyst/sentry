@@ -82,12 +82,12 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(6);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
-		$this->assertEquals(3, $throttle->globalDelay());
+		$this->assertEquals(2, $throttle->globalDelay());
 	}
 
 	public function testGlobalDelayWithArrayThresholds2()
@@ -109,12 +109,12 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(11);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
-		$this->assertEquals(10, $throttle->globalDelay());
+		$this->assertEquals(9, $throttle->globalDelay());
 	}
 
 	public function testIpDelayWithIntegerThreshold()
@@ -165,12 +165,12 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(6);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
-		$this->assertEquals(3, $throttle->ipDelay('127.0.0.1'));
+		$this->assertEquals(2, $throttle->ipDelay('127.0.0.1'));
 	}
 
 	public function testIpDelayWithArrayThresholds2()
@@ -193,12 +193,12 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(11);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
-		$this->assertEquals(10, $throttle->ipDelay('127.0.0.1'));
+		$this->assertEquals(9, $throttle->ipDelay('127.0.0.1'));
 	}
 
 	public function testUserDelayWithIntegerThreshold()
@@ -251,14 +251,14 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(6);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('getUserId')->andReturn(1);
-		$this->assertEquals(3, $throttle->userDelay($user));
+		$this->assertEquals(2, $throttle->userDelay($user));
 	}
 
 	public function testUserDelayWithArrayThresholds2()
@@ -281,14 +281,14 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 		$query->shouldReceive('get')->andReturn($models = m::mock('Illuminate\Database\Eloquent\Collection'));
 
 		$models->shouldReceive('count')->andReturn(11);
-		$models->shouldReceive('first')->andReturn($first = new EloquentThrottle);
-		$this->addMockConnection($first);
-		$first->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
-		$first->created_at = Carbon::createFromTimestamp(time() - 1);
+		$models->shouldReceive('last')->andReturn($last = new EloquentThrottle);
+		$this->addMockConnection($last);
+		$last->getConnection()->getQueryGrammar()->shouldReceive('getDateFormat')->andReturn('Y-m-d H:i:s');
+		$last->created_at = Carbon::createFromTimestamp(time() - 1);
 
 		$user = m::mock('Cartalyst\Sentry\Users\UserInterface');
 		$user->shouldReceive('getUserId')->andReturn(1);
-		$this->assertEquals(10, $throttle->userDelay($user));
+		$this->assertEquals(9, $throttle->userDelay($user));
 	}
 
 	protected function addMockConnection($model)
