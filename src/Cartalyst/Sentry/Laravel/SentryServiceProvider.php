@@ -287,6 +287,28 @@ class SentryServiceProvider extends ServiceProvider {
 			$sentry->setActivationsRepository($app['sentry.activations']);
 			$sentry->setRemindersRepository($app['sentry.reminders']);
 
+			$sentry->setRequestCredentials(function() use ($app)
+			{
+				$request = $app['request'];
+
+				$login = $request->getUser();
+				$password = $request->getPassword();
+
+				if ($login === null and $password === null)
+				{
+					return;
+				}
+
+				return compact('login', 'password');
+			});
+
+			$sentry->creatingBasicResponse(function()
+			{
+				$headers = array('WWW-Authenticate' => 'Basic');
+
+				return new Response('Invalid credentials.', 401, $headers);
+			});
+
 			return $sentry;
 		});
 	}

@@ -35,6 +35,7 @@ use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Closure;
 use Illuminate\Events\Dispatcher;
+use Symfony\Component\HttpFoundation\Request;
 
 class Sentry {
 
@@ -100,6 +101,20 @@ class Sentry {
 	 * @var \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface
 	 */
 	protected $reminders;
+
+	/**
+	 * The closure to retrieve request credentials.
+	 *
+	 * @var \Closure
+	 */
+	protected $requestCredentials;
+
+	/**
+	 * The closure used to create a basic response for failed HTTP auth.
+	 *
+	 * @var \Closure
+	 */
+	protected $basicResponse;
 
 	/**
 	 * Create a new Sentry instance.
@@ -357,6 +372,118 @@ class Sentry {
 	}
 
 	/**
+	 * Attempt to authenticate using HTTP Basic Auth.
+	 *
+	 * @return mixed
+	 */
+	public function basic()
+	{
+		$credentials = $this->getRequestCredentials();
+
+		// We don't really want to add a throttling record for the
+		// first failed login attempt, which actually occurs when
+		// the user first hits a protected route.
+		if ($credentials === null)
+		{
+			return $this->getBasicResponse();
+		}
+
+		$user = $this->stateless($credentials);
+
+		if ($user)
+		{
+			return;
+		}
+
+		return $this->getBasicResponse();
+	}
+
+	/**
+	 * Get the request credentials.
+	 *
+	 * @return array
+	 */
+	public function getRequestCredentials()
+	{
+		if ($this->requestCredentials === null)
+		{
+			$this->requestCredentials = function()
+			{
+				$credentials = array();
+
+				if (isset($_SERVER['PHP_AUTH_USER']))
+				{
+					$credentials['login'] = $_SERVER['PHP_AUTH_USER'];
+				}
+
+				if (isset($_SERVER['PHP_AUTH_PW']))
+				{
+					$credentials['password'] = $_SERVER['PHP_AUTH_PW'];
+				}
+
+				if (count($credentials) > 0)
+				{
+					return $credentials;
+				}
+			};
+		}
+
+		$credentials = $this->requestCredentials;
+		return $credentials();
+	}
+
+	/**
+	 * Set the closure which resolves request credentials.
+	 *
+	 * @param  \Closure  $requestCredentials
+	 * @return void
+	 */
+	public function setRequestCredentials(Closure $requestCredentials)
+	{
+		$this->requestCredentials = $requestCredentials;
+	}
+
+	/**
+	 * Sends a response when HTTP basic authentication fails.
+	 *
+	 * @return mixed
+	 */
+	public function getBasicResponse()
+	{
+		// Default the basic response
+		if ($this->basicResponse === null)
+		{
+			$this->basicResponse = function()
+			{
+				if (headers_sent())
+				{
+					throw new \RuntimeException('Attempting basic auth after headers have already been sent.');
+				}
+
+				header('WWW-Authenticate: Basic');
+				header('HTTP/1.0 401 Unauthorized');
+
+				echo 'Invalid credentials.';
+				exit;
+			};
+		}
+
+		$response = $this->basicResponse;
+		return $response();
+	}
+
+	/**
+	 * Set the callback which creates a basic response.
+	 *
+	 * @param  \Closure  $basicResonse
+	 * @return void
+	 */
+	public function creatingBasicResponse(Closure $basicResponse)
+	{
+		$this->basicResponse = $basicResponse;
+	}
+
+	/**
 	 * Persists a login for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
@@ -533,16 +660,6 @@ class Sentry {
 		}
 
 		return $this->user;
-	}
-
-	/**
-	 * Get the currently logged in user, lazily checking for it.
-	 *
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function getUserWithoutCheck()
-	{
-		return $this->getUser(false);
 	}
 
 	/**

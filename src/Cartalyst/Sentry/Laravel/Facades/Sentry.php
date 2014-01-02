@@ -23,31 +23,6 @@ use Illuminate\Support\Facades\Facade;
 class Sentry extends Facade {
 
 	/**
-	 * Attempt to authenticate using HTTP Basic Auth.
-	 *
-	 * @param  string  $field
-	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
-	 */
-	public static function basic()
-	{
-		$user = static::$app['sentry']->getUserWithoutCheck();
-
-		if ($user)
-		{
-			return $user;
-		}
-
-		$request = static::$app['request'];
-
-		$credentials = array(
-			'login' => $request->getUser(),
-			'password' => $request->getPassword(),
-		);
-
-		return static::$app['sentry']->stateless($credentials);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	protected static function getFacadeAccessor()
