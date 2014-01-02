@@ -59,7 +59,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	public function login(UserInterface $user)
 	{
-		return $this->checkThrottling($user);
+		return $this->checkThrottling($user, 'login');
 	}
 
 	/**
@@ -67,7 +67,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	public function check(UserInterface $user)
 	{
-		return $this->checkThrottling($user);
+		return $this->checkThrottling($user, 'check');
 	}
 
 	/**
@@ -82,34 +82,49 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 * Checks the throttling status of the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
+	 * @param  bool  $action
 	 * @return bool
 	 */
-	public function checkThrottling(UserInterface $user)
+	protected function checkThrottling(UserInterface $user, $action)
 	{
-		$globalDelay = $this->throttle->globalDelay();
-
-		if ($globalDelay > 0)
+		// If we are just checking an existing logged in person, the global delay
+		// shouldn't stop them being logged in at all. Only their IP address and
+		// user a
+		if ($action === 'login')
 		{
-			$this->throwException("Gobal throttling prohibits users from logging in for another [{$globalDelay}] second(s).", 'global', $globalDelay);
+			$globalDelay = $this->throttle->globalDelay();
+
+			if ($globalDelay > 0)
+			{
+				$this->throwException("Too many unsuccessful attempts have been made globally, logins are locked for another [{$globalDelay}] second(s).", 'global', $globalDelay);
+			}
 		}
 
+		// Suspicious activity from a single IP address will not only lock
+		// logins but also any logged in users from that IP address. This
+		// should deter a single hacker who may have guessed a password
+		// within the configured throttling limit.
 		if (isset($this->ipAddress))
 		{
 			$ipDelay = $this->throttle->ipDelay($this->ipAddress);
 
 			if ($ipDelay > 0)
 			{
-				$this->throwException("IP address throttling prohibits you from logging in for another [{$ipDelay}] second(s).", 'ip', $ipDelay);
+				$this->throwException("Suspicious activity has occured on your IP address and you have been denied access for another [{$ipDelay}] second(s).", 'ip', $ipDelay);
 			}
 		}
 
-		if (isset($user))
+		// We will only suspend people logging into a user account. This will
+		// leave the logged in user unaffected. Picture a famous person who's
+		// account is being locked as they're logged in, purely because
+		// others are trying to hack it.
+		if ($action === 'login' and isset($user))
 		{
 			$userDelay = $this->throttle->userDelay($user);
 
 			if ($ipDelay > 0)
 			{
-				$this->throwException("User throttling prohibits your account being accessed in for another [{$ipDelay}] second(s).", 'user', $userDelay);
+				$this->throwException("Too many unsuccessful login attempts have been made against your account. Please try again after another [{$userDelay}] second(s).", 'user', $userDelay);
 			}
 		}
 

@@ -233,15 +233,22 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 		{
 			foreach (array_reverse($this->$thresholds, true) as $attempts => $delay)
 			{
-				if ($throttles->count() > $attempts)
+				if ($throttles->count() <= $attempts)
 				{
-					return $delay;
+					continue;
+				}
+
+				// Great, now we compare our delay against the most recent attempt
+				$last = $throttles->last();
+				if ($last->created_at->diffInSeconds() < $delay)
+				{
+					return $this->secondsToFree($last, $delay);
 				}
 			}
 		}
 		elseif ($throttles->count() > $this->$thresholds)
 		{
-			return $this->secondsToFree($throttle, $this->$thresholds, $this->$interval);
+			return $this->secondsToFree($throttle, $this->$interval);
 		}
 	}
 
@@ -357,11 +364,10 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 * now.
 	 *
 	 * @param  \Cartalyst\Sentry\Throttling\EloquentThrottle  $throttle
-	 * @param  int  $delay
 	 * @param  int  $interval
 	 * @return int
 	 */
-	protected function secondsToFree(EloquentThrottle $throttle, $delay, $interval)
+	protected function secondsToFree(EloquentThrottle $throttle, $interval)
 	{
 		$free = $throttle
 			->created_at
