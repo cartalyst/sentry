@@ -390,10 +390,7 @@ class Sentry {
 
 		$user = $this->stateless($credentials);
 
-		if ($user)
-		{
-			return;
-		}
+		if ($user) return;
 
 		return $this->getBasicResponse();
 	}
