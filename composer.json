@@ -50,7 +50,8 @@
 	"require": {
 		"php": ">=5.3.3",
 		"illuminate/events": ">=4.0.9,<4.2",
-		"illuminate/support": ">=4.0.9,<4.2"
+		"illuminate/support": ">=4.0.9,<4.2",
+		"doctrine/dbal": "2.4.*"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
