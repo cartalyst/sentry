@@ -41,10 +41,18 @@ class IlluminateGroupRepository implements GroupRepositoryInterface {
 	}
 
 	/**
-	 * Finds a group by the given primary key.
-	 *
-	 * @param  int  $id
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface
+	 * {@inheritDoc}
+	 */
+	public function findAll()
+	{
+		return $this->createModel()
+			->newQuery()
+			->with('groups')
+			->get();
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public function findById($id)
 	{
@@ -55,10 +63,7 @@ class IlluminateGroupRepository implements GroupRepositoryInterface {
 	}
 
 	/**
-	 * Finds a group by the given slug.
-	 *
-	 * @param  string  $slug
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface
+	 * {@inheritDoc}
 	 */
 	public function findBySlug($slug)
 	{
