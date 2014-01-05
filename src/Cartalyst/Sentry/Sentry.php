@@ -158,7 +158,7 @@ class Sentry {
 	 */
 	public function register(array $credentials, $callback = null)
 	{
-		if ($callback !== null and ! $callback instanceof Closure and $callback !== true)
+		if ($callback !== null and ! $callback instanceof Closure and is_bool($callback))
 		{
 			throw new \InvalidArgumentException('You must provide a closure or true boolean.');
 		}
