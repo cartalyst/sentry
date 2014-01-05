@@ -160,7 +160,7 @@ class Sentry {
 	{
 		if ($callback !== null and ! $callback instanceof Closure and is_bool($callback))
 		{
-			throw new \InvalidArgumentException('You must provide a closure or true boolean.');
+			throw new \InvalidArgumentException('You must provide a closure or boolean.');
 		}
 
 		$valid = $this->users->validForCreation($credentials);
