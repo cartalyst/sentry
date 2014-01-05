@@ -58,17 +58,6 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function findAll()
-	{
-		return $this->createModel()
-			->newQuery()
-			->with('groups')
-			->get();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function findById($id)
 	{
 		return $this

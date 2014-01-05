@@ -23,13 +23,6 @@ use Closure;
 interface GroupRepositoryInterface {
 
 	/**
-	 * Finds all the groups.
-	 *
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface
-	 */
-	public function findAll();
-
-	/**
 	 * Finds a group by the given primary key.
 	 *
 	 * @param  int  $id

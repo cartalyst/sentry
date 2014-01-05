@@ -23,13 +23,6 @@ use Closure;
 interface UserRepositoryInterface {
 
 	/**
-	 * Finds all the users.
-	 *
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 */
-	public function findAll();
-
-	/**
 	 * Finds a user by the given primary key.
 	 *
 	 * @param  int  $id
