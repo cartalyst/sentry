@@ -63,7 +63,7 @@
 	"suggest": {
 		"illuminate/database": "By default, Sentry utilizes the powerful Illuminate database layer.",
 		"illuminate/events": "To hook into various events across Sentry, we recommend using Illuminate's event dispatcher.",
-		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support.",
+		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support."
 	},
 	"autoload": {
 		"classmap": [
