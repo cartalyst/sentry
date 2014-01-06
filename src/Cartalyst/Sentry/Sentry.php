@@ -122,9 +122,8 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
 	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
-	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
 	 */
-	public function __construct(PersistenceInterface $persistence = null, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null, Dispatcher $dispatcher = null)
+	public function __construct(PersistenceInterface $persistence = null, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null)
 	{
 		if (isset($persistence))
 		{
@@ -139,11 +138,6 @@ class Sentry {
 		if (isset($groups))
 		{
 			$this->groups = $groups;
-		}
-
-		if (isset($dispatcher))
-		{
-			$this->dispatcher = $dispatcher;
 		}
 	}
 

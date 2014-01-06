@@ -276,6 +276,8 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['events']
 			);
 
+			$sentry->setEventDispatcher($app['events']);
+
 			if (isset($app['sentry.checkpoints']))
 			{
 				foreach ($app['sentry.checkpoints'] as $checkpoint)
