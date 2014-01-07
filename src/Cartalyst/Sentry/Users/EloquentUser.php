@@ -311,9 +311,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 			return call_user_func_array(array($permissions, $method), $parameters);
 		}
 
-		$className = get_class($this);
-
-		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
+		return parent::__call($method, $parameters);
 	}
 
 }
