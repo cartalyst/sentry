@@ -18,12 +18,11 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Activations\ActivatableInterface;
 use Cartalyst\Sentry\Groups\GroupableInterface;
+use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
 use Cartalyst\Sentry\Permissions\SentryPermissions;
 use Cartalyst\Sentry\Persistence\PersistableInterface;
-use Cartalyst\Sentry\Throttling\ThrottledInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class EloquentUser extends Model implements GroupableInterface, PermissibleInterface, PersistableInterface, UserInterface {

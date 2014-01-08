@@ -18,8 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Closure;
-
 interface GroupRepositoryInterface {
 
 	/**
