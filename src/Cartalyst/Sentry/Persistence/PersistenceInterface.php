@@ -18,8 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Users\UserInterface;
-
 interface PersistenceInterface {
 
 	/**

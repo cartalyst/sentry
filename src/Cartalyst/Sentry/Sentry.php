@@ -35,7 +35,6 @@ use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Closure;
 use Illuminate\Events\Dispatcher;
-use Symfony\Component\HttpFoundation\Request;
 
 class Sentry {
 

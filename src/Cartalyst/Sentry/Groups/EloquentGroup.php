@@ -18,11 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Activations\ActivatableInterface;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
 use Cartalyst\Sentry\Permissions\SentryPermissions;
-use Cartalyst\Sentry\Persistence\PersistableInterface;
-use Cartalyst\Sentry\Throttling\ThrottledInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class EloquentGroup extends Model implements GroupInterface, PermissibleInterface {

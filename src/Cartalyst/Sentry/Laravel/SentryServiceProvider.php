@@ -32,7 +32,6 @@ use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Swift\SentrySwift;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpFoundation\Response;
 
