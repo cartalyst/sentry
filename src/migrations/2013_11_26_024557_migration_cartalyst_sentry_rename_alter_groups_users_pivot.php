@@ -20,7 +20,6 @@ class MigrationCartalystSentryRenameAlterGroupsUsersPivot extends Migration {
 			$table->timestamps();
 		});
 
-		$format = DB::connection()->getQueryGrammar()->getDateFormat();
 		$now = Carbon::now();
 
 		DB::table('groups_users')->update(array(

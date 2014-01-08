@@ -137,7 +137,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function deleteExpired()
 	{
-		$expired = Carbon::now()->subMinutes($this->expires);
+		Carbon::now()->subMinutes($this->expires);
 
 		return $this
 			->createModel()
