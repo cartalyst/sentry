@@ -278,7 +278,7 @@ class Sentry {
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @param  bool  $remember
-	 * @param  bool  $bool
+	 * @param  bool  $login
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
 	public function authenticate($credentials, $remember = false, $login = true)
@@ -308,7 +308,7 @@ class Sentry {
 
 		if ($login === false)
 		{
-			return true;
+			return $user;
 		}
 
 		$method = $remember === true ? 'loginAndRemember' : 'login';

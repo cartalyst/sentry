@@ -103,7 +103,7 @@ class IlluminateUserRepository extends BaseUserRepository implements UserReposit
 	public function recordLogin(UserInterface $user)
 	{
 		$user->last_login = Carbon::now();
-		return $user->save();
+		return $user->save() ? $user : false;
 	}
 
 	/**

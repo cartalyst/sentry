@@ -59,7 +59,7 @@ abstract class BaseUserRepository implements UserRepositoryInterface {
 	 */
 	public function recordLogout(UserInterface $user)
 	{
-		return $user->save();
+		return $user->save() ? $user : false;
 	}
 
 	/**

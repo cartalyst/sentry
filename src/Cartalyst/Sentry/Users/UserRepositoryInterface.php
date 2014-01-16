@@ -50,7 +50,7 @@ interface UserRepositoryInterface {
 	 * Records a login for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
 	public function recordLogin(UserInterface $user);
 
@@ -58,7 +58,7 @@ interface UserRepositoryInterface {
 	 * Records a logout for the given user.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return bool
+	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
 	 */
 	public function recordLogout(UserInterface $user);
 
