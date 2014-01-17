@@ -20,14 +20,14 @@
 
 use Illuminate\Support\Facades\Facade;
 
-class SwiftIdentity extends Facade {
+class SwipeIdentity extends Facade {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected static function getFacadeAccessor()
 	{
-		return 'sentry.swift';
+		return 'sentry.swipe';
 	}
 
 }

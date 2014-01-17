@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Swift;
+<?php namespace Cartalyst\Sentry\Swipe;
 /**
  * Part of the Sentry package.
  *
@@ -21,10 +21,10 @@
 use Cartalyst\Sentry\Users\UserInterface;
 use Closure;
 
-interface SwiftInterface {
+interface SwipeInterface {
 
 	/**
-	 * Return the Swift Identity authentication response object and code.
+	 * Return the Swipe Identity authentication response object and code.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return array

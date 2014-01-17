@@ -18,11 +18,11 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Swift\SentrySwift;
+use Cartalyst\Sentry\Swipe\SentrySwipe;
 use Mockery as m;
 use PHPUnit_Framework_TestCase;
 
-class SentrySwiftTest extends PHPUnit_Framework_TestCase {
+class SentrySwipeTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Close mockery.
@@ -36,21 +36,21 @@ class SentrySwiftTest extends PHPUnit_Framework_TestCase {
 
 	public function testResponse()
 	{
-		$swift = new SentrySwift('email@example.com', 'password', 'key', 'code', '127.0.0.1');
+		$swipe = new SentrySwipe('email@example.com', 'password', 'key', 'code', '127.0.0.1');
 
 		$this->markTestIncomplete();
 	}
 
 	public function testSaveNumber()
 	{
-		$swift = new SentrySwift('email@example.com', 'password', 'key', 'code', '127.0.0.1');
+		$swipe = new SentrySwipe('email@example.com', 'password', 'key', 'code', '127.0.0.1');
 
 		$this->markTestIncomplete();
 	}
 
 	public function testCheckAnswer()
 	{
-		$swift = new SentrySwift('email@example.com', 'password', 'key', 'code', '127.0.0.1');
+		$swipe = new SentrySwipe('email@example.com', 'password', 'key', 'code', '127.0.0.1');
 
 		$this->markTestIncomplete();
 	}

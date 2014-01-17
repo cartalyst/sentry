@@ -33,15 +33,15 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "swiftidentity/php-toolkit",
+				"name": "swipeidentity/php-toolkit",
 				"version": "1.0.0",
 				"dist": {
-					"url": "http://www.swiftidentity.com/toolkits/swiftidentity-php-toolkit-1.0.zip",
+					"url": "http://www.swipeidentity.com/toolkits/swipeidentity-php-toolkit-1.0.zip",
 					"type": "zip"
 				},
 				"autoload": {
 					"classmap": [
-						"swiftidentity-php-toolkit-1.0/toolkit/com/swiftidentity/api"
+						"swipeidentity-php-toolkit-1.0/toolkit/com/swipeidentity/api"
 					]
 				}
 			}
@@ -58,7 +58,7 @@
 		"illuminate/http": ">=4.0.9,<4.2",
 		"illuminate/session": ">=4.0.9,<4.2",
 		"ircmaxell/password-compat": "1.0.*",
-		"swiftidentity/php-toolkit": "1.0.*"
+		"swipeidentity/php-toolkit": "1.0.*"
 	},
 	"suggest": {
 		"illuminate/database": "By default, Sentry utilizes the powerful Illuminate database layer.",

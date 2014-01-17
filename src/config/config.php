@@ -80,7 +80,7 @@ return array(
 	| When logging in, checking for existing sessions and failed logins occur,
 	| you may configure an indefinite number of "checkpoints". These are
 	| classes which may respond to each event and handle accordingly.
-	| We ship with three, an activation checkpoint, SwiftIdentity
+	| We ship with three, an activation checkpoint, SwipeIdentity
 	| two-factor authentication checkpoint and a throttling
 	| checkpoint. Feel free to add, remove or re-order
 	| these.
@@ -90,7 +90,7 @@ return array(
 	'checkpoints' => array(
 		'activation',
 		'throttle',
-		// 'swift',
+		// 'swipe',
 	),
 
 	/*
@@ -212,25 +212,25 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
-	| Swift Identity (http://www.swiftidentity.com)
+	| Swipe Identity (http://www.swipeidentity.com)
 	|--------------------------------------------------------------------------
 	|
-	| Swift Identity is a free two factor authentication service. Two factor
+	| Swipe Identity is a free two factor authentication service. Two factor
 	| authentication is an approach where a second device must approve each
 	| login, so that if passwords are breached, unless the device is also
 	| stolen, a login cannot occur. This is a very secure way of
 	| protecting those users who use common passwords against
 	| themselves.
 	|
-	| At this stage, Sentry supports Swift Identity using either "swipe" or
+	| At this stage, Sentry supports Swipe Identity using either "swipe" or
 	| "sms" methods. You must also provide your developer account email,
 	| password, API key and app code.
 	|
-	| See http://www.swiftidentity.com/solutions/php-toolkit for more.
+	| See http://www.swipeidentity.com/solutions/php-toolkit for more.
 	|
 	*/
 
-	'swift' => array(
+	'swipe' => array(
 
 		'method' => 'swipe',
 

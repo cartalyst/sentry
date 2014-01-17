@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Checkpoints\ActivationCheckpoint;
-use Cartalyst\Sentry\Checkpoints\SwiftIdentityCheckpoint;
+use Cartalyst\Sentry\Checkpoints\SwipeIdentityCheckpoint;
 use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
 use Cartalyst\Sentry\Cookies\IlluminateCookie;
 use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
@@ -29,7 +29,7 @@ use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
-use Cartalyst\Sentry\Swift\SentrySwift;
+use Cartalyst\Sentry\Swipe\SentrySwipe;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -139,7 +139,7 @@ class SentryServiceProvider extends ServiceProvider {
 	protected function registerCheckpoints()
 	{
 		$this->registerActivationCheckpoint();
-		$this->registerSwiftCheckpoint();
+		$this->registerSwipeCheckpoint();
 		$this->registerThrottleCheckpoint();
 
 		$this->app['sentry.checkpoints'] = $this->app->share(function($app)
@@ -151,7 +151,7 @@ class SentryServiceProvider extends ServiceProvider {
 				switch ($checkpoint)
 				{
 					case 'activation':
-					case 'swift':
+					case 'swipe':
 					case 'throttle':
 						return $app["sentry.checkpoint.{$checkpoint}"];
 
@@ -185,27 +185,27 @@ class SentryServiceProvider extends ServiceProvider {
 		});
 	}
 
-	protected function registerSwiftCheckpoint()
+	protected function registerSwipeCheckpoint()
 	{
-		$this->registerSwift();
+		$this->registerSwipe();
 
-		$this->app['sentry.checkpoint.swift'] = $this->app->share(function($app)
+		$this->app['sentry.checkpoint.swipe'] = $this->app->share(function($app)
 		{
-			return new SwiftIdentityCheckpoint($app['sentry.swift']);
+			return new SwipeIdentityCheckpoint($app['sentry.swipe']);
 		});
 	}
 
-	protected function registerSwift()
+	protected function registerSwipe()
 	{
-		$this->app['sentry.swift'] = $this->app->share(function($app)
+		$this->app['sentry.swipe'] = $this->app->share(function($app)
 		{
-			$email = $app['config']['cartalyst/sentry::swift.email'];
-			$password = $app['config']['cartalyst/sentry::swift.password'];
-			$apiKey = $app['config']['cartalyst/sentry::swift.api_key'];
-			$appCode = $app['config']['cartalyst/sentry::swift.app_code'];
-			$method = $app['config']['cartalyst/sentry::swift.method'];
+			$email = $app['config']['cartalyst/sentry::swipe.email'];
+			$password = $app['config']['cartalyst/sentry::swipe.password'];
+			$apiKey = $app['config']['cartalyst/sentry::swipe.api_key'];
+			$appCode = $app['config']['cartalyst/sentry::swipe.app_code'];
+			$method = $app['config']['cartalyst/sentry::swipe.method'];
 
-			return new SentrySwift(
+			return new SentrySwipe(
 				$email,
 				$password,
 				$apiKey,
@@ -328,8 +328,8 @@ class SentryServiceProvider extends ServiceProvider {
 			'sentry.groups',
 			'sentry.activations',
 			'sentry.checkpoint.activation',
-			'sentry.swift',
-			'sentry.checkpoint.swift',
+			'sentry.swipe',
+			'sentry.checkpoint.swipe',
 			'sentry.throttling',
 			'sentry.checkpoint.throttle',
 			'sentry.checkpoints',

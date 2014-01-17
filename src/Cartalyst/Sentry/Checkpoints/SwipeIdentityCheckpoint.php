@@ -18,17 +18,17 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Swift\SwiftInterface;
+use Cartalyst\Sentry\Swipe\SwipeInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use SpiExpressSecondFactor;
 
-class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterface {
+class SwipeIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterface {
 
-	protected $swift;
+	protected $swipe;
 
-	public function __construct(SwiftInterface $swift)
+	public function __construct(SwipeInterface $swipe)
 	{
-		$this->swift = $swift;
+		$this->swipe = $swipe;
 	}
 
 	/**
@@ -36,12 +36,12 @@ class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterf
 	 */
 	public function login(UserInterface $user)
 	{
-		if ($this->swift->isAnswering())
+		if ($this->swipe->isAnswering())
 		{
 			return true;
 		}
 
-		list($response, $code) = $this->swift->response($user);
+		list($response, $code) = $this->swipe->response($user);
 
 		switch ($code)
 		{
@@ -67,11 +67,11 @@ class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterf
 				break;
 
 			case RC_ERROR:
-				$message = 'An error occured with Swift Identity.';
+				$message = 'An error occured with Swipe Identity.';
 				break;
 
 			case RC_APP_DOES_NOT_EXIST:
-				$message = 'Your Swift Identity app is misconfigured.';
+				$message = 'Your Swipe Identity app is misconfigured.';
 				break;
 		}
 
@@ -87,17 +87,17 @@ class SwiftIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterf
 	}
 
 	/**
-	 * Throws an exception due to an unsuccessful Swift Identity authentication.
+	 * Throws an exception due to an unsuccessful Swipe Identity authentication.
 	 *
 	 * @param  string  $message
 	 * @param  int  $code
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @param  \SpiExpressSecondFactor  $response
-	 * @throws \Cartalyst\Sentry\Checkpoints\SwiftIdentityException
+	 * @throws \Cartalyst\Sentry\Checkpoints\SwipeIdentityException
 	 */
 	protected function throwException($message, $code, UserInterface $user, SpiExpressSecondFactor $response)
 	{
-		$exception = new SwiftIdentityException($message, $code);
+		$exception = new SwipeIdentityException($message, $code);
 		$exception->setUser($user);
 		$exception->setResponse($response);
 		throw $exception;

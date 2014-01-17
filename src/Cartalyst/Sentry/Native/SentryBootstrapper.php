@@ -2,7 +2,7 @@
 
 use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Checkpoints\ActivationCheckpoint;
-use Cartalyst\Sentry\Checkpoints\SwiftIdentityCheckpoint;
+use Cartalyst\Sentry\Checkpoints\SwipeIdentityCheckpoint;
 use Cartalyst\Sentry\Checkpoints\ThrottleCheckpoint;
 use Cartalyst\Sentry\Cookies\NativeCookie;
 use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
@@ -11,7 +11,7 @@ use Cartalyst\Sentry\Persistence\SentryPersistence;
 use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\NativeSession;
-use Cartalyst\Sentry\Swift\SentrySwift;
+use Cartalyst\Sentry\Swipe\SentrySwipe;
 use Cartalyst\Sentry\Throttling\IlluminateThrottleRepository;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
 use Illuminate\Events\Dispatcher;
@@ -151,7 +151,7 @@ class SentryBootstrapper {
 		$checkpoints = $this->config['checkpoints'];
 
 		$this->createActivationCheckpoint($activations);
-		$this->createSwiftCheckpoint($ipAddress);
+		$this->createSwipeCheckpoint($ipAddress);
 		$this->createThrottleCheckpoint($ipAddress);
 
 		foreach ($checkpoints as $index => $checkpoint)
@@ -167,22 +167,22 @@ class SentryBootstrapper {
 		return $checkpoints;
 	}
 
-	protected function createSwiftCheckpoint($ipAddress)
+	protected function createSwipeCheckpoint($ipAddress)
 	{
-		$swift = $this->createSwift($ipAddress);
+		$swipe = $this->createSwipe($ipAddress);
 
-		return new SwiftIdentityCheckpoint($swift);
+		return new SwipeIdentityCheckpoint($swipe);
 	}
 
-	protected function createSwift($ipAddress)
+	protected function createSwipe($ipAddress)
 	{
-		$email = $this->config['swift']['email'];
-		$password = $this->config['swift']['password'];
-		$apiKey = $this->config['swift']['api_key'];
-		$appCode = $this->config['swift']['app_code'];
-		$method = $this->config['swift']['method'];
+		$email = $this->config['swipe']['email'];
+		$password = $this->config['swipe']['password'];
+		$apiKey = $this->config['swipe']['api_key'];
+		$appCode = $this->config['swipe']['app_code'];
+		$method = $this->config['swipe']['method'];
 
-		return new SentrySwift(
+		return new SentrySwipe(
 			$email,
 			$password,
 			$apiKey,

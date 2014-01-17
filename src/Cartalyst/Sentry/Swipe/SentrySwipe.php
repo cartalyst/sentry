@@ -1,4 +1,4 @@
-<?php namespace Cartalyst\Sentry\Swift;
+<?php namespace Cartalyst\Sentry\Swipe;
 /**
  * Part of the Sentry package.
  *
@@ -21,14 +21,14 @@
 use ApiBase;
 use Cartalyst\Sentry\Users\UserInterface;
 use Closure;
-use SwiftIdentityExpressApi;
+use SwipeIdentityExpressApi;
 
-class SentrySwift implements SwiftInterface {
+class SentrySwipe implements SwipeInterface {
 
 	/**
 	 * The shared API instance.
 	 *
-	 * @var \SwiftIdentityExpressApi
+	 * @var \SwipeIdentityExpressApi
 	 */
 	protected $api;
 
@@ -68,7 +68,7 @@ class SentrySwift implements SwiftInterface {
 	protected $ipAddress;
 
 	/**
-	 * The Swift API method, "swipe" or "sms".
+	 * The Swipe API method, "swipe" or "sms".
 	 *
 	 * @var string
 	 */
@@ -86,10 +86,10 @@ class SentrySwift implements SwiftInterface {
 	 *
 	 * @var string
 	 */
-	protected $model = 'Cartalyst\Sentry\Swift\EloquentSwift';
+	protected $model = 'Cartalyst\Sentry\Swipe\EloquentSwipe';
 
 	/**
-	 * Create a new Swift Identity.
+	 * Create a new Swipe Identity.
 	 *
 	 * @param  string  $email
 	 * @param  string  $password
@@ -184,7 +184,7 @@ class SentrySwift implements SwiftInterface {
 	/**
 	 * Lazily get an API instance associated with the object.
 	 *
-	 * @return \SwiftIdentityExpressApi
+	 * @return \SwipeIdentityExpressApi
 	 */
 	public function getApi()
 	{
@@ -197,9 +197,9 @@ class SentrySwift implements SwiftInterface {
 	}
 
 	/**
-	 * Connect to the Swift Identity API.
+	 * Connect to the Swipe Identity API.
 	 *
-	 * @return \SwiftIdentityExpressApi
+	 * @return \SwipeIdentityExpressApi
 	 */
 	protected function connect()
 	{
@@ -211,17 +211,17 @@ class SentrySwift implements SwiftInterface {
 	}
 
 	/**
-	 * Create a new Swift Identity API instance.
+	 * Create a new Swipe Identity API instance.
 	 *
-	 * @return \SwiftIdentityExpressApi
+	 * @return \SwipeIdentityExpressApi
 	 */
 	protected function createApi()
 	{
-		return new SwiftIdentityExpressApi('https://api.swiftidentity.com/rs/expressapi/1.0/xml/');
+		return new SwipeIdentityExpressApi('https://api.swipeidentity.com/rs/expressapi/1.0/xml/');
 	}
 
 	/**
-	 * Disconnects from the Swift Identity API.
+	 * Disconnects from the Swipe Identity API.
 	 *
 	 * @return void
 	 */

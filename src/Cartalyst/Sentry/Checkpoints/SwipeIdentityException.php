@@ -22,7 +22,7 @@ use Cartalyst\Sentry\Users\UserInterface;
 use RuntimeException;
 use SpiExpressSecondFactor;
 
-class SwiftIdentityException extends RuntimeException {
+class SwipeIdentityException extends RuntimeException {
 
 	/**
 	 * The user which caused the exception.
