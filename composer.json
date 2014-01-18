@@ -41,7 +41,7 @@
 				},
 				"autoload": {
 					"classmap": [
-						"swipeidentity-php-toolkit-1.0/toolkit/com/swipeidentity/api"
+						"toolkit/com/swipeidentity/api"
 					]
 				}
 			}
@@ -75,11 +75,6 @@
 	},
 	"extra": {
 		"component": "package",
-		"frameworks": ["Laravel 3", "Laravel 4", "CodeIgniter 3", "FuelPHP 1", "Kohana"],
-		"versions": {
-			"1": "1.1/master",
-			"2": "master"
-		},
 		"branch-alias": {
 			"dev-develop": "3.0-dev"
 		}
