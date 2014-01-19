@@ -151,7 +151,7 @@ class SentryBootstrapper {
 		$checkpoints = $this->config['checkpoints'];
 
 		$activation = $this->createActivationCheckpoint($activations);
-		$swift = $this->createSwiftCheckpoint($ipAddress);
+		$swipe = $this->createSwipeCheckpoint($ipAddress);
 		$throttle = $this->createThrottleCheckpoint($ipAddress);
 
 		foreach ($checkpoints as $index => $checkpoint)
