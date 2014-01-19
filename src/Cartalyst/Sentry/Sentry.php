@@ -283,6 +283,9 @@ class Sentry {
 	 */
 	public function authenticate($credentials, $remember = false, $login = true)
 	{
+		$response = $this->fireEvent('authenticating', $credentials, true);
+		if ($response === false) return false;
+
 		if ($credentials instanceof UserInterface)
 		{
 			$user = $credentials;
@@ -306,14 +309,21 @@ class Sentry {
 			return false;
 		}
 
-		if ($login === false)
+		if ($login === true)
 		{
-			return $user;
+			$method = $remember === true ? 'loginAndRemember' : 'login';
+
+			$user = $this->$method($user);
+
+			if ( ! $user)
+			{
+				return false;
+			}
 		}
 
-		$method = $remember === true ? 'loginAndRemember' : 'login';
+		$this->fireEvent('authenticated', $user);
 
-		return $this->$method($user);
+		return $user;
 	}
 
 	/**
@@ -627,13 +637,16 @@ class Sentry {
 	 *
 	 * @param  string  $event
 	 * @param  mixed   $payload
+	 * @param  bool    $halt
 	 * @return mixed
 	 */
-	protected function fireEvent($event, $payload = array())
+	protected function fireEvent($event, $payload = array(), $halt = false)
 	{
-		$dispatcher = $this->getEventDispatcher();
+		if ( ! $dispatcher = $this->getEventDispatcher()) return;
 
-		return $dispatcher->fire("sentry.{$event}", $payload);
+		$method = $halt ? 'until' : 'fire';
+
+		return $dispatcher->$method("sentry.{$event}", $payload);
 	}
 
 	/**
@@ -788,11 +801,6 @@ class Sentry {
 	 */
 	public function getEventDispatcher()
 	{
-		if ($this->dispatcher === null)
-		{
-			$this->dispatcher = $this->createEventDispatcher();
-		}
-
 		return $this->dispatcher;
 	}
 
@@ -805,16 +813,6 @@ class Sentry {
 	public function setEventDispatcher(Dispatcher $dispatcher)
 	{
 		$this->dispatcher = $dispatcher;
-	}
-
-	/**
-	 * Creates a default event dispatcher if none has been specified.
-	 *
-	 * @return \Cartalyst\Sentry\Users\IlluminateEventDispatcher
-	 */
-	protected function createEventDispatcher()
-	{
-		return new Dispatcher;
 	}
 
 	/**
