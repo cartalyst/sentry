@@ -103,7 +103,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$model = $app['config']['cartalyst/sentry::users.model'];
 
 			$groups = $app['config']['cartalyst/sentry::groups.model'];
-			if (class_exists($groups) and method_exists($groups, 'setUsersModel'))
+			if (class_exists($groups) && method_exists($groups, 'setUsersModel'))
 			{
 				forward_static_call_array(array($groups, 'setUsersModel'), array($model));
 			}
@@ -127,7 +127,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$model = $app['config']['cartalyst/sentry::groups.model'];
 
 			$users = $app['config']['cartalyst/sentry::users.model'];
-			if (class_exists($users) and method_exists($users, 'setGroupsModel'))
+			if (class_exists($users) && method_exists($users, 'setGroupsModel'))
 			{
 				forward_static_call_array(array($users, 'setGroupsModel'), array($model));
 			}
@@ -295,7 +295,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$login = $request->getUser();
 				$password = $request->getPassword();
 
-				if ($login === null and $password === null)
+				if ($login === null && $password === null)
 				{
 					return;
 				}

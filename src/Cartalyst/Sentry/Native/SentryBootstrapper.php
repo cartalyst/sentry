@@ -88,7 +88,7 @@ class SentryBootstrapper {
 		$model = $this->config['users']['model'];
 
 		$groups = $this->config['groups']['model'];
-		if (class_exists($groups) and method_exists($groups, 'setUsersModel'))
+		if (class_exists($groups) && method_exists($groups, 'setUsersModel'))
 		{
 			forward_static_call_array(array($groups, 'setUsersModel'), array($model));
 		}
@@ -106,7 +106,7 @@ class SentryBootstrapper {
 		$model = $this->config['groups']['model'];
 
 		$users = $this->config['users']['model'];
-		if (class_exists($users) and method_exists($users, 'setGroupsModel'))
+		if (class_exists($users) && method_exists($users, 'setGroupsModel'))
 		{
 			forward_static_call_array(array($users, 'setGroupsModel'), array($model));
 		}

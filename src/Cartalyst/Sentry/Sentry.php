@@ -151,7 +151,7 @@ class Sentry {
 	 */
 	public function register(array $credentials, $callback = null)
 	{
-		if ($callback !== null and ! $callback instanceof Closure and ! is_bool($callback))
+		if ($callback !== null && ! $callback instanceof Closure && ! is_bool($callback))
 		{
 			throw new \InvalidArgumentException('You must provide a closure or a boolean.');
 		}
@@ -296,7 +296,7 @@ class Sentry {
 
 			$valid = $user !== null ? $this->users->validateCredentials($user, $credentials) : false;
 
-			if ($user === null or $valid === false)
+			if ($user === null || $valid === false)
 			{
 				$this->cycleCheckpoints('fail', $user, false);
 
@@ -608,7 +608,7 @@ class Sentry {
 		{
 			$response = $checkpoint->$method($user);
 
-			if ($response === false and $halt === true)
+			if ($response === false && $halt === true)
 			{
 				return false;
 			}
@@ -657,7 +657,7 @@ class Sentry {
 	 */
 	public function getUser($check = true)
 	{
-		if ($check === true and $this->user === null)
+		if ($check === true && $this->user === null)
 		{
 			$this->check();
 		}

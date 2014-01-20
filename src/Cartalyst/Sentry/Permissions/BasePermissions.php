@@ -220,14 +220,14 @@ abstract class BasePermissions implements PermissionsInterface {
 	 */
 	protected function checkPermission(array $prepared, $permission)
 	{
-		if (array_key_exists($permission, $prepared) and $prepared[$permission] === true)
+		if (array_key_exists($permission, $prepared) && $prepared[$permission] === true)
 		{
 			return true;
 		}
 
 		foreach ($prepared as $key => $value)
 		{
-			if (str_is($permission, $key) and $value === true)
+			if (str_is($permission, $key) && $value === true)
 			{
 				return true;
 			}
