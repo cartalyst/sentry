@@ -118,7 +118,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 		// leave the logged in user unaffected. Picture a famous person who's
 		// account is being locked as they're logged in, purely because
 		// others are trying to hack it.
-		if ($action === 'login' and isset($user))
+		if ($action === 'login' && isset($user))
 		{
 			$userDelay = $this->throttle->userDelay($user);
 

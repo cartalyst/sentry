@@ -203,7 +203,7 @@ abstract class BaseUserRepository implements UserRepositoryInterface {
 			}
 		}
 
-		if ($password and strlen($password) < 6)
+		if ($password && strlen($password) < 6)
 		{
 			throw new \InvalidArgumentException('Your [password] must be at least 6 characters.');
 		}
