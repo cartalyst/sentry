@@ -15,6 +15,10 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 		Schema::table('users', function(Blueprint $table)
 		{
 			$table->dropColumn('persist_code');
+		});
+
+		Schema::table('users', function(Blueprint $table)
+		{
 			$table->text('persistence_codes')->after('password')->nullable();
 		});
 
@@ -49,6 +53,10 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 		Schema::table('users', function(Blueprint $table)
 		{
 			$table->dropColumn('persistence_codes');
+		});
+
+		Schema::table('users', function(Blueprint $table)
+		{
 			$table->string('persist_code')->nullable();
 		});
 
