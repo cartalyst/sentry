@@ -17,11 +17,7 @@ class MigrationCartalystSentryRenameAlterGroupsUsersPivot extends Migration {
 
 		Schema::table('groups_users', function(Blueprint $table)
 		{
-			if (DB::getDriverName() == 'sqlite') {
-				$table->nullableTimestamps();
-			} else {
-				$table->timestamps();
-			}
+			$table->nullableTimestamps();
 		});
 
 		$now = Carbon::now();
