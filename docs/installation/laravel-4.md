@@ -24,7 +24,7 @@ Run composer update from the command line
 
 Add the following to the list of service providers in `app/config/app.php`.
 
-	'Cartalyst\Sentry\SentryServiceProvider',
+	'Cartalyst\Sentry\Laravel\SentryServiceProvider',
 
 
 ### 3. Alias {#aliases}
