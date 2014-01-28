@@ -8,7 +8,7 @@ Open your `composer.json` file and add the following lines:
 
 	{
 		"require": {
-			"cartalyst/sentry": "2.0.*",
+			"cartalyst/sentry": "2.1.*",
 		},
 		"minimum-stability": "stable"
 	}
