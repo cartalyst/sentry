@@ -212,6 +212,17 @@ abstract class BaseUserRepository implements UserRepositoryInterface {
 	}
 
 	/**
+	 * Set the hasher.
+	 *
+	 * @param \Cartalyst\Sentry\Hashing\HasherInterface  $hasher
+	 * @return void
+	 */
+	public function setHasher(HasherInterface $hasher)
+	{
+		$this->hasher = $hasher;
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return \Cartalyst\Sentry\Users\UserInterface
