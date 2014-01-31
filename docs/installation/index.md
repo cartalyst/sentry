@@ -1,1 +1,1 @@
-## Install & Configure
+## Installation

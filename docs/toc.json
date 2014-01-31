@@ -1,7 +1,9 @@
 {
 	"chapters" : [
+		"preface",
 		"introduction",
 		"installation",
+		"configuration",
 		"permissions",
 		"authentication",
 		"users",

@@ -1,4 +1,4 @@
-## Install & Configure
+## Installation
 
 - [Composer]({url}/installation/composer)
 - [Laravel 4]({url}/installation/laravel-4)
