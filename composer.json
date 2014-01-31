@@ -69,8 +69,8 @@
 		"classmap": [
 			"src/migrations"
 		],
-		"psr-0": {
-			"Cartalyst\\Sentry": "src/"
+		"psr-4": {
+			"Cartalyst\\Sentry\\": "src/"
 		}
 	},
 	"extra": {
