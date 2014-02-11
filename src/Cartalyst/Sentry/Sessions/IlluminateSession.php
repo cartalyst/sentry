@@ -93,5 +93,15 @@ class IlluminateSession implements SessionInterface {
 	{
 		$this->session->forget($this->getKey());
 	}
+	
+	/**
+	 * Migrate Sentry session to a new ID ( prevents session fixation attacks)
+	 *
+	 * @param  boolean $destroy
+	 * @return boolean
+	 */
+	public function migrate( $destroy ) {
 
+		return $this->session->migrate( $destroy );
+	}
 }
