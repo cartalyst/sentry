@@ -17,7 +17,7 @@ class MigrationCartalystSentryRenameAlterGroupsUsersPivot extends Migration {
 
 		Schema::table('groups_users', function(Blueprint $table)
 		{
-			$table->timestamps();
+			$table->nullableTimestamps();
 		});
 
 		$now = Carbon::now();
