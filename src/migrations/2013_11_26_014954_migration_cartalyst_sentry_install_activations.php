@@ -48,17 +48,11 @@ class MigrationCartalystSentryInstallActivations extends Migration {
 
 		Schema::table('users', function(Blueprint $table)
 		{
-			$table->dropColumn('activated');
-		});
-
-		Schema::table('users', function(Blueprint $table)
-		{
-			$table->dropColumn('activation_code');
-		});
-
-		Schema::table('users', function(Blueprint $table)
-		{
-			$table->dropColumn('activated_at');
+			$table->dropColumn(array(
+				'activated',
+				'activation_code',
+				'activated_at',
+			));
 		});
 	}
 
