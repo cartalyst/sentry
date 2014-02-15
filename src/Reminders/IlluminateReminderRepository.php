@@ -148,7 +148,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 	 */
 	public function deleteExpired()
 	{
-		Carbon::now()->subMinutes($this->expires);
+		$expires = Carbon::now()->subMinutes($this->expires);
 
 		return $this
 			->createModel()
