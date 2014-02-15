@@ -20,7 +20,7 @@ Next navigate to your `kohana`'s project folder in the terminal and run `compose
 If you haven't activated composer's autoloader already, you should put the following in `application/bootstrap.php` below `spl_autoload_register(array('Kohana', 'auto_load'));`:
 
 	// Enable composer based autoloading
-	require APPPATH.'vendor/autoload.php';
+	require DOCROOT.'vendor/autoload.php';
 
 Great! You now have composer working with Kohana.
 
@@ -31,7 +31,8 @@ Just a few more steps, right at the bottom of that same file, `application/boots
 This will mean you can use the Kohana Sentry facade as the class `Sentry`. 
 
 Let's get the models that come bundled with Sentry working with Kohana's `ORM`. There are 2 ways of doing this, 
-you can either create the models in your `application/classes/Model` or alias the classes if you're not going to be adding nay extra methods to those classes.
+you can either create the models in your `application/classes/Model` and make them extend Sentry's models
+or alias the classes if you're not going to be adding nay extra methods to those classes.
 
 For the sake of keeping this guide short we'll just alias the models in `application/bootstrap.php`:
 
