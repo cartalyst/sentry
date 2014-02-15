@@ -30,6 +30,8 @@ Just a few more steps, right at the bottom of that same file, `application/boots
 
 This will mean you can use the Kohana Sentry facade as the class `Sentry`. 
 
+Please import `schema/mysql.sql` into your database before going further.
+
 Let's get the models that come bundled with Sentry working with Kohana's `ORM`. There are 2 ways of doing this, 
 you can either create the models in your `application/classes/Model` and make them extend Sentry's models
 or alias the classes if you're not going to be adding nay extra methods to those classes.
