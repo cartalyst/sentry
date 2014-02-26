@@ -49,7 +49,8 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
-		"illuminate/support": ">=4.0.9,<4.3"
+		"illuminate/support": ">=4.0.9,<4.3",
+		"machuga/authority" : "dev-master"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.2",

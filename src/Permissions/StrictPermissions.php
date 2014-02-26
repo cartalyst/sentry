@@ -18,7 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-class StrictPermissions extends BasePermissions implements PermissionsInterface {
+class StrictPermissions implements PermissionsInterface {
+
+	use Permissions;
 
 	/**
 	 * {@inheritDoc}

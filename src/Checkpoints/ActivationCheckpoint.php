@@ -21,7 +21,9 @@
 use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 
-class ActivationCheckpoint extends BaseCheckpoint implements CheckpointInterface {
+class ActivationCheckpoint implements CheckpointInterface {
+
+	use AuthenticatedCheckpoint;
 
 	/**
 	 * Activations repository.

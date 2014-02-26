@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-abstract class BasePermissions implements PermissionsInterface {
+trait Permissions {
 
 	/**
 	 * Permissions.
