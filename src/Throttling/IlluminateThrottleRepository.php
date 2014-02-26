@@ -47,14 +47,14 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var int|array
 	 */
-	protected $globalThresholds = array(
+	protected $globalThresholds = [
 		10 => 1,
 		20 => 2,
 		30 => 4,
 		40 => 8,
 		50 => 16,
 		60 => 32,
-	);
+	];
 
 	/**
 	 * Cached global throttles collection within the interval.
@@ -82,7 +82,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var array
 	 */
-	protected $ipThrottles = array();
+	protected $ipThrottles = [];
 
 	/**
 	 * The interval at which point failed logins for one user are checked.
@@ -103,7 +103,7 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	 *
 	 * @var \Illuminate\Database\Eloquent\Collection
 	 */
-	protected $userThrottles = array();
+	protected $userThrottles = [];
 
 	/**
 	 * Create a new Illuminate throttle repository.
@@ -184,27 +184,27 @@ class IlluminateThrottleRepository implements ThrottleRepositoryInterface {
 	public function log($ipAddress = null, UserInterface $user = null)
 	{
 		$global = $this->createModel();
-		$global->fill(array(
+		$global->fill([
 			'type' => 'global',
-		));
+		]);
 		$global->save();
 
 		if ($ipAddress !== null)
 		{
 			$ipAddressThrottle = $this->createModel();
-			$ipAddressThrottle->fill(array(
+			$ipAddressThrottle->fill([
 				'type' => 'ip',
 				'ip' => $ipAddress,
-			));
+			]);
 			$ipAddressThrottle->save();
 		}
 
 		if ($user !== null)
 		{
 			$userThrottle = $this->createModel();
-			$userThrottle->fill(array(
+			$userThrottle->fill([
 				'type' => 'user',
-			));
+			]);
 			$userThrottle->user_id = $user->getUserId();
 			$userThrottle->save();
 		}

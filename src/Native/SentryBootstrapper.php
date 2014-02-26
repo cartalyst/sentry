@@ -90,7 +90,7 @@ class SentryBootstrapper {
 		$groups = $this->config['groups']['model'];
 		if (class_exists($groups) && method_exists($groups, 'setUsersModel'))
 		{
-			forward_static_call_array(array($groups, 'setUsersModel'), array($model));
+			forward_static_call_array([$groups, 'setUsersModel'], [$model]);
 		}
 
 		return new IlluminateUserRepository($hasher, $model);
@@ -108,7 +108,7 @@ class SentryBootstrapper {
 		$users = $this->config['users']['model'];
 		if (class_exists($users) && method_exists($users, 'setGroupsModel'))
 		{
-			forward_static_call_array(array($users, 'setGroupsModel'), array($model));
+			forward_static_call_array([$users, 'setGroupsModel'], [$model]);
 		}
 
 		return new IlluminateGroupRepository($model);
@@ -124,7 +124,7 @@ class SentryBootstrapper {
 
 	protected function guessIpAddress()
 	{
-		foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key)
+		foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key)
 		{
 			if (array_key_exists($key, $_SERVER) === true)
 			{
@@ -203,7 +203,7 @@ class SentryBootstrapper {
 	{
 		$model = $this->config['throttling']['model'];
 
-		foreach (array('global', 'ip', 'user') as $type)
+		foreach (['global', 'ip', 'user'] as $type)
 		{
 			${"{$type}Interval"} = $this->config['throttling'][$type]['interval'];
 			${"{$type}Thresholds"} = $this->config['throttling'][$type]['thresholds'];

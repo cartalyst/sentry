@@ -29,13 +29,13 @@ class MigrationCartalystSentryInstallActivations extends Migration {
 
 		foreach ($users as $user)
 		{
-			$data = array(
+			$data = [
 				'user_id'      => $user->id,
 				'code'         => (string) $user->activation_code,
 				'completed'    => (int) $user->activated,
 				'created_at'   => $now,
 				'updated_at'   => $now,
-			);
+			];
 
 			if ($user->activated_at)
 			{
@@ -73,10 +73,10 @@ class MigrationCartalystSentryInstallActivations extends Migration {
 
 		foreach ($activations as $activation)
 		{
-			$data = array(
+			$data = [
 				'activation_code' => $activation->code,
 				'activated' => $activation->completed,
-			);
+			];
 
 			if ($activation->completed_at)
 			{

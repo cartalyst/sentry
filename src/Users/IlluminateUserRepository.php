@@ -46,7 +46,7 @@ class IlluminateUserRepository extends BaseUserRepository implements UserReposit
 	{
 		$instance = $this->createModel();
 		$loginNames = $instance->getLoginNames();
-		$query = $instance->newQuery()->with(array('groups'));
+		$query = $instance->newQuery()->with(['groups']);
 
 		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
 
@@ -80,7 +80,7 @@ class IlluminateUserRepository extends BaseUserRepository implements UserReposit
 		// contains ours. We'll filter the right user out.
 		$users = $this->createModel()
 			->newQuery()
-			->with(array('groups'))
+			->with(['groups'])
 			->where('persistence_codes', 'like', "%{$code}%")
 			->get();
 
@@ -126,9 +126,9 @@ class IlluminateUserRepository extends BaseUserRepository implements UserReposit
 		else
 		{
 			$loginName = reset($loginNames);
-			$user->fill(array(
+			$user->fill([
 				$loginName => $logins,
-			));
+			]);
 		}
 
 		$user->fill($credentials);

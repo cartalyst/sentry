@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-return array(
+return [
 
 	/*
 	|--------------------------------------------------------------------------
@@ -51,11 +51,11 @@ return array(
 	|
 	*/
 
-	'users' => array(
+	'users' => [
 
 		'model' => 'Cartalyst\Sentry\Users\EloquentUser',
 
-	),
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -66,11 +66,11 @@ return array(
 	|
 	*/
 
-	'groups' => array(
+	'groups' => [
 
 		'model' => 'Cartalyst\Sentry\Groups\EloquentGroup',
 
-	),
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -87,11 +87,11 @@ return array(
 	|
 	*/
 
-	'checkpoints' => array(
+	'checkpoints' => [
 		'activation',
 		'throttle',
 		// 'swipe',
-	),
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -104,13 +104,13 @@ return array(
 	|
 	*/
 
-	'activations' => array(
+	'activations' => [
 
 		'model' => 'Cartalyst\Sentry\Activations\EloquentActivation',
 
 		'expires' => 259200,
 
-	),
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -123,13 +123,13 @@ return array(
 	|
 	*/
 
-	'reminders' => array(
+	'reminders' => [
 
 		'model' => 'Cartalyst\Sentry\Reminders\EloquentReminder',
 
 		'expires' => 14400,
 
-	),
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -173,42 +173,42 @@ return array(
 	|
 	*/
 
-	'throttling' => array(
+	'throttling' => [
 
 		'model' => 'Cartalyst\Sentry\Throttling\EloquentThrottle',
 
-		'global' => array(
+		'global' => [
 
 			'interval' => 900,
 
-			'thresholds' => array(
+			'thresholds' => [
 				10 => 1,
 				20 => 2,
 				30 => 4,
 				50 => 8,
 				50 => 16,
 				60 => 12
-			),
+			],
 
-		),
+		],
 
-		'ip' => array(
-
-			'interval' => 900,
-
-			'thresholds' => 5,
-
-		),
-
-		'user' => array(
+		'ip' => [
 
 			'interval' => 900,
 
 			'thresholds' => 5,
 
-		),
+		],
 
-	),
+		'user' => [
+
+			'interval' => 900,
+
+			'thresholds' => 5,
+
+		],
+
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -230,7 +230,7 @@ return array(
 	|
 	*/
 
-	'swipe' => array(
+	'swipe' => [
 
 		'method' => 'swipe',
 
@@ -242,6 +242,6 @@ return array(
 
 		'app_code' => null,
 
-	),
+	],
 
-);
+];

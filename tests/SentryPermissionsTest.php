@@ -37,26 +37,26 @@ class SentryPermissionsTest extends PHPUnit_Framework_TestCase {
 	public function testPermissionsInheritence()
 	{
 		$permissions = new SentryPermissions(
-			array('foo' => true, 'bar' => false, 'fred' => true),
-			array(
-				array('bar' => true),
-				array('qux' => true),
-				array('fred' => false),
-			)
+			['foo' => true, 'bar' => false, 'fred' => true],
+			[
+				['bar' => true],
+				['qux' => true],
+				['fred' => false],
+			]
 		);
 
 		$this->assertTrue($permissions->hasAccess('foo'));
 		$this->assertFalse($permissions->hasAccess('bar'));
 		$this->assertTrue($permissions->hasAccess('qux'));
 		$this->assertFalse($permissions->hasAccess('fred'));
-		$this->assertFalse($permissions->hasAccess(array('foo', 'bar')));
-		$this->assertTrue($permissions->hasAnyAccess(array('foo', 'bar')));
-		$this->assertFalse($permissions->hasAnyAccess(array('bar', 'fred')));
+		$this->assertFalse($permissions->hasAccess(['foo', 'bar']));
+		$this->assertTrue($permissions->hasAnyAccess(['foo', 'bar']));
+		$this->assertFalse($permissions->hasAnyAccess(['bar', 'fred']));
 	}
 
 	public function testWildcardPermissions()
 	{
-		$permissions = new SentryPermissions(array('foo.bar' => true, 'foo.qux' => false));
+		$permissions = new SentryPermissions(['foo.bar' => true, 'foo.qux' => false]);
 
 		$this->assertFalse($permissions->hasAccess('foo'));
 		$this->assertTrue($permissions->hasAccess('foo*'));
@@ -64,7 +64,7 @@ class SentryPermissionsTest extends PHPUnit_Framework_TestCase {
 
 	public function testClassPermissions()
 	{
-		$permissions = new SentryPermissions(array('Class@method1,method2' => true));
+		$permissions = new SentryPermissions(['Class@method1,method2' => true]);
 		$this->assertTrue($permissions->hasAccess('Class@method1'));
 		$this->assertTrue($permissions->hasAccess('Class@method2'));
 	}

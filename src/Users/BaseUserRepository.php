@@ -154,7 +154,7 @@ abstract class BaseUserRepository implements UserRepositoryInterface {
 
 		if (count($passedNames) > 0)
 		{
-			$logins = array();
+			$logins = [];
 
 			foreach ($passedNames as $name => $value)
 			{
@@ -169,10 +169,10 @@ abstract class BaseUserRepository implements UserRepositoryInterface {
 		}
 		else
 		{
-			$logins = array();
+			$logins = [];
 		}
 
-		return array($logins, $password, $credentials);
+		return [$logins, $password, $credentials];
 	}
 
 	/**

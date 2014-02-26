@@ -45,14 +45,14 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 	public function testGetWithQueuedCookie()
 	{
 		$cookie = new IlluminateCookie($request = m::mock('Illuminate\Http\Request'), $jar = m::mock('Illuminate\Cookie\CookieJar'), 'foo');
-		$jar->shouldReceive('getQueuedCookies')->once()->andReturn(array('foo' => 'bar'));
+		$jar->shouldReceive('getQueuedCookies')->once()->andReturn(['foo' => 'bar']);
 		$this->assertEquals('bar', $cookie->get());
 	}
 
 	public function testGetWithPreviousCookies()
 	{
 		$cookie = new IlluminateCookie($request = m::mock('Illuminate\Http\Request'), $jar = m::mock('Illuminate\Cookie\CookieJar'), 'foo');
-		$jar->shouldReceive('getQueuedCookies')->once()->andReturn(array());
+		$jar->shouldReceive('getQueuedCookies')->once()->andReturn([]);
 		$request->shouldReceive('cookie')->with('foo')->once()->andReturn('bar');
 		$this->assertEquals('bar', $cookie->get());
 	}

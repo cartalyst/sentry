@@ -30,11 +30,11 @@ class EloquentActivation extends Model {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $fillable = array(
+	protected $fillable = [
 		'code',
 		'completed',
 		'completed_at',
-	);
+	];
 
 	/**
 	 * Get mutator for the "completed" attribute.

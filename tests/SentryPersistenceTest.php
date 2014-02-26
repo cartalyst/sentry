@@ -97,7 +97,7 @@ class SentryPersistenceTest extends PHPUnit_Framework_TestCase {
 		$persistable = m::mock('Cartalyst\Sentry\Persistence\PersistableInterface');
 		$session->shouldReceive('forget')->once();
 		$cookie->shouldReceive('forget')->once();
-		$persistable->shouldReceive('getPersistenceCodes')->once()->andReturn(array('code1', 'code2'));
+		$persistable->shouldReceive('getPersistenceCodes')->once()->andReturn(['code1', 'code2']);
 		$persistable->shouldReceive('removePersistenceCode')->once()->andReturn('code1');
 		$persistable->shouldReceive('removePersistenceCode')->once()->andReturn('code2');
 		$persistence->flush($persistable);

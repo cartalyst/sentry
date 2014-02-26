@@ -67,7 +67,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setGlobalInterval(10);
-		$throttle->setGlobalThresholds(array(5 => 3, 10 => 10));
+		$throttle->setGlobalThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));
@@ -94,7 +94,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setGlobalInterval(10);
-		$throttle->setGlobalThresholds(array(5 => 3, 10 => 10));
+		$throttle->setGlobalThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));
@@ -149,7 +149,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setIpInterval(10);
-		$throttle->setIpThresholds(array(5 => 3, 10 => 10));
+		$throttle->setIpThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));
@@ -177,7 +177,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setIpInterval(10);
-		$throttle->setIpThresholds(array(5 => 3, 10 => 10));
+		$throttle->setIpThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));
@@ -235,7 +235,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setUserInterval(10);
-		$throttle->setUserThresholds(array(5 => 3, 10 => 10));
+		$throttle->setUserThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));
@@ -265,7 +265,7 @@ class IlluminateThrottleRepositoryTest extends PHPUnit_Framework_TestCase {
 	{
 		$throttle = m::mock('Cartalyst\Sentry\Throttling\IlluminateThrottleRepository[createModel]');
 		$throttle->setUserInterval(10);
-		$throttle->setUserThresholds(array(5 => 3, 10 => 10));
+		$throttle->setUserThresholds([5 => 3, 10 => 10]);
 
 		$throttle->shouldReceive('createModel')->andReturn($model = m::mock('Cartalyst\Sentry\Throttling\EloquentThrottle[newQuery]'));
 		$model->shouldReceive('newQuery')->andReturn($query = m::mock('Illuminate\Database\Eloquent\Builder'));

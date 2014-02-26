@@ -25,14 +25,14 @@ abstract class BasePermissions implements PermissionsInterface {
 	 *
 	 * @var array
 	 */
-	protected $permissions = array();
+	protected $permissions = [];
 
 	/**
 	 * Secondary permissions.
 	 *
 	 * @var array
 	 */
-	protected $secondaryPermissions = array();
+	protected $secondaryPermissions = [];
 
 	/**
 	 * An array of cached, prepared permissions.
@@ -199,7 +199,7 @@ abstract class BasePermissions implements PermissionsInterface {
 			return (array) $key;
 		}
 
-		$keys = array();
+		$keys = [];
 
 		list($class, $methods) = explode('@', $key);
 

@@ -22,7 +22,7 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 
 		foreach ($users as $user)
 		{
-			$permissions = array();
+			$permissions = [];
 
 			if ($user->permissions)
 			{
@@ -33,9 +33,9 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 			}
 
 			DB::table('users')
-				->update(array(
+				->update([
 					'permissions' => (count($permissions) > 0) ? json_encode($permissions) : '',
-				));
+				]);
 		}
 	}
 
@@ -56,7 +56,7 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 
 		foreach ($users as $user)
 		{
-			$permissions = array();
+			$permissions = [];
 
 			if ($user->permissions)
 			{
@@ -67,9 +67,9 @@ class MigrationCartalystSentryAlterUsers extends Migration {
 			}
 
 			DB::table('users')
-				->update(array(
+				->update([
 					'permissions' => (count($permissions) > 0) ? json_encode($permissions) : '',
-				));
+				]);
 		}
 	}
 

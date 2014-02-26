@@ -25,7 +25,7 @@ class SentryPermissions extends BasePermissions implements PermissionsInterface 
 	 */
 	protected function createPreparedPermissions()
 	{
-		$prepared = array();
+		$prepared = [];
 
 		if ( ! empty($this->secondaryPermissions))
 		{

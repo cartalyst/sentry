@@ -64,7 +64,7 @@ class Sentry {
 	 *
 	 * @var array
 	 */
-	protected $userMethods = array();
+	protected $userMethods = [];
 
 	/**
 	 * Group repository.
@@ -85,7 +85,7 @@ class Sentry {
 	 *
 	 * @var array
 	 */
-	protected $checkpoints = array();
+	protected $checkpoints = [];
 
 	/**
 	 * Activations repository.
@@ -409,7 +409,7 @@ class Sentry {
 		{
 			$this->requestCredentials = function()
 			{
-				$credentials = array();
+				$credentials = [];
 
 				if (isset($_SERVER['PHP_AUTH_USER']))
 				{
@@ -640,7 +640,7 @@ class Sentry {
 	 * @param  bool    $halt
 	 * @return mixed
 	 */
-	protected function fireEvent($event, $payload = array(), $halt = false)
+	protected function fireEvent($event, $payload = [], $halt = false)
 	{
 		if ( ! $dispatcher = $this->getEventDispatcher()) return;
 
@@ -725,7 +725,7 @@ class Sentry {
 		if ($this->users === null)
 		{
 			$this->users = $this->createUserRepository();
-			$this->userMethods = array();
+			$this->userMethods = [];
 		}
 
 		return $this->users;
@@ -740,7 +740,7 @@ class Sentry {
 	public function setUserRepository(UserRepositoryInterface $users)
 	{
 		$this->users = $users;
-		$this->userMethods = array();
+		$this->userMethods = [];
 	}
 
 	/**
@@ -905,7 +905,7 @@ class Sentry {
 			$users = $this->getUserRepository();
 
 			$methods = get_class_methods($users);
-			$banned = array('__construct');
+			$banned = ['__construct'];
 
 			foreach ($banned as $method)
 			{
@@ -939,7 +939,7 @@ class Sentry {
 		{
 			$users = $this->getUserRepository();
 
-			return call_user_func_array(array($users, $method), $parameters);
+			return call_user_func_array([$users, $method], $parameters);
 		}
 
 		if (starts_with($method, 'findGroupBy'))
@@ -948,10 +948,10 @@ class Sentry {
 
 			$method = 'findBy'.substr($method, 11);
 
-			return call_user_func_array(array($groups, $method), $parameters);
+			return call_user_func_array([$groups, $method], $parameters);
 		}
 
-		$methods = array('getGroups', 'inGroup', 'hasAccess', 'hasAnyAccess');
+		$methods = ['getGroups', 'inGroup', 'hasAccess', 'hasAnyAccess'];
 		$className = get_class($this);
 
 		if (in_array($method, $methods))
@@ -963,7 +963,7 @@ class Sentry {
 				throw new \BadMethodCallException("Method {$className}::{$method}() can only be called if a user is logged in.");
 			}
 
-			return call_user_func_array(array($user, $method), $parameters);
+			return call_user_func_array([$user, $method], $parameters);
 		}
 
 		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
