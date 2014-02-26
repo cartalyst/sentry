@@ -12,27 +12,20 @@ class MigrationCartalystSentryAlterThrottle extends Migration {
 	 */
 	public function up()
 	{
-		DB::table('throttle')->truncate();
+		Schema::drop('throttle');
 
-		Schema::table('throttle', function(Blueprint $table)
+		Schema::create('throttle', function(Blueprint $table)
 		{
-			$table->dropColumn('user_id');
-			$table->dropColumn('attempts');
-			$table->dropColumn('suspended');
-			$table->dropColumn('banned');
-			$table->dropColumn('last_attempt_at');
-			$table->dropColumn('suspended_at');
-			$table->dropColumn('banned_at');
-			$table->dropColumn('ip_address');
-		});
-
-		Schema::table('throttle', function(Blueprint $table)
-		{
-			$table->integer('user_id')->after('id')->nullable();
-
-			$table->string('type')->after('user_id');
+			$table->increments('id');
+			$table->integer('user_id')->unsigned();
+			$table->string('type');
 			$table->string('ip')->nullable();
 			$table->timestamps();
+
+			// We'll need to ensure that MySQL uses the InnoDB engine to
+			// support the indexes, other engines aren't affected.
+			$table->engine = 'InnoDB';
+			$table->index('user_id');
 		});
 	}
 
@@ -43,15 +36,13 @@ class MigrationCartalystSentryAlterThrottle extends Migration {
 	 */
 	public function down()
 	{
-		DB::table('throttle')->truncate();
+		Schema::drop('throttle');
 
-		Schema::table('throttle', function(Blueprint $table)
+		Schema::create('throttle', function(Blueprint $table)
 		{
-			$table->dropColumn('type');
-			$table->dropColumn('ip');
+			$table->increments('id');
+			$table->integer('user_id')->unsigned();
 			$table->string('ip_address')->nullable();
-			$table->dropTimestamps();
-
 			$table->integer('attempts')->default(0);
 			$table->boolean('suspended')->default(0);
 			$table->boolean('banned')->default(0);
@@ -59,6 +50,9 @@ class MigrationCartalystSentryAlterThrottle extends Migration {
 			$table->timestamp('suspended_at')->nullable();
 			$table->timestamp('banned_at')->nullable();
 
+			// We'll need to ensure that MySQL uses the InnoDB engine to
+			// support the indexes, other engines aren't affected.
+			$table->engine = 'InnoDB';
 			$table->index('user_id');
 		});
 	}
