@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-abstract class BaseHasher implements HasherInterface {
+trait Hasher {
 
 	/**
 	 * Salt length.

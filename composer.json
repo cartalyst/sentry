@@ -48,15 +48,15 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.3",
-		"illuminate/support": ">=4.0.9,<4.2"
+		"php": ">=5.4.0",
+		"illuminate/support": ">=4.0.9,<4.3"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
-		"illuminate/cookie": ">=4.0.9,<4.2",
-		"illuminate/database": ">=4.0.9,<4.2",
-		"illuminate/http": ">=4.0.9,<4.2",
-		"illuminate/session": ">=4.0.9,<4.2",
+		"illuminate/cookie": ">=4.0.9,<4.3",
+		"illuminate/database": ">=4.0.9,<4.3",
+		"illuminate/http": ">=4.0.9,<4.3",
+		"illuminate/session": ">=4.0.9,<4.3",
 		"ircmaxell/password-compat": "1.0.*",
 		"swipeidentity/php-toolkit": "1.0.*"
 	},

@@ -18,7 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-class Sha256Hasher extends BaseHasher implements HasherInterface {
+class Sha256Hasher implements HasherInterface {
+
+	use Hasher;
 
 	/**
 	 * {@inheritDoc}

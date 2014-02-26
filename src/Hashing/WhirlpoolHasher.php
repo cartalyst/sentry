@@ -18,7 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-class WhirlpoolHasher extends BaseHasher implements HasherInterface {
+class WhirlpoolHasher implements HasherInterface {
+
+	use Hasher;
 
 	/**
 	 * {@inheritDoc}
