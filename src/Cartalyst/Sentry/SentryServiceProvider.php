@@ -248,7 +248,19 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$key = $app['config']['cartalyst/sentry::cookie.key'];
 
-			return new IlluminateCookie($app['request'], $app['cookie'], $key);
+			/**
+			 * We'll default to using the 'request' strategy, but switch to
+			 * 'jar' if the Laravel version in use is 4.0.*
+			 */
+
+			$strategy = 'request';
+
+			if (preg_match('/^4\.0\.\d*$/D', $app::VERSION))
+			{
+				$strategy = 'jar';
+			}
+
+			return new IlluminateCookie($app['request'], $app['cookie'], $key, $strategy);
 		});
 	}
 
