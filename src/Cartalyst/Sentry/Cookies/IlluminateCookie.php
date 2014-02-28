@@ -47,6 +47,20 @@ class IlluminateCookie implements CookieInterface {
 	protected $cookie;
 
 	/**
+	 * The strategy to be used when retrieving the cookie.
+	 *
+	 * Must be either 'request' or 'jar'. This has to do with the fact that
+	 * Laravel changed how cookies are accessed between 4.0 and 4.1 versions. If
+	 * used with Laravel 4.0, this should be 'jar', but for Laravel 4.1 it
+	 * should be 'request'. For further information see issue #325 in the
+	 * cartalyst/sentry repo.
+	 *
+	 * @link https://github.com/cartalyst/sentry/issues/325
+	 * @var string
+	 */
+	protected $strategy;
+
+	/**
 	 * Creates a new cookie instance.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
@@ -54,10 +68,11 @@ class IlluminateCookie implements CookieInterface {
 	 * @param  string  $key
 	 * @return void
 	 */
-	public function __construct(Request $request, CookieJar $jar, $key = null)
+	public function __construct(Request $request, CookieJar $jar, $key = null, $strategy = 'request')
 	{
 		$this->request = $request;
 		$this->jar = $jar;
+		$this->strategy = $strategy;
 
 		if (isset($key))
 		{
@@ -115,7 +130,14 @@ class IlluminateCookie implements CookieInterface {
 			return $queued[$key];
 		}
 
-		return $this->request->cookie($key);
+		if ($this->strategy === 'request')
+		{
+			return $this->request->cookie($key);
+		}
+		else
+		{
+			return $this->jar->get($key);
+		}
 	}
 
 	/**
