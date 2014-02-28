@@ -85,6 +85,16 @@ class IlluminateCookieTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('bar', $this->cookie->get());
 	}
 
+	public function testGetWithJarStrategy()
+	{
+		$cookie = new IlluminateCookie($this->request, $this->jar, 'cookie_name_here', 'jar');
+
+		$this->jar->shouldReceive('getQueuedCookies')->once()->andReturn(array());
+		$this->jar->shouldReceive('get')->with('cookie_name_here')->once()->andReturn('bar');
+
+		$this->assertEquals('bar', $cookie->get());
+	}
+
 	public function testForget()
 	{
 		$this->jar->shouldReceive('forget')->with('cookie_name_here')->once()->andReturn('cookie');
