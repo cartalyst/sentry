@@ -96,7 +96,7 @@ will be thrown.
 	}
 	catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
 	{
-		echo 'Password field is required.'
+		echo 'Password field is required.';
 	}
 	catch (Cartalyst\Sentry\Users\UserExistsException $e)
 	{
