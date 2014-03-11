@@ -80,8 +80,7 @@ class SentryPersistenceTest extends PHPUnit_Framework_TestCase {
 
 	public function testRemove()
 	{
-		$persistence = m::mock('Cartalyst\Sentry\Persistence\SentryPersistence[check]');
-		$persistence->__construct($session = m::mock('Cartalyst\Sentry\Sessions\SessionInterface'), $cookie = m::mock('Cartalyst\Sentry\Cookies\CookieInterface'));
+		$persistence = m::mock('Cartalyst\Sentry\Persistence\SentryPersistence[check]', array($session = m::mock('Cartalyst\Sentry\Sessions\SessionInterface'), $cookie = m::mock('Cartalyst\Sentry\Cookies\CookieInterface')));
 		$persistable = m::mock('Cartalyst\Sentry\Persistence\PersistableInterface');
 		$persistence->shouldReceive('check')->once()->andReturn('code');
 		$session->shouldReceive('forget')->once();
@@ -92,8 +91,7 @@ class SentryPersistenceTest extends PHPUnit_Framework_TestCase {
 
 	public function testFlush()
 	{
-		$persistence = m::mock('Cartalyst\Sentry\Persistence\SentryPersistence[check]');
-		$persistence->__construct($session = m::mock('Cartalyst\Sentry\Sessions\SessionInterface'), $cookie = m::mock('Cartalyst\Sentry\Cookies\CookieInterface'));
+		$persistence = m::mock('Cartalyst\Sentry\Persistence\SentryPersistence[check]', array($session = m::mock('Cartalyst\Sentry\Sessions\SessionInterface'), $cookie = m::mock('Cartalyst\Sentry\Cookies\CookieInterface')));
 		$persistable = m::mock('Cartalyst\Sentry\Persistence\PersistableInterface');
 		$session->shouldReceive('forget')->once();
 		$cookie->shouldReceive('forget')->once();
