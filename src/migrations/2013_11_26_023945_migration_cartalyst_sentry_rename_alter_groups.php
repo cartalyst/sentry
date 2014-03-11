@@ -22,7 +22,7 @@ class MigrationCartalystSentryRenameAlterGroups extends Migration {
 
 		foreach ($groups as $group)
 		{
-			$permissions = array();
+			$permissions = [];
 
 			if ($group->permissions)
 			{
@@ -34,10 +34,10 @@ class MigrationCartalystSentryRenameAlterGroups extends Migration {
 
 			DB::table('groups')
 				->where('id', $group->id)
-				->update(array(
+				->update([
 					'slug' => Str::slug($group->name),
 					'permissions' => (count($permissions) > 0) ? json_encode($permissions) : '',
-				));
+				]);
 		}
 
 		Schema::table('groups', function(Blueprint $table)
@@ -68,7 +68,7 @@ class MigrationCartalystSentryRenameAlterGroups extends Migration {
 
 		foreach ($groups as $group)
 		{
-			$permissions = array();
+			$permissions = [];
 
 			if ($group->permissions)
 			{
@@ -80,9 +80,9 @@ class MigrationCartalystSentryRenameAlterGroups extends Migration {
 
 			DB::table('groups')
 				->where('id', $group->id)
-				->update(array(
+				->update([
 					'permissions' => (count($permissions) > 0) ? json_encode($permissions) : '',
-				));
+				]);
 		}
 	}
 

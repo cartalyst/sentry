@@ -32,11 +32,11 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $fillable = array(
+	protected $fillable = [
 		'slug',
 		'name',
 		'permissions',
-	);
+	];
 
 	/**
 	 * The users model name.
@@ -63,7 +63,7 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
-		return $permissions ? json_decode($permissions, true) : array();
+		return $permissions ? json_decode($permissions, true) : [];
 	}
 
 	/**
@@ -154,13 +154,13 @@ class EloquentGroup extends Model implements GroupInterface, PermissibleInterfac
 	 */
 	public function __call($method, $parameters)
 	{
-		$methods = array('hasAccess', 'hasAnyAccess');
+		$methods = ['hasAccess', 'hasAnyAccess'];
 
 		if (in_array($method, $methods))
 		{
 			$permissions = $this->getPermissions();
 
-			return call_user_func_array(array($permissions, $method), $parameters);
+			return call_user_func_array([$permissions, $method], $parameters);
 		}
 
 		return parent::__call($method, $parameters);

@@ -18,14 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-class StrictPermissions extends BasePermissions implements PermissionsInterface {
+class StrictPermissions implements PermissionsInterface {
+
+	use Permissions;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function createPreparedPermissions()
 	{
-		$prepared = array();
+		$prepared = [];
 
 		if ( ! empty($this->secondaryPermissions))
 		{
@@ -37,7 +39,7 @@ class StrictPermissions extends BasePermissions implements PermissionsInterface 
 
 		if ( ! empty($this->permissions))
 		{
-			$permissions = array();
+			$permissions = [];
 			$this->preparePermissions($permissions, $this->permissions);
 			$prepared = array_merge($prepared, $permissions);
 		}

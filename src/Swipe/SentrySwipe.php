@@ -135,7 +135,7 @@ class SentrySwipe implements SwipeInterface {
 		$response = $api->doSecondFactor($user->getUserLogin(), $this->appCode, $this->ipAddress);
 		$code = ApiBase::dispatchUser($response);
 
-		return array($response, $code);
+		return [$response, $code];
 	}
 
 	/**

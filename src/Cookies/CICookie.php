@@ -34,13 +34,13 @@ class CICookie implements CookieInterface {
 	 *
 	 * @var array
 	 */
-	protected $options = array(
+	protected $options = [
 		'name'   => 'cartalyst_sentry',
 		'domain' => '',
 		'path'   => '/',
 		'prefix' => '',
 		'secure' => false,
-	);
+	];
 
 	/**
 	 * Create a new CodeIgniter cookie driver.
@@ -49,7 +49,7 @@ class CICookie implements CookieInterface {
 	 * @param  string|array  $options
 	 * @param  string  $key
 	 */
-	public function __construct(Input $input, $options = array())
+	public function __construct(Input $input, $options = [])
 	{
 		$this->input = $input;
 
@@ -68,10 +68,10 @@ class CICookie implements CookieInterface {
 	 */
 	public function put($value)
 	{
-		$options = array_merge($this->options, array(
+		$options = array_merge($this->options, [
 			'value'  => serialize($value),
 			'expire' => 2628000,
-		));
+		]);
 
 		$this->input->set_cookie($options);
 	}
@@ -94,11 +94,11 @@ class CICookie implements CookieInterface {
 	 */
 	public function forget()
 	{
-		$this->input->set_cookie(array(
+		$this->input->set_cookie([
 			'name'   => $this->options['name'],
 			'value'  => '',
 			'expiry' => '',
-		));
+		]);
 	}
 
 }

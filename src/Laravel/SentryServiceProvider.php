@@ -105,7 +105,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$groups = $app['config']['cartalyst/sentry::groups.model'];
 			if (class_exists($groups) && method_exists($groups, 'setUsersModel'))
 			{
-				forward_static_call_array(array($groups, 'setUsersModel'), array($model));
+				forward_static_call_array([$groups, 'setUsersModel'], [$model]);
 			}
 
 			return new IlluminateUserRepository($app['sentry.hasher'], $model);
@@ -129,7 +129,7 @@ class SentryServiceProvider extends ServiceProvider {
 			$users = $app['config']['cartalyst/sentry::users.model'];
 			if (class_exists($users) && method_exists($users, 'setGroupsModel'))
 			{
-				forward_static_call_array(array($users, 'setGroupsModel'), array($model));
+				forward_static_call_array([$users, 'setGroupsModel'], [$model]);
 			}
 
 			return new IlluminateGroupRepository($model);
@@ -235,7 +235,7 @@ class SentryServiceProvider extends ServiceProvider {
 		{
 			$model = $app['config']['cartalyst/sentry::throttling.model'];
 
-			foreach (array('global', 'ip', 'user') as $type)
+			foreach (['global', 'ip', 'user'] as $type)
 			{
 				${"{$type}Interval"} = $app['config']["cartalyst/sentry::throttling.{$type}.interval"];
 				${"{$type}Thresholds"} = $app['config']["cartalyst/sentry::throttling.{$type}.thresholds"];
@@ -305,7 +305,7 @@ class SentryServiceProvider extends ServiceProvider {
 
 			$sentry->creatingBasicResponse(function()
 			{
-				$headers = array('WWW-Authenticate' => 'Basic');
+				$headers = ['WWW-Authenticate' => 'Basic'];
 
 				return new Response('Invalid credentials.', 401, $headers);
 			});
@@ -319,7 +319,7 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array(
+		return [
 			'sentry.session',
 			'sentry.cookie',
 			'sentry.persistence',
@@ -335,7 +335,7 @@ class SentryServiceProvider extends ServiceProvider {
 			'sentry.checkpoints',
 			'sentry.reminders',
 			'sentry',
-		);
+		];
 	}
 
 }

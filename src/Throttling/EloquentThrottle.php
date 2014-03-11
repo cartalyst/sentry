@@ -30,9 +30,9 @@ class EloquentThrottle extends Model {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $fillable = array(
+	protected $fillable = [
 		'type',
 		'ip',
-	);
+	];
 
 }

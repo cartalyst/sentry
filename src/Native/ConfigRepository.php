@@ -6,7 +6,7 @@ class ConfigRepository implements ArrayAccess {
 
 	protected $file;
 
-	protected $config = array();
+	protected $config = [];
 
 	public function __construct($file = null)
 	{

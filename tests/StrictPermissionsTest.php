@@ -37,26 +37,26 @@ class StrictPermissionsTest extends PHPUnit_Framework_TestCase {
 	public function testPermissionsInheritence()
 	{
 		$permissions = new StrictPermissions(
-			array('foo' => true, 'bar' => false, 'fred' => true),
-			array(
-				array('bar' => true),
-				array('qux' => true),
-				array('fred' => false),
-			)
+			['foo' => true, 'bar' => false, 'fred' => true],
+			[
+				['bar' => true],
+				['qux' => true],
+				['fred' => false],
+			]
 		);
 
 		$this->assertTrue($permissions->hasAccess('foo'));
 		$this->assertFalse($permissions->hasAccess('bar'));
 		$this->assertTrue($permissions->hasAccess('qux'));
 		$this->assertTrue($permissions->hasAccess('fred'));
-		$this->assertFalse($permissions->hasAccess(array('foo', 'bar')));
-		$this->assertTrue($permissions->hasAnyAccess(array('foo', 'bar')));
-		$this->assertTrue($permissions->hasAnyAccess(array('bar', 'fred')));
+		$this->assertFalse($permissions->hasAccess(['foo', 'bar']));
+		$this->assertTrue($permissions->hasAnyAccess(['foo', 'bar']));
+		$this->assertTrue($permissions->hasAnyAccess(['bar', 'fred']));
 	}
 
 	public function testWildcardPermissions()
 	{
-		$permissions = new StrictPermissions(array('foo.bar' => true, 'foo.qux' => false));
+		$permissions = new StrictPermissions(['foo.bar' => true, 'foo.qux' => false]);
 
 		$this->assertFalse($permissions->hasAccess('foo'));
 		$this->assertTrue($permissions->hasAccess('foo*'));
@@ -64,7 +64,7 @@ class StrictPermissionsTest extends PHPUnit_Framework_TestCase {
 
 	public function testClassPermissions()
 	{
-		$permissions = new StrictPermissions(array('Class@method1,method2' => true));
+		$permissions = new StrictPermissions(['Class@method1,method2' => true]);
 		$this->assertTrue($permissions->hasAccess('Class@method1'));
 		$this->assertTrue($permissions->hasAccess('Class@method2'));
 	}

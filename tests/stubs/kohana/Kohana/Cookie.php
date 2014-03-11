@@ -22,7 +22,7 @@ class Kohana_Cookie {
 
 	public static function set($key, $value, $minutes)
 	{
-		$_SERVER['__cookie.set'] = array($key, $value, $minutes);
+		$_SERVER['__cookie.set'] = [$key, $value, $minutes];
 	}
 
 	public static function get($key)

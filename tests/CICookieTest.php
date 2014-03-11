@@ -49,7 +49,7 @@ class CICookieTest extends PHPUnit_Framework_TestCase {
 	{
 		$cookie = new CICookie($input = m::mock('CI_Input'), 'foo');
 
-		$input->shouldReceive('set_cookie')->with(array(
+		$input->shouldReceive('set_cookie')->with([
 			'name'   => 'foo',
 			'value'  => serialize('bar'),
 			'expire' => 2628000,
@@ -57,7 +57,7 @@ class CICookieTest extends PHPUnit_Framework_TestCase {
 			'path'   => '/',
 			'prefix' => '',
 			'secure' => false,
-		));
+		]);
 
 		$cookie->put('bar');
 	}
@@ -72,11 +72,11 @@ class CICookieTest extends PHPUnit_Framework_TestCase {
 	public function testForget()
 	{
 		$cookie = new CICookie($input = m::mock('CI_Input'), 'foo');
-		$input->shouldReceive('set_cookie')->with(array(
+		$input->shouldReceive('set_cookie')->with([
 			'name'   => 'foo',
 			'value'  => '',
 			'expiry' => '',
-		))->once();
+		])->once();
 		$cookie->forget();
 	}
 

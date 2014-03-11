@@ -35,13 +35,13 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $fillable = array(
+	protected $fillable = [
 		'email',
 		'password',
 		'permissions',
 		'first_name',
 		'last_name',
-	);
+	];
 
 	/**
 	 * Cached permissions instance for the given user.
@@ -55,7 +55,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 *
 	 * @var array
 	 */
-	protected $loginNames = array('email');
+	protected $loginNames = ['email'];
 
 	/**
 	 * The groups model name.
@@ -92,7 +92,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function getPersistenceCodesAttribute($codes)
 	{
-		return $codes ? json_decode($codes, true) : array();
+		return $codes ? json_decode($codes, true) : [];
 	}
 
 	/**
@@ -114,7 +114,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
-		return $permissions ? json_decode($permissions, true) : array();
+		return $permissions ? json_decode($permissions, true) : [];
 	}
 
 	/**
@@ -260,7 +260,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	protected function createPermissions()
 	{
 		$userPermissions  = $this->permissions;
-		$groupPermissions = array();
+		$groupPermissions = [];
 
 		foreach ($this->groups as $group)
 		{
@@ -301,13 +301,13 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	public function __call($method, $parameters)
 	{
-		$methods = array('hasAccess', 'hasAnyAccess');
+		$methods = ['hasAccess', 'hasAnyAccess'];
 
 		if (in_array($method, $methods))
 		{
 			$permissions = $this->getPermissions();
 
-			return call_user_func_array(array($permissions, $method), $parameters);
+			return call_user_func_array([$permissions, $method], $parameters);
 		}
 
 		return parent::__call($method, $parameters);

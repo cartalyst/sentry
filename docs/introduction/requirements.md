@@ -4,5 +4,5 @@ Like most of our packages sentry has the same requirements as Laravel 4. Since S
 
 ---
 
-- PHP >= 5.3.7
+- PHP >= 5.4
 - MCrypt PHP Extension

@@ -25,20 +25,20 @@ class NativeCookie implements CookieInterface {
 	 *
 	 * @var array
 	 */
-	protected $options = array(
+	protected $options = [
 		'name'      => 'cartalyst_sentry',
 		'domain'    => '',
 		'path'      => '/',
 		'secure'    => false,
 		'http_only' => false,
-	);
+	];
 
 	/**
 	 * Create a new cookie driver.
 	 *
 	 * @param  string|array  $options
 	 */
-	public function __construct($options = array())
+	public function __construct($options = [])
 	{
 		if (is_array($options))
 		{

@@ -22,10 +22,10 @@ class MigrationCartalystSentryRenameAlterGroupsUsersPivot extends Migration {
 
 		$now = Carbon::now();
 
-		DB::table('groups_users')->update(array(
+		DB::table('groups_users')->update([
 			'created_at' => $now,
 			'updated_at' => $now,
-		));
+		]);
 	}
 
 	/**

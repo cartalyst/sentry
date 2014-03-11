@@ -22,7 +22,9 @@ use Cartalyst\Sentry\Swipe\SwipeInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use SpiExpressSecondFactor;
 
-class SwipeIdentityCheckpoint extends BaseCheckpoint implements CheckpointInterface {
+class SwipeIdentityCheckpoint implements CheckpointInterface {
+
+	use AuthenticatedCheckpoint;
 
 	protected $swipe;
 

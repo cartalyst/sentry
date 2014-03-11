@@ -20,7 +20,7 @@
 
 use Cartalyst\Sentry\Users\UserInterface;
 
-abstract class BaseCheckpoint implements CheckpointInterface {
+trait AuthenticatedCheckpoint {
 
 	/**
 	 * {@inheritDoc}

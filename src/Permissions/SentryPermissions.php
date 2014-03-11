@@ -18,14 +18,16 @@
  * @link       http://cartalyst.com
  */
 
-class SentryPermissions extends BasePermissions implements PermissionsInterface {
+class SentryPermissions implements PermissionsInterface {
+
+	use Permissions;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function createPreparedPermissions()
 	{
-		$prepared = array();
+		$prepared = [];
 
 		if ( ! empty($this->secondaryPermissions))
 		{
