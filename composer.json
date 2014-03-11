@@ -1,6 +1,6 @@
 {
 	"name": "cartalyst/sentry",
-	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
+	"description": "PHP 5.4+ Fully-featured Authentication & Authorization System",
 	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
 	"authors": [
