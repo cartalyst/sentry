@@ -122,7 +122,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 		{
 			$userDelay = $this->throttle->userDelay($user);
 
-			if ($ipDelay > 0)
+			if ($userDelay > 0)
 			{
 				$this->throwException("Too many unsuccessful login attempts have been made against your account. Please try again after another [{$userDelay}] second(s).", 'user', $userDelay);
 			}
