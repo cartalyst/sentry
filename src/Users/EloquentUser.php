@@ -65,6 +65,13 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	protected static $groupsModel = 'Cartalyst\Sentry\Groups\EloquentGroup';
 
 	/**
+	 * The activations model name.
+	 *
+	 * @var string
+	 */
+	protected static $activationsModel = 'Cartalyst\Sentry\Activations\EloquentActivation';
+
+	/**
 	 * Returns an array of login column names.
 	 *
 	 * @return array
@@ -292,6 +299,27 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
+	 * Get the activations model.
+	 *
+	 * @return string
+	 */
+	public static function getActivationsModel()
+	{
+		return static::$activationsModel;
+	}
+
+	/**
+	 * Set the activations model.
+	 *
+	 * @param  string  $activationsModel
+	 * @return void
+	 */
+	public static function setActivationsModel($activationsModel)
+	{
+		static::$activationsModel = $activationsModel;
+	}
+
+	/**
 	 * Dynamically pass missing methods to the group.
 	 *
 	 * @param  string  $method
@@ -313,4 +341,20 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		return parent::__call($method, $parameters);
 	}
 
+	/**
+	 * Check if the user is activated.
+	 *
+	 * @return bool
+	 */
+	public function isActivated()
+	{
+		$activation = new static::$activationsModel;
+
+		$activation = $activation
+			->where('user_id', $this->id)
+			->where('completed', true)
+			->first();
+
+		return $activation !== null;
+	}
 }

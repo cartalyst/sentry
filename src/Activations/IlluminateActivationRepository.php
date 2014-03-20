@@ -70,7 +70,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		$code = $this->generateActivationCode();
 
 		$activation->fill([
-			'code' => $code,
+			'code'      => $code,
 			'completed' => false,
 		]);
 
@@ -78,7 +78,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 
 		$activation->save();
 
-		return $code;
+		return $activation;
 	}
 
 	/**
@@ -86,9 +86,13 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function exists(UserInterface $user)
 	{
-		$activation = $this->getActivation($user);
+		$activation = $this
+			->createModel()
+			->where('user_id', $user->getUserId())
+			->where('completed', false)
+			->first();
 
-		return ($activation !== null);
+		return $activation ?: null;
 	}
 
 	/**
@@ -100,6 +104,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 			->createModel()
 			->where('user_id', $user->getUserId())
 			->where('code', $code)
+			->where('completed', false)
 			->first();
 
 		if ($activation === null)
@@ -108,7 +113,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		}
 
 		$activation->fill([
-			'completed' => true,
+			'completed'    => true,
 			'completed_at' => Carbon::now(),
 		]);
 
@@ -122,7 +127,11 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function remove(UserInterface $user)
 	{
-		$activation = $this->getActivation($user);
+		$activation = $this
+			->createModel()
+			->where('user_id', $user->getUserId())
+			->where('completed', true)
+			->first();
 
 		if ($activation === null)
 		{
@@ -145,15 +154,6 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 			->where('completed', false)
 			->where('created_at', '<', $expires)
 			->delete();
-	}
-
-	protected function getActivation(UserInterface $user)
-	{
-		return $this
-			->createModel()
-			->where('user_id', $user->getUserId())
-			->where('completed', true)
-			->first();
 	}
 
 	/**

@@ -81,7 +81,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 		$code = $this->generateReminderCode();
 
 		$reminder->fill([
-			'code' => $code,
+			'code'      => $code,
 			'completed' => false,
 		]);
 
@@ -89,7 +89,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 
 		$reminder->save();
 
-		return $code;
+		return $reminder;
 	}
 
 	/**
@@ -100,10 +100,10 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 		$reminder = $this
 			->createModel()
 			->where('user_id', $user->getUserId())
-			->where('completed', true)
+			->where('completed', false)
 			->first();
 
-		return ($reminder !== null);
+		return $reminder ?: null;
 	}
 
 	/**
@@ -115,6 +115,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 			->createModel()
 			->where('user_id', $user->getUserId())
 			->where('code', $code)
+			->where('completed', false)
 			->first();
 
 		if ($reminder === null)
@@ -134,7 +135,7 @@ class IlluminateReminderRepository implements ReminderRepositoryInterface {
 		$this->users->update($user, $credentials);
 
 		$reminder->fill([
-			'completed' => true,
+			'completed'    => true,
 			'completed_at' => Carbon::now(),
 		]);
 
