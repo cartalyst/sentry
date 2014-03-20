@@ -20,6 +20,7 @@
 
 use Carbon\Carbon;
 use Cartalyst\Sentry\Hashing\HasherInterface;
+use Closure;
 
 class IlluminateUserRepository implements UserRepositoryInterface {
 
