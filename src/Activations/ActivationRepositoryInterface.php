@@ -51,7 +51,7 @@ interface ActivationRepositoryInterface {
 	 * Remove an existing activation (deactivate).
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @return int
+	 * @return bool|null
 	 */
 	public function remove(UserInterface $user);
 
