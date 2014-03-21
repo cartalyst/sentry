@@ -18,7 +18,7 @@ Navigate to your `app` folder in Terminal and run `composer update`.
 You must put the following in `app/bootstrap.php` below `Autoloader::register()`:
 
 	// Enable composer based autoloading
-	require APPPATH.'vendor/autoload.php';
+	require VENDORPATH.'/autoload.php';
 
 Great! You now have composer working with FuelPHP.
 
