@@ -21,8 +21,8 @@
 use Cartalyst\Sentry\Groups\GroupableInterface;
 use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Permissions\PermissibleInterface;
-use Cartalyst\Sentry\Permissions\SentryPermissions;
 use Cartalyst\Sentry\Persistence\PersistableInterface;
+use Cartalyst\Sentry\Permissions\SentryPermissions;
 use Illuminate\Database\Eloquent\Model;
 
 class EloquentUser extends Model implements GroupableInterface, PermissibleInterface, PersistableInterface, UserInterface {
@@ -70,6 +70,23 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 * @var string
 	 */
 	protected static $activationsModel = 'Cartalyst\Sentry\Activations\EloquentActivation';
+
+	/**
+	 * Check if the user is activated.
+	 *
+	 * @return bool
+	 */
+	public function isActivated()
+	{
+		$instance = new static::$activationsModel;
+
+		$activation = $instance
+			->where('user_id', $this->id)
+			->where('completed', true)
+			->first();
+
+		return $activation !== null;
+	}
 
 	/**
 	 * Returns an array of login column names.
@@ -168,7 +185,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 			return false;
 		});
 
-		return ($group !== null);
+		return $group !== null;
 	}
 
 	/**
@@ -206,7 +223,9 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	public function addPersistenceCode($code)
 	{
 		$codes = $this->persistence_codes;
+
 		$codes[] = $code;
+
 		$this->persistence_codes = $codes;
 	}
 
@@ -266,7 +285,8 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	 */
 	protected function createPermissions()
 	{
-		$userPermissions  = $this->permissions;
+		$userPermissions = $this->permissions;
+
 		$groupPermissions = [];
 
 		foreach ($this->groups as $group)
@@ -320,7 +340,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 	}
 
 	/**
-	 * Dynamically pass missing methods to the group.
+	 * Dynamically pass missing methods to the user.
 	 *
 	 * @param  string  $method
 	 * @param  array   $parameters
@@ -341,20 +361,4 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		return parent::__call($method, $parameters);
 	}
 
-	/**
-	 * Check if the user is activated.
-	 *
-	 * @return bool
-	 */
-	public function isActivated()
-	{
-		$activation = new static::$activationsModel;
-
-		$activation = $activation
-			->where('user_id', $this->id)
-			->where('completed', true)
-			->first();
-
-		return $activation !== null;
-	}
 }

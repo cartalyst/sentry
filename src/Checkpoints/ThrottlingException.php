@@ -38,7 +38,7 @@ class ThrottlingException extends RuntimeException {
 	protected $type;
 
 	/**
-	 * Get the delay.
+	 * Returns the delay.
 	 *
 	 * @return int
 	 */
@@ -59,7 +59,7 @@ class ThrottlingException extends RuntimeException {
 	}
 
 	/**
-	 * Get the type.
+	 * Returns the type.
 	 *
 	 * @return int
 	 */
@@ -80,7 +80,7 @@ class ThrottlingException extends RuntimeException {
 	}
 
 	/**
-	 * Get a Carbon object representing the time which the throttle is lifted.
+	 * Returns a Carbon object representing the time which the throttle is lifted.
 	 *
 	 * @return \Carbon\Carbon
 	 */

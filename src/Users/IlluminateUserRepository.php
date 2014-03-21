@@ -73,8 +73,10 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	public function findByCredentials(array $credentials)
 	{
 		$instance = $this->createModel();
+
 		$loginNames = $instance->getLoginNames();
-		$query = $instance->newQuery()->with(['groups']);
+
+		$query = $instance->newQuery()->with('groups');
 
 		list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
 
@@ -108,7 +110,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		// contains ours. We'll filter the right user out.
 		$users = $this->createModel()
 			->newQuery()
-			->with(['groups'])
+			->with('groups')
 			->where('persistence_codes', 'like', "%{$code}%")
 			->get();
 
@@ -131,6 +133,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	public function recordLogin(UserInterface $user)
 	{
 		$user->last_login = Carbon::now();
+
 		return $user->save() ? $user : false;
 	}
 
@@ -177,6 +180,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	public function create(array $credentials, Closure $callback = null)
 	{
 		$user = $this->createModel();
+
 		$this->fill($user, $credentials);
 
 		if ($callback)
@@ -205,6 +209,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		}
 
 		$this->fill($user, $credentials);
+
 		$user->save();
 
 		return $user;
@@ -223,6 +228,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		if (isset($credentials['password']))
 		{
 			$password = $credentials['password'];
+
 			unset($credentials['password']);
 		}
 		else
@@ -266,6 +272,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 	protected function validateUser(array $credentials, $id = null)
 	{
 		$instance = $this->createModel();
+
 		$loginNames = $instance->getLoginNames();
 
 		// We will simply parse credentials which checks logins and passwords
@@ -277,6 +284,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 			{
 				throw new \InvalidArgumentException('No [login] credential was passed.');
 			}
+
 			if ($password === null)
 			{
 				throw new \InvalidArgumentException('You have not passed a [password].');
@@ -311,6 +319,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		else
 		{
 			$loginName = reset($loginNames);
+
 			$user->fill([
 				$loginName => $logins,
 			]);
@@ -321,6 +330,7 @@ class IlluminateUserRepository implements UserRepositoryInterface {
 		if (isset($password))
 		{
 			$password = $this->hasher->hash($password);
+
 			$user->fill(compact('password'));
 		}
 	}

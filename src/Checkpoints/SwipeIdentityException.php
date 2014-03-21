@@ -39,7 +39,7 @@ class SwipeIdentityException extends RuntimeException {
 	protected $response;
 
 	/**
-	 * Get the user.
+	 * Returns the user.
 	 *
 	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */
@@ -60,7 +60,7 @@ class SwipeIdentityException extends RuntimeException {
 	}
 
 	/**
-	 * Get the response.
+	 * Returns the response.
 	 *
 	 * @return \SpiExpressSecondFactor
 	 */

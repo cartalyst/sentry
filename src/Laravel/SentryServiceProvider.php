@@ -272,10 +272,9 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.persistence'],
 				$app['sentry.users'],
 				$app['sentry.groups'],
+				$app['sentry.activations'],
 				$app['events']
 			);
-
-			$sentry->setEventDispatcher($app['events']);
 
 			if (isset($app['sentry.checkpoints']))
 			{

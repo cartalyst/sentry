@@ -55,6 +55,7 @@ class IlluminateCookie implements CookieInterface {
 	public function __construct(Request $request, CookieJar $jar, $key = null)
 	{
 		$this->request = $request;
+
 		$this->jar = $jar;
 
 		if (isset($key))
@@ -69,6 +70,7 @@ class IlluminateCookie implements CookieInterface {
 	public function put($value)
 	{
 		$cookie = $this->jar->forever($this->key, $value);
+
 		$this->jar->queue($cookie);
 	}
 
@@ -97,6 +99,7 @@ class IlluminateCookie implements CookieInterface {
 	public function forget()
 	{
 		$cookie = $this->jar->forget($this->key);
+
 		$this->jar->queue($cookie);
 	}
 

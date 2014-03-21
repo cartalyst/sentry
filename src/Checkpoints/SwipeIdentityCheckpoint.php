@@ -26,8 +26,19 @@ class SwipeIdentityCheckpoint implements CheckpointInterface {
 
 	use AuthenticatedCheckpoint;
 
+	/**
+	 * The Swipe repository
+	 *
+	 * @var \Cartalyst\Sentry\Swipe\SwipeInterface
+	 */
 	protected $swipe;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param  \Cartalyst\Sentry\Swipe\SwipeInterface  $swipe
+	 * @return void
+	 */
 	public function __construct(SwipeInterface $swipe)
 	{
 		$this->swipe = $swipe;
@@ -63,6 +74,7 @@ class SwipeIdentityCheckpoint implements CheckpointInterface {
 
 			case RC_SWIPE_REJECTED:
 				$message = 'User has rejected swipe request.';
+				break;
 
 			case RC_SMS_DELIVERED:
 				$message = 'SMS was delivered to user.';
@@ -100,8 +112,11 @@ class SwipeIdentityCheckpoint implements CheckpointInterface {
 	protected function throwException($message, $code, UserInterface $user, SpiExpressSecondFactor $response)
 	{
 		$exception = new SwipeIdentityException($message, $code);
+
 		$exception->setUser($user);
+
 		$exception->setResponse($response);
+
 		throw $exception;
 	}
 

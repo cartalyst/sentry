@@ -21,14 +21,14 @@
 interface GroupableInterface {
 
 	/**
-	 * Return all associated groups.
+	 * Returns all associated groups.
 	 *
 	 * @return \IteratorAggregate
 	 */
 	public function getGroups();
 
 	/**
-	 * Return if the user is in the given group.
+	 * Returns if the user is in the given group.
 	 *
 	 * @param  mixed  $group
 	 * @return bool

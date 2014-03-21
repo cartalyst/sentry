@@ -31,7 +31,7 @@ class NotActivatedException extends RuntimeException {
 	protected $user;
 
 	/**
-	 * Get the user.
+	 * Returns the user.
 	 *
 	 * @return \Cartalyst\Sentry\Users\UserInterface
 	 */

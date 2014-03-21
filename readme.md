@@ -8,7 +8,7 @@ Sentry is a framework agnostic set of interfaces with default implementations, t
 
 ![Bitdeli](https://d2weczhvl823v0.cloudfront.net/cartalyst/sentry/trend.png)
 
-### Features
+## Package Story
 
 It also provides additional features such as user groups and additional security features:
 
@@ -24,22 +24,47 @@ It also provides additional features such as user groups and additional security
 - User data
 - Interface driven - switch out your own implementations at will
 
-### Installation
+## Requirements
 
-Installation of Sentry is very easy. We've got a number of guides to get Sentry working with your favorite framework or on it's own:
+- PHP >=5.4
 
-1. Install in [Laravel 4](https://cartalyst.com/manual/sentry/installation/laravel-4)
-2. Install in [FuelPHP 1](https://cartalyst.com/manual/sentry/installation/fuelphp-1)
-3. Install in [CodeIgniter 3](https://cartalyst.com/manual/sentry/installation/codeigniter-3)
-4. Use [natively (through composer)](https://cartalyst.com/manual/sentry/installation/composer)
+## Installation
 
-### Upgrading
+Sentry is installable with Composer. Read further information on how to install.
 
-Currently, we do not have an upgrade method from Sentry 1, however we may be able to publish one before the stable release of Sentry 2.0. When upgrading between betas or release-candidates, please see [our changelog](https://github.com/cartalyst/sentry/blob/master/changelog.md).
+[Installation Guide](http://cartalyst.com/manual/sentry/introduction/installation)
 
-### Support
+## Documentation
 
-We offer support through [our help forums](http://help.cartalyst.com), on [IRC at #cartalyst](http://webchat.freenode.net/?channels=cartalyst) and through GitHub issues (bugs only).
+Refer to the following guide on how to use the Sentry package.
+
+[Documentation](http://cartalyst.com/manual/sentry)
+
+## Versioning
+
+We version under the [Semantic Versioning](http://semver.org/) guidelines as much as possible.
+
+Releases will be numbered with the following format:
+
+`<major>.<minor>.<patch>`
+
+And constructed with the following guidelines:
+
+* Breaking backward compatibility bumps the major (and resets the minor and patch)
+* New additions without breaking backward compatibility bumps the minor (and resets the patch)
+* Bug fixes and misc changes bumps the patch
+
+## Support
 
 If you like Sentry, consider [subscribing](http://www.cartalyst.com/pricing) to our [Arsenal](http://www.cartalyst.com/arsenal). It allows us to keep creating awesome software and afford to eat at night. Subscribers also get **priority support** with all of our packages, both free and subscriber-only.
 
+Have a bug? Please create an issue here on GitHub that conforms with [necolas's guidelines](https://github.com/necolas/issue-guidelines).
+
+https://github.com/cartalyst/sentry/issues
+
+Follow us on Twitter, [@cartalyst](http://twitter.com/cartalyst).
+
+Join us for a chat on IRC.
+
+Server: irc.freenode.net
+Channel: #cartalyst

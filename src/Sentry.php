@@ -18,12 +18,13 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
+use BadMethodCallException;
 use Cartalyst\Sentry\Activations\ActivationRepositoryInterface;
+use Cartalyst\Sentry\Activations\IlluminateActivationRepository;
 use Cartalyst\Sentry\Checkpoints\CheckpointInterface;
 use Cartalyst\Sentry\Cookies\NativeCookie;
-use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Groups\GroupRepositoryInterface;
+use Cartalyst\Sentry\Groups\IlluminateGroupRepository;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Persistence\PersistenceInterface;
 use Cartalyst\Sentry\Persistence\SentryPersistence;
@@ -31,10 +32,11 @@ use Cartalyst\Sentry\Reminders\IlluminateReminderRepository;
 use Cartalyst\Sentry\Reminders\ReminderRepositoryInterface;
 use Cartalyst\Sentry\Sessions\NativeSession;
 use Cartalyst\Sentry\Users\IlluminateUserRepository;
-use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Cartalyst\Sentry\Users\UserInterface;
+use Cartalyst\Sentry\Users\UserRepositoryInterface;
 use Closure;
 use Illuminate\Events\Dispatcher;
+use InvalidArgumentException;
 
 class Sentry {
 
@@ -53,11 +55,25 @@ class Sentry {
 	protected $persistence;
 
 	/**
-	 * User repository.
+	 * The User repository.
 	 *
 	 * @var \Cartalyst\Sentry\Users\UserRepositoryInterface
 	 */
 	protected $users;
+
+	/**
+	 * The Group repository.
+	 *
+	 * @var \Cartalyst\Sentry\Groups\GroupRepositoryInterface
+	 */
+	protected $groups;
+
+	/**
+	 * The Activations repository.
+	 *
+	 * @var \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
+	 */
+	protected $activations;
 
 	/**
 	 * Cached, available methods on the user repository, used for dynamic calls.
@@ -65,13 +81,6 @@ class Sentry {
 	 * @var array
 	 */
 	protected $userMethods = [];
-
-	/**
-	 * Group repository.
-	 *
-	 * @var \Cartalyst\Sentry\Groups\GroupRepositoryInterface
-	 */
-	protected $groups;
 
 	/**
 	 * Event dispatcher.
@@ -86,13 +95,6 @@ class Sentry {
 	 * @var array
 	 */
 	protected $checkpoints = [];
-
-	/**
-	 * Activations repository.
-	 *
-	 * @var \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
-	 */
-	protected $activations;
 
 	/**
 	 * Reminders repository.
@@ -119,25 +121,28 @@ class Sentry {
 	 * Create a new Sentry instance.
 	 *
 	 * @param  \Cartalyst\Sentry\Persistence\PersistenceInterface  $persistence
-	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
+	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
+	 * @param  \Cartalyst\Sentry\Activations\ActivationRepositoryInterface  $activations
+	 * @return void
 	 */
-	public function __construct(PersistenceInterface $persistence = null, UserRepositoryInterface $users = null, GroupRepositoryInterface $groups = null)
+	public function __construct(
+		PersistenceInterface $persistence,
+		UserRepositoryInterface $users,
+		GroupRepositoryInterface $groups,
+		ActivationRepositoryInterface $activations,
+		Dispatcher $dispatcher
+	)
 	{
-		if (isset($persistence))
-		{
-			$this->persistence = $persistence;
-		}
+		$this->persistence = $persistence;
 
-		if (isset($users))
-		{
-			$this->users = $users;
-		}
+		$this->users = $users;
 
-		if (isset($groups))
-		{
-			$this->groups = $groups;
-		}
+		$this->groups = $groups;
+
+		$this->activations = $activations;
+
+		$this->dispatcher = $dispatcher;
 	}
 
 	/**
@@ -153,7 +158,7 @@ class Sentry {
 	{
 		if ($callback !== null && ! $callback instanceof Closure && ! is_bool($callback))
 		{
-			throw new \InvalidArgumentException('You must provide a closure or a boolean.');
+			throw new InvalidArgumentException('You must provide a closure or a boolean.');
 		}
 
 		$valid = $this->users->validForCreation($credentials);
@@ -210,14 +215,14 @@ class Sentry {
 
 		if ( ! $user instanceof UserInterface)
 		{
-			throw new \InvalidArgumentException('No valid user was provided.');
+			throw new InvalidArgumentException('No valid user was provided.');
 		}
 
 		$activations = $this->getActivationsRepository();
 
-		$code = $activations->create($user);
+		$activation = $activations->create($user);
 
-		return $activations->complete($user, $code);
+		return $activations->complete($user, $activation->code);
 	}
 
 	/**
@@ -228,16 +233,12 @@ class Sentry {
 	 */
 	public function check()
 	{
-		$code = $this->persistence->check();
-
-		if ($code === null)
+		if ( ! $code = $this->persistence->check())
 		{
 			return false;
 		}
 
-		$user = $this->users->findByPersistenceCode($code);
-
-		if ($user === null)
+		if ( ! $user = $this->users->findByPersistenceCode($code))
 		{
 			return false;
 		}
@@ -284,6 +285,7 @@ class Sentry {
 	public function authenticate($credentials, $remember = false, $login = true)
 	{
 		$response = $this->fireEvent('authenticating', $credentials, true);
+
 		if ($response === false) return false;
 
 		if ($credentials instanceof UserInterface)
@@ -313,9 +315,7 @@ class Sentry {
 		{
 			$method = $remember === true ? 'loginAndRemember' : 'login';
 
-			$user = $this->$method($user);
-
-			if ( ! $user)
+			if ( ! $user = $this->{$method}($user))
 			{
 				return false;
 			}
@@ -327,7 +327,7 @@ class Sentry {
 	}
 
 	/**
-	 * Authenticates a user, with "remember" flag.
+	 * Authenticates a user, with the "remember" flag.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface|array  $credentials
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
@@ -429,6 +429,7 @@ class Sentry {
 		}
 
 		$credentials = $this->requestCredentials;
+
 		return $credentials();
 	}
 
@@ -469,6 +470,7 @@ class Sentry {
 		}
 
 		$response = $this->basicResponse;
+
 		return $response();
 	}
 
@@ -493,13 +495,14 @@ class Sentry {
 	public function login(UserInterface $user, $remember = false)
 	{
 		$method = $remember === true ? 'addAndRemember' : 'add';
-		$this->persistence->$method($user);
+
+		$this->persistence->{$method}($user);
 
 		return $this->users->recordLogin($user);
 	}
 
 	/**
-	 * Persists a login for the given user, with "remember" flag.
+	 * Persists a login for the given user, with the "remember" flag.
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
 	 * @return \Cartalyst\Sentry\Users\UserInterface|bool
@@ -525,7 +528,8 @@ class Sentry {
 		}
 
 		$method = $everywhere === true ? 'flush' : 'remove';
-		$this->persistence->$method($user);
+
+		$this->persistence->{$method}($user);
 
 		return $this->users->recordLogout($user);
 	}
@@ -540,6 +544,7 @@ class Sentry {
 	{
 		// Temporarily remove the array of registered checkpoints
 		$checkpoints = $this->checkpoints;
+
 		$this->checkpoints = false;
 
 		// Fire the callback
@@ -606,7 +611,7 @@ class Sentry {
 	{
 		foreach ($this->checkpoints as $checkpoint)
 		{
-			$response = $checkpoint->$method($user);
+			$response = $checkpoint->{$method}($user);
 
 			if ($response === false && $halt === true)
 			{
@@ -646,11 +651,11 @@ class Sentry {
 
 		$method = $halt ? 'until' : 'fire';
 
-		return $dispatcher->$method("sentry.{$event}", $payload);
+		return $dispatcher->{$method}("sentry.{$event}", $payload);
 	}
 
 	/**
-	 * Get the currently logged in user, lazily checking for it.
+	 * Returns the currently logged in user, lazily checking for it.
 	 *
 	 * @param  bool  $check
 	 * @return \Cartalyst\Sentry\Users\UserInterface
@@ -677,7 +682,7 @@ class Sentry {
 	}
 
 	/**
-	 * Get the persistence instance.
+	 * Returns the persistence instance.
 	 *
 	 * @return \Cartalyst\Sentry\Persistence\PersistenceInterface
 	 */
@@ -710,13 +715,14 @@ class Sentry {
 	protected function createPersistence()
 	{
 		$session = new NativeSession;
+
 		$cookie = new NativeCookie;
 
 		return new SentryPersistence($session, $cookie);
 	}
 
 	/**
-	 * Get the user repository.
+	 * Returns the user repository.
 	 *
 	 * @return \Cartalyst\Sentry\Users\UserRepositoryInterface
 	 */
@@ -725,6 +731,7 @@ class Sentry {
 		if ($this->users === null)
 		{
 			$this->users = $this->createUserRepository();
+
 			$this->userMethods = [];
 		}
 
@@ -740,6 +747,7 @@ class Sentry {
 	public function setUserRepository(UserRepositoryInterface $users)
 	{
 		$this->users = $users;
+
 		$this->userMethods = [];
 	}
 
@@ -751,13 +759,14 @@ class Sentry {
 	protected function createUserRepository()
 	{
 		$hasher = new NativeHasher;
+
 		$model = 'Cartalyst\Sentry\Users\EloquentUser';
 
 		return new IlluminateUserRepository($hasher, $model);
 	}
 
 	/**
-	 * Get the group repository.
+	 * Returns the group repository.
 	 *
 	 * @return \Cartalyst\Sentry\Groups\GroupRepositoryInterface
 	 */
@@ -816,7 +825,7 @@ class Sentry {
 	}
 
 	/**
-	 * Get the activations repository.
+	 * Returns the activations repository.
 	 *
 	 * @return \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
 	 */
@@ -854,7 +863,7 @@ class Sentry {
 	}
 
 	/**
-	 * Get the reminders repository.
+	 * Returns the reminders repository.
 	 *
 	 * @return \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface
 	 */
@@ -952,6 +961,7 @@ class Sentry {
 		}
 
 		$methods = ['getGroups', 'inGroup', 'hasAccess', 'hasAnyAccess'];
+
 		$className = get_class($this);
 
 		if (in_array($method, $methods))
@@ -960,13 +970,13 @@ class Sentry {
 
 			if ($user === null)
 			{
-				throw new \BadMethodCallException("Method {$className}::{$method}() can only be called if a user is logged in.");
+				throw new BadMethodCallException("Method {$className}::{$method}() can only be called if a user is logged in.");
 			}
 
 			return call_user_func_array([$user, $method], $parameters);
 		}
 
-		throw new \BadMethodCallException("Call to undefined method {$className}::{$method}()");
+		throw new BadMethodCallException("Call to undefined method {$className}::{$method}()");
 	}
 
 }

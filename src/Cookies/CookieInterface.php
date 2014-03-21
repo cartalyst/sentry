@@ -29,7 +29,7 @@ interface CookieInterface {
 	public function put($value);
 
 	/**
-	 * Get the Sentry cookie value.
+	 * Returns the Sentry cookie value.
 	 *
 	 * @return mixed
 	 */

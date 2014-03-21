@@ -55,7 +55,7 @@ class EloquentActivation extends Model {
 	 */
 	public function setCompletedAttribute($completed)
 	{
-		$this->attributes['completed'] = (int) (bool) $completed;
+		$this->attributes['completed'] = (bool) $completed;
 	}
 
 }

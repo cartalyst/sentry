@@ -29,7 +29,7 @@ interface SessionInterface {
 	public function put($value);
 
 	/**
-	 * Get the Sentry session value.
+	 * Returns the Sentry session value.
 	 *
 	 * @return mixed
 	 */

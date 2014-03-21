@@ -26,7 +26,7 @@ class ActivationCheckpoint implements CheckpointInterface {
 	use AuthenticatedCheckpoint;
 
 	/**
-	 * Activations repository.
+	 * The Activations repository.
 	 *
 	 * @var \Cartalyst\Sentry\Activations\ActivationRepositoryInterface
 	 */
@@ -66,14 +66,14 @@ class ActivationCheckpoint implements CheckpointInterface {
 	 * @return bool
 	 * @throws \Cartalyst\Sentry\Checkpoints\NotActivatedException
 	 */
-	public function checkActivation(UserInterface $user)
+	protected function checkActivation(UserInterface $user)
 	{
-		$exists = $this->activations->exists($user);
-
 		if ( ! $user->isActivated())
 		{
 			$exception = new NotActivatedException('Your account has not been activated yet.');
+
 			$exception->setUser($user);
+
 			throw $exception;
 		}
 	}
