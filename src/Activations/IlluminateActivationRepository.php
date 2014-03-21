@@ -92,7 +92,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 			->where('completed', false)
 			->first();
 
-		return $activation ?: null;
+		return $activation ?: false;
 	}
 
 	/**
