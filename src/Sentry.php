@@ -124,6 +124,7 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Users\UserRepositoryInterface  $users
 	 * @param  \Cartalyst\Sentry\Groups\GroupRepositoryInterface  $groups
 	 * @param  \Cartalyst\Sentry\Activations\ActivationRepositoryInterface  $activations
+	 * @param  \Illuminate\Events\Dispatcher  $dispatcher
 	 * @return void
 	 */
 	public function __construct(
