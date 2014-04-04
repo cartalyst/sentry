@@ -234,6 +234,11 @@ class Sentry {
 	 */
 	public function check()
 	{
+		if ($this->user !== null)
+		{
+			return $this->user;
+		}
+
 		if ( ! $code = $this->persistence->check())
 		{
 			return false;
@@ -324,7 +329,7 @@ class Sentry {
 
 		$this->fireEvent('authenticated', $user);
 
-		return $user;
+		return $this->user = $user;
 	}
 
 	/**
@@ -499,7 +504,14 @@ class Sentry {
 
 		$this->persistence->{$method}($user);
 
-		return $this->users->recordLogin($user);
+		$response = $this->users->recordLogin($user);
+
+		if ($response === false)
+		{
+			return false;
+		}
+
+		return $this->user = $user;
 	}
 
 	/**
