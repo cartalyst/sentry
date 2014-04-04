@@ -59,7 +59,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	public function login(UserInterface $user)
 	{
-		return $this->checkThrottling($user, 'login');
+		return $this->checkThrottling('login', $user);
 	}
 
 	/**
@@ -67,7 +67,7 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	public function check(UserInterface $user)
 	{
-		return $this->checkThrottling($user, 'check');
+		return $this->checkThrottling('check', $user);
 	}
 
 	/**
@@ -75,17 +75,24 @@ class ThrottleCheckpoint implements CheckpointInterface {
 	 */
 	public function fail(UserInterface $user = null)
 	{
+		// We'll check throttling firstly from any previous attempts. This
+		// will throw the required exceptions if the user has already
+		// tried to login too many times.
+		$this->checkThrottling('login', $user);
+
+		// Now we've checked previous attempts, we'll log this latest attempt.
+		// It'll be picked up the next time if the user tries again.
 		$this->throttle->log($this->ipAddress, $user);
 	}
 
 	/**
 	 * Checks the throttling status of the given user.
 	 *
-	 * @param  \Cartalyst\Sentry\Users\UserInterface  $user
-	 * @param  bool  $action
+	 * @param  string  $action
+	 * @param  \Cartalyst\Sentry\Users\UserInterface|null  $user
 	 * @return bool
 	 */
-	protected function checkThrottling(UserInterface $user, $action)
+	protected function checkThrottling($action, UserInterface $user = null)
 	{
 		// If we are just checking an existing logged in person, the global delay
 		// shouldn't stop them being logged in at all. Only their IP address and
