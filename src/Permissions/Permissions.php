@@ -212,7 +212,7 @@ trait Permissions {
 	}
 
 	/**
-	 * Checks a permission in the prepared array, including wildcard permissions.
+	 * Checks a permission in the prepared array, including wildcard checks and permissions.
 	 *
 	 * @param  array   $prepared
 	 * @param  string  $permission
@@ -227,7 +227,7 @@ trait Permissions {
 
 		foreach ($prepared as $key => $value)
 		{
-			if (str_is($permission, $key) && $value === true)
+			if ((str_is($permission, $key) || str_is($key, $permission)) && $value === true)
 			{
 				return true;
 			}

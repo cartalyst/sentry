@@ -54,12 +54,20 @@ class SentryPermissionsTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($permissions->hasAnyAccess(['bar', 'fred']));
 	}
 
-	public function testWildcardPermissions()
+	public function testWildcardChecks()
 	{
 		$permissions = new SentryPermissions(['foo.bar' => true, 'foo.qux' => false]);
 
 		$this->assertFalse($permissions->hasAccess('foo'));
 		$this->assertTrue($permissions->hasAccess('foo*'));
+	}
+
+	public function testWildcardPermissions()
+	{
+		$permissions = new SentryPermissions(['foo.*' => true]);
+
+		$this->assertTrue($permissions->hasAccess('foo.bar'));
+		$this->assertTrue($permissions->hasAccess('foo.qux'));
 	}
 
 	public function testClassPermissions()

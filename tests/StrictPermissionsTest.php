@@ -54,12 +54,20 @@ class StrictPermissionsTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($permissions->hasAnyAccess(['bar', 'fred']));
 	}
 
-	public function testWildcardPermissions()
+	public function testWildcardChecks()
 	{
 		$permissions = new StrictPermissions(['foo.bar' => true, 'foo.qux' => false]);
 
 		$this->assertFalse($permissions->hasAccess('foo'));
 		$this->assertTrue($permissions->hasAccess('foo*'));
+	}
+
+	public function testWildcardPermissions()
+	{
+		$permissions = new StrictPermissions(['foo.*' => true]);
+
+		$this->assertTrue($permissions->hasAccess('foo.bar'));
+		$this->assertTrue($permissions->hasAccess('foo.qux'));
 	}
 
 	public function testClassPermissions()
