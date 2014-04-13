@@ -210,12 +210,8 @@ class Group extends Model implements GroupInterface {
 			}
 		}
 
-		if ($all === false)
-		{
-			return false;
-		}
-
-		return true;
+		return $all;
+		
 	}
 
 	/**
