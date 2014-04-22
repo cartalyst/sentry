@@ -55,6 +55,14 @@ class Throttle extends Model implements ThrottleInterface {
 	protected $guarded = array();
 
 	/**
+	 * The Eloquent user model.
+	 *
+	 * @var string
+	 */
+	protected static $userModel = 'Cartalyst\Sentry\Users\Eloquent\User';
+
+
+	/**
 	 * Attempt limit.
 	 *
 	 * @var int
@@ -265,13 +273,25 @@ class Throttle extends Model implements ThrottleInterface {
 	}
 
 	/**
+	 * Set the Eloquent model to use for user relationships.
+	 *
+	 * @param  string  $model
+	 * @return void
+	 */
+	public static function setUserModel($model)
+	{
+		static::$userModel = $model;
+	}
+
+
+	/**
 	 * User relationship for the throttle.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function user()
 	{
-		return $this->belongsTo('Cartalyst\Sentry\Users\Eloquent\User', 'user_id');
+		return $this->belongsTo(static::$userModel, 'user_id');
 	}
 
 	/**
