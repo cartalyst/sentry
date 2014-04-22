@@ -217,6 +217,17 @@ class SentryServiceProvider extends ServiceProvider {
 					array($suspensionTime)
 				);
 			}
+			
+			// Define the User model to use for relationships.
+			if (method_exists($model, 'setUserModel'))
+			{
+				$userModel = $app['config']['cartalyst/sentry::users.model'];
+
+				forward_static_call_array(
+					array($model, 'setUserModel'),
+					array($userModel)
+				);
+			}
 
 			return $throttleProvider;
 		});
