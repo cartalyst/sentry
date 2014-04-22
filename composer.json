@@ -36,7 +36,7 @@
 				"name": "swipeidentity/php-toolkit",
 				"version": "1.0.0",
 				"dist": {
-					"url": "http://www.swipeidentity.com/toolkits/swipeidentity-php-toolkit-1.0.zip",
+					"url": "https://www.swipeidentity.com/toolkits/swipeidentity-php-toolkit-1.0.zip",
 					"type": "zip"
 				},
 				"autoload": {
