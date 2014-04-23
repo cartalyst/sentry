@@ -33,7 +33,7 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 		Schema::create('throttle', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_id')->unsigned()->nullable();
 			$table->string('ip_address')->nullable();
 			$table->integer('attempts')->default(0);
 			$table->boolean('suspended')->default(0);
