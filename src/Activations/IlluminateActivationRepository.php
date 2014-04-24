@@ -141,13 +141,9 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 	 */
 	public function remove(UserInterface $user)
 	{
-		$activation = $this
-			->createModel()
-			->where('user_id', $user->getUserId())
-			->where('completed', true)
-			->first();
+		$activation = $this->completed($user);
 
-		if ($activation === null)
+		if ($activation === false)
 		{
 			return false;
 		}
