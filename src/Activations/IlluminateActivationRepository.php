@@ -89,7 +89,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		$activation = $this
 			->createModel()
 			->where('user_id', $user->getUserId())
-			->where('completed', true)
+			->where('completed', false)
 			->first();
 
 		return $activation ?: false;
@@ -120,6 +120,20 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		$activation->save();
 
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function completed(UserInterface $user)
+	{
+		$activation = $this
+			->createModel()
+			->where('user_id', $user->getUserId())
+			->where('completed', true)
+			->first();
+
+		return $activation ?: false;
 	}
 
 	/**
