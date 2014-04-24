@@ -68,7 +68,9 @@ class ActivationCheckpoint implements CheckpointInterface {
 	 */
 	protected function checkActivation(UserInterface $user)
 	{
-		if ( ! $user->isActivated())
+		$exists = $this->activations->exists($user);
+
+		if ( ! $exists)
 		{
 			$exception = new NotActivatedException('Your account has not been activated yet.');
 
