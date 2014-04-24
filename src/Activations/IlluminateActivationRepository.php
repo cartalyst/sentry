@@ -89,7 +89,7 @@ class IlluminateActivationRepository implements ActivationRepositoryInterface {
 		$activation = $this
 			->createModel()
 			->where('user_id', $user->getUserId())
-			->where('completed', false)
+			->where('completed', true)
 			->first();
 
 		return $activation ?: false;
