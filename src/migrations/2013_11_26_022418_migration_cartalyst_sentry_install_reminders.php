@@ -33,7 +33,7 @@ class MigrationCartalystSentryInstallReminders extends Migration {
 		Schema::create('reminders', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('user_id');
+			$table->integer('user_id')->unsigned();
 			$table->string('code');
 			$table->boolean('completed')->default(0);
 			$table->timestamp('completed_at')->nullable();
