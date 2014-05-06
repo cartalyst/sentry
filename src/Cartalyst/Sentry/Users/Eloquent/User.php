@@ -745,7 +745,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * Returns the relationship between users and groups.
 	 *
-	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
 	public function groups()
 	{
