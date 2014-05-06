@@ -308,7 +308,7 @@ class Throttle extends Model implements ThrottleInterface {
 
 		$suspensionTime  = static::$suspensionTime;
 		$clearAttemptsAt = $lastAttempt->modify("+{$suspensionTime} minutes");
-		$now             = new DateTime;
+		$now             = $this->freshTimestamp();
 
 		if ($clearAttemptsAt <= $now)
 		{
@@ -334,7 +334,7 @@ class Throttle extends Model implements ThrottleInterface {
 
 		$suspensionTime = static::$suspensionTime;
 		$unsuspendAt    = $suspended->modify("+{$suspensionTime} minutes");
-		$now            = new DateTime;
+		$now            = $this->freshTimestamp();
 
 		if ($unsuspendAt <= $now)
 		{
@@ -462,7 +462,7 @@ class Throttle extends Model implements ThrottleInterface {
 
 		$suspensionTime  = static::$suspensionTime;
 		$clearAttemptsAt = $lastAttempt->modify("+{$suspensionTime} minutes");
-		$now             = new Datetime;
+		$now             = $this->freshTimestamp();
 
 		$timeLeft = $clearAttemptsAt->diff($now);
 

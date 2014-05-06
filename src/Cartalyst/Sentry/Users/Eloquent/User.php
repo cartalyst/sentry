@@ -26,7 +26,6 @@ use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
-use DateTime;
 
 class User extends Model implements UserInterface {
 
@@ -398,7 +397,7 @@ class User extends Model implements UserInterface {
 		{
 			$this->activation_code = null;
 			$this->activated       = true;
-			$this->activated_at    = new DateTime;
+			$this->activated_at    = $this->freshTimestamp();
 			return $this->save();
 		}
 
@@ -738,7 +737,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function recordLogin()
 	{
-		$this->last_login = new DateTime;
+		$this->last_login = $this->freshTimestamp();
 		$this->save();
 	}
 
