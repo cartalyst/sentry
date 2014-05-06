@@ -36,4 +36,12 @@ interface GroupRepositoryInterface {
 	 */
 	public function findBySlug($slug);
 
+	/**
+	 * Finds a group by the given name.
+	 *
+	 * @param  string  $name
+	 * @return \Cartalyst\Sentry\Groups\GroupInterface
+	 */
+	public function findByName($name);
+
 }

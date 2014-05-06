@@ -64,6 +64,18 @@ class IlluminateGroupRepository implements GroupRepositoryInterface {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function findByName($name)
+	{
+		return $this->createModel()
+			->newQuery()
+			->with('users')
+			->where('name', $name)
+			->first();
+	}
+
+	/**
 	 * Create a new instance of the model.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Model
