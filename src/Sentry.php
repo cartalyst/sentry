@@ -964,6 +964,15 @@ class Sentry {
 			return call_user_func_array([$users, $method], $parameters);
 		}
 
+		if (starts_with($method, 'findUserBy'))
+		{
+			$user = $this->getUserRepository();
+
+			$method = 'findBy'.substr($method, 10);
+
+			return call_user_func_array([$user, $method], $parameters);
+		}
+
 		if (starts_with($method, 'findGroupBy'))
 		{
 			$groups = $this->getGroupRepository();
