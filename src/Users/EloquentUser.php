@@ -145,7 +145,7 @@ class EloquentUser extends Model implements GroupableInterface, PermissibleInter
 		{
 			if ($group instanceof GroupInterface)
 			{
-				return ($instance === $group);
+				return ($instance->getGroupId() === $group->getGroupId());
 			}
 
 			if ($instance->getGroupId() == $group)
