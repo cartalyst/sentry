@@ -1,0 +1,34 @@
+{
+	"introduction" : [
+		"index",
+		"installation",
+		"integration"
+	],
+	"usage": [
+		"index",
+		"authentication/index",
+		"authentication/login",
+		"authentication/logout",
+		"authentication/helpers",
+		"permissions/index",
+		"users/index",
+		"users/create",
+		"users/register",
+		"users/update",
+		"users/delete",
+		"users/activate",
+		"users/reset-password",
+		"users/find",
+		"users/helpers",
+		"groups/index",
+		"groups/create",
+		"groups/update",
+		"groups/delete",
+		"groups/find",
+		"groups/helpers",
+		"throttling/index",
+		"throttling/manage",
+		"throttling/user-throttling",
+		"throttling/find"
+	]
+}
