@@ -493,6 +493,22 @@ class User extends Model implements UserInterface {
 		return $this->userGroups;
 	}
 
+    /**
+     * Clear the cached permissions attribute.
+     */
+    public function invalidateMergedPermissionsCache()
+    {
+		$this->mergedPermissions = null;
+    }
+
+    /**
+     * Clear the cached user groups attribute.
+     */
+    public function invalidateUserGroupsCache()
+    {
+		$this->userGroups = null;
+    }
+    
 	/**
 	 * Adds the user to the given group.
 	 *
@@ -504,7 +520,8 @@ class User extends Model implements UserInterface {
 		if ( ! $this->inGroup($group))
 		{
 			$this->groups()->attach($group);
-			$this->userGroups = null;
+			$this->invalidateUserGroupsCache();
+			$this->invalidateMergedPermissionsCache();
 		}
 
 		return true;
@@ -521,7 +538,8 @@ class User extends Model implements UserInterface {
 		if ($this->inGroup($group))
 		{
 			$this->groups()->detach($group);
-			$this->userGroups = null;
+			$this->invalidateUserGroupsCache();
+			$this->invalidateMergedPermissionsCache();
 		}
 
 		return true;
