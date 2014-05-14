@@ -97,6 +97,13 @@ class Sentry {
 	protected $checkpoints = [];
 
 	/**
+	 * Bool that holds checkpoint status.
+	 *
+	 * @var bool
+	 */
+	protected $checkpointsEnabled = true;
+
+	/**
 	 * Reminders repository.
 	 *
 	 * @var \Cartalyst\Sentry\Reminders\ReminderRepositoryInterface
@@ -586,7 +593,7 @@ class Sentry {
 	 */
 	public function enableCheckpoints()
 	{
-		$this->checkpoints = true;
+		$this->checkpointsEnabled = true;
 	}
 
 	/**
@@ -596,7 +603,7 @@ class Sentry {
 	 */
 	public function disableCheckpoints()
 	{
-		$this->checkpoints = false;
+		$this->checkpointsEnabled = false;
 	}
 
 	/**
@@ -622,6 +629,11 @@ class Sentry {
 	 */
 	protected function cycleCheckpoints($method, UserInterface $user = null, $halt = true)
 	{
+		if ( ! $this->checkpointsEnabled)
+		{
+			return true;
+		}
+
 		foreach ($this->checkpoints as $checkpoint)
 		{
 			$response = $checkpoint->{$method}($user);
