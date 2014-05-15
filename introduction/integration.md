@@ -52,7 +52,7 @@ This will publish the config file to `app/config/packages/cartalyst/sentry/confi
 
 	$capsule->bootEloquent();
 
-	Sentry::findUserByLogin('john.doe@example.com');
+	$user = Sentry::findUserByLogin('john.doe@example.com');
 
 ## CodeIgniter 3.0-dev
 
