@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-class BaseHasher {
+abstract class BaseHasher {
 
 	/**
 	 * Compares two strings $a and $b in length-constant time.
@@ -27,7 +27,7 @@ class BaseHasher {
 	 * @param  string  $b
 	 * @return boolean
 	 */
-	protected function slowEquals($a, $b)
+	final protected function slowEquals($a, $b)
 	{
 		$diff = strlen($a) ^ strlen($b);
 

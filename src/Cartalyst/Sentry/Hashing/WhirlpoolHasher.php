@@ -52,7 +52,7 @@ class WhirlpoolHasher extends BaseHasher implements HasherInterface {
 	{
 		$salt = substr($hashedString, 0, $this->saltLength);
 
-		return $this->slowEquals(($salt.hash('whirlpool', $salt.$string)), $hashedString);
+		return $this->slowEquals($salt.hash('whirlpool', $salt.$string), $hashedString);
 	}
 
 	/**
