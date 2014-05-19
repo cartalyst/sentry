@@ -39,7 +39,7 @@ class Sha256Hasher implements HasherInterface {
 	{
 		$salt = substr($hashedValue, 0, $this->saltLength);
 
-		return $this->slowEquals(($salt.hash('sha256', $salt.$value)), $hashedValue);
+		return $this->slowEquals($salt.hash('sha256', $salt.$value), $hashedValue);
 	}
 
 }

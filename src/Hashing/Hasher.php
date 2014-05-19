@@ -46,7 +46,7 @@ trait Hasher {
 	 * @param  string  $b
 	 * @return boolean
 	 */
-	public static function slowEquals($a, $b)
+	protected function slowEquals($a, $b)
 	{
 		$diff = strlen($a) ^ strlen($b);
 
