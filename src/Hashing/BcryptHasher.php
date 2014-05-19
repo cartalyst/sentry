@@ -50,7 +50,7 @@ class BcryptHasher implements HasherInterface {
 	 */
 	public function check($value, $hashedValue)
 	{
-		return crypt($value, $hashedValue) === $hashedValue;
+		return $this->slowEquals(crypt($value, $hashedValue), $hashedValue);
 	}
 
 }
