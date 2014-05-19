@@ -18,7 +18,7 @@
  * @link       http://cartalyst.com
  */
 
-class BcryptHasher implements HasherInterface {
+class BcryptHasher extends BaseHasher implements HasherInterface {
 
 	/**
 	 * Hash strength.
@@ -63,7 +63,7 @@ class BcryptHasher implements HasherInterface {
 	 */
 	public function checkhash($string, $hashedString)
 	{
-		return crypt($string, $hashedString) === $hashedString;
+		return $this->slowEquals(crypt($string, $hashedString), $hashedString);
 	}
 
 	/**
