@@ -1,12 +1,12 @@
 ## Authentication
 
-In this section we'll be covering how to authentication and logins.
+In this section, we will cover authentication and login.
 
 ### Sentry::authenticate()
 
 Authenticates a user based on the provided credentials.
 
-If the authentication is successful, password reset fields and any invalidauthentication attempts will be cleared.
+If the authentication was successful, password reset fields and any invalid authentication attempts will be cleared.
 
 Param        | Required | Default | Type  | Description
 ------------ | -------- | ------- | ----- | -----------------------------------
@@ -61,7 +61,7 @@ catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
 
 #### Exceptions
 
-Below is a list of exceptions that this method can throw.
+In this section, we provide a list of all exceptions that are thrown by Sentry.
 
 Exception                                          | Description
 -------------------------------------------------- | --------------------------------------------------------------------------------
