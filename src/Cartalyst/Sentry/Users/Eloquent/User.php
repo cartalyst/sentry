@@ -170,7 +170,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getPassword()
 	{
-		return $this->password;
+		return $this->{$this->getPasswordName()};
 	}
 
 	/**
