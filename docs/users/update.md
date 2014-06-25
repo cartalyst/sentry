@@ -104,7 +104,7 @@ will be thrown.
 		// Find the group using the group id
 		$adminGroup = Sentry::findGroupById(1);
 
-		// Delete user from group
+		// Remove group from the user.
 		if ($user->removeGroup($adminGroup))
 		{
 			// Group removed successfully
