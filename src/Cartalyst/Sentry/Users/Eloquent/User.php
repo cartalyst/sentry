@@ -486,7 +486,7 @@ class User extends Model implements UserInterface {
 	{
 		if ( ! $this->userGroups)
 		{
-			$this->userGroups = $this->groupp ?: $this->groups()->get();
+			$this->userGroups = $this->groups ?: $this->groups()->get();
 		}
 
 		return $this->userGroups;
