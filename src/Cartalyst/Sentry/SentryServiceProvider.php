@@ -39,7 +39,8 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('cartalyst/sentry', 'cartalyst/sentry');
+		$this->package('netinteractive/sentry', 'cartalyst/sentry');
+        $this->app['auth.providers.manager']->set('default', $this->app['sentry.auth.providers.default']);
 	}
 
 	/**
@@ -66,10 +67,11 @@ class SentryServiceProvider extends ServiceProvider {
             return new AuthManager();
         });
 
-        $this->app->bind('AuthManager', function($app)
+        $this->app->singleton('AuthManager', function($app)
         {
             return $app['auth.providers.manager'];
         });
+
 
         /**
          * Dodajemy domyslnegogo auth providera do managera
@@ -78,7 +80,7 @@ class SentryServiceProvider extends ServiceProvider {
          */
         $this->app['sentry.auth.providers.default'] = $this->app->share(function($app)
         {
-            return new EloquentProvider();
+            return 'EloquentProvider';
         });
     }
 
