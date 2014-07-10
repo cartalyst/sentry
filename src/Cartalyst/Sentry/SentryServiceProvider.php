@@ -49,6 +49,7 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $this->registerAuth();
 		$this->registerHasher();
 		$this->registerUserProvider();
 		$this->registerGroupProvider();
@@ -57,6 +58,29 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerCookie();
 		$this->registerSentry();
 	}
+
+    protected function registerAuth(){
+
+        $this->app['sentry.auth.manager'] = $this->app->share(function($app)
+        {
+            return new AuthManager();
+        });
+
+        $this->app->bind('AuthManager', function($app)
+        {
+            return $app['auth.providers.manager'];
+        });
+
+        /**
+         * Dodajemy domyslnegogo auth providera do managera
+         *
+         * @return void
+         */
+        $this->app['sentry.auth.providers.default'] = $this->app->share(function($app)
+        {
+            return new EloquentProvider();
+        });
+    }
 
 	/**
 	 * Register the hasher used by Sentry.
