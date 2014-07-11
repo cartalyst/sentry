@@ -1,6 +1,6 @@
 {
 	"name": "netinteractive/sentry",
-    "version": "2.2.1",
+    "version": "2.2.101",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
 	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
@@ -38,8 +38,7 @@
 	"require": {
 		"php": ">=5.3.3",
         "league/oauth1-client": "~1.0",
-        "league/oauth2-client": "~0.3",
-        "cartalyst/sentry-social": "2.1.*"
+        "league/oauth2-client": "~0.3"
     },
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
@@ -60,8 +59,7 @@
 			"src/Cartalyst/Sentry/Groups/Exceptions.php",
 			"src/Cartalyst/Sentry/Throttling/Exceptions.php",
 			"src/Cartalyst/Sentry/Users/Exceptions.php",
-			"src/migrations",
-            "src/Cartalyst/Sentry/Auth"
+			"src/migrations"
 		],
 		"psr-0": {
 			"Cartalyst\\Sentry": "src/"
