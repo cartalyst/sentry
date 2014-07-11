@@ -1,6 +1,6 @@
 {
 	"name": "netinteractive/sentry",
-    "version": "2.2.101",
+    "version": "2.2.102",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
 	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
@@ -38,8 +38,7 @@
 	"require": {
 		"php": ">=5.3.3",
         "league/oauth1-client": "~1.0",
-        "league/oauth2-client": "~0.3",
-        "cartalyst/sentry-social": "2.1.*"
+        "league/oauth2-client": "~0.3"
     },
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
@@ -50,12 +49,6 @@
 		"illuminate/session": ">=4.0.9,<4.2",
 		"ircmaxell/password-compat": "1.0.*"
 	},
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.cartalyst.com"
-        }
-    ]
 	"suggest": {
 		"illuminate/database": "Default sentry user, group and throttling implementations.",
 		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support.",
