@@ -1,5 +1,5 @@
 <?php namespace Cartalyst\Sentry\Auth\Providers;
 
-class EloquentProvider{
+class EloquentProvider implements AuthProviderInferface{
 
 }

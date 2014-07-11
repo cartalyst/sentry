@@ -1,5 +1,6 @@
 <?php
 namespace Cartalyst\Sentry\Auth;
+use Cartalyst\Sentry\Auth\Providers;
 
 class AuthManager {
 
@@ -9,6 +10,13 @@ class AuthManager {
      * @var array
      */
     protected $providers = [];
+
+    /**
+     * providers instances
+     *
+     * @var array
+     */
+    protected $instances = [];
 
     protected $default = null;
 
@@ -51,16 +59,25 @@ class AuthManager {
      */
     public function set($name, $provider) {
         $this->providers[strtolower($name)] = $provider;
+
+        if ($this->default === null){
+            $this->setDefault($name);
+        }
     }
 
     /**
-     * zwraca wskazanego providera
+     * zwraca obiekt wybranego providera
      *
      * @return mixed
      */
     public function get($name){
-        if($this->has(strtolower($name))){
-            return $this->providers[strtolower($name)];
+        $name = strtolower($name);
+        if($this->has($name)){
+            if (!isset($this->instances[$name])){
+                $fullclass = __NAMESPACE__ . '\\' . $this->providers[strtolower($name)];
+                $this->instances[$name] = new $fullclass;
+            }
+            return $this->instances[$name];
         }
 
         throw new Exception("$name nie jest zarejestrowany w managerze");
