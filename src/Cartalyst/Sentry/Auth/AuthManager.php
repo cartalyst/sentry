@@ -74,7 +74,7 @@ class AuthManager {
         $name = strtolower($name);
         if($this->has($name)){
             if (!isset($this->instances[$name])){
-                $fullclass = __NAMESPACE__ . '\\' . $this->providers[strtolower($name)];
+                $fullclass = __NAMESPACE__ . '\\' . 'Providers\\'.$this->providers[strtolower($name)];
                 $this->instances[$name] = new $fullclass;
             }
             return $this->instances[$name];

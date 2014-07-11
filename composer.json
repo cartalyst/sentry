@@ -38,7 +38,8 @@
 	"require": {
 		"php": ">=5.3.3",
         "league/oauth1-client": "~1.0",
-        "league/oauth2-client": "~0.3"
+        "league/oauth2-client": "~0.3",
+        "cartalyst/sentry-social": "2.1.*"
     },
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
