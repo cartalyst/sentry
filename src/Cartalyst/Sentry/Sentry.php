@@ -18,6 +18,7 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Auth\AuthManager;
 use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Cookies\NativeCookie;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
@@ -88,6 +89,7 @@ class Sentry {
 	 */
 	protected $throttleProvider;
 
+
 	/**
 	 * The client's IP address associated with Sentry.
 	 *
@@ -149,81 +151,30 @@ class Sentry {
 	}
 
 
-	/**
-	 * Attempts to authenticate the given user
-	 * according to the passed credentials.
-	 *
-	 * @param  array  $credentials
-	 * @param  bool   $remember
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 * @throws \Cartalyst\Sentry\Throttling\UserBannedException
-	 * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
-	 * @throws \Cartalyst\Sentry\Users\LoginRequiredException
-	 * @throws \Cartalyst\Sentry\Users\PasswordRequiredException
-	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-	 */
-	public function authenticate(array $credentials, $remember = false)
-	{
-		// We'll default to the login name field, but fallback to a hard-coded
-		// 'login' key in the array that was passed.
-		$loginName = $this->userProvider->getEmptyUser()->getLoginName();
-		$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+    /**
+     * Attempts to authenticate the given user
+     * according to the passed credentials.
+     *
+     * @param  array  $credentials
+     * @param  bool   $remember
+     * @return \Cartalyst\Sentry\Users\UserInterface
+     * @throws \Cartalyst\Sentry\Throttling\UserBannedException
+     * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
+     * @throws \Cartalyst\Sentry\Users\LoginRequiredException
+     * @throws \Cartalyst\Sentry\Users\PasswordRequiredException
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+     */
+    public function authenticate(array $credentials, $remember = false)
+    {
+        $authManager =  \App::make('AuthManager');
+        $authProvider = $authManager->getCurrent();
 
-		if (empty($credentials[$loginCredentialKey]))
-		{
-			throw new LoginRequiredException("The [$loginCredentialKey] attribute is required.");
-		}
+        $user = $authProvider->authorize($credentials, $remember);
 
-		if (empty($credentials['password']))
-		{
-			throw new PasswordRequiredException('The password attribute is required.');
-		}
+        $this->login($user, $remember);
 
-		// If the user did the fallback 'login' key for the login code which
-		// did not match the actual login name, we'll adjust the array so the
-		// actual login name is provided.
-		if ($loginCredentialKey !== $loginName)
-		{
-			$credentials[$loginName] = $credentials[$loginCredentialKey];
-			unset($credentials[$loginCredentialKey]);
-		}
-
-		// If throttling is enabled, we'll firstly check the throttle.
-		// This will tell us if the user is banned before we even attempt
-		// to authenticate them
-		if ($throttlingEnabled = $this->throttleProvider->isEnabled())
-		{
-			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName], $this->ipAddress))
-			{
-				$throttle->check();
-			}
-		}
-
-		try
-		{
-			$user = $this->userProvider->findByCredentials($credentials);
-		}
-		catch (UserNotFoundException $e)
-		{
-			if ($throttlingEnabled and isset($throttle))
-			{
-				$throttle->addLoginAttempt();
-			}
-
-			throw $e;
-		}
-
-		if ($throttlingEnabled and isset($throttle))
-		{
-			$throttle->clearLoginAttempts();
-		}
-
-		$user->clearResetPassword();
-
-		$this->login($user, $remember);
-
-		return $this->user;
-	}
+        return $this->user;
+    }
 
 	/**
 	 * Alias for authenticating with the remember flag checked.

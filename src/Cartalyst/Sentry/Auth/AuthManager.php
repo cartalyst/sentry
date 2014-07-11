@@ -18,7 +18,7 @@ class AuthManager {
      */
     protected $instances = [];
 
-    protected $default = null;
+    protected $current = null;
 
 
     /**
@@ -26,20 +26,20 @@ class AuthManager {
      * @param string $name
      * @throws Exception
      */
-    public function setDefault($name){
+    public function setCurrent($name){
         if(!$this->has(strtolower($name))){
             throw new Exception("$name nie jest zarejestrowany w managerze");
         }
 
-        $this->default = $name;
+        $this->current = $name;
     }
 
     /**
      * zwraca defaultowego providera
      * @return null
      */
-    public function getDefault(){
-        return $this->default;
+    public function getCurrent(){
+        return $this->get($this->current);
     }
 
     /**
@@ -60,8 +60,8 @@ class AuthManager {
     public function set($name, $provider) {
         $this->providers[strtolower($name)] = $provider;
 
-        if ($this->default === null){
-            $this->setDefault($name);
+        if ($this->current === null){
+            $this->setCurrent($name);
         }
     }
 
@@ -72,6 +72,7 @@ class AuthManager {
      */
     public function get($name){
         $name = strtolower($name);
+
         if($this->has($name)){
             if (!isset($this->instances[$name])){
                 $fullclass = __NAMESPACE__ . '\\' . 'Providers\\'.$this->providers[strtolower($name)];
