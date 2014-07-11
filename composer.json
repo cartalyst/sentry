@@ -59,7 +59,8 @@
 			"src/Cartalyst/Sentry/Groups/Exceptions.php",
 			"src/Cartalyst/Sentry/Throttling/Exceptions.php",
 			"src/Cartalyst/Sentry/Users/Exceptions.php",
-			"src/migrations"
+			"src/migrations",
+            "src/Cartalyst/Sentry/Auth"
 		],
 		"psr-0": {
 			"Cartalyst\\Sentry": "src/"
