@@ -1,6 +1,5 @@
 <?php
-<?php
-
+namespace Cartalyst\Sentry\Auth;
 
 class AuthManager {
 

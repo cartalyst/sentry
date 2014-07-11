@@ -29,6 +29,7 @@ use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Support\ServiceProvider;
+use Cartalyst\Sentry\Auth\AuthManager;
 
 class SentryServiceProvider extends ServiceProvider {
 
@@ -40,7 +41,7 @@ class SentryServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('netinteractive/sentry', 'cartalyst/sentry');
-        $this->app['auth.providers.manager']->set('default', $this->app['sentry.auth.providers.default']);
+        $this->app['auth.providers.manager']->set('eloquent', $this->app['sentry.auth.providers.eloquent']);
 	}
 
 	/**
@@ -78,7 +79,7 @@ class SentryServiceProvider extends ServiceProvider {
          *
          * @return void
          */
-        $this->app['sentry.auth.providers.default'] = $this->app->share(function($app)
+        $this->app['sentry.auth.providers.eloquent'] = $this->app->share(function($app)
         {
             return 'EloquentProvider';
         });
