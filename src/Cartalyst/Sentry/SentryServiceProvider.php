@@ -30,8 +30,6 @@ use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Support\ServiceProvider;
 use Cartalyst\Sentry\Auth\AuthManager;
-use Route;
-
 
 class SentryServiceProvider extends ServiceProvider {
 
@@ -44,8 +42,6 @@ class SentryServiceProvider extends ServiceProvider {
     {
         $this->package('netinteractive/sentry', 'cartalyst/sentry');
         $this->app['sentry.auth.manager']->set('eloquent', $this->app['sentry.auth.providers.eloquent']);
-
-        Route::get('/test', 'TestController@test');
     }
 
     /**
