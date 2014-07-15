@@ -3,6 +3,11 @@
 
 abstract class SocialAbstract implements AuthProviderInferface {
     /**
+     * OAuth Provider
+     */
+    private $_provider;
+
+    /**
      * metoda do autoryzacji
      * @param array $credentials
      * @param bool $remember

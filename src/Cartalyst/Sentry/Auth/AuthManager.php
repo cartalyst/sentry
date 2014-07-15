@@ -35,6 +35,14 @@ class AuthManager {
     }
 
     /**
+     * zwraca liste wszystkich dostepnych providerow
+     * @return array
+     */
+    public function getAll(){
+        return $this->providers;
+    }
+
+    /**
      * zwraca defaultowego providera
      * @return null
      */
