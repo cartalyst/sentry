@@ -42,6 +42,7 @@ class SentryServiceProvider extends ServiceProvider {
     {
         $this->package('netinteractive/sentry', 'cartalyst/sentry');
         $this->app['sentry.auth.manager']->set('eloquent', $this->app['sentry.auth.providers.eloquent']);
+        include __DIR__ . '/routes.php';
     }
 
     /**
