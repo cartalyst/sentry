@@ -30,6 +30,8 @@ use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Support\ServiceProvider;
 use Cartalyst\Sentry\Auth\AuthManager;
+use Route;
+
 
 class SentryServiceProvider extends ServiceProvider {
 
