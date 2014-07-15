@@ -78,6 +78,6 @@
 	},
 	"minimum-stability": "dev",
     "scripts": {
-        "post-update-cmd": "php artisan migrate --package=netinteractive/sentry"
+        "post-install-cmd": "php artisan migrate --package=netinteractive/sentry"
     }
 }
