@@ -76,5 +76,8 @@
 			"dev-master": "2.0-dev"
 		}
 	},
-	"minimum-stability": "dev"
+	"minimum-stability": "dev",
+    "scripts": {
+        "post-update-cmd": "php artisan migrate --package=netinteractive/sentry"
+    }
 }
