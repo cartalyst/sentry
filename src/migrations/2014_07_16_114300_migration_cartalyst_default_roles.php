@@ -25,7 +25,7 @@ class MigrationCartalystDefaultRoles extends Migration {
 
             DB::table('roles')->insert(
                 array(
-                    'name' => 'quest'
+                    'name' => 'guest'
                 )
             );
         }
@@ -42,7 +42,7 @@ class MigrationCartalystDefaultRoles extends Migration {
         if (Schema::hasTable('roles')){
             DB::table('roles')->where('name', 'admin')->delete();
             DB::table('roles')->where('name', 'user')->delete();
-            DB::table('roles')->where('name', 'quest')->delete();
+            DB::table('roles')->where('name', 'guest')->delete();
         }
 
     }
