@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Database\Migrations\Migration;
 
-class RenameGroupsTable extends Migration {
+class MigrationCartalystRenameGroups extends Migration {
 
     /**
      * Run the migrations.
