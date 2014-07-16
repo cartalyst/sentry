@@ -10,23 +10,26 @@ class MigrationCartalystDefaultRoles extends Migration {
      */
     public function up()
     {
-        DB::table('users_roles')->insert(
-            array(
-                'name' => 'admin'
-            )
-        );
+        if (Schema::hasTable('users_roles')){
+            DB::table('users_roles')->insert(
+                array(
+                    'name' => 'admin'
+                )
+            );
 
-        DB::table('users_roles')->insert(
-            array(
-                'name' => 'user'
-            )
-        );
+            DB::table('users_roles')->insert(
+                array(
+                    'name' => 'user'
+                )
+            );
 
-        DB::table('users_roles')->insert(
-            array(
-                'name' => 'quest'
-            )
-        );
+            DB::table('users_roles')->insert(
+                array(
+                    'name' => 'quest'
+                )
+            );
+        }
+
     }
 
     /**
@@ -36,9 +39,12 @@ class MigrationCartalystDefaultRoles extends Migration {
      */
     public function down()
     {
-        DB::table('users_roles')->where('name', 'admin')->delete();
-        DB::table('users_roles')->where('name', 'user')->delete();
-        DB::table('users_roles')->where('name', 'quest')->delete();
+        if (Schema::hasTable('users_roles')){
+            DB::table('users_roles')->where('name', 'admin')->delete();
+            DB::table('users_roles')->where('name', 'user')->delete();
+            DB::table('users_roles')->where('name', 'quest')->delete();
+        }
+
     }
 
 }
