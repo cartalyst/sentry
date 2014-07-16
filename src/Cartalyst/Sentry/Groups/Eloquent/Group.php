@@ -30,7 +30,7 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @var string
 	 */
-	protected $table = 'groups';
+	protected $table = 'roles';
 
 	/**
 	 * The attributes that aren't mass assignable.
@@ -62,7 +62,7 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @var string
 	 */
-	protected static $userGroupsPivot = 'users_groups';
+	protected static $userGroupsPivot = 'users_roles';
 
 	/**
 	 * Returns the group's ID.

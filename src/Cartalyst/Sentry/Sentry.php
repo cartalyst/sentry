@@ -466,6 +466,41 @@ class Sentry {
 		return $this->ipAddress;
 	}
 
+    /**
+     * wyszukuje po id roli
+     * @param $id
+     * @return Groups\GroupInterface
+     */
+    public function findRoleById($id){
+        return $this->findGroupById($id);
+    }
+
+    /**
+     * wyszukuje roli po nazwie
+     * @param string $name
+     * @return Groups\GroupInterface
+     */
+    public function findRoleByName($name){
+        return $this->findGroupByName($name);
+    }
+
+    /**
+     * zwraca wszystkie role
+     * @return array
+     */
+    public function findAllRoles(){
+        return $this->findAllGroups();
+    }
+
+    /**
+     * tworzy role
+     * @param array $attributes
+     * @return Groups\GroupInterface
+     */
+    public function createRole(array $attributes){
+        return $this->createGroup($attributes);
+    }
+
 	/**
 	 * Find the group by ID.
 	 *
