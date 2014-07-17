@@ -11,16 +11,39 @@ class MigrationCartalystSentryAlterRoles extends Migration {
      */
     public function up()
     {
-        if (!Schema::hasTable('roles_resources')){
-            Schema::create('roles_resources', function($table)
+        if (!Schema::hasTable('roles')){
+            Schema::table('roles', function($table)
             {
-                $table->increments('id');
-                $table->integer('role_id')->unsigned();
-                $table->integer('resource_id')->unsigned();
-
-                $table->foreign('role_id')->references('id')->on('roles');
-                $table->foreign('resource_id')->references('id')->on('resources');
+                $table->dropColumn('permissions');
             });
+
+            Schema::table('roles', function($table)
+            {
+                $table->string('code');
+            });
+
+            DB::table('roles')->delete();
+
+            DB::table('roles')->insert(
+                array(
+                    'code' => 'admin',
+                    'name' => 'Administrator'
+                )
+            );
+
+            DB::table('roles')->insert(
+                array(
+                    'code' => 'user',
+                    'name' => 'Zalogowany użytkownik'
+                )
+            );
+
+            DB::table('roles')->insert(
+                array(
+                    'code' => 'guest',
+                    'name' => 'Niezalogowany użytkownik'
+                )
+            );
         }
     }
 
@@ -31,8 +54,16 @@ class MigrationCartalystSentryAlterRoles extends Migration {
      */
     public function down()
     {
-        if (Schema::hasTable('roles_resources')){
-            Schema::drop('roles_resources');
+        if (Schema::hasTable('roles')){
+            Schema::table('roles', function($table)
+            {
+                $table->text('permissions')->nullable();
+            });
+
+            Schema::table('roles', function($table)
+            {
+                $table->dropColumn('code');
+            });
         }
 
     }
