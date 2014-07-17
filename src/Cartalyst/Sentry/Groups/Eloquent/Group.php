@@ -84,6 +84,10 @@ class Group extends Model implements GroupInterface {
 		return $this->name;
 	}
 
+    public function getCode(){
+        return $this->code;
+    }
+
 	/**
 	 * Returns permissions for the group.
 	 *

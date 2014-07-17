@@ -38,6 +38,13 @@ interface ProviderInterface {
 	 */
 	public function findByName($name);
 
+    /**
+     * Find group by code
+     * @param string $code
+     * @return mixed
+     */
+    public function findByCode($code);
+
 	/**
 	 * Returns all groups.
 	 *
