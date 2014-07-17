@@ -52,6 +52,7 @@ interface ProviderInterface {
      */
     public function findAll();
 
+
     /**
      * Creates a group.
      *

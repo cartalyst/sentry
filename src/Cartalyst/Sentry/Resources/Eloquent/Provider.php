@@ -13,6 +13,12 @@ class Provider implements ProviderInterface {
     protected $model = 'Cartalyst\Sentry\Groups\Eloquent\Resource';
 
     /**
+     * resources tree
+     * @var null
+     */
+    protected $resourcesTree = null;
+
+    /**
      * Create a new Eloquent Group provider.
      *
      * @param  string  $model
@@ -107,6 +113,38 @@ class Provider implements ProviderInterface {
         $model = $this->createModel();
 
         return $model->newQuery()->get()->all();
+    }
+
+
+    protected function buildTree(array $elements, $parentId = 0) {
+        $branch = array();
+
+        foreach ($elements as $element) {
+            if ($element->parent_id == $parentId) {
+                $children = $this->buildTree($elements, $element->id);
+                if ($children) {
+                    $element->children[] = $children;
+                }
+                $branch[] = $element;
+            }
+        }
+
+        return $branch;
+    }
+
+    /**
+     * Returns tree of resources
+     * @return null
+     */
+    public function getTree(){
+        if (empty($this->resourcesTree)){
+            $model = $this->createModel();
+            $resources = $model->newQuery()->orderBy('parent_id', 'DESC')->get();
+
+            $this->buildTree($resources);
+        }
+
+        return $this->resourcesTree;
     }
 
     /**
