@@ -20,23 +20,23 @@
 
 interface ProviderInterface {
 
-	/**
-	 * Find the group by ID.
-	 *
-	 * @param  int  $id
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
-	 */
-	public function findById($id);
+    /**
+     * Find the group by ID.
+     *
+     * @param  int  $id
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+     */
+    public function findById($id);
 
-	/**
-	 * Find the group by name.
-	 *
-	 * @param  string  $name
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
-	 * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
-	 */
-	public function findByName($name);
+    /**
+     * Find the group by name.
+     *
+     * @param  string  $name
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+     */
+    public function findByName($name);
 
     /**
      * Find group by code
@@ -45,19 +45,19 @@ interface ProviderInterface {
      */
     public function findByCode($code);
 
-	/**
-	 * Returns all groups.
-	 *
-	 * @return array  $groups
-	 */
-	public function findAll();
+    /**
+     * Returns all groups.
+     *
+     * @return array  $groups
+     */
+    public function findAll();
 
-	/**
-	 * Creates a group.
-	 *
-	 * @param  array  $attributes
-	 * @return \Cartalyst\Sentry\Groups\GroupInterface
-	 */
-	public function create(array $attributes);
+    /**
+     * Creates a group.
+     *
+     * @param  array  $attributes
+     * @return \Cartalyst\Sentry\Groups\GroupInterface
+     */
+    public function create(array $attributes);
 
 }

@@ -525,6 +525,18 @@ class Sentry {
 		return $this->groupProvider->findByName($name);
 	}
 
+    /**
+     * Find the group by code.
+     *
+     * @param  string  $code
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+     */
+    public function findGroupByCode($code)
+    {
+        return $this->groupProvider->findByCode($code);
+    }
+
 	/**
 	 * Returns all groups.
 	 *
