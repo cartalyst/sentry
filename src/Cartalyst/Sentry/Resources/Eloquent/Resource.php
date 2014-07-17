@@ -20,6 +20,8 @@ class Resource extends Model implements ResourceInterface {
      */
     protected $guarded = array();
 
+    public $childrens = array();
+
 
     /**
      * Returns the group's ID.

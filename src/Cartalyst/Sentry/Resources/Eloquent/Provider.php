@@ -116,14 +116,20 @@ class Provider implements ProviderInterface {
     }
 
 
-    protected function buildTree(array $elements, $parentId = 0) {
+    /**
+     * builds resources tree
+     * @param $elements
+     * @param int $parentId
+     * @return array
+     */
+    protected function buildTree($elements, $parentId = 0) {
         $branch = array();
 
         foreach ($elements as $element) {
             if ($element->parent_id == $parentId) {
                 $children = $this->buildTree($elements, $element->id);
                 if ($children) {
-                    $element->children[] = $children;
+                    $element->childrens[] = $children;
                 }
                 $branch[] = $element;
             }
@@ -141,7 +147,7 @@ class Provider implements ProviderInterface {
             $model = $this->createModel();
             $resources = $model->newQuery()->orderBy('parent_id', 'DESC')->get();
 
-            $this->buildTree($resources);
+            $this->resourcesTree = $this->buildTree($resources);
         }
 
         return $this->resourcesTree;
