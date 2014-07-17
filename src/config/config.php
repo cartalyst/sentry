@@ -218,4 +218,22 @@ return array(
 
 	),
 
+    'resources' => array(
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Model
+        |--------------------------------------------------------------------------
+        |
+        | When using the "eloquent" driver, we need to know which
+        | Eloquent models should be used throughout Sentry.
+        |
+        */
+
+        'model' => 'Cartalyst\Sentry\Resources\Eloquent\Resource',
+
+    ),
+
 );

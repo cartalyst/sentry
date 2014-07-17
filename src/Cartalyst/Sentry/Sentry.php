@@ -32,6 +32,8 @@ use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
+use Cartalyst\Sentry\Resources\Eloquent\Provider as ResourceProvider;
+use Cartalyst\Sentry\Resources\ProviderInterface as ResourceProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
@@ -89,6 +91,10 @@ class Sentry {
 	 */
 	protected $throttleProvider;
 
+    /**
+     * @var \Cartalyst\Sentry\Resources\ProviderInterface
+     */
+    protected $resourceProvider;
 
 	/**
 	 * The client's IP address associated with Sentry.
@@ -112,6 +118,7 @@ class Sentry {
 		UserProviderInterface $userProvider = null,
 		GroupProviderInterface $groupProvider = null,
 		ThrottleProviderInterface $throttleProvider = null,
+        ResourceProviderInterface $resourceProvider = null,
 		SessionInterface $session = null,
 		CookieInterface $cookie = null,
 		$ipAddress = null
@@ -120,6 +127,7 @@ class Sentry {
 		$this->userProvider     = $userProvider ?: new UserProvider(new NativeHasher);
 		$this->groupProvider    = $groupProvider ?: new GroupProvider;
 		$this->throttleProvider = $throttleProvider ?: new ThrottleProvider($this->userProvider);
+        $this->resourceProvider = $resourceProvider ?: new ResourceProvider();
 
 		$this->session          = $session ?: new NativeSession;
 		$this->cookie           = $cookie ?: new NativeCookie;
@@ -444,6 +452,27 @@ class Sentry {
 	{
 		return $this->throttleProvider;
 	}
+
+    /**
+     * Sets the throttle provider for Sentry.
+     *
+     * @param  \Cartalyst\Sentry\Throttling\ProviderInterface
+     * @return void
+     */
+    public function setResourceProvider(ResourceProviderInterfaceo $resourceProvider)
+    {
+        $this->resourceProvider = $resourceProvider;
+    }
+
+
+    /**
+     * Gets the resource provider for Sentry.
+     *
+     * @return \Cartalyst\Sentry\Resources\ProviderInterface
+     */
+    public function getResourceProvider(){
+        return $this->resourceProvider;
+    }
 
 	/**
 	 * Sets the IP address Sentry is bound to.

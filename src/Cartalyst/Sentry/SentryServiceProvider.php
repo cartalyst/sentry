@@ -24,10 +24,10 @@ use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Hashing\Sha256Hasher;
 use Cartalyst\Sentry\Hashing\WhirlpoolHasher;
-use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Cartalyst\Sentry\Resources\Eloquent\Provider as ResourceProvider;
 use Illuminate\Support\ServiceProvider;
 use Cartalyst\Sentry\Auth\AuthManager;
 
@@ -56,6 +56,7 @@ class SentryServiceProvider extends ServiceProvider {
         $this->registerUserProvider();
         $this->registerGroupProvider();
         $this->registerThrottleProvider();
+        $this->registerResourceProvider();
         $this->registerSession();
         $this->registerCookie();
         $this->registerSentry();
@@ -261,6 +262,21 @@ class SentryServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Register a resource provider
+     * @return void
+     */
+    protected function registerResourceProvider(){
+        $this->app['sentry.resource'] = $this->app->share(function($app)
+        {
+            $model = $app['config']['cartalyst/sentry::resources.model'];
+
+            $resourceProvider = new ResourceProvider($model);
+
+            return $resourceProvider;
+        });
+    }
+
+    /**
      * Register the session driver used by Sentry.
      *
      * @return void
@@ -316,6 +332,7 @@ class SentryServiceProvider extends ServiceProvider {
                 $app['sentry.user'],
                 $app['sentry.group'],
                 $app['sentry.throttle'],
+                $app['sentry.resource'],
                 $app['sentry.session'],
                 $app['sentry.cookie'],
                 $app['request']->getClientIp()
