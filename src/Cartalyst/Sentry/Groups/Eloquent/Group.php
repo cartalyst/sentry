@@ -55,7 +55,7 @@ class Group extends Model implements GroupInterface {
 	 *
 	 * @var string
 	 */
-	protected static $userModel = 'Cartalyst\Sentry\Users\Eloquent\User';
+	protected static $userModel = 'User';
 
 	/**
 	 * The user groups pivot table name.
