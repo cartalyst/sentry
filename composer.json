@@ -44,7 +44,8 @@
 	"suggest": {
 		"illuminate/database": "Default sentry user, group and throttling implementations.",
 		"ircmaxell/password-compat": "Default hashing uses PHP 5.5 password_* functions, with forward-compatible support.",
-		"happydemon/txt": "Required Text helpers when using the Kohana implementation"
+		"happydemon/txt": "Required Text helpers when using the Kohana implementation",
+		"watson/validating": "Helpful package when using Laravel implementation"
 	},
 	"autoload": {
 		"classmap": [

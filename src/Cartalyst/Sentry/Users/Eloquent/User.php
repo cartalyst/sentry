@@ -312,7 +312,9 @@ class User extends Model implements UserInterface {
 	 */
 	public function save(array $options = array())
 	{
-		$this->validate();
+		if (!method_exists($this, 'bootValidatingTrait')) {
+			$this->validate();
+		}
 
 		return parent::save($options);
 	}
