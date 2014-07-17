@@ -11,7 +11,7 @@ class MigrationCartalystSentryAlterRoles extends Migration {
      */
     public function up()
     {
-        if (!Schema::hasTable('roles')){
+        if (Schema::hasTable('roles')){
             Schema::table('roles', function($table)
             {
                 $table->dropColumn('permissions');
