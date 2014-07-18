@@ -121,7 +121,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var string
 	 */
-	protected static $userGroupsPivot = 'users_groups';
+	protected static $userGroupsPivot = 'users_roles';
 
 	/**
 	 * Returns the user's ID.
