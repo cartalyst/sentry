@@ -149,7 +149,7 @@ return array(
 	|
 	*/
 
-	'user_groups_pivot_table' => 'users_groups',
+	'user_groups_pivot_table' => 'users_roles',
 
 	/*
 	|--------------------------------------------------------------------------
