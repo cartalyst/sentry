@@ -741,15 +741,15 @@ class User extends Model implements UserInterface {
 		$this->save();
 	}
 
-	/**
-	 * Returns the relationship between users and groups.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function groups()
-	{
-		return $this->belongsToMany(static::$groupModel, static::$userGroupsPivot);
-	}
+    /**
+     * Returns the relationship between users and groups.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(static::$groupModel, static::$userGroupsPivot, 'user_id', 'role_id');
+    }
 
 	/**
 	 * Set the Eloquent model to use for group relationships.
