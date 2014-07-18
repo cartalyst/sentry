@@ -14,24 +14,26 @@ class AclFilter {
      */
     public function filter($route, $request)
     {
-        return true;
+        $role = $this->getRole();
+
+        return $role->hasAccess($route->getActionName());
     }
 
     /**
      * @return array
      */
-    public function getPermissions(){
+    public function getRole(){
         $user = \App::make('sentry')->getUser();
 
         if ($user){
-            return $user->getPermissions();
+            return $user;
 
         }
         else{
             $groupProvider = \App::make('sentry')->getGroupProvider();
-            $defaultGroup = $groupProvider->findByName('guest');
+            $defaultRole= $groupProvider->findByCode('guest');
 
-            return $defaultGroup->getPermissions(); exit;
+            return $defaultRole;
         }
     }
 
