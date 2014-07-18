@@ -129,7 +129,7 @@ class Provider implements ProviderInterface {
             if ($element->parent_id == $parentId) {
                 $children = $this->buildTree($elements, $element->id);
                 if ($children) {
-                    $element->childrens[] = $children;
+                    $element->childrens = $children;
                 }
                 $branch[] = $element;
             }

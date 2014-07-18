@@ -58,4 +58,29 @@ class Resource extends Model implements ResourceInterface {
         return $this->parent_id;
     }
 
+    /**
+     * Retuurns informations if resourse has subresources
+     * @return bool
+     */
+    public function hasChilds(){
+        if (empty($this->childrens)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * returns array of subresources values
+     * @return array
+     */
+    public function getChildsValues(){
+        $subresourcesValues = array();
+
+        foreach ($this->childrens AS $subresource){
+            $subresourcesValues[] = $subresource->getValue();
+        }
+
+        return $subresourcesValues;
+    }
+
 }

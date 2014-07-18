@@ -312,17 +312,19 @@ class Group extends Model implements GroupInterface {
 		return $_permissions;
 	}
 
-	/**
-	 * Mutator for taking permissions.
-	 *
-	 * @param  array  $permissions
-	 * @return void
-	 * @throws \InvalidArgumentException
-	 */
-	public function setPermissionsAttribute(array $permissions)
-	{
-		// Merge permissions
-		$permissions = array_merge($this->getPermissions(), $permissions);
+    /**
+     * Mutator for taking permissions.
+     *
+     * @param  array  $permissions
+     * @return void
+     * @throws \InvalidArgumentException
+     */
+    public function setPermissionsAttribute(array $permissions, $overwrite=false)
+    {
+        // Merge permissions
+        if ($overwrite == false){
+            $permissions = array_merge($this->getPermissions(), $permissions);
+        }
 
 		// Loop through and adjust permissions as needed
 		foreach ($permissions as $permission => &$value)
