@@ -34,14 +34,14 @@ class MigrationCartalystSentryAlterRoles extends Migration {
             DB::table('roles')->insert(
                 array(
                     'code' => 'user',
-                    'name' => 'Zalogowany użytkownik'
+                    'name' => 'Użytkownik'
                 )
             );
 
             DB::table('roles')->insert(
                 array(
                     'code' => 'guest',
-                    'name' => 'Niezalogowany użytkownik'
+                    'name' => 'Gość'
                 )
             );
         }
