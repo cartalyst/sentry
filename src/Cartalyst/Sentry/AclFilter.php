@@ -12,29 +12,36 @@ class AclFilter {
      * @param $request
      * @return bool
      */
-    public function filter($route, $request)
+    public function filter($route)
     {
-        $role = $this->getRole();
+        $roles = $this->getRoles();
 
-        return $role->hasAccess($route->getActionName());
+        foreach ($roles AS $role){
+            if ($role->hasAccess($route->getActionName())){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @return array
      */
-    public function getRole(){
+    public function getRoles(){
         $user = \App::make('sentry')->getUser();
 
         if ($user){
-            return $user;
-
+            $userRoles = $user->getGroups();
+            if ($userRoles){
+                return $userRoles;
+            }
         }
-        else{
-            $groupProvider = \App::make('sentry')->getGroupProvider();
-            $defaultRole= $groupProvider->findByCode('guest');
 
-            return $defaultRole;
-        }
+        $groupProvider = \App::make('sentry')->getGroupProvider();
+        $defaultRole= $groupProvider->findByCode('guest');
+
+        return array($defaultRole);
     }
 
 }
