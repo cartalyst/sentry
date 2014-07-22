@@ -16,8 +16,14 @@ class AclFilter {
     {
         $roles = $this->getRoles();
 
+        /**
+         * sprawdzamy czy mamy uprawnienia (po nazwie akcji lub aliasie)
+         */
         foreach ($roles AS $role){
-            if ($role->hasAccess($route->getActionName())){
+            if ( $role->hasAccess($route->getActionName()) ){
+                return true;
+            }
+            elseif ($role->hasAccess($route->getName())){
                 return true;
             }
         }
