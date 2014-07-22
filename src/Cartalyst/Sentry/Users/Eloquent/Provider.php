@@ -294,6 +294,7 @@ class Provider implements ProviderInterface {
 	{
 		$user = $this->createModel();
 		$user->fill($credentials);
+
 		$user->save();
 
 		return $user;
