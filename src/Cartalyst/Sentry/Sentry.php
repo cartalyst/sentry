@@ -18,6 +18,7 @@
  * @link       http://cartalyst.com
  */
 
+use Cartalyst\Sentry\Auth\AuthManager;
 use Cartalyst\Sentry\Cookies\CookieInterface;
 use Cartalyst\Sentry\Cookies\NativeCookie;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
@@ -31,6 +32,8 @@ use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
+use Cartalyst\Sentry\Resources\Eloquent\Provider as ResourceProvider;
+use Cartalyst\Sentry\Resources\ProviderInterface as ResourceProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
@@ -88,6 +91,11 @@ class Sentry {
 	 */
 	protected $throttleProvider;
 
+    /**
+     * @var \Cartalyst\Sentry\Resources\ProviderInterface
+     */
+    protected $resourceProvider;
+
 	/**
 	 * The client's IP address associated with Sentry.
 	 *
@@ -110,6 +118,7 @@ class Sentry {
 		UserProviderInterface $userProvider = null,
 		GroupProviderInterface $groupProvider = null,
 		ThrottleProviderInterface $throttleProvider = null,
+        ResourceProviderInterface $resourceProvider = null,
 		SessionInterface $session = null,
 		CookieInterface $cookie = null,
 		$ipAddress = null
@@ -118,6 +127,7 @@ class Sentry {
 		$this->userProvider     = $userProvider ?: new UserProvider(new NativeHasher);
 		$this->groupProvider    = $groupProvider ?: new GroupProvider;
 		$this->throttleProvider = $throttleProvider ?: new ThrottleProvider($this->userProvider);
+        $this->resourceProvider = $resourceProvider ?: new ResourceProvider();
 
 		$this->session          = $session ?: new NativeSession;
 		$this->cookie           = $cookie ?: new NativeCookie;
@@ -145,85 +155,34 @@ class Sentry {
 			$user->attemptActivation($user->getActivationCode());
 		}
 
-		return $this->user = $user;
+		return $user;
 	}
 
 
-	/**
-	 * Attempts to authenticate the given user
-	 * according to the passed credentials.
-	 *
-	 * @param  array  $credentials
-	 * @param  bool   $remember
-	 * @return \Cartalyst\Sentry\Users\UserInterface
-	 * @throws \Cartalyst\Sentry\Throttling\UserBannedException
-	 * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
-	 * @throws \Cartalyst\Sentry\Users\LoginRequiredException
-	 * @throws \Cartalyst\Sentry\Users\PasswordRequiredException
-	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
-	 */
-	public function authenticate(array $credentials, $remember = false)
-	{
-		// We'll default to the login name field, but fallback to a hard-coded
-		// 'login' key in the array that was passed.
-		$loginName = $this->userProvider->getEmptyUser()->getLoginName();
-		$loginCredentialKey = (isset($credentials[$loginName])) ? $loginName : 'login';
+    /**
+     * Attempts to authenticate the given user
+     * according to the passed credentials.
+     *
+     * @param  array  $credentials
+     * @param  bool   $remember
+     * @return \Cartalyst\Sentry\Users\UserInterface
+     * @throws \Cartalyst\Sentry\Throttling\UserBannedException
+     * @throws \Cartalyst\Sentry\Throttling\UserSuspendedException
+     * @throws \Cartalyst\Sentry\Users\LoginRequiredException
+     * @throws \Cartalyst\Sentry\Users\PasswordRequiredException
+     * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+     */
+    public function authenticate(array $credentials, $remember = false)
+    {
+        $authManager =  \App::make('AuthManager');
+        $authProvider = $authManager->getCurrent();
 
-		if (empty($credentials[$loginCredentialKey]))
-		{
-			throw new LoginRequiredException("The [$loginCredentialKey] attribute is required.");
-		}
+        $user = $authProvider->authorize($credentials, $remember);
 
-		if (empty($credentials['password']))
-		{
-			throw new PasswordRequiredException('The password attribute is required.');
-		}
+        $this->login($user, $remember);
 
-		// If the user did the fallback 'login' key for the login code which
-		// did not match the actual login name, we'll adjust the array so the
-		// actual login name is provided.
-		if ($loginCredentialKey !== $loginName)
-		{
-			$credentials[$loginName] = $credentials[$loginCredentialKey];
-			unset($credentials[$loginCredentialKey]);
-		}
-
-		// If throttling is enabled, we'll firstly check the throttle.
-		// This will tell us if the user is banned before we even attempt
-		// to authenticate them
-		if ($throttlingEnabled = $this->throttleProvider->isEnabled())
-		{
-			if ($throttle = $this->throttleProvider->findByUserLogin($credentials[$loginName], $this->ipAddress))
-			{
-				$throttle->check();
-			}
-		}
-
-		try
-		{
-			$user = $this->userProvider->findByCredentials($credentials);
-		}
-		catch (UserNotFoundException $e)
-		{
-			if ($throttlingEnabled and isset($throttle))
-			{
-				$throttle->addLoginAttempt();
-			}
-
-			throw $e;
-		}
-
-		if ($throttlingEnabled and isset($throttle))
-		{
-			$throttle->clearLoginAttempts();
-		}
-
-		$user->clearResetPassword();
-
-		$this->login($user, $remember);
-
-		return $this->user;
-	}
+        return $this->user;
+    }
 
 	/**
 	 * Alias for authenticating with the remember flag checked.
@@ -494,6 +453,27 @@ class Sentry {
 		return $this->throttleProvider;
 	}
 
+    /**
+     * Sets the throttle provider for Sentry.
+     *
+     * @param  \Cartalyst\Sentry\Throttling\ProviderInterface
+     * @return void
+     */
+    public function setResourceProvider(ResourceProviderInterfaceo $resourceProvider)
+    {
+        $this->resourceProvider = $resourceProvider;
+    }
+
+
+    /**
+     * Gets the resource provider for Sentry.
+     *
+     * @return \Cartalyst\Sentry\Resources\ProviderInterface
+     */
+    public function getResourceProvider(){
+        return $this->resourceProvider;
+    }
+
 	/**
 	 * Sets the IP address Sentry is bound to.
 	 *
@@ -514,6 +494,41 @@ class Sentry {
 	{
 		return $this->ipAddress;
 	}
+
+    /**
+     * wyszukuje po id roli
+     * @param $id
+     * @return Groups\GroupInterface
+     */
+    public function findRoleById($id){
+        return $this->findGroupById($id);
+    }
+
+    /**
+     * wyszukuje roli po nazwie
+     * @param string $name
+     * @return Groups\GroupInterface
+     */
+    public function findRoleByName($name){
+        return $this->findGroupByName($name);
+    }
+
+    /**
+     * zwraca wszystkie role
+     * @return array
+     */
+    public function findAllRoles(){
+        return $this->findAllGroups();
+    }
+
+    /**
+     * tworzy role
+     * @param array $attributes
+     * @return Groups\GroupInterface
+     */
+    public function createRole(array $attributes){
+        return $this->createGroup($attributes);
+    }
 
 	/**
 	 * Find the group by ID.
@@ -538,6 +553,18 @@ class Sentry {
 	{
 		return $this->groupProvider->findByName($name);
 	}
+
+    /**
+     * Find the group by code.
+     *
+     * @param  string  $code
+     * @return \Cartalyst\Sentry\Groups\GroupInterface  $group
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+     */
+    public function findGroupByCode($code)
+    {
+        return $this->groupProvider->findByCode($code);
+    }
 
 	/**
 	 * Returns all groups.

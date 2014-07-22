@@ -120,7 +120,7 @@ return array(
 		|
 		*/
 
-		'model' => 'Cartalyst\Sentry\Users\Eloquent\User',
+		'model' => 'User',
 
 		/*
 		|--------------------------------------------------------------------------
@@ -149,7 +149,7 @@ return array(
 	|
 	*/
 
-	'user_groups_pivot_table' => 'users_groups',
+	'user_groups_pivot_table' => 'users_roles',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -217,5 +217,23 @@ return array(
 		'suspension_time' => 15,
 
 	),
+
+    'resources' => array(
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Model
+        |--------------------------------------------------------------------------
+        |
+        | When using the "eloquent" driver, we need to know which
+        | Eloquent models should be used throughout Sentry.
+        |
+        */
+
+        'model' => 'Cartalyst\Sentry\Resources\Eloquent\Resource',
+
+    ),
 
 );

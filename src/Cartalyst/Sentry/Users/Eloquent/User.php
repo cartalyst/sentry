@@ -121,7 +121,7 @@ class User extends Model implements UserInterface {
 	 *
 	 * @var string
 	 */
-	protected static $userGroupsPivot = 'users_groups';
+	protected static $userGroupsPivot = 'users_roles';
 
 	/**
 	 * Returns the user's ID.
@@ -312,8 +312,6 @@ class User extends Model implements UserInterface {
 	 */
 	public function save(array $options = array())
 	{
-		$this->validate();
-
 		return parent::save($options);
 	}
 
@@ -741,15 +739,15 @@ class User extends Model implements UserInterface {
 		$this->save();
 	}
 
-	/**
-	 * Returns the relationship between users and groups.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function groups()
-	{
-		return $this->belongsToMany(static::$groupModel, static::$userGroupsPivot);
-	}
+    /**
+     * Returns the relationship between users and groups.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(static::$groupModel, static::$userGroupsPivot, 'user_id', 'role_id');
+    }
 
 	/**
 	 * Set the Eloquent model to use for group relationships.

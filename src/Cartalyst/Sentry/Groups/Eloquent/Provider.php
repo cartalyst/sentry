@@ -83,6 +83,23 @@ class Provider implements ProviderInterface {
 		return $group;
 	}
 
+    /**
+     * Find the group by code
+     * @param string $code
+     * @return mixed
+     * @throws \Cartalyst\Sentry\Groups\GroupNotFoundException
+     */
+    public function findByCode($code){
+        $model = $this->createModel();
+
+        if ( ! $group = $model->newQuery()->where('code', '=', $code)->first())
+        {
+            throw new GroupNotFoundException("A group could not be found with the code [$code].");
+        }
+
+        return $group;
+    }
+
 	/**
 	 * Returns all groups.
 	 *

@@ -1,5 +1,6 @@
 {
-	"name": "cartalyst/sentry",
+	"name": "netinteractive/sentry",
+    "version": "2.3.10",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
 	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
@@ -27,11 +28,18 @@
 			"name": "Bruno Gaspar",
 			"email": "bruno.gaspar@cartalyst.com",
 			"role": "Developer"
-		}
+		},
+        {
+            "name": "Piotr Pryga",
+            "email": "halfik@gmail.com",
+            "role": "Developer"
+        }
 	],
 	"require": {
-		"php": ">=5.3.3"
-	},
+		"php": ">=5.3.3",
+        "league/oauth1-client": "~1.0",
+        "league/oauth2-client": "~0.3"
+    },
 	"require-dev": {
 		"mockery/mockery": "0.7.2",
 
