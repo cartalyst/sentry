@@ -140,7 +140,7 @@ In this specific case, we allowed the user to create a new user by changing the
 `user.create : 1` permission.
 
 Notice that we are denying the `user.delete` permission of this user, in this
-example, you don't need to to this, but let's say that in your group you are
+example, you don't need to do this, but let's say that in your group you are
 allowing your users to delete other users, but for this specific user you don't
 want him to be able to do that? To achieve this you `deny` this user permission
 directly on the user, so no matter what your group permission looks like, this
