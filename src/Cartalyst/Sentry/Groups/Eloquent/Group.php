@@ -315,10 +315,13 @@ class Group extends Model implements GroupInterface {
 	 * @return void
 	 * @throws \InvalidArgumentException
 	 */
-	public function setPermissionsAttribute(array $permissions)
+	public function setPermissionsAttribute(array $permissions, $merge = true)
 	{
-		// Merge permissions
-		$permissions = array_merge($this->getPermissions(), $permissions);
+		if ($merge)
+		{
+			// Merge permissions
+			$permissions = array_merge($this->getPermissions(), $permissions);	
+		}
 
 		// Loop through and adjust permissions as needed
 		foreach ($permissions as $permission => &$value)
