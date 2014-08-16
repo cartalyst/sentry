@@ -882,7 +882,7 @@ class User extends \ORM implements UserInterface {
 			->from($this->_table_name)
 			->where($field, '=', $value)
 			->where($this->_primary_key, '!=', $this->pk())
-			->execute()
+			->execute($this->_db)
 			->get('total_count');
 
 		return ($total == 0);
