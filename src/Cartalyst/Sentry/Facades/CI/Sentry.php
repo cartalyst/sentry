@@ -65,7 +65,8 @@ class Sentry {
 			$ci->load->database();
 
 			// Let's connect and get the PDO instance
-			$pdo = $ci->db->db_pconnect();
+			if ($ci->db->pconnect) { $pdo = $ci->db->db_pconnect(); }
+                        else { $pdo = $ci->db->db_connect(); }
 
 			// Validate PDO
 			if ( ! $pdo instanceof PDO)
