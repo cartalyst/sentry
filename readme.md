@@ -1,5 +1,7 @@
 # Sentry
 
+== This version is a fork of the 2.1.4 version of the original Sentry repository. ==
+
 Sentry is a PHP 5.3+ fully-featured authentication & authorization system. It also provides additional features such as user groups and additional security features.
 
 Sentry is a framework agnostic set of interfaces with default implementations, though you can substitute any implementations you see fit.

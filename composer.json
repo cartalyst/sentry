@@ -1,5 +1,5 @@
 {
-	"name": "cartalyst/sentry",
+	"name": "claymm/sentry",
 	"description": "PHP 5.3+ Fully-featured Authentication & Authorization System",
 	"keywords": ["auth", "security", "laravel", "codeigniter", "fuelphp", "kohana"],
 	"license": "BSD-3-Clause",
