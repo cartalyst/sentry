@@ -20,6 +20,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
@@ -115,6 +116,13 @@ class User extends Model implements UserInterface {
 	 * @var string
 	 */
 	protected static $groupModel = 'Cartalyst\Sentry\Groups\Eloquent\Group';
+
+    /**
+     * The Eloquent group provider model.
+     *
+     * @var string
+     */
+    protected static $groupProviderModel = null;
 
 	/**
 	 * The user groups pivot table name.
@@ -543,6 +551,67 @@ class User extends Model implements UserInterface {
 
 		return true;
 	}
+
+    /**
+     * Updates the user to the given group(s).
+     *
+     * @param Illuminate\Database\Eloquent\Collection  $groups
+     * @param bool  $remove
+     * @return bool
+     */
+    public function updateGroups($groups, $remove = true)
+    {
+        $existingGroupIds = array();
+        $newGroupIds = array();
+        $removeGroupIds = array();
+
+        foreach ($groups as $group)
+        {
+            if (is_object($group))
+            {
+                $newGroupIds[] = $group->getId();
+                if (!self::addGroup($group))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                $newGroupIds[] = $groups->getId();
+                if (!self::addGroup($groups))
+                {
+                    return false;
+                }
+                break;
+            }
+        }
+
+        if ($remove)
+        {
+            foreach ($this->groups as $userGroup)
+            {
+                $existingGroupIds[] = $userGroup->getId();
+            }
+
+            $removeGroupIds = array_diff($existingGroupIds, $newGroupIds);
+
+            if ($removeGroupIds)
+            {
+                self::$groupProviderModel = self::$groupProviderModel ?: new GroupProvider;
+            }
+
+            foreach ($removeGroupIds as $id)
+            {
+                $group = self::$groupProviderModel->findById($id);
+                if (!self::removeGroup($group))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
 	/**
 	 * See if the user is in the given group.

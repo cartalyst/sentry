@@ -135,6 +135,53 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->removeGroup($group));
 	}
 
+    public function testUpdateGroupWithOneId()
+    {
+        $group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+        $user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[addGroup]');
+
+        $user->shouldReceive('addGroup')->once()->andReturn(true);
+        $this->assertTrue($user->addGroup($group));
+    }
+
+    public function testUpdateGroupWithMultipleIds()
+    {
+        $group = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
+        $user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[addGroup]');
+
+        $user->shouldReceive('addGroup')->times(3)->andReturn(true);
+
+        for ($i = 0; $i < 3; $i++)
+        {
+            $this->assertTrue($user->addGroup($group));
+        }
+    }
+
+    public function testUpdateGroupWithOneIdToRemove()
+    {
+        $user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[removeGroup]');
+        $groupProvider = m::mock('Cartalyst\Sentry\Groups\Eloquent\Provider[findById]');
+        $groupProvider->shouldReceive('findById')->once()->with(\Mockery::type('int'))->andReturn($group = m::mock('Cartalyst\Sentry\Groups\GroupInterface'));
+        $user->shouldReceive('removeGroup')->andReturn(true);
+
+        $this->assertTrue($user->removeGroup($groupProvider->findById(1)));
+
+    }
+
+    public function testUpdateGroupWithMultipleIdsToRemove()
+    {
+        $count = 3;
+        $user  = m::mock('Cartalyst\Sentry\Users\Eloquent\User[removeGroup]');
+        $groupProvider = m::mock('Cartalyst\Sentry\Groups\Eloquent\Provider[findById]');
+        $groupProvider->shouldReceive('findById')->times($count)->with(\Mockery::type('int'))->andReturn($group = m::mock('Cartalyst\Sentry\Groups\GroupInterface'));
+        $user->shouldReceive('removeGroup')->times($count)->andReturn(true);
+
+        for ($i = 0; $i < $count; $i++)
+        {
+            $this->assertTrue($user->removeGroup($groupProvider->findById($i)));
+        }
+    }
+
 	public function testMergedPermissions()
 	{
 		$group1 = m::mock('Cartalyst\Sentry\Groups\GroupInterface');
