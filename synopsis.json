@@ -1,7 +1,4 @@
 {
 	"github" : "cartalyst/sentry",
-	"demo" : {
-		"source" : "https://github.com/cartalyst/demo-sentry",
-		"online" : "http://demo.cartalyst.com/sentry/"
-	}
+	"demo" : false
 }
