@@ -544,10 +544,12 @@ class Sentry {
 	*/
 	public function checkGroup($group_name)
 	{
-	        if (Sentry::check()) {
-	            $user_id = Sentry::getUser()->id;
-                    $get_user = Sentry::findUserByID($user_id);
-                    $group = Sentry::findGroupByName($group_name);
+	    if (Sentry::check())
+	    {
+	        $user_id = Sentry::getUser()->id;
+                $get_user = Sentry::findUserByID($user_id);
+                $group = Sentry::findGroupByName($group_name);
+                
                 if ($get_user->inGroup($group)) {         
                     return true;
                 }
