@@ -1,4 +1,4 @@
-# Introduction
+## Introduction
 
 A modern and framework agnostic authorization and authentication package featuring groups, permissions, custom hashing algorithms and additional security features.
 

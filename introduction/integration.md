@@ -1,8 +1,8 @@
-# Integration
+## Integration
 
 > **Note:** The database schema is located under `vendor/cartalyst/sentry/schema/mysql.sql`
 
-## Laravel 4
+### Laravel 4
 
 After you have installed the package, just follow the instructions.
 
@@ -30,7 +30,7 @@ After installing, you can publish the package configuration file into your appli
 
 This will publish the config file to `app/config/packages/cartalyst/sentry/config.php` where you can modify the package configuration.
 
-## CodeIgniter 3.0-dev
+### CodeIgniter 3.0-dev
 
 After you have installed the package, just follow the instructions.
 
@@ -77,7 +77,7 @@ $db['default'] = array(
 );
 ```
 
-## FuelPHP 1.x
+### FuelPHP 1.x
 
 After you have installed the package, just follow the instructions.
 
@@ -100,7 +100,7 @@ This will mean you can use the FuelPHP Sentry facade as the class `Sentry`. Vòi
 
 > **Note:**: Sentry will always run off the default database connection, so ensure this is working. We may look at adding support for alternate connections in the future however it is not implemented at this stage. Pull requests are welcome.
 
-## Native
+### Native
 
 ```php
 // Include the composer autoload file
