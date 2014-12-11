@@ -806,7 +806,7 @@ class User extends Model implements UserInterface {
 			throw new \RuntimeException("A hasher has not been provided for the user.");
 		}
 
-		return static::$hasher->checkHash($string, $hashedString);
+		return static::$hasher->checkhash($string, $hashedString);
 	}
 
 	/**
