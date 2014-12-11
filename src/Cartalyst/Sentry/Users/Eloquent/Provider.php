@@ -145,7 +145,7 @@ class Provider implements ProviderInterface {
 		// Now check the hashed credentials match ours
 		foreach ($hashedCredentials as $credential => $value)
 		{
-			if ( ! $this->hasher->checkHash($value, $user->{$credential}))
+			if ( ! $this->hasher->checkhash($value, $user->{$credential}))
 			{
 				$message = "A user was found to match all plain text credentials however hashed credential [$credential] did not match.";
 
