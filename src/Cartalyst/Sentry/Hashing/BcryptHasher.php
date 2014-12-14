@@ -66,16 +66,4 @@ class BcryptHasher extends BaseHasher implements HasherInterface {
 		return $this->slowEquals(crypt($string, $hashedString), $hashedString);
 	}
 
-	/**
-	 * Create a random string for a salt.
-	 *
-	 * @return string
-	 */
-	public function createSalt()
-	{
-		$pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		return substr(str_shuffle(str_repeat($pool, 5)), 0, $this->saltLength);
-	}
-
 }
