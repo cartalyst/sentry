@@ -39,7 +39,6 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('cartalyst/sentry', 'cartalyst/sentry');
 	}
 
 	/**
@@ -217,7 +216,7 @@ class SentryServiceProvider extends ServiceProvider {
 					array($suspensionTime)
 				);
 			}
-			
+
 			// Define the User model to use for relationships.
 			if (method_exists($model, 'setUserModel'))
 			{
