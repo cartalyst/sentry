@@ -36,7 +36,7 @@ class Provider implements ProviderInterface {
 	 * The user provider used for finding users
 	 * to attach throttles to.
 	 *
-	 * @var UserProviderInterface
+	 * @var \Cartalyst\Sentry\Users\ProviderInterface
 	 */
 	protected $userProvider;
 
