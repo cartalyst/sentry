@@ -19,7 +19,6 @@
  */
 
 use Illuminate\Database\ConnectionResolverInterface;
-use Illuminate\Database\Connection;
 use PDO;
 
 class ConnectionResolver implements ConnectionResolverInterface {
@@ -65,7 +64,6 @@ class ConnectionResolver implements ConnectionResolverInterface {
 	 * @param  \PDO $pdo
 	 * @param  string $driverName
 	 * @param  string $tablePrefix
-	 * @return void
 	 */
 	public function __construct(PDO $pdo, $driverName, $tablePrefix = '')
 	{

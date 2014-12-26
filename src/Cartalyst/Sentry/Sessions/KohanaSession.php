@@ -39,7 +39,6 @@ class KohanaSession implements SessionInterface {
 	 *
 	 * @param  \Session  $store
 	 * @param  string  $key
-	 * @return void
 	 */
 	public function __construct(\Session $store, $key = null)
 	{

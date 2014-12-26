@@ -21,8 +21,11 @@
 use Cartalyst\Sentry\Cookies\KohanaCookie;
 use Cartalyst\Sentry\Facades\Facade;
 use Cartalyst\Sentry\Groups\Kohana\Provider as GroupProvider;
-use Cartalyst\Sentry\Sessions\KohanaSession;
+use Cartalyst\Sentry\Hashing\BcryptHasher;
+use Cartalyst\Sentry\Hashing\NativeHasher;
+use Cartalyst\Sentry\Hashing\Sha256Hasher;
 use Cartalyst\Sentry\Sentry as BaseSentry;
+use Cartalyst\Sentry\Sessions\KohanaSession;
 use Cartalyst\Sentry\Throttling\Kohana\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Kohana\Provider as UserProvider;
 
@@ -53,13 +56,13 @@ class Sentry extends Facade {
 		{
 			default:
 			case 'Bcrypt':
-				$hasher = new \Cartalyst\Sentry\Hashing\BcryptHasher;
+				$hasher = new BcryptHasher;
 				break;
 			case 'Native':
-				$hasher = new \Cartalyst\Sentry\Hashing\NativeHasher;
+				$hasher = new NativeHasher;
 				break;
 			case 'Sha256':
-				$hasher = new \Cartalyst\Sentry\Hashing\Sha256Hasher;
+				$hasher = new Sha256Hasher;
 				break;
 		}
 

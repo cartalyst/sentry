@@ -20,11 +20,10 @@
 
 use Cartalyst\Sentry\Cookies\CICookie;
 use Cartalyst\Sentry\Facades\ConnectionResolver;
-use Cartalyst\Sentry\Facades\Facade;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\NativeHasher;
-use Cartalyst\Sentry\Sessions\CISession;
 use Cartalyst\Sentry\Sentry as BaseSentry;
+use Cartalyst\Sentry\Sessions\CISession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Illuminate\Database\Eloquent\Model as Eloquent;

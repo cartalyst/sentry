@@ -18,7 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Groups\GroupNotFoundException;
 use Cartalyst\Sentry\Groups\ProviderInterface;
 
@@ -35,7 +34,6 @@ class Provider implements ProviderInterface {
 	 * Create a new Eloquent Group provider.
 	 *
 	 * @param  string  $model
-	 * @return void
 	 */
 	public function __construct($model = null)
 	{

@@ -41,7 +41,6 @@ class IlluminateSession implements SessionInterface {
 	 *
 	 * @param  \Illuminate\Session\Store  $session
 	 * @param  string  $key
-	 * @return void
 	 */
 	public function __construct(SessionStore $session, $key = null)
 	{

@@ -27,13 +27,13 @@ use Cartalyst\Sentry\Sessions\NativeSession;
 use Cartalyst\Sentry\Sessions\SessionInterface;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Throttling\ProviderInterface as ThrottleProviderInterface;
+use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
-use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
-use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\UserNotActivatedException;
+use Cartalyst\Sentry\Users\UserNotFoundException;
 
 class Sentry {
 
@@ -104,7 +104,6 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface $session
 	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface $cookie
 	 * @param  string $ipAddress
-	 * @return void
 	 */
 	public function __construct(
 		UserProviderInterface $userProvider = null,

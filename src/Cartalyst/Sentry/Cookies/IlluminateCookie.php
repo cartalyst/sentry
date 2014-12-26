@@ -18,10 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Container\Container;
 use Illuminate\Cookie\CookieJar;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Cookie;
 
 class IlluminateCookie implements CookieInterface {
 
@@ -66,7 +64,7 @@ class IlluminateCookie implements CookieInterface {
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  \Illuminate\Cookie\CookieJar  $jar
 	 * @param  string  $key
-	 * @return void
+	 * @param  string  $strategy
 	 */
 	public function __construct(Request $request, CookieJar $jar, $key = null, $strategy = 'request')
 	{

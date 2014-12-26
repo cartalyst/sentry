@@ -31,7 +31,6 @@ class NativeSession implements SessionInterface {
 	 * Creates a new native session driver for Sentry.
 	 *
 	 * @param  string  $key
-	 * @return void
 	 */
 	public function __construct($key = null)
 	{

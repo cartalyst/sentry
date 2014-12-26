@@ -18,8 +18,8 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Throttling\ThrottleInterface;
 use Cartalyst\Sentry\Throttling\ProviderInterface;
+use Cartalyst\Sentry\Throttling\ThrottleInterface;
 use Cartalyst\Sentry\Users\ProviderInterface as UserProviderInterface;
 use Cartalyst\Sentry\Users\UserInterface;
 
@@ -50,9 +50,8 @@ class Provider implements ProviderInterface {
 	/**
 	 * Creates a new throttle provider.
 	 *
-	 * @param \Cartalyst\Sentry\Users\ProviderInterface $userProvider
+	 * @param UserProviderInterface $userProvider
 	 * @param  string $model
-	 * @return void
 	 */
 	public function __construct(UserProviderInterface $userProvider, $model = null)
 	{
@@ -69,7 +68,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  \Cartalyst\Sentry\Users\UserInterface $user
 	 * @param  string  $ipAddress
-	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return ThrottleInterface
 	 */
 	public function findByUser(UserInterface $user, $ipAddress = null)
 	{
@@ -99,7 +98,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  mixed   $id
 	 * @param  string  $ipAddress
-	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return ThrottleInterface
 	 */
 	public function findByUserId($id, $ipAddress = null)
 	{
@@ -111,7 +110,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  string  $login
 	 * @param  string  $ipAddress
-	 * @return \Cartalyst\Sentry\Throttling\ThrottleInterface
+	 * @return ThrottleInterface
 	 */
 	public function findByUserLogin($login, $ipAddress = null)
 	{
