@@ -65,6 +65,7 @@ class IlluminateCookie implements CookieInterface {
 	 * @param  \Illuminate\Cookie\CookieJar  $jar
 	 * @param  string  $key
 	 * @param  string  $strategy
+	 * @return void
 	 */
 	public function __construct(Request $request, CookieJar $jar, $key = null, $strategy = 'request')
 	{

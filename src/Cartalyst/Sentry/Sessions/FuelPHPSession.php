@@ -41,6 +41,7 @@ class FuelPHPSession implements SessionInterface {
 	 *
 	 * @param  \Fuel\Core\Session_Driver  $store
 	 * @param  string  $key
+	 * @return void
 	 */
 	public function __construct(Session $store, $key = null)
 	{

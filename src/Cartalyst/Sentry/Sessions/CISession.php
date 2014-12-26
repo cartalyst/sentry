@@ -41,6 +41,7 @@ class CISession implements SessionInterface {
 	 *
 	 * @param  \CI_Session  $store
 	 * @param  string  $key
+	 * @return void
 	 */
 	public function __construct(Session $store, $key = null)
 	{

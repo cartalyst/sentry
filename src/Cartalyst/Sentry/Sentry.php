@@ -104,6 +104,7 @@ class Sentry {
 	 * @param  \Cartalyst\Sentry\Sessions\SessionInterface $session
 	 * @param  \Cartalyst\Sentry\Cookies\CookieInterface $cookie
 	 * @param  string $ipAddress
+	 * @return void
 	 */
 	public function __construct(
 		UserProviderInterface $userProvider = null,

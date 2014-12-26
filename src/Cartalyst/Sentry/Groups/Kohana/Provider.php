@@ -34,6 +34,7 @@ class Provider implements ProviderInterface {
 	 * Create a new Eloquent Group provider.
 	 *
 	 * @param  string  $model
+	 * @return void
 	 */
 	public function __construct($model = null)
 	{

@@ -45,6 +45,7 @@ class Provider implements ProviderInterface {
 	 *
 	 * @param  \Cartalyst\Sentry\Hashing\HasherInterface  $hasher
 	 * @param  string  $model
+	 * @return void
 	 */
 	public function __construct(HasherInterface $hasher, $model = null)
 	{

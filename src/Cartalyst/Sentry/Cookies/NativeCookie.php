@@ -39,6 +39,7 @@ class NativeCookie implements CookieInterface {
 	 *
 	 * @param  array   $config
 	 * @param  string  $key
+	 * @return void
 	 */
 	public function __construct(array $config = array(), $key = null)
 	{
