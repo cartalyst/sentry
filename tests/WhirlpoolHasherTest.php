@@ -58,8 +58,8 @@ class WhirlpoolHasherTest extends PHPUnit_Framework_TestCase {
         $password       = 'f00b@rB@zb@T';
         $hashedPassword = $hasher->hash($password);
 
-        $this->assertTrue($hasher->checkHash($password, $hashedPassword));
-        $this->assertFalse($hasher->checkHash($password.'$', $hashedPassword));
+        $this->assertTrue($hasher->checkhash($password, $hashedPassword));
+        $this->assertFalse($hasher->checkhash($password.'$', $hashedPassword));
     }
 
 }
