@@ -294,6 +294,8 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['request']->getClientIp()
 			);
 		});
+
+		$this->app->alias('sentry', 'Cartalyst\Sentry\Sentry');
 	}
 
 }
