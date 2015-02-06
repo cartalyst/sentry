@@ -18,7 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Groups\GroupNotFoundException;
 use Cartalyst\Sentry\Groups\ProviderInterface;
 

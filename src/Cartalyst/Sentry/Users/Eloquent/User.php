@@ -18,7 +18,6 @@
  * @link       http://cartalyst.com
  */
 
-use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
 use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\HasherInterface;
@@ -27,6 +26,7 @@ use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Model implements UserInterface {
 
@@ -519,7 +519,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * Adds the user to the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param GroupInterface $group
 	 * @return bool
 	 */
 	public function addGroup(GroupInterface $group)
@@ -537,7 +537,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * Removes the user from the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param GroupInterface $group
 	 * @return bool
 	 */
 	public function removeGroup(GroupInterface $group)
@@ -616,7 +616,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * See if the user is in the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param GroupInterface $group
 	 * @return bool
 	 */
 	public function inGroup(GroupInterface $group)
@@ -898,6 +898,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * Generate a random string.
 	 *
+	 * @param  int  $length
 	 * @return string
 	 */
 	public function getRandomString($length = 42)
@@ -951,7 +952,7 @@ class User extends Model implements UserInterface {
 			$value = $this->hash($value);
 		}
 
-		return parent::setAttribute($key, $value);
+		parent::setAttribute($key, $value);
 	}
 
 	/**

@@ -18,11 +18,9 @@
  * @link       http://cartalyst.com
  */
 
-use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Users\ProviderInterface;
-use Cartalyst\Sentry\Users\UserInterface;
-use Cartalyst\Sentry\Users\UserNotActivatedException;
 use Cartalyst\Sentry\Users\UserNotFoundException;
 use Cartalyst\Sentry\Users\WrongPasswordException;
 
@@ -312,7 +310,7 @@ class Provider implements ProviderInterface {
 	/**
 	 * Create a new instance of the model.
 	 *
-	 * @return Illuminate\Database\Eloquent\Model
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function createModel()
 	{

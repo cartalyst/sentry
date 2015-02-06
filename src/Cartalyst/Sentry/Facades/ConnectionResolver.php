@@ -19,7 +19,6 @@
  */
 
 use Illuminate\Database\ConnectionResolverInterface;
-use Illuminate\Database\Connection;
 use PDO;
 
 class ConnectionResolver implements ConnectionResolverInterface {
