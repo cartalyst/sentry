@@ -204,14 +204,14 @@ interface UserInterface {
 	 */
 	public function removeGroup(GroupInterface $group);
 
-    /**
-     * Updates the user to the given group(s).
-     *
-     * @param Illuminate\Database\Eloquent\Collection  $groups
-     * @param bool  $remove
-     * @return bool
-     */
-    public function updateGroups($groups, $remove = false);
+	/**
+	 * Updates the user to the given group(s).
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Collection  $groups
+	 * @param  bool  $remove
+	 * @return bool
+	 */
+	public function updateGroups($groups, $remove = false);
 
 	/**
 	 * See if the user is in the given group.

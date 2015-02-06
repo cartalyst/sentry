@@ -117,12 +117,12 @@ class User extends Model implements UserInterface {
 	 */
 	protected static $groupModel = 'Cartalyst\Sentry\Groups\Eloquent\Group';
 
-    /**
-     * The Eloquent group provider model.
-     *
-     * @var string
-     */
-    protected static $groupProviderModel = null;
+	/**
+	 * The Eloquent group provider model.
+	 *
+	 * @var string
+	 */
+	protected static $groupProviderModel = null;
 
 	/**
 	 * The user groups pivot table name.
@@ -216,7 +216,7 @@ class User extends Model implements UserInterface {
 	 * Mutator for giving permissions.
 	 *
 	 * @param  mixed  $permissions
-	 * @return array  $_permissions
+	 * @return array
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
@@ -500,26 +500,30 @@ class User extends Model implements UserInterface {
 		return $this->userGroups;
 	}
 
-    /**
-     * Clear the cached permissions attribute.
-     */
-    public function invalidateMergedPermissionsCache()
-    {
+	/**
+	 * Clear the cached permissions attribute.
+	 *
+	 * @return null
+	 */
+	public function invalidateMergedPermissionsCache()
+	{
 		$this->mergedPermissions = null;
-    }
+	}
 
-    /**
-     * Clear the cached user groups attribute.
-     */
-    public function invalidateUserGroupsCache()
-    {
+	/**
+	 * Clear the cached user groups attribute.
+	 *
+	 * @return null
+	 */
+	public function invalidateUserGroupsCache()
+	{
 		$this->userGroups = null;
-    }
-    
+	}
+
 	/**
 	 * Adds the user to the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
 	public function addGroup(GroupInterface $group)
@@ -527,7 +531,9 @@ class User extends Model implements UserInterface {
 		if ( ! $this->inGroup($group))
 		{
 			$this->groups()->attach($group);
+
 			$this->invalidateUserGroupsCache();
+
 			$this->invalidateMergedPermissionsCache();
 		}
 
@@ -545,78 +551,85 @@ class User extends Model implements UserInterface {
 		if ($this->inGroup($group))
 		{
 			$this->groups()->detach($group);
+
 			$this->invalidateUserGroupsCache();
+
 			$this->invalidateMergedPermissionsCache();
 		}
 
 		return true;
 	}
 
-    /**
-     * Updates the user to the given group(s).
-     *
-     * @param Illuminate\Database\Eloquent\Collection  $groups
-     * @param bool  $remove
-     * @return bool
-     */
-    public function updateGroups($groups, $remove = true)
-    {
-        $existingGroupIds = array();
-        $newGroupIds = array();
-        $removeGroupIds = array();
+	/**
+	 * Updates the user to the given group(s).
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Collection  $groups
+	 * @param  bool  $remove
+	 * @return bool
+	 */
+	public function updateGroups($groups, $remove = true)
+	{
+		$newGroupIds = array();
 
-        foreach ($groups as $group)
-        {
-            if (is_object($group))
-            {
-                $newGroupIds[] = $group->getId();
-                if (!self::addGroup($group))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                $newGroupIds[] = $groups->getId();
-                if (!self::addGroup($groups))
-                {
-                    return false;
-                }
-                break;
-            }
-        }
+		$removeGroupIds = array();
 
-        if ($remove)
-        {
-            foreach ($this->groups as $userGroup)
-            {
-                $existingGroupIds[] = $userGroup->getId();
-            }
+		$existingGroupIds = array();
 
-            $removeGroupIds = array_diff($existingGroupIds, $newGroupIds);
+		foreach ($groups as $group)
+		{
+			if (is_object($group))
+			{
+				$newGroupIds[] = $group->getId();
 
-            if ($removeGroupIds)
-            {
-                self::$groupProviderModel = self::$groupProviderModel ?: new GroupProvider;
-            }
+				if ( ! $this->addGroup($group))
+				{
+					return false;
+				}
+			}
+			else
+			{
+				$newGroupIds[] = $groups->getId();
 
-            foreach ($removeGroupIds as $id)
-            {
-                $group = self::$groupProviderModel->findById($id);
-                if (!self::removeGroup($group))
-                {
-                    return false;
-                }
-            }
-        }
+				if ( ! $this->addGroup($groups))
+				{
+					return false;
+				}
+				break;
+			}
+		}
 
-        return true;
-    }
+		if ($remove)
+		{
+			foreach ($this->groups as $userGroup)
+			{
+				$existingGroupIds[] = $userGroup->getId();
+			}
+
+			$removeGroupIds = array_diff($existingGroupIds, $newGroupIds);
+
+			if ($removeGroupIds)
+			{
+				self::$groupProviderModel = self::$groupProviderModel ?: new GroupProvider;
+			}
+
+			foreach ($removeGroupIds as $id)
+			{
+				$group = self::$groupProviderModel->findById($id);
+
+				if ( ! $this->removeGroup($group))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * See if the user is in the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
 	public function inGroup(GroupInterface $group)
