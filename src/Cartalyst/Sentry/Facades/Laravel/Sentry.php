@@ -29,7 +29,7 @@ class Sentry extends Facade {
 	 */
 	protected static function getFacadeAccessor()
 	{
-		return 'sentry';
+		return 'Cartalyst\Sentry\Sentry';
 	}
 
 }
