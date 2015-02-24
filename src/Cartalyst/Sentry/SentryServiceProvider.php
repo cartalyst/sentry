@@ -24,10 +24,11 @@ use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Hashing\Sha256Hasher;
 use Cartalyst\Sentry\Hashing\WhirlpoolHasher;
-use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class SentryServiceProvider extends ServiceProvider {
@@ -44,6 +45,7 @@ class SentryServiceProvider extends ServiceProvider {
 		$this->registerUserProvider();
 		$this->registerGroupProvider();
 		$this->registerThrottleProvider();
+		$this->registerRequestProvider();
 		$this->registerSession();
 		$this->registerCookie();
 		$this->registerSentry();
@@ -152,6 +154,23 @@ class SentryServiceProvider extends ServiceProvider {
 			}
 
 			return new UserProvider($app['sentry.hasher'], $model);
+		});
+	}
+
+	/**
+	 * Register request service.
+	 * There can be case when default $app['request'] is not bound, for instance, in testing environment.
+	 * If request does not exist, create a new instance
+	 */
+	protected function registerRequestProvider()
+	{
+		$this->app['sentry.request'] = $this->app->share(function(Application $app)
+		{
+			if($app->bound('request'))
+			{
+				return $app['request'];
+			}
+			return new Request();
 		});
 	}
 
@@ -286,7 +305,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$strategy = 'jar';
 			}
 
-			return new IlluminateCookie($app['request'], $app['cookie'], $key, $strategy);
+			return new IlluminateCookie($app['sentry.request'], $app['cookie'], $key, $strategy);
 		});
 	}
 
@@ -306,7 +325,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.throttle'],
 				$app['sentry.session'],
 				$app['sentry.cookie'],
-				$app['request']->getClientIp()
+				$app['sentry.request']->getClientIp()
 			);
 		});
 
