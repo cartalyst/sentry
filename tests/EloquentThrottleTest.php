@@ -250,7 +250,7 @@ class EloquentThrottleTest extends PHPUnit_Framework_TestCase {
 	protected function addMockConnection($model)
 	{
 		$model->setConnectionResolver($resolver = m::mock('Illuminate\Database\ConnectionResolverInterface'));
-		$resolver->shouldReceive('connection')->andReturn($connection = m::mock('callable'));
+		$resolver->shouldReceive('connection')->andReturn($connection = m::mock('Illuminate\Database\Connection'));
 		$connection->shouldReceive('getQueryGrammar')->andReturn(m::mock('Illuminate\Database\Query\Grammars\Grammar'));
 		$connection->shouldReceive('getPostProcessor')->andReturn(m::mock('Illuminate\Database\Query\Processors\Processor'));
 	}
