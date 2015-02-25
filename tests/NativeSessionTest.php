@@ -37,27 +37,19 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 
 	public function testFoo()
 	{
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[startSession,writeSession]');
-		$session->shouldReceive('writeSession');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession']);
 	}
 
 	public function testOverridingKey()
 	{
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[startSession,writeSession]');
-		$session->shouldReceive('startSession')->once();
-		$session->shouldReceive('writeSession');
-
-		$session->__construct('foo');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
 
 		$this->assertEquals('foo', $session->getKey());
 	}
 
 	public function testPutting()
 	{
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[startSession,writeSession]');
-		$session->shouldReceive('startSession')->once();
-		$session->shouldReceive('writeSession');
-		$session->__construct('foo');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
 
 		$class = new stdClass;
 		$class->foo = 'bar';
@@ -68,18 +60,14 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 
 	public function testGettingWhenNothingIsInSessionReturnsNull()
 	{
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[getSession]');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession', 'getSession']);
 
-		$session->shouldReceive('getSession')->once();
 		$this->assertNull($session->get());
 	}
 
 	public function testGetting()
 	{
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[startSession,writeSession]');
-		$session->shouldReceive('startSession')->once();
-		$session->shouldReceive('writeSession');
-		$session->__construct('foo');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
 
 		$class = new stdClass;
 		$class->foo = 'bar';
@@ -92,10 +80,7 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$_SESSION['foo'] = 'bar';
 
-		$session = m::mock('Cartalyst\Sentry\Sessions\NativeSession[startSession,writeSession]');
-		$session->shouldReceive('startSession')->once();
-		$session->shouldReceive('writeSession');
-		$session->__construct('foo');
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
 
 		$this->assertEquals('bar', $_SESSION['foo']);
 		$session->forget();

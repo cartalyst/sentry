@@ -33,7 +33,7 @@
 		"php": ">=5.3.3"
 	},
 	"require-dev": {
-		"mockery/mockery": "0.7.2",
+		"mockery/mockery": "0.9.*",
 
 		"illuminate/cookie": ">=4.0.9,<4.2",
 		"illuminate/database": ">=4.0.9,<4.2",

@@ -70,7 +70,7 @@ class CICookieTest extends PHPUnit_Framework_TestCase {
 
 	public function testForever()
 	{
-		$cookie = m::mock('Cartalyst\Sentry\Cookies\CICookie[put]');
+		$cookie = m::mock('Cartalyst\Sentry\Cookies\CICookie[put]', [new CI_Input()]);
 
 		$me = $this;
 		$cookie->shouldReceive('put')->with('bar', m::on(function($value) use ($me)
