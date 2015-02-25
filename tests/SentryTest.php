@@ -94,7 +94,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoggingInAndRemembering()
 	{
-		$sentry = m::mock('Cartalyst\Sentry\Sentry[login]', [null, null, null, $this->session]);
+		$sentry = m::mock('Cartalyst\Sentry\Sentry[login]', array(null, null, null, $this->session));
 		$sentry->shouldReceive('login')->with($user = m::mock('Cartalyst\Sentry\Users\UserInterface'), true)->once();
 		$sentry->loginAndRemember($user);
 	}
@@ -218,7 +218,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testAuthenticatingUser()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]', [$this->userProvider, $this->groupProvider, $this->throttleProvider, $this->session, $this->cookie]);
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]', array($this->userProvider, $this->groupProvider, $this->throttleProvider, $this->session, $this->cookie));
 
 		$credentials = array(
 			'email'    => 'foo@bar.com',
@@ -240,7 +240,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testAuthenticatingUserWithThrottling()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]', [$this->userProvider, $this->groupProvider, $this->throttleProvider, $this->session, $this->cookie]);
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[login]', array($this->userProvider, $this->groupProvider, $this->throttleProvider, $this->session, $this->cookie));
 
 		$credentials = array(
 			'email'    => 'foo@bar.com',
@@ -278,7 +278,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testAuthenticatingUserAndRemembering()
 	{
-		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[authenticate]', [null, null, null, $this->session]);
+		$this->sentry = m::mock('Cartalyst\Sentry\Sentry[authenticate]', array(null, null, null, $this->session));
 
 		$credentials = array(
 			'email'    => 'foo@bar.com',
@@ -473,7 +473,7 @@ class SentryTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetUserWithCheck()
 	{
-		$sentry = m::mock('Cartalyst\Sentry\Sentry[check]', [null, null, null, $this->session]);
+		$sentry = m::mock('Cartalyst\Sentry\Sentry[check]', array(null, null, null, $this->session));
 		$sentry->shouldReceive('check')->once();
 		$sentry->getUser();
 	}

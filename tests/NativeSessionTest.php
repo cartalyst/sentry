@@ -37,19 +37,19 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 
 	public function testFoo()
 	{
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession'));
 	}
 
 	public function testOverridingKey()
 	{
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession'), array('foo'));
 
 		$this->assertEquals('foo', $session->getKey());
 	}
 
 	public function testPutting()
 	{
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession'), array('foo'));
 
 		$class = new stdClass;
 		$class->foo = 'bar';
@@ -60,14 +60,14 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 
 	public function testGettingWhenNothingIsInSessionReturnsNull()
 	{
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession', 'getSession']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession', 'getSession'));
 
 		$this->assertNull($session->get());
 	}
 
 	public function testGetting()
 	{
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession'), array('foo'));
 
 		$class = new stdClass;
 		$class->foo = 'bar';
@@ -80,7 +80,7 @@ class NativeSessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$_SESSION['foo'] = 'bar';
 
-		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', ['startSession'], ['foo']);
+		$session = $this->getMock('Cartalyst\Sentry\Sessions\NativeSession', array('startSession'), array('foo'));
 
 		$this->assertEquals('bar', $_SESSION['foo']);
 		$session->forget();
