@@ -20,6 +20,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Cartalyst\Sentry\Groups\GroupInterface;
+use Cartalyst\Sentry\Groups\Eloquent\Provider as GroupProvider;
 use Cartalyst\Sentry\Hashing\HasherInterface;
 use Cartalyst\Sentry\Users\LoginRequiredException;
 use Cartalyst\Sentry\Users\PasswordRequiredException;
@@ -117,6 +118,13 @@ class User extends Model implements UserInterface {
 	protected static $groupModel = 'Cartalyst\Sentry\Groups\Eloquent\Group';
 
 	/**
+	 * The Eloquent group provider model.
+	 *
+	 * @var string
+	 */
+	protected static $groupProviderModel = null;
+
+	/**
 	 * The user groups pivot table name.
 	 *
 	 * @var string
@@ -208,7 +216,7 @@ class User extends Model implements UserInterface {
 	 * Mutator for giving permissions.
 	 *
 	 * @param  mixed  $permissions
-	 * @return array  $_permissions
+	 * @return array
 	 */
 	public function getPermissionsAttribute($permissions)
 	{
@@ -492,26 +500,30 @@ class User extends Model implements UserInterface {
 		return $this->userGroups;
 	}
 
-    /**
-     * Clear the cached permissions attribute.
-     */
-    public function invalidateMergedPermissionsCache()
-    {
+	/**
+	 * Clear the cached permissions attribute.
+	 *
+	 * @return null
+	 */
+	public function invalidateMergedPermissionsCache()
+	{
 		$this->mergedPermissions = null;
-    }
+	}
 
-    /**
-     * Clear the cached user groups attribute.
-     */
-    public function invalidateUserGroupsCache()
-    {
+	/**
+	 * Clear the cached user groups attribute.
+	 *
+	 * @return null
+	 */
+	public function invalidateUserGroupsCache()
+	{
 		$this->userGroups = null;
-    }
-    
+	}
+
 	/**
 	 * Adds the user to the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
 	public function addGroup(GroupInterface $group)
@@ -519,7 +531,9 @@ class User extends Model implements UserInterface {
 		if ( ! $this->inGroup($group))
 		{
 			$this->groups()->attach($group);
+
 			$this->invalidateUserGroupsCache();
+
 			$this->invalidateMergedPermissionsCache();
 		}
 
@@ -537,8 +551,76 @@ class User extends Model implements UserInterface {
 		if ($this->inGroup($group))
 		{
 			$this->groups()->detach($group);
+
 			$this->invalidateUserGroupsCache();
+
 			$this->invalidateMergedPermissionsCache();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Updates the user to the given group(s).
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Collection  $groups
+	 * @param  bool  $remove
+	 * @return bool
+	 */
+	public function updateGroups($groups, $remove = true)
+	{
+		$newGroupIds = array();
+
+		$removeGroupIds = array();
+
+		$existingGroupIds = array();
+
+		foreach ($groups as $group)
+		{
+			if (is_object($group))
+			{
+				$newGroupIds[] = $group->getId();
+
+				if ( ! $this->addGroup($group))
+				{
+					return false;
+				}
+			}
+			else
+			{
+				$newGroupIds[] = $groups->getId();
+
+				if ( ! $this->addGroup($groups))
+				{
+					return false;
+				}
+				break;
+			}
+		}
+
+		if ($remove)
+		{
+			foreach ($this->groups as $userGroup)
+			{
+				$existingGroupIds[] = $userGroup->getId();
+			}
+
+			$removeGroupIds = array_diff($existingGroupIds, $newGroupIds);
+
+			if ($removeGroupIds)
+			{
+				self::$groupProviderModel = self::$groupProviderModel ?: new GroupProvider;
+			}
+
+			foreach ($removeGroupIds as $id)
+			{
+				$group = self::$groupProviderModel->findById($id);
+
+				if ( ! $this->removeGroup($group))
+				{
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -547,7 +629,7 @@ class User extends Model implements UserInterface {
 	/**
 	 * See if the user is in the given group.
 	 *
-	 * @param \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
 	 * @return bool
 	 */
 	public function inGroup(GroupInterface $group)
@@ -806,7 +888,7 @@ class User extends Model implements UserInterface {
 			throw new \RuntimeException("A hasher has not been provided for the user.");
 		}
 
-		return static::$hasher->checkHash($string, $hashedString);
+		return static::$hasher->checkhash($string, $hashedString);
 	}
 
 	/**
