@@ -523,6 +523,7 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		// Check the hash
 		$this->assertTrue($user->checkPersistCode('hashed_reset_code'));
 		$this->assertFalse($user->checkPersistCode('not_the_codeed_reset_code'));
+		$this->assertFalse($user->checkPersistCode(true));
 	}
 
 	public function testGetActivationCode()
