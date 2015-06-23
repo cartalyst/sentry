@@ -611,29 +611,10 @@ class User extends \ORM implements UserInterface {
 			// matched at all.
 			$matched = true;
 
-			// Now, let's check if the permission ends in a wildcard "*" symbol.
+			// Now, let's check if the permission starts with a wildcard "*" symbol.
 			// If it does, we'll check through all the merged permissions to see
 			// if a permission exists which matches the wildcard.
-			if ((strlen($permission) > 1) and \Text::ends_with($permission, '*'))
-			{
-				$matched = false;
-
-				foreach ($mergedPermissions as $mergedPermission => $value)
-				{
-					// Strip the '*' off the end of the permission.
-					$checkPermission = substr($permission, 0, -1);
-
-					// We will make sure that the merged permission does not
-					// exactly match our permission, but starts with it.
-					if ($checkPermission != $mergedPermission and \Text::starts_with($mergedPermission, $checkPermission) and $value == 1)
-					{
-						$matched = true;
-						break;
-					}
-				}
-			}
-
-			elseif ((strlen($permission) > 1) and \Text::starts_with($permission, '*'))
+			if ((strlen($permission) > 1) and \Text::starts_with($permission, '*'))
 			{
 				$matched = false;
 
