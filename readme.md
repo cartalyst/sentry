@@ -1,4 +1,10 @@
+## Help Support Sentinel version 3
+
+http://igg.me/at/sentinel-open-source
+
 # Sentry
+
+> This package is DEPRECATED, please check our [Sentinel](https://github.com/cartalyst/sentinel) package for a better authentication & authorization system.
 
 Sentry is a PHP 5.3+ fully-featured authentication & authorization system. It also provides additional features such as user groups and additional security features.
 
