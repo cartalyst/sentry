@@ -61,10 +61,10 @@ class SentryServiceProvider extends ServiceProvider {
 
 		$this->mergeConfigFrom($config, 'cartalyst.sentry');
 
-		$this->publishes([
-			$config     => config_path('cartalyst.sentry.php'),
-			$migrations => $this->app->databasePath().'/migrations',
-		]);
+		// $this->publishes([
+		// 	$config     => config_path('cartalyst.sentry.php'),
+		// 	$migrations => $this->app->databasePath().'/migrations',
+		// ]);
 	}
 
 	/**
@@ -281,10 +281,10 @@ class SentryServiceProvider extends ServiceProvider {
 
 			$strategy = 'request';
 
-			if (preg_match('/^4\.0\.\d*$/D', $app::VERSION))
-			{
-				$strategy = 'jar';
-			}
+			// if (preg_match('/^4\.0\.\d*$/D', $app::VERSION))
+			// {
+			// 	$strategy = 'jar';
+			// }
 
 			return new IlluminateCookie($app['request'], $app['cookie'], $key, $strategy);
 		});
