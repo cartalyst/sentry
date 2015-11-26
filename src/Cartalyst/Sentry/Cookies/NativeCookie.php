@@ -146,7 +146,7 @@ class NativeCookie implements CookieInterface {
 		if ( ! isset($secure))   $secure   = $this->defaults['secure'];
 		if ( ! isset($httpOnly)) $httpOnly = $this->defaults['http_only'];
 
-		setcookie($this->getKey(), serialize($value), $lifetime, $path, $domain, $secure, $httpOnly);
+		setcookie($this->getKey(), json_encode($value), $lifetime, $path, $domain, $secure, $httpOnly);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class NativeCookie implements CookieInterface {
 	{
 		if (isset($_COOKIE[$this->getKey()]))
 		{
-			return unserialize($_COOKIE[$this->getKey()]);
+			return json_decode($_COOKIE[$this->getKey()]);
 		}
 	}
 
