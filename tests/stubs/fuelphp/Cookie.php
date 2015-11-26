@@ -29,7 +29,7 @@ class Cookie {
 	{
 		if ($key == 'foo')
 		{
-			return serialize('baz');
+			return json_encode('baz');
 		}
 	}
 

@@ -94,7 +94,7 @@ class CICookie implements CookieInterface {
 
 		$this->input->set_cookie(array(
 			'name'   => $this->getKey(),
-			'value'  => serialize($value),
+			'value'  => json_encode($value),
 			'expire' => $minutes,
 			'domain' => $domain,
 			'path'   => $path,
@@ -123,7 +123,7 @@ class CICookie implements CookieInterface {
 	 */
 	public function get()
 	{
-		return unserialize($this->input->cookie($this->getKey()));
+		return json_decode($this->input->cookie($this->getKey()));
 	}
 
 	/**
