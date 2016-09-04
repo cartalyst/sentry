@@ -438,8 +438,8 @@ class User extends Model implements UserInterface {
 	 */
 	public function checkResetPasswordCode($resetCode)
 	{
-		if (empty($resetCode)) {
-			throw new \RuntimeException('Something is wrong with the reset code.');
+		if ( ! $resetCode) {
+			return false;
 		}
 
 		return ($this->reset_password_code == $resetCode);
