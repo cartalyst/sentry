@@ -441,6 +441,10 @@ class User extends \ORM implements UserInterface {
 	 */
 	public function checkResetPasswordCode($resetCode)
 	{
+		if ( ! $resetCode) {
+			return false;
+		}
+
 		return ($this->reset_password_code == $resetCode);
 	}
 

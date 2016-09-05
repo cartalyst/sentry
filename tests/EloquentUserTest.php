@@ -542,6 +542,14 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($user->checkPassword('password'));
 	}
 
+	public function testResetPasswordCodeCannotBeNull()
+	{
+		User::setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
+		$user = new User;
+
+		$this->assertFalse($user->checkResetPasswordCode(null));
+	}
+
 	public function testCheckingResetPasswordCode()
 	{
 		User::setHasher($hasher = m::mock('Cartalyst\Sentry\Hashing\HasherInterface'));
