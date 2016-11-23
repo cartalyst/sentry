@@ -216,8 +216,9 @@ class EloquentUserTest extends PHPUnit_Framework_TestCase {
 			'users.delete' => 1,
 		));
 
+		$this->assertTrue($user->hasAccess('users.delete'));
 		$this->assertFalse($user->hasAccess('users'));
-		$this->assertTrue($user->hasAccess('users.*'));
+		$this->assertFalse($user->hasAccess('users.*'));
 	}
 
 	/**
