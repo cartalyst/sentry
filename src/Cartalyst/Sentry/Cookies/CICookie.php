@@ -113,7 +113,8 @@ class CICookie implements CookieInterface {
 	{
 		// Forever can set a cookie for 5 years.
 		// This should suffice "forever".
-		$this->put($value, 2628000);
+		// CI saves seconds, not minutes, so multiply by 60
+		$this->put($value, 60 * 2628000);
 	}
 
 	/**
@@ -136,7 +137,7 @@ class CICookie implements CookieInterface {
 		$this->input->set_cookie(array(
 			'name'   => $this->getKey(),
 			'value'  => '',
-			'expiry' => '',
+			'expire' => '',
 		));
 	}
 
