@@ -59,7 +59,7 @@ class FuelPHPCookie implements CookieInterface {
 	 */
 	public function put($value, $minutes)
 	{
-		\Cookie::set($this->getKey(), serialize($value), $minutes);
+		\Cookie::set($this->getKey(), serialize($value), $minutes * 60);
 	}
 
 	/**

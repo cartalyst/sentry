@@ -95,7 +95,7 @@ class CICookie implements CookieInterface {
 		$this->input->set_cookie(array(
 			'name'   => $this->getKey(),
 			'value'  => serialize($value),
-			'expire' => $minutes,
+			'expire' => $minutes * 60,
 			'domain' => $domain,
 			'path'   => $path,
 			'prefix' => $prefix,
