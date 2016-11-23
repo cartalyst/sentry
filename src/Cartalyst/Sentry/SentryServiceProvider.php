@@ -24,23 +24,14 @@ use Cartalyst\Sentry\Hashing\BcryptHasher;
 use Cartalyst\Sentry\Hashing\NativeHasher;
 use Cartalyst\Sentry\Hashing\Sha256Hasher;
 use Cartalyst\Sentry\Hashing\WhirlpoolHasher;
-use Cartalyst\Sentry\Sentry;
 use Cartalyst\Sentry\Sessions\IlluminateSession;
 use Cartalyst\Sentry\Throttling\Eloquent\Provider as ThrottleProvider;
 use Cartalyst\Sentry\Users\Eloquent\Provider as UserProvider;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class SentryServiceProvider extends ServiceProvider {
-
-	/**
-	 * Boot the service provider.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('cartalyst/sentry', 'cartalyst/sentry');
-	}
 
 	/**
 	 * Register the service provider.
@@ -49,13 +40,33 @@ class SentryServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->prepareResources();
 		$this->registerHasher();
 		$this->registerUserProvider();
 		$this->registerGroupProvider();
 		$this->registerThrottleProvider();
+		$this->registerRequestProvider();
 		$this->registerSession();
 		$this->registerCookie();
 		$this->registerSentry();
+	}
+
+	/**
+	 * Prepare the package resources.
+	 *
+	 * @return void
+	 */
+	protected function prepareResources()
+	{
+		$config     = realpath(__DIR__.'/../../config/config.php');
+		$migrations = realpath(__DIR__.'/../../migrations');
+
+		$this->mergeConfigFrom($config, 'cartalyst.sentry');
+
+		$this->publishes([
+			$config     => config_path('cartalyst.sentry.php'),
+			$migrations => $this->app->databasePath().'/migrations',
+		]);
 	}
 
 	/**
@@ -67,7 +78,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.hasher'] = $this->app->share(function($app)
 		{
-			$hasher = $app['config']['cartalyst/sentry::hasher'];
+			$hasher = $app['config']->get('cartalyst.sentry.hasher');
 
 			switch ($hasher)
 			{
@@ -101,7 +112,9 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.user'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::users.model'];
+			$config = $app['config']->get('cartalyst.sentry');
+
+			$model = array_get($config, 'users.model');
 
 			// We will never be accessing a user in Sentry without accessing
 			// the user provider first. So, we can lazily set up our user
@@ -110,7 +123,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// overriding at runtime.
 			if (method_exists($model, 'setLoginAttributeName'))
 			{
-				$loginAttribute = $app['config']['cartalyst/sentry::users.login_attribute'];
+				$loginAttribute = array_get($config, 'users.login_attribute');
 
 				forward_static_call_array(
 					array($model, 'setLoginAttributeName'),
@@ -121,7 +134,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the Group model to use for relationships.
 			if (method_exists($model, 'setGroupModel'))
 			{
-				$groupModel = $app['config']['cartalyst/sentry::groups.model'];
+				$groupModel = array_get($config, 'groups.model');
 
 				forward_static_call_array(
 					array($model, 'setGroupModel'),
@@ -132,7 +145,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the user group pivot table name to use for relationships.
 			if (method_exists($model, 'setUserGroupsPivot'))
 			{
-				$pivotTable = $app['config']['cartalyst/sentry::user_groups_pivot_table'];
+				$pivotTable = array_get($config, 'user_groups_pivot_table');
 
 				forward_static_call_array(
 					array($model, 'setUserGroupsPivot'),
@@ -145,6 +158,23 @@ class SentryServiceProvider extends ServiceProvider {
 	}
 
 	/**
+	 * Register request service.
+	 * There can be case when default $app['request'] is not bound, for instance, in testing environment.
+	 * If request does not exist, create a new instance
+	 */
+	protected function registerRequestProvider()
+	{
+		$this->app['sentry.request'] = $this->app->share(function(Application $app)
+		{
+			if($app->bound('request'))
+			{
+				return $app['request'];
+			}
+			return new Request();
+		});
+	}
+
+	/**
 	 * Register the group provider used by Sentry.
 	 *
 	 * @return void
@@ -153,12 +183,14 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.group'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::groups.model'];
+			$config = $app['config']->get('cartalyst.sentry');
+
+			$model = array_get($config, 'groups.model');
 
 			// Define the User model to use for relationships.
 			if (method_exists($model, 'setUserModel'))
 			{
-				$userModel = $app['config']['cartalyst/sentry::users.model'];
+				$userModel = array_get($config, 'users.model');
 
 				forward_static_call_array(
 					array($model, 'setUserModel'),
@@ -169,7 +201,7 @@ class SentryServiceProvider extends ServiceProvider {
 			// Define the user group pivot table name to use for relationships.
 			if (method_exists($model, 'setUserGroupsPivot'))
 			{
-				$pivotTable = $app['config']['cartalyst/sentry::user_groups_pivot_table'];
+				$pivotTable = array_get($config, 'user_groups_pivot_table');
 
 				forward_static_call_array(
 					array($model, 'setUserGroupsPivot'),
@@ -190,18 +222,20 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.throttle'] = $this->app->share(function($app)
 		{
-			$model = $app['config']['cartalyst/sentry::throttling.model'];
+			$config = $app['config']->get('cartalyst.sentry');
+
+			$model = array_get($config, 'throttling.model');
 
 			$throttleProvider = new ThrottleProvider($app['sentry.user'], $model);
 
-			if ($app['config']['cartalyst/sentry::throttling.enabled'] === false)
+			if (array_get($config, 'throttling.enabled') === false)
 			{
 				$throttleProvider->disable();
 			}
 
 			if (method_exists($model, 'setAttemptLimit'))
 			{
-				$attemptLimit = $app['config']['cartalyst/sentry::throttling.attempt_limit'];
+				$attemptLimit = array_get($config, 'throttling.attempt_limit');
 
 				forward_static_call_array(
 					array($model, 'setAttemptLimit'),
@@ -210,18 +244,18 @@ class SentryServiceProvider extends ServiceProvider {
 			}
 			if (method_exists($model, 'setSuspensionTime'))
 			{
-				$suspensionTime = $app['config']['cartalyst/sentry::throttling.suspension_time'];
+				$suspensionTime = array_get($config, 'throttling.suspension_time');
 
 				forward_static_call_array(
 					array($model, 'setSuspensionTime'),
 					array($suspensionTime)
 				);
 			}
-			
+
 			// Define the User model to use for relationships.
 			if (method_exists($model, 'setUserModel'))
 			{
-				$userModel = $app['config']['cartalyst/sentry::users.model'];
+				$userModel = array_get($config, 'users.model');
 
 				forward_static_call_array(
 					array($model, 'setUserModel'),
@@ -242,7 +276,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.session'] = $this->app->share(function($app)
 		{
-			$key = $app['config']['cartalyst/sentry::cookie.key'];
+			$key = $app['config']->get('cartalyst.sentry.cookie.key');
 
 			return new IlluminateSession($app['session.store'], $key);
 		});
@@ -257,7 +291,7 @@ class SentryServiceProvider extends ServiceProvider {
 	{
 		$this->app['sentry.cookie'] = $this->app->share(function($app)
 		{
-			$key = $app['config']['cartalyst/sentry::cookie.key'];
+			$key = $app['config']->get('cartalyst.sentry.cookie.key');
 
 			/**
 			 * We'll default to using the 'request' strategy, but switch to
@@ -271,7 +305,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$strategy = 'jar';
 			}
 
-			return new IlluminateCookie($app['request'], $app['cookie'], $key, $strategy);
+			return new IlluminateCookie($app['sentry.request'], $app['cookie'], $key, $strategy);
 		});
 	}
 
@@ -291,7 +325,7 @@ class SentryServiceProvider extends ServiceProvider {
 				$app['sentry.throttle'],
 				$app['sentry.session'],
 				$app['sentry.cookie'],
-				$app['request']->getClientIp()
+				$app['sentry.request']->getClientIp()
 			);
 		});
 
