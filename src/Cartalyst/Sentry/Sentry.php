@@ -538,7 +538,27 @@ class Sentry {
 	{
 		return $this->groupProvider->findByName($name);
 	}
-
+	
+        /**
+	 * Check if the currently logged-in user is in a specific group or not
+	*/
+	public function checkGroup($group_name)
+	{
+	    if (Sentry::check())
+	    {
+	        $user_id = Sentry::getUser()->id;
+                $get_user = Sentry::findUserByID($user_id);
+                $group = Sentry::findGroupByName($group_name);
+                
+                if ($get_user->inGroup($group)) {         
+                    return true;
+                }
+                else {
+                    return false; 
+                }
+            }
+        }
+        
 	/**
 	 * Returns all groups.
 	 *
