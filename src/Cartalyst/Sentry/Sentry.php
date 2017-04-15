@@ -329,6 +329,9 @@ class Sentry {
 		// Set sessions
 		$this->session->put($toPersist);
 
+		// Force a new session id to be created after login to prevent session fixation attacks
+		$this->session->migrate( true );
+
 		if ($remember)
 		{
 			$this->cookie->forever($toPersist);
