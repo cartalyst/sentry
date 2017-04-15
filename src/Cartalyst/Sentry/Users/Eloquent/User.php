@@ -646,6 +646,25 @@ class User extends Model implements UserInterface {
 	}
 
 	/**
+	 * See if the user is in the given group.
+	 *
+	 * @param  string  $groupName
+	 * @return bool
+	 */
+	public function inGroupNamed($groupName)
+	{
+		foreach ($this->getGroups() as $_group)
+		{
+			if ($_group->getName() == $groupName)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns an array of merged permissions for each
 	 * group the user is in.
 	 *

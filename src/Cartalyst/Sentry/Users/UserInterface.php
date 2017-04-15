@@ -222,6 +222,14 @@ interface UserInterface {
 	public function inGroup(GroupInterface $group);
 
 	/**
+	 * See if the user is in the given group.
+	 *
+	 * @param  string  $groupName
+	 * @return bool
+	 */
+	public function inGroupNamed($groupName);
+
+	/**
 	 * Returns an array of merged permissions for each
 	 * group the user is in.
 	 *
