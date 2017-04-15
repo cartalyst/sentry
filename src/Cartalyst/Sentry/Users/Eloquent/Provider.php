@@ -133,7 +133,7 @@ class Provider implements ProviderInterface {
 			}
 			else
 			{
-				$query = $query->where($credential, '=', $value);
+				$query = $query->where($credential, $value);
 			}
 		}
 
