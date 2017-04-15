@@ -187,6 +187,14 @@ interface UserInterface {
 	 * @return array
 	 */
 	public function getGroups();
+	
+	/**
+	 * Returns a array of group names which the given
+	 * user belongs to.
+	 *
+	 * @return array
+	 */
+	public function getGroupNames();
 
 	/**
 	 * Adds the user to the given group
